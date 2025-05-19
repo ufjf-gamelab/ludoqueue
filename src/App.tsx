@@ -3,14 +3,14 @@ import "./App.css";
 
 function App() {
   const [count, setCount] = useState(0);
-  const [nodes, setNodes] = useState(
+  const [nodes, setNodes] = useState<Map<string, string[]>>(
     new Map([
-      ["Apple", 4.75],
-      ["Grape", 2.72],
-      ["Banana", 1.0],
+      ["Apple", ["Grape", "Banana"]],
+      ["Grape", ["Banana"]],
+      ["Banana", ["Apple"]],
     ])
   );
-  nodes.set("Durian", 13);
+  nodes.set("Durian", ["Banana"]);
   return (
     <>
       <h1>Vite + React</h1>
@@ -19,9 +19,14 @@ function App() {
           count is {count}
         </button>
         <ul>
-          {Array.from(nodes.entries()).map(([key, value]) => (
-            <li>
-              {key} &rarr; {value}
+          {Array.from(nodes.entries()).map(([nodeID, adjacencies]) => (
+            <li >
+              {nodeID} {" "}
+              <ul>
+                {adjacencies.map((targetNode) => (
+                  <li>{targetNode}</li>
+                ))}
+              </ul>
             </li>
           ))}
         </ul>
