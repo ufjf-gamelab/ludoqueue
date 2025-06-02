@@ -2,34 +2,59 @@ import { useState } from "react";
 import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0);
-  const [nodes, setNodes] = useState<Map<string, string[]>>(
+  const [nodes, setNodes] = useState<string[]>(["Apple", "Grape", "Banana"]);
+  const [connections, setConnections] = useState([
+    ["Apple", "Grape"],
+    ["Apple", "Banana"],
+    ["Grape", "Banana"],
+    ["Banana", "Apple"],
+    ["Banana", "Cashew"]
+  ]);
+  const [adjacencyList, setAdjacencyList] = useState<Map<string, string[]>>(
     new Map([
       ["Apple", ["Grape", "Banana"]],
       ["Grape", ["Banana"]],
       ["Banana", ["Apple"]],
     ])
   );
-  nodes.set("Durian", ["Banana"]);
+
+  adjacencyList.set("Durian", ["Banana"]);
   return (
     <>
       <h1>Vite + React</h1>
       <div className="card">
         <button
           onClick={() => {
-            // setCount((count) => count + 1);
-            if (nodes.get("Grape")?.includes("Apple")) {
+            if (adjacencyList.get("Grape")?.includes("Apple")) {
               return;
             }
-            const newNodes = new Map(nodes);
+            const newNodes = new Map(adjacencyList);
             newNodes.set("Grape", [...(newNodes.get("Grape") || []), "Apple"]);
-            setNodes(newNodes);
+            setAdjacencyList(newNodes);
           }}
         >
-          count is {count}
+          click me
         </button>
+        <h2>Nodes</h2>
         <ul>
-          {Array.from(nodes.entries()).map(([nodeID, adjacencies]) => (
+          {nodes.map((nodeID) => (
+            <li>
+              {nodeID}
+            </li>
+          ))}
+        </ul>
+        <h2>Connections</h2>
+        <ul>
+          {connections.map(([from, to]) => (
+            <li>
+              {from}&rarr;
+              {to}
+            </li>
+          ))}
+        </ul>
+        <h2>Adjacency List</h2>
+        <ul>
+          {Array.from(adjacencyList.entries()).map(([nodeID, adjacencies]) => (
             <li>
               {nodeID}{" "}
               <ul>
