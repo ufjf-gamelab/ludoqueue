@@ -16,9 +16,8 @@ const g: GraphType = {
   ],
 }
 function App() {
-  const [nodes, setNodes] = useState<string[]>(g.nodes);
-  const [connections, setConnections] = useState<[string, string][]>(g.connections);
-  const adjacencyList = createAdjacencyList(nodes, connections);
+  const [graphData, setGraphData] = useState<GraphType>(g);
+  const adjacencyList = createAdjacencyList(graphData);
 
   return (
     <>
@@ -26,25 +25,25 @@ function App() {
       <div className="card">
         <button
           onClick={() => {
-            const isPresent = connections.some(([from, to]) => {
+            const isPresent = graphData.connections.some(([from, to]) => {
               return from === "Cashew" && to === "Durian" || from === "Durian" && to === "Cashew";
             });
             if (isPresent) return;
-            connections.push(["Durian", "Cashew"]);
-            setConnections([...connections]);
+            graphData.connections.push(["Durian", "Cashew"]);
+            setGraphData({...graphData});
           }}
         >
           click me
         </button>
         <h2>Nodes</h2>
         <ul>
-          {nodes.map((nodeID) => (
+          {graphData.nodes.map((nodeID) => (
             <li>{nodeID}</li>
           ))}
         </ul>
         <h2>Connections</h2>
         <ul>
-          {connections.map(([from, to]) => (
+          {graphData.connections.map(([from, to]) => (
             <li>
               {from}&rarr;
               {to}
@@ -68,12 +67,12 @@ function App() {
     </>
   );
 }
-function createAdjacencyList(nodes: string[], connections: [string, string][]) {
+function createAdjacencyList(graphData: GraphType) {
   const adj: Map<string, string[]> = new Map();
-  nodes.forEach((node) => {
+  graphData.nodes.forEach((node) => {
     adj.set(node, []);
   });
-  connections.forEach(([from, to]) => {
+  graphData.connections.forEach(([from, to]) => {
     if (!adj.get(from)) {
       adj.set(from, []);
     }
