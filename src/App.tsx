@@ -1,15 +1,23 @@
 import { useState } from "react";
 import "./App.css";
 
-function App() {
-  const [nodes, setNodes] = useState<string[]>(["Apple", "Grape", "Banana"]);
-  const [connections, setConnections] = useState<[string, string][]>([
+type GraphType = {
+  nodes: string[];
+  connections: [string, string][];
+}
+const g: GraphType = {
+  nodes: ["Apple", "Grape", "Banana"],
+  connections: [
     ["Apple", "Grape"],
     ["Apple", "Banana"],
     ["Grape", "Banana"],
     ["Banana", "Apple"],
     ["Banana", "Cashew"],
-  ]);
+  ],
+}
+function App() {
+  const [nodes, setNodes] = useState<string[]>(g.nodes);
+  const [connections, setConnections] = useState<[string, string][]>(g.connections);
   const adjacencyList = createAdjacencyList(nodes, connections);
 
   return (
