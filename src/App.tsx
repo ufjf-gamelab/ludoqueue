@@ -1,15 +1,22 @@
 import { useState } from "react";
 import "./App.css";
 
+type NodeIDType = string;
+
 type NodeType = {
-  id: string;
+  id: NodeIDType;
   name: string;
   val: number;
 };
 
+type LinkType = {
+  source: NodeIDType;
+  target: NodeIDType;
+}
+
 type GraphType = {
   nodes: NodeType[];
-  connections: [string, string][];
+  links: LinkType[];
 };
 const g: GraphType = {
   nodes: [
@@ -17,12 +24,12 @@ const g: GraphType = {
     { id: "grape", name: "Grape", val: 0 },
     { id: "banana", name: "Banana", val: 0 },
   ],
-  connections: [
-    ["apple", "grape"],
-    ["apple", "banana"],
-    ["grape", "banana"],
-    ["banana", "apple"],
-    ["banana", "cashew"],
+  links: [
+    {source:"apple",target: "grape"},
+    {source:"apple",target: "banana"},
+    {source:"grape",target: "banana"},
+    {source:"banana",target: "apple"},
+    {source:"banana",target: "cashew"},
   ],
 };
 function App() {
@@ -35,14 +42,14 @@ function App() {
       <div className="card">
         <button
           onClick={() => {
-            const isPresent = graphData.connections.some(([from, to]) => {
+            const isPresent = graphData.links.some(({source, target}) => {
               return (
-                (from === "Cashew" && to === "Durian") ||
-                (from === "Durian" && to === "Cashew")
+                (source === "cashew" && target === "durian") ||
+                (source === "durian" && target === "cashew")
               );
             });
             if (isPresent) return;
-            graphData.connections.push(["Durian", "Cashew"]);
+            graphData.links.push({source:"durian", target:"cashew"});
             setGraphData({ ...graphData });
           }}
         >
@@ -56,10 +63,10 @@ function App() {
         </ul>
         <h2>Connections</h2>
         <ul>
-          {graphData.connections.map(([from, to]) => (
+          {graphData.links.map(({source, target}) => (
             <li>
-              {from}&rarr;
-              {to}
+              {source}&rarr;
+              {target}
             </li>
           ))}
         </ul>
@@ -85,21 +92,21 @@ function createAdjacencyList(graphData: GraphType) {
   graphData.nodes.forEach((node) => {
     adj.set(node.id, []);
   });
-  graphData.connections.forEach(([from, to]) => {
-    if (!adj.get(from)) {
-      adj.set(from, []);
+  graphData.links.forEach(({source, target}) => {
+    if (!adj.get(source)) {
+      adj.set(source, []);
     }
-    if (!adj.get(to)) {
-      adj.set(to, []);
+    if (!adj.get(target)) {
+      adj.set(target, []);
     }
-    const adjFrom = adj.get(from);
-    const adjTo = adj.get(to);
-    if (!adjFrom?.includes(to)) {
-      adjFrom?.push(to);
+    const adjFrom = adj.get(source);
+    const adjTo = adj.get(target);
+    if (!adjFrom?.includes(target)) {
+      adjFrom?.push(target);
     }
 
-    if (!adjTo?.includes(from)) {
-      adjTo?.push(from);
+    if (!adjTo?.includes(source)) {
+      adjTo?.push(source);
     }
   });
   return adj;
