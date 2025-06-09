@@ -20,11 +20,41 @@ const g: GraphType = {
 function App() {
   const [graphData, setGraphData] = useState<GraphType>(g);
   const adjacencyList = createAdjacencyList(graphData);
+  const [source,setSource] = useState<string>("");
+  const [target,setTarget] = useState<string>("");
 
   return (
     <>
       <h1>Vite + React</h1>
       <div className="card">
+        <label>Source: <input type="text" name="source" value={source} onChange={(e) => {
+          setSource(e.target.value)
+        }}/></label>
+        <label>Target: <input type="text" name="target" value={target} onChange={(e) => {
+          setTarget(e.target.value)
+        }}/></label>
+        <button onClick={() => {
+          const isPresent = graphData.links.some(({source: sourceLink, target: targetLink}) => {
+              return (
+                (sourceLink === source && targetLink === target) ||
+                (sourceLink === target && targetLink === source)
+              );
+            });
+            if (isPresent) return;
+            graphData.links.push({source, target});
+            setGraphData({ ...graphData });
+        }}>Ligar</button>
+        <button onClick={() => {
+          const isPresent = graphData.links.some(({source: sourceLink, target: targetLink}) => {
+              return (
+                (sourceLink === source && targetLink === target) ||
+                (sourceLink === target && targetLink === source)
+              );
+            });
+            if (!isPresent) return;
+            graphData.links=graphData.links.filter((link)=> {return !((link.source==source && link.target==target)||(link.target==source && link.source==target))});
+            setGraphData({ ...graphData });
+        }}>Desligar</button>
         <button
           onClick={() => {
             const isPresent = graphData.links.some(({source, target}) => {
