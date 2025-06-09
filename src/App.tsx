@@ -1,23 +1,8 @@
 import { useState } from "react";
 import "./App.css";
+import type { GraphType } from "./types";
 
-type NodeIDType = string;
 
-type NodeType = {
-  id: NodeIDType;
-  name: string;
-  val: number;
-};
-
-type LinkType = {
-  source: NodeIDType;
-  target: NodeIDType;
-}
-
-type GraphType = {
-  nodes: NodeType[];
-  links: LinkType[];
-};
 const g: GraphType = {
   nodes: [
     { id: "apple", name: "Apple", val: 0 },
