@@ -28,7 +28,7 @@ function Graph({ graphData }) {
   return (
     <R3fForceGraph
       ref={fgRef}
-      graphData={structuredClone(graphData)}
+      graphData={graphData}
       nodeThreeObject={(node) => {
         const sprite = new SpriteText(node.id);
         sprite.color = "white";
@@ -44,7 +44,7 @@ function App() {
   const adjacencyList = createAdjacencyList(graphData);
   const [source, setSource] = useState<string>("");
   const [target, setTarget] = useState<string>("");
-
+  const graphRef = useRef(structuredClone(graphData));
   return (
     <>
       <h1>Vite + React</h1>
@@ -53,7 +53,7 @@ function App() {
         <color attach="background" args={[0, 0, 0.01]} />
         <ambientLight color={0xcccccc} intensity={Math.PI} />
         <directionalLight intensity={0.6 * Math.PI} />
-        <Graph graphData={graphData} />
+        <Graph graphData={graphRef.current} />
       </Canvas>
       <div className="card">
         <label>
@@ -90,7 +90,9 @@ function App() {
             );
             if (isPresent) return;
             graphData.links.push({ source, target });
-            setGraphData({ ...graphData });
+            const newGraph = { ...graphData };
+            setGraphData(newGraph);
+            graphRef.current=structuredClone(newGraph);
           }}
         >
           Ligar
@@ -112,7 +114,9 @@ function App() {
                 (link.target == source && link.source == target)
               );
             });
-            setGraphData({ ...graphData });
+            const newGraph = { ...graphData };
+            setGraphData(newGraph);
+            graphRef.current=structuredClone(newGraph);
           }}
         >
           Desligar
