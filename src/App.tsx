@@ -1,70 +1,132 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import "./App.css";
 import type { GraphType } from "./types";
-
+import R3fForceGraph from "r3f-forcegraph";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { TrackballControls } from "@react-three/drei";
+import SpriteText from 'three-spritetext';
 
 const g: GraphType = {
   nodes: [
     { id: "apple", name: "Apple", val: 0 },
     { id: "grape", name: "Grape", val: 0 },
     { id: "banana", name: "Banana", val: 0 },
+    { id: "cashew", name: "Cashew", val: 0 },
   ],
   links: [
-    {source:"apple",target: "grape"},
-    {source:"apple",target: "banana"},
-    {source:"grape",target: "banana"},
-    {source:"banana",target: "apple"},
-    {source:"banana",target: "cashew"},
+    { source: "apple", target: "grape" },
+    { source: "apple", target: "banana" },
+    { source: "grape", target: "banana" },
+    { source: "banana", target: "apple" },
+    { source: "banana", target: "cashew" },
   ],
 };
+
+function Graph({ graphData }) {
+  const fgRef = useRef();
+  useFrame(() => fgRef.current.tickFrame());
+  return (
+    <R3fForceGraph
+      ref={fgRef}
+      graphData={structuredClone(graphData)}
+      nodeThreeObject={(node) => {
+        const sprite = new SpriteText(node.id);
+        sprite.color = "white";
+        sprite.textHeight = 8;
+        return sprite;
+      }}
+    />
+  );
+}
+
 function App() {
   const [graphData, setGraphData] = useState<GraphType>(g);
   const adjacencyList = createAdjacencyList(graphData);
-  const [source,setSource] = useState<string>("");
-  const [target,setTarget] = useState<string>("");
+  const [source, setSource] = useState<string>("");
+  const [target, setTarget] = useState<string>("");
 
   return (
     <>
       <h1>Vite + React</h1>
+      <Canvas flat camera={{ position: [0, 0, 1000], far: 8000 }}>
+        <TrackballControls />
+        <color attach="background" args={[0, 0, 0.01]} />
+        <ambientLight color={0xcccccc} intensity={Math.PI} />
+        <directionalLight intensity={0.6 * Math.PI} />
+        <Graph graphData={graphData} />
+      </Canvas>
       <div className="card">
-        <label>Source: <input type="text" name="source" value={source} onChange={(e) => {
-          setSource(e.target.value)
-        }}/></label>
-        <label>Target: <input type="text" name="target" value={target} onChange={(e) => {
-          setTarget(e.target.value)
-        }}/></label>
-        <button onClick={() => {
-          const isPresent = graphData.links.some(({source: sourceLink, target: targetLink}) => {
-              return (
-                (sourceLink === source && targetLink === target) ||
-                (sourceLink === target && targetLink === source)
-              );
-            });
-            if (isPresent) return;
-            graphData.links.push({source, target});
-            setGraphData({ ...graphData });
-        }}>Ligar</button>
-        <button onClick={() => {
-          const isPresent = graphData.links.some(({source: sourceLink, target: targetLink}) => {
-              return (
-                (sourceLink === source && targetLink === target) ||
-                (sourceLink === target && targetLink === source)
-              );
-            });
-            if (!isPresent) return;
-            graphData.links=graphData.links.filter((link)=> {return !((link.source==source && link.target==target)||(link.target==source && link.source==target))});
-            setGraphData({ ...graphData });
-        }}>Desligar</button>
+        <label>
+          Source:{" "}
+          <input
+            type="text"
+            name="source"
+            value={source}
+            onChange={(e) => {
+              setSource(e.target.value);
+            }}
+          />
+        </label>
+        <label>
+          Target:{" "}
+          <input
+            type="text"
+            name="target"
+            value={target}
+            onChange={(e) => {
+              setTarget(e.target.value);
+            }}
+          />
+        </label>
         <button
           onClick={() => {
-            const isPresent = graphData.links.some(({source, target}) => {
+            const isPresent = graphData.links.some(
+              ({ source: sourceLink, target: targetLink }) => {
+                return (
+                  (sourceLink === source && targetLink === target) ||
+                  (sourceLink === target && targetLink === source)
+                );
+              }
+            );
+            if (isPresent) return;
+            graphData.links.push({ source, target });
+            setGraphData({ ...graphData });
+          }}
+        >
+          Ligar
+        </button>
+        <button
+          onClick={() => {
+            const isPresent = graphData.links.some(
+              ({ source: sourceLink, target: targetLink }) => {
+                return (
+                  (sourceLink === source && targetLink === target) ||
+                  (sourceLink === target && targetLink === source)
+                );
+              }
+            );
+            if (!isPresent) return;
+            graphData.links = graphData.links.filter((link) => {
+              return !(
+                (link.source == source && link.target == target) ||
+                (link.target == source && link.source == target)
+              );
+            });
+            setGraphData({ ...graphData });
+          }}
+        >
+          Desligar
+        </button>
+        <button
+          onClick={() => {
+            const isPresent = graphData.links.some(({ source, target }) => {
               return (
                 (source === "cashew" && target === "durian") ||
                 (source === "durian" && target === "cashew")
               );
             });
             if (isPresent) return;
-            graphData.links.push({source:"durian", target:"cashew"});
+            graphData.links.push({ source: "durian", target: "cashew" });
             setGraphData({ ...graphData });
           }}
         >
@@ -73,26 +135,28 @@ function App() {
         <h2>Nodes</h2>
         <ul>
           {graphData.nodes.map((node) => (
-            <li>{node.id}</li>
+            <li key={node.id}>{node.id}</li>
           ))}
         </ul>
         <h2>Connections</h2>
         <ul>
-          {graphData.links.map(({source, target}) => (
-            <li>
-              {source}&rarr;
-              {target}
+          {graphData.links.map(({ source:s, target:t }) => {
+
+            return (
+            <li key={`${s}--${t}`}>
+              {s}&rarr;
+              {t}
             </li>
-          ))}
+          )})}
         </ul>
         <h2>Adjacency List</h2>
         <ul>
           {Array.from(adjacencyList.entries()).map(([nodeID, adjacencies]) => (
-            <li>
+            <li key={nodeID}>
               {nodeID}{" "}
               <ul>
                 {adjacencies.map((targetNode) => (
-                  <li>{targetNode}</li>
+                  <li key={`${nodeID}-${targetNode}`}>{targetNode}</li>
                 ))}
               </ul>
             </li>
@@ -107,7 +171,7 @@ function createAdjacencyList(graphData: GraphType) {
   graphData.nodes.forEach((node) => {
     adj.set(node.id, []);
   });
-  graphData.links.forEach(({source, target}) => {
+  graphData.links.forEach(({ source, target }) => {
     if (!adj.get(source)) {
       adj.set(source, []);
     }
