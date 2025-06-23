@@ -28,9 +28,9 @@ function createLink(
     }
   );
   if (isPresent) return state;
-  state.links.push({ source, target });
-  const newGraph = { ...state };
-  return newGraph;
+  const newState = structuredClone(state);
+  newState.links.push({ source, target });
+  return newState;
 }
 
 function deleteLink(
@@ -47,14 +47,14 @@ function deleteLink(
     }
   );
   if (!isPresent) return state;
-  state.links = state.links.filter((link) => {
+  const newState = structuredClone(state);
+  newState.links = newState.links.filter((link) => {
     return !(
       (link.source == source && link.target == target) ||
       (link.target == source && link.source == target)
     );
   });
-  const newGraph = { ...state };
-  return newGraph;
+  return newState;
 }
 
 type GameAction = {

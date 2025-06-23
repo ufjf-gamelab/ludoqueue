@@ -1,23 +1,23 @@
 import { useReducer, useRef, useState } from "react";
 import "./App.css";
 import type { GraphType } from "./types";
-import R3fForceGraph from "r3f-forcegraph";
+import R3fForceGraph, { type GraphMethods } from "r3f-forcegraph";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { TrackballControls } from "@react-three/drei";
-import SpriteText from 'three-spritetext';
+import SpriteText from "three-spritetext";
 import { gameReducer, initialState } from "./Provider";
 
+function Graph({ graphData }: { graphData: GraphType }) {
+  const fgRef = useRef<GraphMethods>(undefined);
+  const clonedData = structuredClone(graphData);
+  useFrame(() => fgRef.current?.tickFrame());
 
-
-function Graph({ graphData }) {
-  const fgRef = useRef();
-  useFrame(() => fgRef.current.tickFrame());
   return (
     <R3fForceGraph
       ref={fgRef}
-      graphData={graphData}
+      graphData={clonedData}
       nodeThreeObject={(node) => {
-        const sprite = new SpriteText(node.id);
+        const sprite = new SpriteText(String(node.id));
         sprite.color = "white";
         sprite.textHeight = 8;
         return sprite;
@@ -27,20 +27,20 @@ function Graph({ graphData }) {
 }
 
 function App() {
-  const [game,dispatch] = useReducer(gameReducer,initialState);
+  const [game, dispatch] = useReducer(gameReducer, initialState);
   const adjacencyList = createAdjacencyList(game);
   const [source, setSource] = useState<string>("");
   const [target, setTarget] = useState<string>("");
-  const graphRef = useRef(structuredClone(game));
+
   return (
     <>
       <h1>Vite + React</h1>
-      <Canvas flat camera={{ position: [0, 0, 1000], far: 8000 }}>
+      <Canvas flat camera={{ position: [0, 0, 80], far: 800 }}>
         <TrackballControls />
         <color attach="background" args={[0, 0, 0.01]} />
         <ambientLight color={0xcccccc} intensity={Math.PI} />
         <directionalLight intensity={0.6 * Math.PI} />
-        <Graph graphData={graphRef.current} />
+        <Graph graphData={game} />
       </Canvas>
       <div className="card">
         <label>
@@ -67,16 +67,14 @@ function App() {
         </label>
         <button
           onClick={() => {
-            dispatch({type: "create link",source,target});
-            graphRef.current=structuredClone(game);
+            dispatch({ type: "create link", source, target });
           }}
         >
           Ligar
         </button>
         <button
           onClick={() => {
-            dispatch({type: "delete link",source,target});
-            graphRef.current=structuredClone(game);
+            dispatch({ type: "delete link", source, target });
           }}
         >
           Desligar
@@ -89,14 +87,14 @@ function App() {
         </ul>
         <h2>Connections</h2>
         <ul>
-          {game.links.map(({ source:s, target:t }) => {
-
+          {game.links.map(({ source: s, target: t }) => {
             return (
-            <li key={`${s}--${t}`}>
-              {s}&rarr;
-              {t}
-            </li>
-          )})}
+              <li key={`${s}--${t}`}>
+                {s}&rarr;
+                {t}
+              </li>
+            );
+          })}
         </ul>
         <h2>Adjacency List</h2>
         <ul>
