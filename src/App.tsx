@@ -1,26 +1,13 @@
-import { useRef, useState } from "react";
+import { useReducer, useRef, useState } from "react";
 import "./App.css";
 import type { GraphType } from "./types";
 import R3fForceGraph from "r3f-forcegraph";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { TrackballControls } from "@react-three/drei";
 import SpriteText from 'three-spritetext';
+import { gameReducer, initialState } from "./Provider";
 
-const g: GraphType = {
-  nodes: [
-    { id: "apple", name: "Apple", val: 0 },
-    { id: "grape", name: "Grape", val: 0 },
-    { id: "banana", name: "Banana", val: 0 },
-    { id: "cashew", name: "Cashew", val: 0 },
-  ],
-  links: [
-    { source: "apple", target: "grape" },
-    { source: "apple", target: "banana" },
-    { source: "grape", target: "banana" },
-    { source: "banana", target: "apple" },
-    { source: "banana", target: "cashew" },
-  ],
-};
+
 
 function Graph({ graphData }) {
   const fgRef = useRef();
@@ -40,11 +27,12 @@ function Graph({ graphData }) {
 }
 
 function App() {
-  const [graphData, setGraphData] = useState<GraphType>(g);
-  const adjacencyList = createAdjacencyList(graphData);
+  const [game,dispatch] = useReducer(gameReducer,initialState);
+  const [graphData, setGraphData] = useState<GraphType>(initialState);
+  const adjacencyList = createAdjacencyList(game);
   const [source, setSource] = useState<string>("");
   const [target, setTarget] = useState<string>("");
-  const graphRef = useRef(structuredClone(graphData));
+  const graphRef = useRef(structuredClone(game));
   return (
     <>
       <h1>Vite + React</h1>
@@ -80,19 +68,8 @@ function App() {
         </label>
         <button
           onClick={() => {
-            const isPresent = graphData.links.some(
-              ({ source: sourceLink, target: targetLink }) => {
-                return (
-                  (sourceLink === source && targetLink === target) ||
-                  (sourceLink === target && targetLink === source)
-                );
-              }
-            );
-            if (isPresent) return;
-            graphData.links.push({ source, target });
-            const newGraph = { ...graphData };
-            setGraphData(newGraph);
-            graphRef.current=structuredClone(newGraph);
+            dispatch({type: "create link",source,target});
+            graphRef.current=structuredClone(game);
           }}
         >
           Ligar
@@ -121,30 +98,15 @@ function App() {
         >
           Desligar
         </button>
-        <button
-          onClick={() => {
-            const isPresent = graphData.links.some(({ source, target }) => {
-              return (
-                (source === "cashew" && target === "durian") ||
-                (source === "durian" && target === "cashew")
-              );
-            });
-            if (isPresent) return;
-            graphData.links.push({ source: "durian", target: "cashew" });
-            setGraphData({ ...graphData });
-          }}
-        >
-          click me
-        </button>
         <h2>Nodes</h2>
         <ul>
-          {graphData.nodes.map((node) => (
+          {game.nodes.map((node) => (
             <li key={node.id}>{node.id}</li>
           ))}
         </ul>
         <h2>Connections</h2>
         <ul>
-          {graphData.links.map(({ source:s, target:t }) => {
+          {game.links.map(({ source:s, target:t }) => {
 
             return (
             <li key={`${s}--${t}`}>
