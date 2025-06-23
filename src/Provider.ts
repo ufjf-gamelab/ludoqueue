@@ -3,14 +3,22 @@ import type { GraphType } from "./types";
 export function gameReducer(state: GraphType, action: GameAction): GraphType {
   switch (action.type) {
     case "create link":
-        return createLink(state,action.source,action.target);
+      return createLink(state, action.source, action.target);
+
+    case "delete link":
+      return deleteLink(state, action.source, action.target);
+
     default:
       break;
   }
   return state;
 }
 
-function createLink(state: GraphType, source: string, target:string): GraphType {
+function createLink(
+  state: GraphType,
+  source: string,
+  target: string
+): GraphType {
   const isPresent = state.links.some(
     ({ source: sourceLink, target: targetLink }) => {
       return (
@@ -22,11 +30,35 @@ function createLink(state: GraphType, source: string, target:string): GraphType 
   if (isPresent) return state;
   state.links.push({ source, target });
   const newGraph = { ...state };
-  return (newGraph);
+  return newGraph;
+}
+
+function deleteLink(
+  state: GraphType,
+  source: string,
+  target: string
+): GraphType {
+  const isPresent = state.links.some(
+    ({ source: sourceLink, target: targetLink }) => {
+      return (
+        (sourceLink === source && targetLink === target) ||
+        (sourceLink === target && targetLink === source)
+      );
+    }
+  );
+  if (!isPresent) return state;
+  state.links = state.links.filter((link) => {
+    return !(
+      (link.source == source && link.target == target) ||
+      (link.target == source && link.source == target)
+    );
+  });
+  const newGraph = { ...state };
+  return newGraph;
 }
 
 type GameAction = {
-  type: "create link";
+  type: "create link" | "delete link"; 
   source: string;
   target: string;
 };

@@ -28,7 +28,6 @@ function Graph({ graphData }) {
 
 function App() {
   const [game,dispatch] = useReducer(gameReducer,initialState);
-  const [graphData, setGraphData] = useState<GraphType>(initialState);
   const adjacencyList = createAdjacencyList(game);
   const [source, setSource] = useState<string>("");
   const [target, setTarget] = useState<string>("");
@@ -76,24 +75,8 @@ function App() {
         </button>
         <button
           onClick={() => {
-            const isPresent = graphData.links.some(
-              ({ source: sourceLink, target: targetLink }) => {
-                return (
-                  (sourceLink === source && targetLink === target) ||
-                  (sourceLink === target && targetLink === source)
-                );
-              }
-            );
-            if (!isPresent) return;
-            graphData.links = graphData.links.filter((link) => {
-              return !(
-                (link.source == source && link.target == target) ||
-                (link.target == source && link.source == target)
-              );
-            });
-            const newGraph = { ...graphData };
-            setGraphData(newGraph);
-            graphRef.current=structuredClone(newGraph);
+            dispatch({type: "delete link",source,target});
+            graphRef.current=structuredClone(game);
           }}
         >
           Desligar
