@@ -1,10 +1,10 @@
-import { useContext, useState } from "react";
-import { DispatchContext } from "./Provider";
+import { useState } from "react";
+import { useGameDispatch } from "./Provider";
 
 export default function GraphEditor() {
   const [source, setSource] = useState<string>("");
   const [target, setTarget] = useState<string>("");
-  const dispatch=useContext(DispatchContext);
+  const dispatch=useGameDispatch();
   
   return (
     <div>

@@ -1,4 +1,4 @@
-import { createContext, useReducer, type ReactNode } from "react";
+import { createContext, useContext, useReducer, type ReactNode } from "react";
 import type { GraphType } from "./types";
 type GameProviderProps = {
   children: ReactNode;
@@ -12,6 +12,12 @@ export default function GameProvider({ children }: GameProviderProps) {
       <DispatchContext value={dispatch}>{children}</DispatchContext>
     </GameContext>
   );
+}
+export function useGame(){
+  return useContext(GameContext);
+}
+export function useGameDispatch(){
+  return useContext(DispatchContext);
 }
 
 export function gameReducer(state: GraphType, action: GameAction): GraphType {

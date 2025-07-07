@@ -1,11 +1,11 @@
-import { useContext, useReducer, useRef } from "react";
+import { useRef } from "react";
 import "./App.css";
 import type { GraphType } from "./types";
 import R3fForceGraph, { type GraphMethods } from "r3f-forcegraph";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { TrackballControls } from "@react-three/drei";
 import SpriteText from "three-spritetext";
-import { DispatchContext, GameContext, gameReducer, initialState } from "./Provider";
+import { useGame, useGameDispatch } from "./Provider";
 import GraphEditor from "./GraphEditor";
 
 function Graph({ graphData }: { graphData: GraphType }) {
@@ -28,8 +28,8 @@ function Graph({ graphData }: { graphData: GraphType }) {
 }
 
 function App() {
-  const game=useContext(GameContext);
-  const dispatch=useContext(DispatchContext);
+  const game=useGame();
+  const dispatch=useGameDispatch();
   const adjacencyList = createAdjacencyList(game);
 
   return (
