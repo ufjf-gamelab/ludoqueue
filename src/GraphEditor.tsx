@@ -1,11 +1,11 @@
-import { useState } from "react";
-import type { GameAction } from "./Provider";
-type GraphEditorProps={
-    dispatch:(dispatch: GameAction)=>void;
-}
-export default function GraphEditor({dispatch}: GraphEditorProps) {
+import { useContext, useState } from "react";
+import { DispatchContext } from "./Provider";
+
+export default function GraphEditor() {
   const [source, setSource] = useState<string>("");
   const [target, setTarget] = useState<string>("");
+  const dispatch=useContext(DispatchContext);
+  
   return (
     <div>
       <label>

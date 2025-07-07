@@ -1,4 +1,18 @@
+import { createContext, useReducer, type ReactNode } from "react";
 import type { GraphType } from "./types";
+type GameProviderProps = {
+  children: ReactNode;
+};
+export const GameContext = createContext(null);
+export const DispatchContext = createContext(null);
+export default function GameProvider({ children }: GameProviderProps) {
+  const [game, dispatch] = useReducer(gameReducer, initialState);
+  return (
+    <GameContext value={game}>
+      <DispatchContext value={dispatch}>{children}</DispatchContext>
+    </GameContext>
+  );
+}
 
 export function gameReducer(state: GraphType, action: GameAction): GraphType {
   switch (action.type) {
@@ -58,7 +72,7 @@ function deleteLink(
 }
 
 export type GameAction = {
-  type: "create link" | "delete link"; 
+  type: "create link" | "delete link";
   source: string;
   target: string;
 };
