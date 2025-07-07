@@ -57,7 +57,7 @@ function deleteLink(
   return newState;
 }
 
-type GameAction = {
+export type GameAction = {
   type: "create link" | "delete link"; 
   source: string;
   target: string;
