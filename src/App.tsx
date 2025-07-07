@@ -1,4 +1,4 @@
-import { useReducer, useRef, useState } from "react";
+import { useReducer, useRef } from "react";
 import "./App.css";
 import type { GraphType } from "./types";
 import R3fForceGraph, { type GraphMethods } from "r3f-forcegraph";
@@ -6,6 +6,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { TrackballControls } from "@react-three/drei";
 import SpriteText from "three-spritetext";
 import { gameReducer, initialState } from "./Provider";
+import GraphEditor from "./GraphEditor";
 
 function Graph({ graphData }: { graphData: GraphType }) {
   const fgRef = useRef<GraphMethods>(undefined);
@@ -29,8 +30,6 @@ function Graph({ graphData }: { graphData: GraphType }) {
 function App() {
   const [game, dispatch] = useReducer(gameReducer, initialState);
   const adjacencyList = createAdjacencyList(game);
-  const [source, setSource] = useState<string>("");
-  const [target, setTarget] = useState<string>("");
 
   return (
     <>
@@ -43,42 +42,7 @@ function App() {
         <Graph graphData={game} />
       </Canvas>
       <div className="card">
-        <label>
-          Source:{" "}
-          <input
-            type="text"
-            name="source"
-            value={source}
-            onChange={(e) => {
-              setSource(e.target.value);
-            }}
-          />
-        </label>
-        <label>
-          Target:{" "}
-          <input
-            type="text"
-            name="target"
-            value={target}
-            onChange={(e) => {
-              setTarget(e.target.value);
-            }}
-          />
-        </label>
-        <button
-          onClick={() => {
-            dispatch({ type: "create link", source, target });
-          }}
-        >
-          Ligar
-        </button>
-        <button
-          onClick={() => {
-            dispatch({ type: "delete link", source, target });
-          }}
-        >
-          Desligar
-        </button>
+        <GraphEditor dispatch={dispatch}></GraphEditor>
         <h2>Nodes</h2>
         <ul>
           {game.nodes.map((node) => (
