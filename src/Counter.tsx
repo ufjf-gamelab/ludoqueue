@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react"
+import { useGameDispatch } from "./Provider";
 
 export default function Counter(){
     const [counter,setCounter] = useState(0);
     const [playing,setPlaying] = useState(false);
+    const dispatch = useGameDispatch();
     useEffect(() => {
         console.log("ping");
         setPlaying(true);
@@ -12,6 +14,7 @@ export default function Counter(){
         if (playing){
             timerID = setTimeout(()=>{
                 setCounter(counter+1);
+                dispatch({type:"set node value",id:"apple",value:counter+1});
             },1000);
         }
         return ()=>{
@@ -32,6 +35,7 @@ export default function Counter(){
             }}>Pause</button>
             <button onClick={ () => {
                 setCounter(0);
+                dispatch({type:"set node value",id:"apple",value:0});
             }}>Reset</button>
         </div>
     )

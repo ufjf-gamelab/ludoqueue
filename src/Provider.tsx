@@ -28,6 +28,9 @@ export function gameReducer(state: GraphType, action: GameAction): GraphType {
     case "delete link":
       return deleteLink(state, action.source, action.target);
 
+    case "set node value":
+      return setNodeVal(state,action.id,action.value);
+
     default:
       break;
   }
@@ -77,11 +80,29 @@ function deleteLink(
   return newState;
 }
 
-export type GameAction = {
+function setNodeVal(state:GraphType, nodeID: string,value: number){
+  const newState = structuredClone(state);
+  const node = newState.nodes.find(n => n.id==nodeID);
+  if (!node){
+    return state;
+  }
+  node.val=value;
+  return newState;
+}
+
+type GameActionSetNodeValue = {
+  type: "set node value";
+  id: string;
+  value: number;
+}
+
+type GameActionLinkNodes = {
   type: "create link" | "delete link";
   source: string;
   target: string;
-};
+}
+
+export type GameAction = GameActionLinkNodes|GameActionSetNodeValue;
 
 export const initialState: GraphType = {
   nodes: [

@@ -49,7 +49,7 @@ function App() {
         <h2>Nodes</h2>
         <ul>
           {game.nodes.map((node) => (
-            <li key={node.id}>{node.id}</li>
+            <li key={node.id}>{node.id}:{node.val}</li>
           ))}
         </ul>
         <h2>Connections</h2>
