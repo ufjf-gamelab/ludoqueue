@@ -20,7 +20,7 @@ export default function Counter(){
         return ()=>{
             clearTimeout(timerID);
         }
-    },[counter,playing])
+    },[counter,playing,dispatch])
     
     return (
         <div>
