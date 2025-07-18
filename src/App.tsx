@@ -7,6 +7,7 @@ import { TrackballControls } from "@react-three/drei";
 import SpriteText from "three-spritetext";
 import { useGame, useGameDispatch } from "./Provider";
 import GraphEditor from "./GraphEditor";
+import Counter from "./Counter";
 
 function Graph({ graphData }: { graphData: GraphType }) {
   const fgRef = useRef<GraphMethods>(undefined);
@@ -35,6 +36,7 @@ function App() {
   return (
     <>
       <h1>Vite + React</h1>
+      <Counter></Counter>
       <Canvas flat camera={{ position: [0, 0, 80], far: 800 }}>
         <TrackballControls />
         <color attach="background" args={[0, 0, 0.01]} />
