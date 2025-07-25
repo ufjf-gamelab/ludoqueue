@@ -110,8 +110,8 @@ function gameTick(state: GraphType) {
     const link = newState.links[i];
     switch (link.type) {
       case "transport": {
-        const source = state.nodes.find((n) => n.id === link.source);
-        const target = state.nodes.find((n) => n.id === link.target);
+        const source = newState.nodes.find((n) => n.id === link.source);
+        const target = newState.nodes.find((n) => n.id === link.target);
         debugger;
         if (!source || !target) {
           return;
