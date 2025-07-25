@@ -14,7 +14,7 @@ export default function Counter(){
         if (playing){
             timerID = setTimeout(()=>{
                 setCounter(counter+1);
-                dispatch({type:"set node value",id:"apple",value:counter+1});
+                dispatch({type:"game tick"});
             },1000);
         }
         return ()=>{

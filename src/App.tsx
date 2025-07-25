@@ -49,7 +49,7 @@ function App() {
         <h2>Nodes</h2>
         <ul>
           {game.nodes.map((node) => (
-            <li key={node.id}>{node.id}:{node.val}</li>
+            <NodeElement node={node}/>
           ))}
         </ul>
         <h2>Connections</h2>
@@ -105,3 +105,8 @@ function createAdjacencyList(graphData: GraphType) {
   return adj;
 }
 export default App;
+
+
+function NodeElement({node}){
+  return <li key={node.id}>{node.id}:{JSON.stringify(node)}</li>;
+}

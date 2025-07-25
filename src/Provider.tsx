@@ -32,6 +32,9 @@ export function gameReducer(state: GraphType, action: GameAction): GraphType {
     case "set node value":
       return setNodeVal(state,action.id,action.value);
 
+    case "game tick":
+      return gameTick(state);
+
     default:
       break;
   }
@@ -91,10 +94,27 @@ function setNodeVal(state:GraphType, nodeID: string,value: number){
   return newState;
 }
 
+function gameTick (state:GraphType){
+  const newState = structuredClone(state);
+  newState.nodes.forEach((node, k) => {
+    switch (node.type){
+      case "mine":
+        if (node.val < node.max){
+          node.val++;
+        }
+    }
+  });
+  return (newState);
+}
+
 type GameActionSetNodeValue = {
   type: "set node value";
   id: string;
   value: number;
+}
+
+type GameActionTick = {
+  type: "game tick";
 }
 
 type GameActionLinkNodes = {
@@ -103,5 +123,5 @@ type GameActionLinkNodes = {
   target: string;
 }
 
-export type GameAction = GameActionLinkNodes|GameActionSetNodeValue;
+export type GameAction = GameActionLinkNodes|GameActionSetNodeValue|GameActionTick;
 

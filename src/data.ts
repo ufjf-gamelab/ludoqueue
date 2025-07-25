@@ -2,16 +2,11 @@ import type { GraphType } from "./types";
 
 export const initialState: GraphType = {
   nodes: [
-    { id: "apple", name: "Apple", val: 0 },
-    { id: "grape", name: "Grape", val: 0 },
-    { id: "banana", name: "Banana", val: 0 },
-    { id: "cashew", name: "Cashew", val: 0 },
+    { id: "mine1", name: "Mine 1", type: "mine", val: 0 , max: 5},
+    { id: "stock1", name: "Stock 1", type: "stock", val: 0 , max: 10, closed: false},
+
   ],
   links: [
-    { source: "apple", target: "grape" },
-    { source: "apple", target: "banana" },
-    { source: "grape", target: "banana" },
-    { source: "banana", target: "apple" },
-    { source: "banana", target: "cashew" },
+    //{ source: "apple", target: "grape" },
   ],
 };
