@@ -7,6 +7,7 @@ export const initialState: GraphType = {
 
   ],
   links: [
+    { type: "transport", source: "mine1", target: "stock1" , val: 0},
     //{ source: "apple", target: "grape" },
   ],
 };

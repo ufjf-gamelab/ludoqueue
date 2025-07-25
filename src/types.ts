@@ -19,10 +19,16 @@ type NodeStockType = {
   closed: boolean;
 }
 
-type LinkType = {
+type LinkType = LinkTransportType;
+
+type LinkTransportType = {
+  type:"transport";
   source: NodeIDType;
   target: NodeIDType;
+  val: number;
+  
 }
+
 
 export type GraphType = {
   nodes: NodeType[];

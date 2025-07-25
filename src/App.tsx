@@ -93,14 +93,14 @@ function createAdjacencyList(graphData: GraphType) {
       adj.set(target, []);
     }
     const adjFrom = adj.get(source);
-    const adjTo = adj.get(target);
+    //const adjTo = adj.get(target);
     if (!adjFrom?.includes(target)) {
       adjFrom?.push(target);
     }
 
-    if (!adjTo?.includes(source)) {
-      adjTo?.push(source);
-    }
+    //if (!adjTo?.includes(source)) {
+    //  adjTo?.push(source);
+    //}
   });
   return adj;
 }

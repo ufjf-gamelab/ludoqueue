@@ -1,6 +1,7 @@
 import { createContext, useContext, useReducer, type ReactNode } from "react";
 import type { GraphType } from "./types";
 import { initialState } from "./data";
+import { debug } from "three/tsl";
 type GameProviderProps = {
   children: ReactNode;
 };
@@ -14,10 +15,10 @@ export default function GameProvider({ children }: GameProviderProps) {
     </GameContext>
   );
 }
-export function useGame(){
+export function useGame() {
   return useContext(GameContext);
 }
-export function useGameDispatch(){
+export function useGameDispatch() {
   return useContext(DispatchContext);
 }
 
@@ -30,7 +31,7 @@ export function gameReducer(state: GraphType, action: GameAction): GraphType {
       return deleteLink(state, action.source, action.target);
 
     case "set node value":
-      return setNodeVal(state,action.id,action.value);
+      return setNodeVal(state, action.id, action.value);
 
     case "game tick":
       return gameTick(state);
@@ -84,44 +85,67 @@ function deleteLink(
   return newState;
 }
 
-function setNodeVal(state:GraphType, nodeID: string,value: number){
+function setNodeVal(state: GraphType, nodeID: string, value: number) {
   const newState = structuredClone(state);
-  const node = newState.nodes.find(n => n.id==nodeID);
-  if (!node){
+  const node = newState.nodes.find((n) => n.id == nodeID);
+  if (!node) {
     return state;
   }
-  node.val=value;
+  node.val = value;
   return newState;
 }
 
-function gameTick (state:GraphType){
+function gameTick(state: GraphType) {
   const newState = structuredClone(state);
-  newState.nodes.forEach((node, k) => {
-    switch (node.type){
+  for(let i=0; i<newState.nodes.length; i++){
+    const node = newState.nodes[i];
+    switch (node.type) {
       case "mine":
-        if (node.val < node.max){
+        if (node.val < node.max) {
           node.val++;
         }
     }
-  });
-  return (newState);
+  };
+  for(let i=0; i<newState.links.length; i++){
+    const link = newState.links[i];
+    switch (link.type) {
+      case "transport": {
+        const source = state.nodes.find((n) => n.id === link.source);
+        const target = state.nodes.find((n) => n.id === link.target);
+        debugger;
+        if (!source || !target) {
+          return;
+        }
+        if (link.val === 1 && target.val < target.max) {
+          link.val--;
+          target.val++;
+        } else if (link.val === 0 && source.val > 0) {
+          link.val++;
+          source.val--;
+        }
+      }
+    }
+  };
+  return newState;
 }
 
 type GameActionSetNodeValue = {
   type: "set node value";
   id: string;
   value: number;
-}
+};
 
 type GameActionTick = {
   type: "game tick";
-}
+};
 
 type GameActionLinkNodes = {
   type: "create link" | "delete link";
   source: string;
   target: string;
-}
+};
 
-export type GameAction = GameActionLinkNodes|GameActionSetNodeValue|GameActionTick;
-
+export type GameAction =
+  | GameActionLinkNodes
+  | GameActionSetNodeValue
+  | GameActionTick;
