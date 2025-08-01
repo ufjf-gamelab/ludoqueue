@@ -97,22 +97,29 @@ function setNodeVal(state: GraphType, nodeID: string, value: number) {
 
 function gameTick(state: GraphType) {
   const newState = structuredClone(state);
-  for(let i=0; i<newState.nodes.length; i++){
+  for (let i = 0; i < newState.nodes.length; i++) {
     const node = newState.nodes[i];
     switch (node.type) {
-      case "mine":
+      case "mine": {
         if (node.val < node.max) {
           node.val++;
         }
+        break;
+      }
+      case "consumer": {
+        if (node.val > 0) {
+          node.val--;
+        }
+        break;
+      }
     }
-  };
-  for(let i=0; i<newState.links.length; i++){
+  }
+  for (let i = 0; i < newState.links.length; i++) {
     const link = newState.links[i];
     switch (link.type) {
       case "transport": {
         const source = newState.nodes.find((n) => n.id === link.source);
         const target = newState.nodes.find((n) => n.id === link.target);
-        debugger;
         if (!source || !target) {
           return;
         }
@@ -125,7 +132,7 @@ function gameTick(state: GraphType) {
         }
       }
     }
-  };
+  }
   return newState;
 }
 
