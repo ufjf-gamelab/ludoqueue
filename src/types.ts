@@ -8,6 +8,8 @@ type NodeMineType = {
   type: "mine";
   val: number;
   max: number;
+  rate: number;
+  cooldown: number;
 }
 
 type NodeStockType = {
@@ -25,6 +27,8 @@ type NodeConsumerType = {
   type: "consumer";
   val: number;
   max: number;
+  rate: number;
+  cooldown: number;
 }
 
 type LinkType = LinkTransportType;
