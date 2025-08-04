@@ -2,6 +2,7 @@ import { createContext, useContext, useReducer, type ReactNode } from "react";
 import type { GraphType } from "./types";
 import { initialState } from "./data";
 import { debug } from "three/tsl";
+import { radToDeg } from "three/src/math/MathUtils.js";
 type GameProviderProps = {
   children: ReactNode;
 };
@@ -97,22 +98,40 @@ function setNodeVal(state: GraphType, nodeID: string, value: number) {
 
 function gameTick(state: GraphType) {
   const newState = structuredClone(state);
-  for(let i=0; i<newState.nodes.length; i++){
+  for (let i = 0; i < newState.nodes.length; i++) {
     const node = newState.nodes[i];
     switch (node.type) {
-      case "mine":
+      case "mine": {
+        if (node.cooldown > 0) {
+          node.cooldown -= 1;
+          continue;
+        }
+
         if (node.val < node.max) {
           node.val++;
         }
+        node.cooldown += 1 / node.rate;
+        break;
+      }
+      case "consumer": {
+        if (node.cooldown > 0) {
+          node.cooldown -= 1;
+          continue;
+        }
+        if (node.val > 0) {
+          node.val--;
+        }
+        node.cooldown += 1 / node.rate;
+        break;
+      }
     }
-  };
-  for(let i=0; i<newState.links.length; i++){
+  }
+  for (let i = 0; i < newState.links.length; i++) {
     const link = newState.links[i];
     switch (link.type) {
-      case "transport": {
+      case "transport": { //transformar transport em no, e link vira o caminho entre os dois
         const source = newState.nodes.find((n) => n.id === link.source);
         const target = newState.nodes.find((n) => n.id === link.target);
-        debugger;
         if (!source || !target) {
           return;
         }
@@ -125,7 +144,7 @@ function gameTick(state: GraphType) {
         }
       }
     }
-  };
+  }
   return newState;
 }
 

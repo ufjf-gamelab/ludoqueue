@@ -1,6 +1,6 @@
 type NodeIDType = string;
 
-type NodeType = NodeMineType | NodeStockType;
+type NodeType = NodeMineType | NodeStockType | NodeConsumerType;
 
 type NodeMineType = {
   id: NodeIDType;
@@ -8,6 +8,8 @@ type NodeMineType = {
   type: "mine";
   val: number;
   max: number;
+  rate: number;
+  cooldown: number;
 }
 
 type NodeStockType = {
@@ -17,6 +19,16 @@ type NodeStockType = {
   val: number;
   max: number;
   closed: boolean;
+}
+
+type NodeConsumerType = {
+  id: NodeIDType;
+  name: string;
+  type: "consumer";
+  val: number;
+  max: number;
+  rate: number;
+  cooldown: number;
 }
 
 type LinkType = LinkTransportType;
@@ -34,4 +46,3 @@ export type GraphType = {
   nodes: NodeType[];
   links: LinkType[];
 };
-
