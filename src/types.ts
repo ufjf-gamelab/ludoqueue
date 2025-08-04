@@ -1,6 +1,6 @@
 type NodeIDType = string;
 
-type NodeType = NodeMineType | NodeStockType | NodeConsumerType;
+type NodeType = NodeMineType | NodeStockType | NodeConsumerType | NodeTransportType;
 
 type NodeMineType = {
   id: NodeIDType;
@@ -31,14 +31,20 @@ type NodeConsumerType = {
   cooldown: number;
 }
 
-type LinkType = LinkTransportType;
+type NodeTransportType = {
+  id: NodeIDType;
+  name: string;
+  type: "transport";
+  val: number;
+  max: number;
+  rate: number;
+  cooldown: number;
+}
 
-type LinkTransportType = {
-  type:"transport";
+type LinkType = {
   source: NodeIDType;
   target: NodeIDType;
   val: number;
-  
 }
 
 

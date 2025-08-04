@@ -124,28 +124,44 @@ function gameTick(state: GraphType) {
         node.cooldown += 1 / node.rate;
         break;
       }
-    }
-  }
-  for (let i = 0; i < newState.links.length; i++) {
-    const link = newState.links[i];
-    switch (link.type) {
-      case "transport": { //transformar transport em no, e link vira o caminho entre os dois
-        const source = newState.nodes.find((n) => n.id === link.source);
-        const target = newState.nodes.find((n) => n.id === link.target);
-        if (!source || !target) {
-          return;
+      case "transport": {
+        if (node.cooldown > 0) {
+          node.cooldown -= 1;
+          continue;
         }
-        if (link.val === 1 && target.val < target.max) {
-          link.val--;
-          target.val++;
-        } else if (link.val === 0 && source.val > 0) {
-          link.val++;
-          source.val--;
+        if (node.val > 0) {
+          node.val--;
         }
+        node.cooldown += 1 / node.rate;
+        break;
       }
     }
   }
+  gameLinkTick(newState);
   return newState;
+}
+
+function gameLinkTick(newState: GraphType){
+  for (let i = 0; i < newState.links.length; i++) {
+    const link = newState.links[i];
+    //transformar transport em no, e link vira o caminho entre os dois
+    const source = newState.nodes.find((n) => n.id === link.source);
+    const target = newState.nodes.find((n) => n.id === link.target);
+    if ((!source || !target)) {
+      return;
+    }
+    if (source.type!="transport" && target.type!="transport"){ //verifica se link é valido
+      //adicionar remoção de link invalido antes de retornar?
+      return;
+    }
+    if (link.val === 1 && target.val < target.max) {
+      link.val--;
+      target.val++;
+    } else if (link.val === 0 && source.val > 0) {
+      link.val++;
+      source.val--;
+    }
+  }
 }
 
 type GameActionSetNodeValue = {
