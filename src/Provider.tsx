@@ -129,9 +129,6 @@ function gameTick(state: GraphType) {
           node.cooldown -= 1;
           continue;
         }
-        if (node.val > 0) {
-          node.val--;
-        }
         node.cooldown += 1 / node.rate;
         break;
       }
