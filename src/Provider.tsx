@@ -1,5 +1,5 @@
 import { createContext, useContext, useReducer, type ReactNode } from "react";
-import type { GraphType } from "./types";
+import type { GraphType, NodeType } from "./types";
 import { initialState } from "./data";
 import { debug } from "three/tsl";
 import { radToDeg } from "three/src/math/MathUtils.js";
@@ -102,61 +102,74 @@ function gameTick(state: GraphType) {
     const node = newState.nodes[i];
     switch (node.type) {
       case "mine": {
-        if (node.cooldown > 0) {
-          node.cooldown -= 1;
-          continue;
-        }
-
-        if (node.val < node.max) {
-          node.val++;
-        }
-        node.cooldown += 1 / node.rate;
+        gameMineTick(node);
         break;
       }
       case "consumer": {
-        if (node.cooldown > 0) {
-          node.cooldown -= 1;
-          continue;
-        }
-        if (node.val > 0) {
-          node.val--;
-        }
-        node.cooldown += 1 / node.rate;
+        gameConsumerTick(node);
         break;
       }
       case "transport": {
-        if (node.cooldown > 0) {
-          node.cooldown -= 1;
-          continue;
-        }
-        node.cooldown += 1 / node.rate;
-        for (let i = 0; i < newState.links.length; i++) {
-          const link = newState.links[i];
-          const source = newState.nodes.find((n) => n.id === link.source);
-          const target = newState.nodes.find((n) => n.id === link.target);
-          if (!source || !target) {
-            continue;
-          }
-          if (source.id != node.id && target.id != node.id) {
-            //verifica se link é valido
-            //adicionar remoção de link invalido antes de retornar?
-            continue;
-          }
-          if (node.val === 1 && (source.id===node.id) && target.val < target.max) {
-            node.val--;
-            target.val++;
-            break;
-          } else if (node.val === 0 && (target.id===node.id) && source.val > 0) {
-            node.val++;
-            source.val--;
-            break;
-          }
-        }
+        //falta tratar se um transport participa mais de um link
+        gameTransportTick(node, newState);
+        break;
       }
-      break;
     }
   }
   return newState;
+}
+
+function gameMineTick(node: NodeType,) {
+  if (node.cooldown > 0) {
+    node.cooldown -= 1;
+    return;
+  }
+
+  if (node.val < node.max) {
+    node.val++;
+  }
+  node.cooldown += 1 / node.rate;
+}
+
+function gameConsumerTick(node: NodeType,) {
+  if (node.cooldown > 0) {
+    node.cooldown -= 1;
+    return;
+  }
+  if (node.val > 0) {
+    node.val--;
+  }
+  node.cooldown += 1 / node.rate;
+}
+
+function gameTransportTick(node: NodeType, newState: GraphType) {
+  if (node.cooldown > 0) {
+    node.cooldown -= 1;
+    return;
+  }
+  node.cooldown += 1 / node.rate;
+  for (let i = 0; i < newState.links.length; i++) {
+    const link = newState.links[i];
+    const source = newState.nodes.find((n) => n.id === link.source);
+    const target = newState.nodes.find((n) => n.id === link.target);
+    if (!source || !target) {
+      continue;
+    }
+    if (source.id != node.id && target.id != node.id) {
+      //verifica se link é valido
+      //adicionar remoção de link invalido antes de retornar?
+      continue;
+    }
+    if (node.val === 1 && target.val < target.max && source.id === node.id) {
+      node.val--;
+      target.val++;
+      break;
+    } else if (node.val === 0 && source.val > 0 && target.id === node.id) {
+      node.val++;
+      source.val--;
+      break;
+    }
+  }
 }
 
 type GameActionSetNodeValue = {

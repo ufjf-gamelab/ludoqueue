@@ -1,6 +1,6 @@
 type NodeIDType = string;
 
-type NodeType = NodeMineType | NodeStockType | NodeConsumerType | NodeTransportType;
+export type NodeType = NodeMineType | NodeStockType | NodeConsumerType | NodeTransportType;
 
 type NodeMineType = {
   id: NodeIDType;
