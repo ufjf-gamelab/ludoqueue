@@ -1,8 +1,13 @@
 import { createContext, useContext, useReducer, type ReactNode } from "react";
-import type { GraphType, NodeType } from "./types";
+import type {
+  GraphType,
+  NodeConsumerType,
+  NodeMineType,
+  NodeStockType,
+  NodeTransportType,
+  NodeType,
+} from "./types";
 import { initialState } from "./data";
-import { debug } from "three/tsl";
-import { radToDeg } from "three/src/math/MathUtils.js";
 type GameProviderProps = {
   children: ReactNode;
 };
@@ -97,43 +102,81 @@ function setNodeVal(state: GraphType, nodeID: string, value: number) {
 }
 
 function gameTick(state: GraphType) {
+  const mines = new Map<string, NodeMineType>();
+  const consumers = new Map<string, NodeConsumerType>();
+  const transports = new Map<string, NodeTransportType>();
+  const stocks = new Map<string, NodeStockType>();
+  
   const newState = structuredClone(state);
   for (let i = 0; i < newState.nodes.length; i++) {
     const node = newState.nodes[i];
     switch (node.type) {
       case "mine": {
-        gameMineTick(node);
+        mines.set(node.id, node);
+        //gameMineTick(node);
         break;
       }
       case "consumer": {
-        gameConsumerTick(node);
+        consumers.set(node.id, node);
+        //gameConsumerTick(node);
         break;
       }
       case "transport": {
+        transports.set(node.id, node);
         //falta tratar se um transport participa mais de um link
-        gameTransportTick(node, newState);
+        //gameTransportTick(node, newState);
+        break;
+      }
+      case "stock": {
+        stocks.set(node.id, node);
         break;
       }
     }
   }
+  const all = new Map<string, NodeType>([
+    ...mines.entries(),
+    ...consumers.entries(),
+    ...transports.entries(),
+    ...stocks.entries(),
+  ]);
+
+  mines.forEach((mine) => {
+    gameMineTick(mine);
+  });
+  consumers.forEach((consumer) => {
+    gameConsumerTick(consumer);
+  });
+  newState.links.forEach((link) => {
+    const source = all.get(link.source)!;
+    const target = all.get(link.target)!;
+    if (source.type === "transport") {
+      source.target = target.id;
+    } else if (target.type === "transport") {
+      target.source = source.id;
+    }
+  });
+  transports.forEach((transport) => {
+    gameTransportTick(transport, all);
+  });
+
   return newState;
 }
 
-function gameMineTick(node: NodeType,) {
+function gameMineTick(node: NodeMineType) {
+  node.cooldown -= 1;
   if (node.cooldown > 0) {
-    node.cooldown -= 1;
     return;
   }
 
   if (node.val < node.max) {
-    node.val++;
+    node.val+=node.rate;
   }
   node.cooldown += 1 / node.rate;
 }
 
-function gameConsumerTick(node: NodeType,) {
+function gameConsumerTick(node: NodeConsumerType) {
+  node.cooldown -= 1;
   if (node.cooldown > 0) {
-    node.cooldown -= 1;
     return;
   }
   if (node.val > 0) {
@@ -142,33 +185,27 @@ function gameConsumerTick(node: NodeType,) {
   node.cooldown += 1 / node.rate;
 }
 
-function gameTransportTick(node: NodeType, newState: GraphType) {
-  if (node.cooldown > 0) {
-    node.cooldown -= 1;
+function gameTransportTick(
+  transport: NodeTransportType,
+  all: Map<string, NodeType>
+) {
+  transport.cooldown -= 1;
+  if (transport.cooldown > 0) {
     return;
   }
-  node.cooldown += 1 / node.rate;
-  for (let i = 0; i < newState.links.length; i++) {
-    const link = newState.links[i];
-    const source = newState.nodes.find((n) => n.id === link.source);
-    const target = newState.nodes.find((n) => n.id === link.target);
-    if (!source || !target) {
-      continue;
-    }
-    if (source.id != node.id && target.id != node.id) {
-      //verifica se link é valido
-      //adicionar remoção de link invalido antes de retornar?
-      continue;
-    }
-    if (node.val === 1 && target.val < target.max && source.id === node.id) {
-      node.val--;
-      target.val++;
-      break;
-    } else if (node.val === 0 && source.val > 0 && target.id === node.id) {
-      node.val++;
-      source.val--;
-      break;
-    }
+  transport.cooldown += 1 / transport.rate;
+
+  const source = all.get(transport.source!);
+  const target = all.get(transport.target!);
+  if (!source || !target) {
+    return;
+  }
+  if (transport.val === 1 && target.val < target.max) {
+    transport.val--;
+    target.val++;
+  } else if (transport.val === 0 && source.val > 0) {
+    transport.val++;
+    source.val--;
   }
 }
 

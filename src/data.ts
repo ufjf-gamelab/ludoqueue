@@ -2,7 +2,7 @@ import type { GraphType } from "./types";
 
 export const initialState: GraphType = {
   nodes: [
-    { id: "mine1", name: "Mine 1", type: "mine", val: 0 , max: 5, rate: 1, cooldown: 0},
+    { id: "mine1", name: "Mine 1", type: "mine", val: 0 , max: 5, rate: 2, cooldown: 0},
     { id: "consumer1", name: "Consumer 1", type: "consumer", val: 0 , max: 2, rate: 0.8, cooldown: 0},
     { id: "transport1", name: "Transport 1", type: "transport", val: 0 , max: 1, rate: 0.25, cooldown: 1},
     { id: "transport2", name: "Transport 2", type: "transport", val: 0 , max: 1, rate: 0.5, cooldown: 1},

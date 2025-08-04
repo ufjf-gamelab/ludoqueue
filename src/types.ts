@@ -2,7 +2,7 @@ type NodeIDType = string;
 
 export type NodeType = NodeMineType | NodeStockType | NodeConsumerType | NodeTransportType;
 
-type NodeMineType = {
+export type NodeMineType = {
   id: NodeIDType;
   name: string;
   type: "mine";
@@ -12,7 +12,7 @@ type NodeMineType = {
   cooldown: number;
 }
 
-type NodeStockType = {
+export type NodeStockType = {
   id: NodeIDType;
   name: string;
   type: "stock";
@@ -21,7 +21,7 @@ type NodeStockType = {
   closed: boolean;
 }
 
-type NodeConsumerType = {
+export type NodeConsumerType = {
   id: NodeIDType;
   name: string;
   type: "consumer";
@@ -31,7 +31,7 @@ type NodeConsumerType = {
   cooldown: number;
 }
 
-type NodeTransportType = {
+export type NodeTransportType = {
   id: NodeIDType;
   name: string;
   type: "transport";
@@ -39,6 +39,8 @@ type NodeTransportType = {
   max: number;
   rate: number;
   cooldown: number;
+  source?: string;
+  target?: string; 
 }
 
 type LinkType = {
