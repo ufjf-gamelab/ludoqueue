@@ -44,7 +44,6 @@ type NodeTransportType = {
 type LinkType = {
   source: NodeIDType;
   target: NodeIDType;
-  val: number;
 }
 
 

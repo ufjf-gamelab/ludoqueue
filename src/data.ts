@@ -10,10 +10,10 @@ export const initialState: GraphType = {
 
   ],
   links: [
-    {source: "mine1", target: "transport1" , val: 0},
-    {source: "transport1", target: "consumer1" , val: 0},
-    {source: "mine1", target: "transport2" , val: 0},
-    {source: "transport2", target: "stock1" , val: 0},
+    {source: "mine1", target: "transport1"},
+    {source: "transport1", target: "consumer1"},
+    {source: "mine1", target: "transport2"},
+    {source: "transport2", target: "stock1"},
     //{ source: "apple", target: "grape" },
   ],
 };

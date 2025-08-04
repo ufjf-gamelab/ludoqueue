@@ -111,8 +111,8 @@ describe("Testando gameTick (Usando gameReducer)", async () => {
         },
       ],
       links: [
-        { source: "stock1", target: "transport1", val: 0 },
-        { source: "transport1", target: "consumer1", val: 0 },
+        { source: "stock1", target: "transport1" },
+        { source: "transport1", target: "consumer1" },
       ],
     };
     const result = gameReducer(stateTest, { type: "game tick" });
@@ -153,7 +153,7 @@ describe("Testando gameTick (Usando gameReducer)", async () => {
       ],
       links: [
         { source: "stock1", target: "transport1", val: 1 },
-        //{ source: "transport1", target: "consumer1", val: 0 },
+        //{ source: "transport1", target: "consumer1" },
       ],
     };
     const result = gameReducer(stateTest, { type: "game tick" });
@@ -192,8 +192,8 @@ describe("Testando gameTick (Usando gameReducer)", async () => {
         },
       ],
       links: [
-        { source: "stock1", target: "transport1", val: 0 },
-        { source: "transport1", target: "consumer1", val: 0 },
+        { source: "stock1", target: "transport1" },
+        { source: "transport1", target: "consumer1" },
       ],
     };
     const result = gameReducer(stateTest, { type: "game tick" });
