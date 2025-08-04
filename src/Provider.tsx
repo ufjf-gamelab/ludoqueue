@@ -130,35 +130,33 @@ function gameTick(state: GraphType) {
           continue;
         }
         node.cooldown += 1 / node.rate;
-        break;
+        for (let i = 0; i < newState.links.length; i++) {
+          const link = newState.links[i];
+          const source = newState.nodes.find((n) => n.id === link.source);
+          const target = newState.nodes.find((n) => n.id === link.target);
+          if (!source || !target) {
+            continue;
+          }
+          if (source.id != node.id && target.id != node.id) {
+            //verifica se link é valido
+            //adicionar remoção de link invalido antes de retornar?
+            continue;
+          }
+          if (node.val === 1 && (source.id===node.id) && target.val < target.max) {
+            node.val--;
+            target.val++;
+            break;
+          } else if (node.val === 0 && (target.id===node.id) && source.val > 0) {
+            node.val++;
+            source.val--;
+            break;
+          }
+        }
       }
+      break;
     }
   }
-  gameLinkTick(newState);
   return newState;
-}
-
-function gameLinkTick(newState: GraphType){
-  for (let i = 0; i < newState.links.length; i++) {
-    const link = newState.links[i];
-    //transformar transport em no, e link vira o caminho entre os dois
-    const source = newState.nodes.find((n) => n.id === link.source);
-    const target = newState.nodes.find((n) => n.id === link.target);
-    if ((!source || !target)) {
-      return;
-    }
-    if (source.type!="transport" && target.type!="transport"){ //verifica se link é valido
-      //adicionar remoção de link invalido antes de retornar?
-      return;
-    }
-    if (link.val === 1 && target.val < target.max) {
-      link.val--;
-      target.val++;
-    } else if (link.val === 0 && source.val > 0) {
-      link.val++;
-      source.val--;
-    }
-  }
 }
 
 type GameActionSetNodeValue = {
