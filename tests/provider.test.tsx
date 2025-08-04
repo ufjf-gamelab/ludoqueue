@@ -152,7 +152,7 @@ describe("Testando gameTick (Usando gameReducer)", async () => {
         },
       ],
       links: [
-        { source: "stock1", target: "transport1", val: 1 },
+        { source: "stock1", target: "transport1"},
         //{ source: "transport1", target: "consumer1" },
       ],
     };
