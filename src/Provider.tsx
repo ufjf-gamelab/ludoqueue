@@ -129,7 +129,7 @@ function gameTick(state: GraphType) {
   for (let i = 0; i < newState.links.length; i++) {
     const link = newState.links[i];
     switch (link.type) {
-      case "transport": {
+      case "transport": { //transformar transport em no, e link vira o caminho entre os dois
         const source = newState.nodes.find((n) => n.id === link.source);
         const target = newState.nodes.find((n) => n.id === link.target);
         if (!source || !target) {
