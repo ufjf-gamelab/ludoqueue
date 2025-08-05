@@ -101,7 +101,7 @@ function setNodeVal(state: GraphType, nodeID: string, value: number) {
   return newState;
 }
 
-function gameTick(state: GraphType) {
+export function gameTick(state: GraphType) {
   const mines = new Map<string, NodeMineType>();
   const consumers = new Map<string, NodeConsumerType>();
   const transports = new Map<string, NodeTransportType>();
@@ -162,7 +162,7 @@ function gameTick(state: GraphType) {
   return newState;
 }
 
-function gameMineTick(node: NodeMineType) {
+export function gameMineTick(node: NodeMineType) {
   node.cooldown -= 1;
   if (node.cooldown > 0) {
     return;
@@ -174,7 +174,7 @@ function gameMineTick(node: NodeMineType) {
   node.cooldown += 1 / node.rate;
 }
 
-function gameConsumerTick(node: NodeConsumerType) {
+export function gameConsumerTick(node: NodeConsumerType) {
   node.cooldown -= 1;
   if (node.cooldown > 0) {
     return;
@@ -185,7 +185,7 @@ function gameConsumerTick(node: NodeConsumerType) {
   node.cooldown += 1 / node.rate;
 }
 
-function gameTransportTick(
+export function gameTransportTick(
   transport: NodeTransportType,
   all: Map<string, NodeType>
 ) {
