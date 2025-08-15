@@ -39,8 +39,8 @@ export type NodeTransportType = {
   max: number;
   rate: number;
   cooldown: number;
-  source?: string;
-  target?: string; 
+  source: string;
+  target: string; 
 }
 
 type LinkType = {
@@ -51,5 +51,5 @@ type LinkType = {
 
 export type GraphType = {
   nodes: NodeType[];
-  links: LinkType[];
+  links?: LinkType[];
 };

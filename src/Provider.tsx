@@ -53,17 +53,39 @@ function createLink(
   source: string,
   target: string
 ): GraphType {
-  const isPresent = state.links.some(
-    ({ source: sourceLink, target: targetLink }) => {
-      return (
-        (sourceLink === source && targetLink === target) ||
-        (sourceLink === target && targetLink === source)
-      );
-    }
-  );
+  const isPresent = state.nodes.some((node) => {
+    if (node.type !== "transport") return false;
+    return (
+      (node.source === source && node.target === target) ||
+      (node.source === target && node.target === source)
+    );
+  });
   if (isPresent) return state;
+
+  // verificar calculo de id
+  const existingTransportIds = state.nodes
+    .filter((node) => node.type === "transport")
+    .map((node) => node.id)
+    .filter((id) => id.startsWith("transport"))
+    .map((id) => parseInt(id.replace("transport", "")))
+    .filter((num) => !isNaN(num));
+  const nextId =
+    existingTransportIds.length > 0 ? Math.max(...existingTransportIds) + 1 : 0;
+
   const newState = structuredClone(state);
-  newState.links.push({ source, target });
+  const newTransport: NodeTransportType = {
+    id: `transport${nextId}`,
+    name: `Transport ${nextId}`,
+    type: "transport",
+    val: 0,
+    max: 1,
+    rate: 1,
+    cooldown: 1,
+    source: source,
+    target: target,
+  };
+
+  newState.nodes.push(newTransport);
   return newState;
 }
 
@@ -72,22 +94,17 @@ function deleteLink(
   source: string,
   target: string
 ): GraphType {
-  const isPresent = state.links.some(
-    ({ source: sourceLink, target: targetLink }) => {
-      return (
-        (sourceLink === source && targetLink === target) ||
-        (sourceLink === target && targetLink === source)
-      );
-    }
+  const transportToDelete = state.nodes.find(
+    (node) =>
+      node.type === "transport" &&
+      ((node.source === source && node.target === target) ||
+        (node.source === target && node.target === source))
   );
-  if (!isPresent) return state;
+  if (!transportToDelete) return state;
   const newState = structuredClone(state);
-  newState.links = newState.links.filter((link) => {
-    return !(
-      (link.source == source && link.target == target) ||
-      (link.target == source && link.source == target)
-    );
-  });
+  newState.nodes = newState.nodes.filter(
+    (node) => node.id !== transportToDelete.id
+  );
   return newState;
 }
 
@@ -106,7 +123,7 @@ export function gameTick(state: GraphType) {
   const consumers = new Map<string, NodeConsumerType>();
   const transports = new Map<string, NodeTransportType>();
   const stocks = new Map<string, NodeStockType>();
-  
+
   const newState = structuredClone(state);
   for (let i = 0; i < newState.nodes.length; i++) {
     const node = newState.nodes[i];
@@ -123,7 +140,6 @@ export function gameTick(state: GraphType) {
       }
       case "transport": {
         transports.set(node.id, node);
-        //falta tratar se um transport participa mais de um link
         //gameTransportTick(node, newState);
         break;
       }
@@ -146,15 +162,15 @@ export function gameTick(state: GraphType) {
   consumers.forEach((consumer) => {
     gameConsumerTick(consumer);
   });
-  newState.links.forEach((link) => {
-    const source = all.get(link.source)!;
-    const target = all.get(link.target)!;
-    if (source.type === "transport") {
-      source.target = target.id;
-    } else if (target.type === "transport") {
-      target.source = source.id;
-    }
-  });
+  //newState.links.forEach((link) => {
+  //  const source = all.get(link.source)!;
+  //  const target = all.get(link.target)!;
+  //  if (source.type === "transport") {
+  //    source.target = target.id;
+  //  } else if (target.type === "transport") {
+  //    target.source = source.id;
+  //  }
+  //});
   transports.forEach((transport) => {
     gameTransportTick(transport, all);
   });
@@ -163,13 +179,13 @@ export function gameTick(state: GraphType) {
 }
 
 export function gameMineTick(node: NodeMineType) {
-  node.cooldown -= 1;  //problema no cooldown
+  node.cooldown -= 1; //problema no cooldown
   if (node.cooldown > 0) {
     return;
   }
 
   if (node.val < node.max) {
-    node.val+=node.rate;
+    node.val += node.rate;
   }
   node.cooldown += 1 / node.rate;
 }
