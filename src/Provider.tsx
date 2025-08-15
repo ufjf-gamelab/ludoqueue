@@ -163,7 +163,7 @@ export function gameTick(state: GraphType) {
 }
 
 export function gameMineTick(node: NodeMineType) {
-  node.cooldown -= 1;
+  node.cooldown -= 1;  //problema no cooldown
   if (node.cooldown > 0) {
     return;
   }
