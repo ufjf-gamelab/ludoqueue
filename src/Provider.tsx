@@ -156,6 +156,9 @@ export function gameTick(state: GraphType) {
     ...stocks.entries(),
   ]);
 
+  transports.forEach((transport) => {
+    gameTransportTick(transport, all);
+  });
   mines.forEach((mine) => {
     gameMineTick(mine);
   });
@@ -171,9 +174,6 @@ export function gameTick(state: GraphType) {
   //    target.source = source.id;
   //  }
   //});
-  transports.forEach((transport) => {
-    gameTransportTick(transport, all);
-  });
 
   return newState;
 }

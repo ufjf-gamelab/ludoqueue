@@ -13,8 +13,7 @@ describe("Stock", () => {
       closed: false,
     };
     const stateTest: Partial<GraphType> = {
-      nodes: [fakeStock],
-      links: [],
+      nodes: [fakeStock]
     };
     const result = gameReducer(stateTest as GraphType, { type: "game tick" });
     expect(result.nodes[0].val).toBe(2);
@@ -45,15 +44,13 @@ describe("Stock", () => {
           id: "transport1",
           type: "transport",
           name: "Transport",
-          val: 0,
+          val: 1,
           max: 1,
           rate: 1,
           cooldown: 0,
+          source:"mine1",
+          target:"stock1"
         },
-      ],
-      links: [
-        { source: "mine1", target: "transport1" },
-        { source: "transport1", target: "stock1" },
       ],
     };
     const result = gameReducer(stateTest as GraphType, { type: "game tick" });
@@ -68,7 +65,7 @@ describe("Stock", () => {
           id: "stock1",
           type: "stock",
           name: "Stock",
-          val: 1,
+          val: 2,
           max: 10,
           closed: true,
         },
@@ -89,15 +86,21 @@ describe("Stock", () => {
           max: 1,
           rate: 1,
           cooldown: 0,
+          source:"mine1",
+          target:"stock1"
         },
       ],
-      links: [
-        { source: "mine1", target: "transport1" },
-        { source: "transport1", target: "stock1" },
-      ],
     };
-    const result = gameReducer(stateTest as GraphType, { type: "game tick" });
-    expect(result.nodes[0].val).toBe(1);
-    expect((result.nodes[0] as NodeStockType).closed).toBe(false);
+    const tick1 = gameReducer(stateTest as GraphType, { type: "game tick" });
+    expect(tick1.nodes[2].val).toBe(1);
+    expect(tick1.nodes[2].cooldown).toBe(1);
+    const tick2 = gameReducer(tick1, { type: "game tick" });
+    expect(tick2.nodes[2].val).toBe(1);
+    expect(tick2.nodes[2].cooldown).toBe(0);
+    const tick3 = gameReducer(tick2, { type: "game tick" });
+    expect(tick3.nodes[2].val).toBe(1);
+    expect(tick3.nodes[2].cooldown).toBe(1);
+    expect(tick3.nodes[0].val).toBe(2);
+    expect((tick3.nodes[0] as NodeStockType).closed).toBe(true);
   });
 });

@@ -31,11 +31,9 @@ describe("Transport", () => {
           max: 1,
           rate: 1,
           cooldown: 0,
+          source:"stock1",
+          target:"consumer1"
         },
-      ],
-      links: [
-        { source: "stock1", target: "transport1" },
-        { source: "transport1", target: "consumer1" },
       ],
     };
     const result = gameReducer(stateTest as GraphType, { type: "game tick" });
@@ -59,10 +57,10 @@ describe("Transport", () => {
           id: "consumer1",
           type: "consumer",
           name: "Consumer A",
-          val: 0,
+          val: 2,
           max: 2,
           rate: 1,
-          cooldown: 0,
+          cooldown: 1,
         },
         {
           id: "transport1",
@@ -72,9 +70,10 @@ describe("Transport", () => {
           max: 1,
           rate: 1,
           cooldown: 0,
+          source:"stock1",
+          target:"consumer1"
         },
       ],
-      links: [{ source: "stock1", target: "transport1" }],
     };
     const result = gameReducer(stateTest as GraphType, { type: "game tick" });
     expect(result.nodes[0].val).toBe(2);
@@ -99,7 +98,7 @@ describe("Transport", () => {
           val: 0,
           max: 2,
           rate: 1,
-          cooldown: 0,
+          cooldown: 10,
         },
         {
           id: "transport1",
@@ -109,11 +108,9 @@ describe("Transport", () => {
           max: 1,
           rate: 1,
           cooldown: 0,
+          source:"stock1",
+          target:"consumer1"
         },
-      ],
-      links: [
-        { source: "stock1", target: "transport1" },
-        { source: "transport1", target: "consumer1" },
       ],
     };
     expect(stateTest.nodes![0].val).toBe(1);
@@ -121,12 +118,13 @@ describe("Transport", () => {
     expect(stateTest.nodes![2].val).toBe(0);
     const tick1 = gameReducer(stateTest as GraphType, { type: "game tick" });
     expect(tick1.nodes[0].val).toBe(0);
-    expect(tick1.nodes[1].val).toBe(1);
-    expect(tick1.nodes[2].val).toBe(0);
-    const tick2 = gameReducer(tick1 as GraphType, { type: "game tick" });
-    expect(tick2.nodes[0].val).toBe(0);
-    expect(tick2.nodes[1].val).toBe(0);
-    expect(tick2.nodes[2].val).toBe(1);
+    expect(tick1.nodes[1].val).toBe(0);
+    expect(tick1.nodes[2].val).toBe(1);
+    const tick2 = gameReducer(tick1, { type: "game tick" });
+    const tick3 = gameReducer(tick2, { type: "game tick" });
+    expect(tick3.nodes[0].val).toBe(0);
+    expect(tick3.nodes[1].val).toBe(1);
+    expect(tick3.nodes[2].val).toBe(0);
   });
   it("should not deliver to consumer if it is full", () => {
     const stateTest: Partial<GraphType> = {
@@ -146,7 +144,7 @@ describe("Transport", () => {
           val: 2,
           max: 2,
           rate: 1,
-          cooldown: 0,
+          cooldown: 10,
         },
         {
           id: "transport1",
@@ -156,16 +154,21 @@ describe("Transport", () => {
           max: 1,
           rate: 1,
           cooldown: 0,
+          source:"stock1",
+          target:"consumer1"
         },
       ],
-      links: [
-        { source: "stock1", target: "transport1" },
-        { source: "transport1", target: "consumer1" },
-      ],
     };
-    const result = gameReducer(stateTest as GraphType, { type: "game tick" });
-    expect(result.nodes[0].val).toBe(1);
-    expect(result.nodes[1].val).toBe(2);
-    expect(result.nodes[2].val).toBe(0);
+    const tick1 = gameReducer(stateTest as GraphType, { type: "game tick" });
+    expect(tick1.nodes[0].val).toBe(0);
+    expect(tick1.nodes[2].val).toBe(1);
+    expect(tick1.nodes[2].cooldown).toBe(1);
+    const tick2 = gameReducer(tick1, { type: "game tick" });
+    expect(tick2.nodes[2].val).toBe(1);
+    expect(tick2.nodes[2].cooldown).toBe(0);
+    const tick3 = gameReducer(tick2, { type: "game tick" });
+    expect(tick3.nodes[2].val).toBe(1);
+    expect(tick3.nodes[2].cooldown).toBe(1);
+    expect(tick3.nodes[1].val).toBe(2);
   });
 });
