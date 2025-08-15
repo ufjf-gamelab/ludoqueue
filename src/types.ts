@@ -43,7 +43,7 @@ export type NodeTransportType = {
   target: string; 
 }
 
-type LinkType = {
+export type LinkType = {
   source: NodeIDType;
   target: NodeIDType;
 }
@@ -51,5 +51,9 @@ type LinkType = {
 
 export type GraphType = {
   nodes: NodeType[];
-  links?: LinkType[];
 };
+
+export type graphDrawingType = {
+  nodes: NodeType[];
+  links: LinkType[];
+}
