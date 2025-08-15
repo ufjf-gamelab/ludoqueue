@@ -29,8 +29,8 @@ function Graph({ graphData }: { graphData: GraphType }) {
 }
 
 function App() {
-  const game=useGame();
-  const dispatch=useGameDispatch();
+  const game = useGame();
+  const dispatch = useGameDispatch();
   const adjacencyList = createAdjacencyList(game);
 
   return (
@@ -49,12 +49,12 @@ function App() {
         <h2>Nodes</h2>
         <ul>
           {game.nodes.map((node) => (
-            <NodeElement node={node}/>
+            <NodeElement node={node} />
           ))}
         </ul>
         <h2>Connections</h2>
-        <ul>
-          {game.links.map(({ source: s, target: t }) => {
+        <ul> 
+          {game.nodes.map(({ source: s, target: t }) => { //ERRO em nao processar apenas transports. ajuda para consertar.
             return (
               <li key={`${s}--${t}`}>
                 {s}&rarr;
@@ -83,30 +83,34 @@ function App() {
 function createAdjacencyList(graphData: GraphType) {
   const adj: Map<string, string[]> = new Map();
   graphData.nodes.forEach((node) => {
-    adj.set(node.id, []);
-  });
-  graphData.links.forEach(({ source, target }) => {
-    if (!adj.get(source)) {
-      adj.set(source, []);
-    }
-    if (!adj.get(target)) {
-      adj.set(target, []);
-    }
-    const adjFrom = adj.get(source);
-    //const adjTo = adj.get(target);
-    if (!adjFrom?.includes(target)) {
-      adjFrom?.push(target);
-    }
+    if (node.type != "transport") {
+      adj.set(node.id, []);
+    } else {
+      if (!adj.get(node.source)) {
+        adj.set(node.source, []);
+      }
+      if (!adj.get(node.target)) {
+        adj.set(node.target, []);
+      }
+      const adjFrom = adj.get(node.source);
+      //const adjTo = adj.get(target);
+      if (!adjFrom?.includes(node.target)) {
+        adjFrom?.push(node.target);
+      }
 
-    //if (!adjTo?.includes(source)) {
-    //  adjTo?.push(source);
-    //}
+      //if (!adjTo?.includes(source)) {
+      //  adjTo?.push(source);
+      //}
+    }
   });
   return adj;
 }
 export default App;
 
-
-function NodeElement({node}){
-  return <li key={node.id}>{node.id}:{JSON.stringify(node)}</li>;
+function NodeElement({ node }) {
+  return (
+    <li key={node.id}>
+      {node.id}:{JSON.stringify(node)}
+    </li>
+  );
 }
