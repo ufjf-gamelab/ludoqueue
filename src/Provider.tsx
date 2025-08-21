@@ -1,11 +1,11 @@
 import { createContext, useContext, useReducer, type ReactNode } from "react";
 import type {
-  GraphType,
+  GameType,
   NodeConsumerType,
   NodeMineType,
   NodeStockType,
   NodeTransportType,
-  NodeType,
+  EntityType,
 } from "./types";
 import { initialState } from "./data";
 type GameProviderProps = {
@@ -28,7 +28,7 @@ export function useGameDispatch() {
   return useContext(DispatchContext);
 }
 
-export function gameReducer(state: GraphType, action: GameAction): GraphType {
+export function gameReducer(state: GameType, action: GameAction): GameType {
   switch (action.type) {
     case "create link":
       return createLink(state, action.source, action.target);
@@ -48,69 +48,10 @@ export function gameReducer(state: GraphType, action: GameAction): GraphType {
   return state;
 }
 
-function createLink(
-  state: GraphType,
-  source: string,
-  target: string
-): GraphType {
-  const isPresent = state.nodes.some((node) => {
-    if (node.type !== "transport") return false;
-    return (
-      (node.source === source && node.target === target) ||
-      (node.source === target && node.target === source)
-    );
-  });
-  if (isPresent) return state;
 
-  // verificar calculo de id
-  const existingTransportIds = state.nodes
-    .filter((node) => node.type === "transport")
-    .map((node) => node.id)
-    .filter((id) => id.startsWith("transport"))
-    .map((id) => parseInt(id.replace("transport", "")))
-    .filter((num) => !isNaN(num));
-  const nextId =
-    existingTransportIds.length > 0 ? Math.max(...existingTransportIds) + 1 : 0;
-
+function setNodeVal(state: GameType, nodeID: string, value: number) {
   const newState = structuredClone(state);
-  const newTransport: NodeTransportType = {
-    id: `transport${nextId}`,
-    name: `Transport ${nextId}`,
-    type: "transport",
-    val: 0,
-    max: 1,
-    rate: 1,
-    cooldown: 1,
-    source: source,
-    target: target,
-  };
-
-  newState.nodes.push(newTransport);
-  return newState;
-}
-
-function deleteLink(
-  state: GraphType,
-  source: string,
-  target: string
-): GraphType {
-  const transportToDelete = state.nodes.find(
-    (node) =>
-      node.type === "transport" &&
-      ((node.source === source && node.target === target) ||
-        (node.source === target && node.target === source))
-  );
-  if (!transportToDelete) return state;
-  const newState = structuredClone(state);
-  newState.nodes = newState.nodes.filter(
-    (node) => node.id !== transportToDelete.id
-  );
-  return newState;
-}
-
-function setNodeVal(state: GraphType, nodeID: string, value: number) {
-  const newState = structuredClone(state);
-  const node = newState.nodes.find((n) => n.id == nodeID);
+  const node = newState.entities.find((n) => n.id == nodeID);
   if (!node) {
     return state;
   }
@@ -118,15 +59,14 @@ function setNodeVal(state: GraphType, nodeID: string, value: number) {
   return newState;
 }
 
-export function gameTick(state: GraphType) {
+export function gameTick(state: GameType) {
   const mines = new Map<string, NodeMineType>();
   const consumers = new Map<string, NodeConsumerType>();
   const transports = new Map<string, NodeTransportType>();
   const stocks = new Map<string, NodeStockType>();
 
   const newState = structuredClone(state);
-  for (let i = 0; i < newState.nodes.length; i++) {
-    const node = newState.nodes[i];
+  for (const [, node] of newState.entities) { // pega apenas node
     switch (node.type) {
       case "mine": {
         mines.set(node.id, node);
@@ -149,7 +89,7 @@ export function gameTick(state: GraphType) {
       }
     }
   }
-  const all = new Map<string, NodeType>([
+  const all = new Map<string, EntityType>([
     ...mines.entries(),
     ...consumers.entries(),
     ...transports.entries(),
@@ -179,7 +119,7 @@ export function gameTick(state: GraphType) {
 }
 
 export function gameMineTick(node: NodeMineType) {
-  node.cooldown -= 1; //problema no cooldown
+  node.cooldown -= 1;
   if (node.cooldown > 0) {
     return;
   }
@@ -203,7 +143,7 @@ export function gameConsumerTick(node: NodeConsumerType) {
 
 export function gameTransportTick(
   transport: NodeTransportType,
-  all: Map<string, NodeType>
+  all: Map<string, EntityType>
 ) {
   transport.cooldown -= 1;
   if (transport.cooldown > 0) {
@@ -217,6 +157,9 @@ export function gameTransportTick(
     return;
   }
   if (transport.val === 1 && target.val < target.max) {
+    if(target.type=="stock" && target.closed){
+      return;
+    }
     transport.val--;
     target.val++;
   } else if (transport.val === 0 && source.val > 0) {

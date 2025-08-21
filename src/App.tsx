@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import "./App.css";
-import type { graphDrawingType, GraphType, LinkType } from "./types";
+import type { GraphType, GameType, LinkType, NodeType } from "./types";
 import R3fForceGraph, { type GraphMethods } from "r3f-forcegraph";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { TrackballControls } from "@react-three/drei";
@@ -9,7 +9,7 @@ import { useGame, useGameDispatch } from "./Provider";
 import GraphEditor from "./GraphEditor";
 import Counter from "./Counter";
 
-function Graph({ graphData }: { graphData: graphDrawingType }) {
+function Graph({ graphData }: { graphData: GraphType }) {
   const fgRef = useRef<GraphMethods>(undefined);
   const clonedData = structuredClone(graphData);
   useFrame(() => fgRef.current?.tickFrame());
@@ -28,29 +28,30 @@ function Graph({ graphData }: { graphData: graphDrawingType }) {
   );
 }
 
-function convertGameToGraph(game: GraphType): graphDrawingType {
-  const graph: graphDrawingType = {
+function convertGameToGraph(game: GameType): GraphType {
+  const graph: GraphType = {
     nodes: [],
-    links: []
+    links: [],
   };
-  
-  game.nodes.forEach((node) => {
+
+  game.entities.forEach((node) => {
+    graph.nodes.push({id: node.id, name: node.name, val:0});
     if (node.type === "transport") {
-      const link: LinkType = { source: node.source, target: node.target };
-      graph.links.push(link);
-    } else {
-      graph.nodes.push(structuredClone(node));
-    }
+      const linkToTransport: LinkType = { source: node.source, target: node.id };
+      const linkFromTransport: LinkType = { source: node.id, target: node.target };
+      graph.links.push(linkToTransport);
+      graph.links.push(linkFromTransport);
+    } 
   });
-  
+
   return graph;
 }
 
 function App() {
-  const game = useGame();
+  const game = useGame()!;
   const dispatch = useGameDispatch();
-  const adjacencyList = createAdjacencyList(game);
   const classicGraph = convertGameToGraph(game);
+  const adjacencyList = createAdjacencyList(classicGraph);
   return (
     <>
       <h1>Vite + React</h1>
@@ -66,13 +67,14 @@ function App() {
         <GraphEditor dispatch={dispatch}></GraphEditor>
         <h2>Nodes</h2>
         <ul>
-          {game.nodes.map((node) => (
+          {classicGraph.nodes.map((node) => (
             <NodeElement node={node} />
           ))}
         </ul>
         <h2>Connections</h2>
-        <ul> 
-          {game.nodes.map(({ source: s, target: t }) => { //ERRO em nao processar apenas transports. ajuda para consertar.
+        <ul>
+          {classicGraph.links.map(({ source: s, target: t }) => {
+            //ERRO em nao processar apenas transports. ajuda para consertar.
             return (
               <li key={`${s}--${t}`}>
                 {s}&rarr;
@@ -101,31 +103,30 @@ function App() {
 function createAdjacencyList(graphData: GraphType) {
   const adj: Map<string, string[]> = new Map();
   graphData.nodes.forEach((node) => {
-    if (node.type != "transport") {
-      adj.set(node.id, []);
-    } else {
-      if (!adj.get(node.source)) {
-        adj.set(node.source, []);
-      }
-      if (!adj.get(node.target)) {
-        adj.set(node.target, []);
-      }
-      const adjFrom = adj.get(node.source);
-      //const adjTo = adj.get(target);
-      if (!adjFrom?.includes(node.target)) {
-        adjFrom?.push(node.target);
-      }
-
-      //if (!adjTo?.includes(source)) {
-      //  adjTo?.push(source);
-      //}
+    adj.set(node.id, []);
+  });
+  graphData.links.forEach(({ source, target }) => {
+    if (!adj.get(source)) {
+      adj.set(source, []);
     }
+    if (!adj.get(target)) {
+      adj.set(target, []);
+    }
+    const adjFrom = adj.get(source);
+    //const adjTo = adj.get(target);
+    if (!adjFrom?.includes(target)) {
+      adjFrom?.push(target);
+    }
+
+    //if (!adjTo?.includes(source)) {
+    //  adjTo?.push(source);
+    //}
   });
   return adj;
 }
 export default App;
 
-function NodeElement({ node }) {
+function NodeElement({ node }: {node: NodeType}) {
   return (
     <li key={node.id}>
       {node.id}:{JSON.stringify(node)}
