@@ -39,10 +39,12 @@ describe("Consumer", () => {
       val: 1,
       max: 2,
       rate: 1,
-      cooldown: 1,
+      cooldown: 2,
     };
     gameConsumerTick(fakeConsumer);
     expect(fakeConsumer.val).toBe(1);
+    gameConsumerTick(fakeConsumer);
+    expect(fakeConsumer.val).toBe(0);
   });
 
   it("should reset cooldown after tick", () => {
@@ -53,9 +55,11 @@ describe("Consumer", () => {
       val: 1,
       max: 2,
       rate: 1,
-      cooldown: 1,
+      cooldown: 2,
     };
     gameConsumerTick(fakeConsumer);
-    expect(fakeConsumer.cooldown).toBe(0);
+    expect(fakeConsumer.cooldown).toBe(1);
+    gameConsumerTick(fakeConsumer);
+    expect(fakeConsumer.cooldown).toBe(1);
   });
 });

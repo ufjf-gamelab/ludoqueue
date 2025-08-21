@@ -38,7 +38,7 @@ describe("Mine", () => {
       val: 0,
       max: 5,
       rate: 1,
-      cooldown: 1,
+      cooldown: 1.25,
     };
     const result = gameMineTick(fakeMine);
     expect(fakeMine.val).toBe(0);
@@ -54,6 +54,6 @@ describe("Mine", () => {
       cooldown: 1,
     };
     gameMineTick(fakeMine);
-    expect(fakeMine.cooldown).toBe(0);
+    expect(fakeMine.cooldown).toBe(1/fakeMine.rate);
   });
 });

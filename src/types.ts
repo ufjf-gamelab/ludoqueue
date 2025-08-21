@@ -1,6 +1,10 @@
 type NodeIDType = string;
 
-export type NodeType = NodeMineType | NodeStockType | NodeConsumerType | NodeTransportType;
+export type EntityType =
+  | NodeMineType
+  | NodeStockType
+  | NodeConsumerType
+  | NodeTransportType;
 
 export type NodeMineType = {
   id: NodeIDType;
@@ -10,7 +14,7 @@ export type NodeMineType = {
   max: number;
   rate: number;
   cooldown: number;
-}
+};
 
 export type NodeStockType = {
   id: NodeIDType;
@@ -19,7 +23,7 @@ export type NodeStockType = {
   val: number;
   max: number;
   closed: boolean;
-}
+};
 
 export type NodeConsumerType = {
   id: NodeIDType;
@@ -29,7 +33,7 @@ export type NodeConsumerType = {
   max: number;
   rate: number;
   cooldown: number;
-}
+};
 
 export type NodeTransportType = {
   id: NodeIDType;
@@ -40,20 +44,27 @@ export type NodeTransportType = {
   rate: number;
   cooldown: number;
   source: string;
-  target: string; 
-}
+  target: string;
+};
 
 export type LinkType = {
   source: NodeIDType;
   target: NodeIDType;
-}
+};
 
+export type GameType = {
+  entities: Map<string, EntityType>;
+  stocks: string[];
+  
+};
+
+export type NodeType = {
+  id: NodeIDType;
+  name: string;
+  val: number;
+};
 
 export type GraphType = {
   nodes: NodeType[];
-};
-
-export type graphDrawingType = {
-  nodes: NodeType[];
   links: LinkType[];
-}
+};
