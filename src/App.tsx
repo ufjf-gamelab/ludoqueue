@@ -1,6 +1,11 @@
 import { useRef } from "react";
 import "./App.css";
-import type { GraphType, GameType, LinkType, NodeType } from "./types";
+import type {
+  GraphType,
+  GameType,
+  LinkType,
+  NodeType,
+} from "./types";
 import R3fForceGraph, { type GraphMethods } from "r3f-forcegraph";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { TrackballControls } from "@react-three/drei";
@@ -8,6 +13,7 @@ import SpriteText from "three-spritetext";
 import { useGame, useGameDispatch } from "./Provider";
 import GraphEditor from "./GraphEditor";
 import Counter from "./Counter";
+import EntitiesProgress from "./EntitiesProgress";
 
 function Graph({ graphData }: { graphData: GraphType }) {
   const fgRef = useRef<GraphMethods>(undefined);
@@ -54,8 +60,10 @@ function convertGameToGraph(game: GameType): GraphType {
 }
 
 function App() {
-  const game = useGame()!;
+  const game = useGame();
   const dispatch = useGameDispatch();
+
+  if (!game) return null;
   const classicGraph = convertGameToGraph(game);
   const adjacencyList = createAdjacencyList(classicGraph);
   return (
@@ -70,6 +78,7 @@ function App() {
         <Graph graphData={classicGraph} />
       </Canvas>
       <div className="card">
+        <EntitiesProgress game={game} />
         <GraphEditor dispatch={dispatch}></GraphEditor>
         <h2>Nodes</h2>
         <ul>
@@ -105,6 +114,7 @@ function App() {
     </>
   );
 }
+
 function createAdjacencyList(graphData: GraphType) {
   const adj: Map<string, string[]> = new Map();
   graphData.nodes.forEach((node) => {
@@ -118,17 +128,13 @@ function createAdjacencyList(graphData: GraphType) {
       adj.set(target, []);
     }
     const adjFrom = adj.get(source);
-    //const adjTo = adj.get(target);
     if (!adjFrom?.includes(target)) {
       adjFrom?.push(target);
     }
-
-    //if (!adjTo?.includes(source)) {
-    //  adjTo?.push(source);
-    //}
   });
   return adj;
 }
+
 export default App;
 
 function NodeElement({ node }: { node: NodeType }) {
