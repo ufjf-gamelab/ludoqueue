@@ -1,6 +1,5 @@
 import Source from "./entities/Source/Source";
 import type { EntityMineType, GameType } from "./types";
-import React from "react";
 
 export default function EntitiesProgress({ game }: { game: GameType }) {
   

@@ -1,11 +1,10 @@
 import { useState } from "react";
-import { useGameDispatch } from "./Provider";
+//import { useGame } from "./Provider";
 
 export default function GraphEditor() {
   const [source, setSource] = useState<string>("");
   const [target, setTarget] = useState<string>("");
-  const dispatch=useGameDispatch();
-  
+  //const {dispatch} = useGame()!;
   return (
     <div>
       <label>
@@ -32,14 +31,14 @@ export default function GraphEditor() {
       </label>
       <button
         onClick={() => {
-          dispatch({ type: "create link", source, target });
+          //dispatch({ type: "create link", source, target });
         }}
       >
         Ligar
       </button>
       <button
         onClick={() => {
-          dispatch({ type: "delete link", source, target });
+          //dispatch({ type: "delete link", source, target });
         }}
       >
         Desligar

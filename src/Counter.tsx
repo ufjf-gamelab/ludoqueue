@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react"
-import { useGameDispatch } from "./Provider";
+import { useGame } from "./Provider";
 
 export default function Counter(){
     const [counter,setCounter] = useState(0);
     const [playing,setPlaying] = useState(false);
-    const dispatch = useGameDispatch();
+    const {dispatch} = useGame()!;
     useEffect(() => {
         console.log("ping");
         setPlaying(true);

@@ -1,4 +1,4 @@
-import { createContext, useContext, useReducer, type ReactNode } from "react";
+import { createContext, useContext, useReducer, type Dispatch, type ReactNode } from "react";
 import type {
   GameType,
   EntityConsumerType,
@@ -12,21 +12,17 @@ import type { GameActionCreateSource, GameActionDeleteSource } from "./entities/
 type GameProviderProps = {
   children: ReactNode;
 };
-const GameContext = createContext(null);
-const DispatchContext = createContext(null);
+const GameContext = createContext<{game: GameType ; dispatch: Dispatch<GameAction>} | null>(null);
 export default function GameProvider({ children }: GameProviderProps) {
   const [game, dispatch] = useReducer(gameReducer, initialState);
   return (
-    <GameContext value={game}>
-      <DispatchContext value={dispatch}>{children}</DispatchContext>
+    <GameContext value={{game , dispatch}}>
+      {children}
     </GameContext>
   );
 }
 export function useGame() {
   return useContext(GameContext);
-}
-export function useGameDispatch() {
-  return useContext(DispatchContext);
 }
 
 export function gameReducer(state: GameType, action: GameAction): GameType {

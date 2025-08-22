@@ -10,8 +10,7 @@ import R3fForceGraph, { type GraphMethods } from "r3f-forcegraph";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { TrackballControls } from "@react-three/drei";
 import SpriteText from "three-spritetext";
-import { useGame, useGameDispatch } from "./Provider";
-import GraphEditor from "./GraphEditor";
+import { useGame } from "./Provider";
 import Counter from "./Counter";
 import EntitiesProgress from "./EntitiesProgress";
 
@@ -60,8 +59,7 @@ function convertGameToGraph(game: GameType): GraphType {
 }
 
 function App() {
-  const game = useGame();
-  const dispatch = useGameDispatch();
+  const {game} = useGame()!;
 
   if (!game) return null;
   const classicGraph = convertGameToGraph(game);
@@ -79,7 +77,6 @@ function App() {
       </Canvas>
       <div className="card">
         <EntitiesProgress game={game} />
-        <GraphEditor dispatch={dispatch}></GraphEditor>
         <h2>Nodes</h2>
         <ul>
           {classicGraph.nodes.map((node) => (
