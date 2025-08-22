@@ -1,13 +1,19 @@
 import { createContext, useContext, useReducer, type ReactNode } from "react";
-import type { GraphType } from "./types";
+import type {
+  GameType,
+  EntityConsumerType,
+  EntityMineType,
+  EntityStockType,
+  EntityTransportType,
+  EntityType,
+} from "./types";
 import { initialState } from "./data";
-import { debug } from "three/tsl";
-import { radToDeg } from "three/src/math/MathUtils.js";
+import type { GameActionCreateSource, GameActionDeleteSource } from "./entities/Source/SourceActions";
 type GameProviderProps = {
   children: ReactNode;
 };
-export const GameContext = createContext(null);
-export const DispatchContext = createContext(null);
+const GameContext = createContext(null);
+const DispatchContext = createContext(null);
 export default function GameProvider({ children }: GameProviderProps) {
   const [game, dispatch] = useReducer(gameReducer, initialState);
   return (
@@ -23,14 +29,12 @@ export function useGameDispatch() {
   return useContext(DispatchContext);
 }
 
-export function gameReducer(state: GraphType, action: GameAction): GraphType {
+export function gameReducer(state: GameType, action: GameAction): GameType {
   switch (action.type) {
-    case "create link":
-      return createLink(state, action.source, action.target);
-
-    case "delete link":
-      return deleteLink(state, action.source, action.target);
-
+    case "create stock":
+      return createStock(state, action.max);
+    case "delete stock":
+      return deleteStock(state, action.id);
     case "set node value":
       return setNodeVal(state, action.id, action.value);
 
@@ -43,52 +47,44 @@ export function gameReducer(state: GraphType, action: GameAction): GraphType {
   return state;
 }
 
-function createLink(
-  state: GraphType,
-  source: string,
-  target: string
-): GraphType {
-  const isPresent = state.links.some(
-    ({ source: sourceLink, target: targetLink }) => {
-      return (
-        (sourceLink === source && targetLink === target) ||
-        (sourceLink === target && targetLink === source)
-      );
-    }
-  );
-  if (isPresent) return state;
+function createStock(state: GameType, max: number) {
+  let numberID: number = 1;
+  if (state.stocks.length > 0) {
+    const lastStockNumber = state.stocks
+      .map((stockId) => parseInt(stockId.replace("stock", "")))
+      .reduce((max, current) => Math.max(max, current), 0);
+    numberID = lastStockNumber + 1;
+  }
+
   const newState = structuredClone(state);
-  newState.links.push({ source, target });
+  const newStockID: string = "stock" + numberID;
+  const newStockEntity: EntityStockType = {
+    id: newStockID,
+    name: "Stock " + numberID,
+    type: "stock",
+    val: 0,
+    max: max,
+    closed: false,
+  };
+  newState.entities.set(newStockID, newStockEntity);
+  newState.stocks.push(newStockID);
   return newState;
 }
 
-function deleteLink(
-  state: GraphType,
-  source: string,
-  target: string
-): GraphType {
-  const isPresent = state.links.some(
-    ({ source: sourceLink, target: targetLink }) => {
-      return (
-        (sourceLink === source && targetLink === target) ||
-        (sourceLink === target && targetLink === source)
-      );
-    }
-  );
-  if (!isPresent) return state;
-  const newState = structuredClone(state);
-  newState.links = newState.links.filter((link) => {
-    return !(
-      (link.source == source && link.target == target) ||
-      (link.target == source && link.source == target)
-    );
-  });
-  return newState;
+function deleteStock(state: GameType, stock: string) {
+  const stockIndex = state.stocks.indexOf(stock); //pelo createStock ele sempre criara id a partir do ultimo, entao nao ocorre de ter dois iguais
+  if (stockIndex !== -1) {
+    const newState = structuredClone(state);
+    newState.stocks.splice(stockIndex);
+    newState.entities.delete(stock);
+    return newState;
+  }
+  return state;
 }
 
-function setNodeVal(state: GraphType, nodeID: string, value: number) {
+function setNodeVal(state: GameType, nodeID: string, value: number) {
   const newState = structuredClone(state);
-  const node = newState.nodes.find((n) => n.id == nodeID);
+  const node = newState.entities.get(nodeID);
   if (!node) {
     return state;
   }
@@ -96,56 +92,100 @@ function setNodeVal(state: GraphType, nodeID: string, value: number) {
   return newState;
 }
 
-function gameTick(state: GraphType) {
+export function gameTick(state: GameType) {
+  const mines = new Map<string, EntityMineType>();
+  const consumers = new Map<string, EntityConsumerType>();
+  const transports = new Map<string, EntityTransportType>();
+  const stocks = new Map<string, EntityStockType>();
+
   const newState = structuredClone(state);
-  for (let i = 0; i < newState.nodes.length; i++) {
-    const node = newState.nodes[i];
+  for (const [, node] of newState.entities.entries()) {
     switch (node.type) {
       case "mine": {
-        if (node.cooldown > 0) {
-          node.cooldown -= 1;
-          continue;
-        }
-
-        if (node.val < node.max) {
-          node.val++;
-        }
-        node.cooldown += 1 / node.rate;
+        mines.set(node.id, node);
         break;
       }
       case "consumer": {
-        if (node.cooldown > 0) {
-          node.cooldown -= 1;
-          continue;
-        }
-        if (node.val > 0) {
-          node.val--;
-        }
-        node.cooldown += 1 / node.rate;
+        consumers.set(node.id, node);
+        break;
+      }
+      case "transport": {
+        transports.set(node.id, node);
+        break;
+      }
+      case "stock": {
+        stocks.set(node.id, node);
         break;
       }
     }
   }
-  for (let i = 0; i < newState.links.length; i++) {
-    const link = newState.links[i];
-    switch (link.type) {
-      case "transport": { //transformar transport em no, e link vira o caminho entre os dois
-        const source = newState.nodes.find((n) => n.id === link.source);
-        const target = newState.nodes.find((n) => n.id === link.target);
-        if (!source || !target) {
-          return;
-        }
-        if (link.val === 1 && target.val < target.max) {
-          link.val--;
-          target.val++;
-        } else if (link.val === 0 && source.val > 0) {
-          link.val++;
-          source.val--;
-        }
-      }
-    }
-  }
+  const all = new Map<string, EntityType>([
+    ...mines.entries(),
+    ...consumers.entries(),
+    ...transports.entries(),
+    ...stocks.entries(),
+  ]);
+
+  transports.forEach((transport) => {
+    gameTransportTick(transport, all);
+  });
+  mines.forEach((mine) => {
+    gameMineTick(mine);
+  });
+  consumers.forEach((consumer) => {
+    gameConsumerTick(consumer);
+  });
   return newState;
+}
+
+export function gameMineTick(node: EntityMineType) {
+  node.cooldown -= 1;
+  if (node.cooldown > 0) {
+    return;
+  }
+
+  if (node.val < node.max) {
+    node.val += node.rate;
+  }
+  node.cooldown += 1 / node.rate;
+}
+
+export function gameConsumerTick(node: EntityConsumerType) {
+  node.cooldown -= 1;
+  if (node.cooldown > 0) {
+    return;
+  }
+  if (node.val > 0) {
+    node.val--;
+  }
+  node.cooldown += 1 / node.rate;
+}
+
+export function gameTransportTick(
+  transport: EntityTransportType,
+  all: Map<string, EntityType>
+) {
+  transport.cooldown -= 1;
+  if (transport.cooldown > 0) {
+    return;
+  }
+  transport.cooldown += 1 / transport.rate;
+
+  const source = all.get(transport.source!);
+  const target = all.get(transport.target!);
+  if (!source || !target) {
+    return;
+  }
+  if (transport.val === 1 && target.val < target.max) {
+    if (target.type == "stock" && target.closed) {
+      return;
+    }
+    transport.val--;
+    target.val++;
+  } else if (transport.val === 0 && source.val > 0) {
+    transport.val++;
+    source.val--;
+  }
 }
 
 type GameActionSetNodeValue = {
@@ -158,13 +198,21 @@ type GameActionTick = {
   type: "game tick";
 };
 
-type GameActionLinkNodes = {
-  type: "create link" | "delete link";
-  source: string;
-  target: string;
+export type GameActionCreateStock = {
+  type: "create stock";
+  max: number;
+  val: number;
+};
+
+export type GameActionDeleteStock = {
+  type: "delete stock";
+  id: string;
 };
 
 export type GameAction =
-  | GameActionLinkNodes
+  | GameActionCreateStock
   | GameActionSetNodeValue
-  | GameActionTick;
+  | GameActionCreateSource
+  | GameActionDeleteSource
+  | GameActionTick
+  | GameActionDeleteStock;
