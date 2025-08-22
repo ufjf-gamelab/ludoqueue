@@ -70,7 +70,7 @@ function createStock(state: GameType, max: number) {
   return newState;
 }
 
-function deleteStock(state: GameType, stock: string){
+function deleteStock(state: GameType, stock: string) {
   const stockIndex = state.stocks.indexOf(stock); //pelo createStock ele sempre criara id a partir do ultimo, entao nao ocorre de ter dois iguais
   if (stockIndex !== -1) {
     const newState = structuredClone(state);
@@ -83,7 +83,7 @@ function deleteStock(state: GameType, stock: string){
 
 function setNodeVal(state: GameType, nodeID: string, value: number) {
   const newState = structuredClone(state);
-  const node = newState.entities.find((n) => n.id == nodeID);
+  const node = newState.entities.get(nodeID);
   if (!node) {
     return state;
   }
@@ -98,7 +98,7 @@ export function gameTick(state: GameType) {
   const stocks = new Map<string, EntityStockType>();
 
   const newState = structuredClone(state);
-  for (const [, node] of newState.entities) {
+  for (const [, node] of newState.entities.entries()) {
     // pega apenas node
     switch (node.type) {
       case "mine": {

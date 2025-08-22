@@ -35,13 +35,19 @@ function convertGameToGraph(game: GameType): GraphType {
   };
 
   game.entities.forEach((node) => {
-    graph.nodes.push({id: node.id, name: node.name, val:0});
+    graph.nodes.push({ id: node.id, name: node.name, val: 0 });
     if (node.type === "transport") {
-      const linkToTransport: LinkType = { source: node.source, target: node.id };
-      const linkFromTransport: LinkType = { source: node.id, target: node.target };
+      const linkToTransport: LinkType = {
+        source: node.source,
+        target: node.id,
+      };
+      const linkFromTransport: LinkType = {
+        source: node.id,
+        target: node.target,
+      };
       graph.links.push(linkToTransport);
       graph.links.push(linkFromTransport);
-    } 
+    }
   });
 
   return graph;
@@ -125,7 +131,7 @@ function createAdjacencyList(graphData: GraphType) {
 }
 export default App;
 
-function NodeElement({ node }: {node: NodeType}) {
+function NodeElement({ node }: { node: NodeType }) {
   return (
     <li key={node.id}>
       {node.id}:{JSON.stringify(node)}
