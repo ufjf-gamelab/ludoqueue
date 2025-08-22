@@ -8,11 +8,12 @@ import type {
   EntityType,
 } from "./types";
 import { initialState } from "./data";
+import type { GameActionCreateSource, GameActionDeleteSource } from "./entities/Source/SourceActions";
 type GameProviderProps = {
   children: ReactNode;
 };
-export const GameContext = createContext(null);
-export const DispatchContext = createContext(null);
+const GameContext = createContext(null);
+const DispatchContext = createContext(null);
 export default function GameProvider({ children }: GameProviderProps) {
   const [game, dispatch] = useReducer(gameReducer, initialState);
   return (
@@ -99,21 +100,17 @@ export function gameTick(state: GameType) {
 
   const newState = structuredClone(state);
   for (const [, node] of newState.entities.entries()) {
-    // pega apenas node
     switch (node.type) {
       case "mine": {
         mines.set(node.id, node);
-        //gameMineTick(node);
         break;
       }
       case "consumer": {
         consumers.set(node.id, node);
-        //gameConsumerTick(node);
         break;
       }
       case "transport": {
         transports.set(node.id, node);
-        //gameTransportTick(node, newState);
         break;
       }
       case "stock": {
@@ -138,16 +135,6 @@ export function gameTick(state: GameType) {
   consumers.forEach((consumer) => {
     gameConsumerTick(consumer);
   });
-  //newState.links.forEach((link) => {
-  //  const source = all.get(link.source)!;
-  //  const target = all.get(link.target)!;
-  //  if (source.type === "transport") {
-  //    source.target = target.id;
-  //  } else if (target.type === "transport") {
-  //    target.source = source.id;
-  //  }
-  //});
-
   return newState;
 }
 
@@ -225,5 +212,7 @@ export type GameActionDeleteStock = {
 export type GameAction =
   | GameActionCreateStock
   | GameActionSetNodeValue
+  | GameActionCreateSource
+  | GameActionDeleteSource
   | GameActionTick
   | GameActionDeleteStock;

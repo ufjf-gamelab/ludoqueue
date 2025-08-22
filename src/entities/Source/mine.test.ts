@@ -1,6 +1,6 @@
 import { it, expect, describe } from "vitest";
-import type { GraphType, NodeMineType } from "../src/types.ts";
-import { gameMineTick, gameReducer } from "../src/Provider.tsx";
+import type { GraphType, NodeMineType } from "../../types.ts";
+import { gameMineTick, gameReducer } from "../../Provider.tsx";
 
 describe("Mine", () => {
   it("should increment value by rate", () => {
