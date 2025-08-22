@@ -1,10 +1,10 @@
 import { createContext, useContext, useReducer, type ReactNode } from "react";
 import type {
   GameType,
-  NodeConsumerType,
-  NodeMineType,
-  NodeStockType,
-  NodeTransportType,
+  EntityConsumerType,
+  EntityMineType,
+  EntityStockType,
+  EntityTransportType,
   EntityType,
 } from "./types";
 import { initialState } from "./data";
@@ -30,12 +30,10 @@ export function useGameDispatch() {
 
 export function gameReducer(state: GameType, action: GameAction): GameType {
   switch (action.type) {
-    case "create link":
-      return createLink(state, action.source, action.target);
-
-    case "delete link":
-      return deleteLink(state, action.source, action.target);
-
+    case "create stock":
+      return createStock(state, action.max);
+    case "delete stock":
+      return deleteStock(state, action.id);
     case "set node value":
       return setNodeVal(state, action.id, action.value);
 
@@ -48,6 +46,40 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
   return state;
 }
 
+function createStock(state: GameType, max: number) {
+  let numberID: number = 1;
+  if (state.stocks.length > 0) {
+    const lastStockNumber = state.stocks
+      .map((stockId) => parseInt(stockId.replace("stock", "")))
+      .reduce((max, current) => Math.max(max, current), 0);
+    numberID = lastStockNumber + 1;
+  }
+
+  const newState = structuredClone(state);
+  const newStockID: string = "stock" + numberID;
+  const newStockEntity: EntityStockType = {
+    id: newStockID,
+    name: "Stock " + numberID,
+    type: "stock",
+    val: 0,
+    max: max,
+    closed: false,
+  };
+  newState.entities.set(newStockID, newStockEntity);
+  newState.stocks.push(newStockID);
+  return newState;
+}
+
+function deleteStock(state: GameType, stock: string){
+  const stockIndex = state.stocks.indexOf(stock); //pelo createStock ele sempre criara id a partir do ultimo, entao nao ocorre de ter dois iguais
+  if (stockIndex !== -1) {
+    const newState = structuredClone(state);
+    newState.stocks.splice(stockIndex);
+    newState.entities.delete(stock);
+    return newState;
+  }
+  return state;
+}
 
 function setNodeVal(state: GameType, nodeID: string, value: number) {
   const newState = structuredClone(state);
@@ -60,13 +92,14 @@ function setNodeVal(state: GameType, nodeID: string, value: number) {
 }
 
 export function gameTick(state: GameType) {
-  const mines = new Map<string, NodeMineType>();
-  const consumers = new Map<string, NodeConsumerType>();
-  const transports = new Map<string, NodeTransportType>();
-  const stocks = new Map<string, NodeStockType>();
+  const mines = new Map<string, EntityMineType>();
+  const consumers = new Map<string, EntityConsumerType>();
+  const transports = new Map<string, EntityTransportType>();
+  const stocks = new Map<string, EntityStockType>();
 
   const newState = structuredClone(state);
-  for (const [, node] of newState.entities) { // pega apenas node
+  for (const [, node] of newState.entities) {
+    // pega apenas node
     switch (node.type) {
       case "mine": {
         mines.set(node.id, node);
@@ -118,7 +151,7 @@ export function gameTick(state: GameType) {
   return newState;
 }
 
-export function gameMineTick(node: NodeMineType) {
+export function gameMineTick(node: EntityMineType) {
   node.cooldown -= 1;
   if (node.cooldown > 0) {
     return;
@@ -130,7 +163,7 @@ export function gameMineTick(node: NodeMineType) {
   node.cooldown += 1 / node.rate;
 }
 
-export function gameConsumerTick(node: NodeConsumerType) {
+export function gameConsumerTick(node: EntityConsumerType) {
   node.cooldown -= 1;
   if (node.cooldown > 0) {
     return;
@@ -142,7 +175,7 @@ export function gameConsumerTick(node: NodeConsumerType) {
 }
 
 export function gameTransportTick(
-  transport: NodeTransportType,
+  transport: EntityTransportType,
   all: Map<string, EntityType>
 ) {
   transport.cooldown -= 1;
@@ -157,7 +190,7 @@ export function gameTransportTick(
     return;
   }
   if (transport.val === 1 && target.val < target.max) {
-    if(target.type=="stock" && target.closed){
+    if (target.type == "stock" && target.closed) {
       return;
     }
     transport.val--;
@@ -178,13 +211,19 @@ type GameActionTick = {
   type: "game tick";
 };
 
-type GameActionLinkNodes = {
-  type: "create link" | "delete link";
-  source: string;
-  target: string;
+export type GameActionCreateStock = {
+  type: "create stock";
+  max: number;
+  val: number;
+};
+
+export type GameActionDeleteStock = {
+  type: "delete stock";
+  id: string;
 };
 
 export type GameAction =
-  | GameActionLinkNodes
+  | GameActionCreateStock
   | GameActionSetNodeValue
-  | GameActionTick;
+  | GameActionTick
+  | GameActionDeleteStock;

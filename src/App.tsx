@@ -74,7 +74,6 @@ function App() {
         <h2>Connections</h2>
         <ul>
           {classicGraph.links.map(({ source: s, target: t }) => {
-            //ERRO em nao processar apenas transports. ajuda para consertar.
             return (
               <li key={`${s}--${t}`}>
                 {s}&rarr;

@@ -1,12 +1,12 @@
 type NodeIDType = string;
 
 export type EntityType =
-  | NodeMineType
-  | NodeStockType
-  | NodeConsumerType
-  | NodeTransportType;
+  | EntityMineType
+  | EntityStockType
+  | EntityConsumerType
+  | EntityTransportType;
 
-export type NodeMineType = {
+export type EntityMineType = {
   id: NodeIDType;
   name: string;
   type: "mine";
@@ -16,7 +16,7 @@ export type NodeMineType = {
   cooldown: number;
 };
 
-export type NodeStockType = {
+export type EntityStockType = {
   id: NodeIDType;
   name: string;
   type: "stock";
@@ -25,7 +25,7 @@ export type NodeStockType = {
   closed: boolean;
 };
 
-export type NodeConsumerType = {
+export type EntityConsumerType = {
   id: NodeIDType;
   name: string;
   type: "consumer";
@@ -35,7 +35,7 @@ export type NodeConsumerType = {
   cooldown: number;
 };
 
-export type NodeTransportType = {
+export type EntityTransportType = {
   id: NodeIDType;
   name: string;
   type: "transport";
@@ -54,8 +54,10 @@ export type LinkType = {
 
 export type GameType = {
   entities: Map<string, EntityType>;
+  mines: string[];
   stocks: string[];
-  
+  consumers: string[];
+  transports: string[]; 
 };
 
 export type NodeType = {
