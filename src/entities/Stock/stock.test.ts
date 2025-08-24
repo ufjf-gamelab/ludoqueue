@@ -1,11 +1,10 @@
 import { it, expect, describe } from "vitest";
-import type { GameType, EntityType, EntityStockType } from "../src/types.ts";
+import type { GameType, EntityType, EntityStockType } from "../../types.ts";
 import {
-  GameActionCreateStock,
   gameReducer,
-  GameAction,
-  GameActionDeleteStock,
-} from "../src/Provider.tsx";
+  type GameAction,
+} from "../../Provider.tsx";
+import type { GameActionCreateStock, GameActionDeleteStock } from "./StockActions.ts";
 
 describe("Stock", () => {
   it("should create stock1 if none stocks exists", () => {
@@ -181,7 +180,7 @@ describe("Stock", () => {
 
     const result = gameReducer(stateTest as GameType, { type: "game tick" });
     expect(result.entities.get("stock1")?.val).toBe(10);
-    expect((result.entities.get("stock1") as NodeStockType).closed).toBe(false);
+    expect((result.entities.get("stock1") as EntityStockType).closed).toBe(false);
   });
 
   it("should not get items if closed", () => {
@@ -237,6 +236,6 @@ describe("Stock", () => {
     const tick3 = gameReducer(tick2, { type: "game tick" });
     expect(tick3.entities.get("transport1")?.val).toBe(1);
     expect(tick3.entities.get("stock1")?.val).toBe(2);
-    expect((tick3.entities.get("stock1") as NodeStockType).closed).toBe(true);
+    expect((tick3.entities.get("stock1") as EntityStockType).closed).toBe(true);
   });
 });

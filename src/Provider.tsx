@@ -14,10 +14,13 @@ import type {
   EntityType,
 } from "./types";
 import { initialState } from "./data";
-import type {
-  GameActionCreateSource,
-  GameActionDeleteSource,
+import {
+  createSource,
+  deleteSource,
+  type GameActionCreateSource,
+  type GameActionDeleteSource,
 } from "./entities/Source/SourceActions";
+import { createStock, deleteStock, type GameActionCreateStock, type GameActionDeleteStock } from "./entities/Stock/StockActions";
 type GameProviderProps = {
   children: ReactNode;
 };
@@ -39,9 +42,12 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
       return createStock(state, action.max);
     case "delete stock":
       return deleteStock(state, action.id);
+    case "create source":
+      return createSource(state, action.max);
+    case "delete source":
+      return deleteSource(state, action.id);
     case "set node value":
       return setNodeVal(state, action.id, action.value);
-
     case "game tick":
       return gameTick(state);
 
@@ -51,40 +57,6 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
   return state;
 }
 
-function createStock(state: GameType, max: number) {
-  let numberID: number = 1;
-  if (state.stocks.length > 0) {
-    const lastStockNumber = state.stocks
-      .map((stockId) => parseInt(stockId.replace("stock", "")))
-      .reduce((max, current) => Math.max(max, current), 0);
-    numberID = lastStockNumber + 1;
-  }
-
-  const newState = structuredClone(state);
-  const newStockID: string = "stock" + numberID;
-  const newStockEntity: EntityStockType = {
-    id: newStockID,
-    name: "Stock " + numberID,
-    type: "stock",
-    val: 0,
-    max: max,
-    closed: false,
-  };
-  newState.entities.set(newStockID, newStockEntity);
-  newState.stocks.push(newStockID);
-  return newState;
-}
-
-function deleteStock(state: GameType, stock: string) {
-  const stockIndex = state.stocks.indexOf(stock); //pelo createStock ele sempre criara id a partir do ultimo, entao nao ocorre de ter dois iguais
-  if (stockIndex !== -1) {
-    const newState = structuredClone(state);
-    newState.stocks.splice(stockIndex);
-    newState.entities.delete(stock);
-    return newState;
-  }
-  return state;
-}
 
 function setNodeVal(state: GameType, nodeID: string, value: number) {
   const newState = structuredClone(state);
@@ -202,21 +174,10 @@ type GameActionTick = {
   type: "game tick";
 };
 
-export type GameActionCreateStock = {
-  type: "create stock";
-  max: number;
-  val: number;
-};
-
-export type GameActionDeleteStock = {
-  type: "delete stock";
-  id: string;
-};
-
 export type GameAction =
+| GameActionCreateSource
+| GameActionDeleteSource
   | GameActionCreateStock
+  | GameActionDeleteStock
   | GameActionSetNodeValue
-  | GameActionCreateSource
-  | GameActionDeleteSource
-  | GameActionTick
-  | GameActionDeleteStock;
+  | GameActionTick;

@@ -1,18 +1,13 @@
 import { useRef } from "react";
 import "./App.css";
-import type {
-  GraphType,
-  GameType,
-  LinkType,
-  NodeType,
-} from "./types";
+import type { GraphType, GameType, LinkType, NodeType } from "./types";
 import R3fForceGraph, { type GraphMethods } from "r3f-forcegraph";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { TrackballControls } from "@react-three/drei";
 import SpriteText from "three-spritetext";
 import { useGame } from "./Provider";
 import Counter from "./Counter";
-import EntitiesProgress from "./EntitiesProgress";
+import EntitiesProgress from "./entities/EntitiesProgress";
 
 function Graph({ graphData }: { graphData: GraphType }) {
   const fgRef = useRef<GraphMethods>(undefined);
@@ -59,7 +54,7 @@ function convertGameToGraph(game: GameType): GraphType {
 }
 
 function App() {
-  const {game} = useGame()!;
+  const { game } = useGame()!;
 
   if (!game) return null;
   const classicGraph = convertGameToGraph(game);
