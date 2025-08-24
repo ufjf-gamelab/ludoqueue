@@ -20,7 +20,13 @@ import {
   type GameActionCreateSource,
   type GameActionDeleteSource,
 } from "./entities/Source/SourceActions";
-import { createStock, deleteStock, type GameActionCreateStock, type GameActionDeleteStock } from "./entities/Stock/StockActions";
+import {
+  createStock,
+  deleteStock,
+  type GameActionCreateStock,
+  type GameActionDeleteStock,
+} from "./entities/Stock/StockActions";
+import { createConsumer, deleteConsumer, type GameActionCreateConsumer, type GameActionDeleteConsumer } from "./entities/Consumer/ConsumerActions";
 type GameProviderProps = {
   children: ReactNode;
 };
@@ -38,14 +44,18 @@ export function useGame() {
 
 export function gameReducer(state: GameType, action: GameAction): GameType {
   switch (action.type) {
-    case "create stock":
-      return createStock(state, action.max);
-    case "delete stock":
-      return deleteStock(state, action.id);
     case "create source":
       return createSource(state, action.max);
     case "delete source":
       return deleteSource(state, action.id);
+    case "create stock":
+      return createStock(state, action.max);
+    case "delete stock":
+      return deleteStock(state, action.id);
+    case "create consumer":
+      return createConsumer(state, action.max, action.rate);
+    case "delete consumer":
+      return deleteConsumer(state, action.id);
     case "set node value":
       return setNodeVal(state, action.id, action.value);
     case "game tick":
@@ -56,7 +66,6 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
   }
   return state;
 }
-
 
 function setNodeVal(state: GameType, nodeID: string, value: number) {
   const newState = structuredClone(state);
@@ -175,9 +184,11 @@ type GameActionTick = {
 };
 
 export type GameAction =
-| GameActionCreateSource
-| GameActionDeleteSource
+  | GameActionCreateSource
+  | GameActionDeleteSource
   | GameActionCreateStock
   | GameActionDeleteStock
+  | GameActionCreateConsumer
+  | GameActionDeleteConsumer
   | GameActionSetNodeValue
   | GameActionTick;

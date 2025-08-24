@@ -53,6 +53,33 @@ describe("Stock", () => {
     expect(result.stocks[1]).toBe("stock2");
     expect(result.entities.get("stock2")).toBeDefined();
     expect(result.entities.get("stock2")?.type).toBe("stock");
+  });
+
+  it("should create stock2 with max 15", () => {
+    const stateTest: Partial<GameType> = {
+      entities: new Map<string, EntityType>([
+        [
+          "stock1",
+          {
+            id: "stock1",
+            type: "stock",
+            name: "Stock 1",
+            val: 0,
+            max: 10,
+            closed: false,
+          },
+        ],
+      ]),
+      stocks: ["stock1"],
+    };
+
+    const actionTest: Partial<GameActionCreateStock> = {
+      type: "create stock",
+      max: 15,
+    };
+
+    const result = gameReducer(stateTest as GameType, actionTest as GameAction);
+    expect(result.stocks).toHaveLength(2);
     expect((result.entities.get("stock2") as EntityStockType).max).toBe(15);
   });
 

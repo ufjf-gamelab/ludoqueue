@@ -58,6 +58,34 @@ describe("Source", () => {
     expect(result.sources[1]).toBe("source2");
     expect(result.entities.get("source2")).toBeDefined();
     expect(result.entities.get("source2")?.type).toBe("source");
+  });
+
+  it("should create source with max 15", () => {
+    const stateTest: Partial<GameType> = {
+      entities: new Map<string, EntityType>([
+        [
+          "source1",
+          {
+            id: "source1",
+            type: "source",
+            name: "Source A",
+            val: 0,
+            max: 5,
+            rate: 1,
+            cooldown: 1.25,
+          },
+        ],
+      ]),
+      sources: ["source1"],
+    };
+
+    const actionTest: Partial<GameActionCreateSource> = {
+      type: "create source",
+      max: 15,
+    };
+
+    const result = gameReducer(stateTest as GameType, actionTest as GameAction);
+    expect(result.sources).toHaveLength(2);
     expect((result.entities.get("source2") as EntitySourceType).max).toBe(15);
   });
 
