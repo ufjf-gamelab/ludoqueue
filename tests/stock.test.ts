@@ -1,6 +1,11 @@
 import { it, expect, describe } from "vitest";
 import type { GameType, EntityType, EntityStockType } from "../src/types.ts";
-import { GameActionCreateStock, gameReducer, GameAction, GameActionDeleteStock } from "../src/Provider.tsx";
+import {
+  GameActionCreateStock,
+  gameReducer,
+  GameAction,
+  GameActionDeleteStock,
+} from "../src/Provider.tsx";
 
 describe("Stock", () => {
   it("should create stock1 if none stocks exists", () => {
@@ -12,7 +17,7 @@ describe("Stock", () => {
     const actionTest: Partial<GameActionCreateStock> = {
       type: "create stock",
       max: 10,
-    }
+    };
 
     const result = gameReducer(stateTest as GameType, actionTest as GameAction);
     expect(result.stocks).toHaveLength(1);
@@ -42,7 +47,7 @@ describe("Stock", () => {
     const actionTest: Partial<GameActionCreateStock> = {
       type: "create stock",
       max: 15,
-    }
+    };
 
     const result = gameReducer(stateTest as GameType, actionTest as GameAction);
     expect(result.stocks).toHaveLength(2);
@@ -102,7 +107,7 @@ describe("Stock", () => {
       type: "delete stock",
       id: "stock2",
     };
-    
+
     const result = gameReducer(stateTest as GameType, actionTest as GameAction);
     expect(result.stocks).toHaveLength(1);
     expect(result.entities.get("stock1")).toBeDefined();
@@ -145,9 +150,9 @@ describe("Stock", () => {
           },
         ],
         [
-          "mine1",
+          "source1",
           {
-            id: "mine1",
+            id: "source1",
             type: "consumer",
             name: "Consumer",
             val: 2,
@@ -166,7 +171,7 @@ describe("Stock", () => {
             max: 1,
             rate: 1,
             cooldown: 0,
-            source: "mine1",
+            source: "source1",
             target: "stock1",
           },
         ],
@@ -194,9 +199,9 @@ describe("Stock", () => {
           },
         ],
         [
-          "mine1",
+          "source1",
           {
-            id: "mine1",
+            id: "source1",
             type: "consumer",
             name: "Consumer",
             val: 2,
@@ -215,7 +220,7 @@ describe("Stock", () => {
             max: 1,
             rate: 1,
             cooldown: 0,
-            source: "mine1",
+            source: "source1",
             target: "stock1",
           },
         ],

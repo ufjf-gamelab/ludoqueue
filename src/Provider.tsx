@@ -1,25 +1,33 @@
-import { createContext, useContext, useReducer, type Dispatch, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useReducer,
+  type Dispatch,
+  type ReactNode,
+} from "react";
 import type {
   GameType,
   EntityConsumerType,
-  EntityMineType,
+  EntitySourceType,
   EntityStockType,
   EntityTransportType,
   EntityType,
 } from "./types";
 import { initialState } from "./data";
-import type { GameActionCreateSource, GameActionDeleteSource } from "./entities/Source/SourceActions";
+import type {
+  GameActionCreateSource,
+  GameActionDeleteSource,
+} from "./entities/Source/SourceActions";
 type GameProviderProps = {
   children: ReactNode;
 };
-const GameContext = createContext<{game: GameType ; dispatch: Dispatch<GameAction>} | null>(null);
+const GameContext = createContext<{
+  game: GameType;
+  dispatch: Dispatch<GameAction>;
+} | null>(null);
 export default function GameProvider({ children }: GameProviderProps) {
   const [game, dispatch] = useReducer(gameReducer, initialState);
-  return (
-    <GameContext value={{game , dispatch}}>
-      {children}
-    </GameContext>
-  );
+  return <GameContext value={{ game, dispatch }}>{children}</GameContext>;
 }
 export function useGame() {
   return useContext(GameContext);
@@ -89,7 +97,7 @@ function setNodeVal(state: GameType, nodeID: string, value: number) {
 }
 
 export function gameTick(state: GameType) {
-  const mines = new Map<string, EntityMineType>();
+  const sources = new Map<string, EntitySourceType>();
   const consumers = new Map<string, EntityConsumerType>();
   const transports = new Map<string, EntityTransportType>();
   const stocks = new Map<string, EntityStockType>();
@@ -97,8 +105,8 @@ export function gameTick(state: GameType) {
   const newState = structuredClone(state);
   for (const [, node] of newState.entities.entries()) {
     switch (node.type) {
-      case "mine": {
-        mines.set(node.id, node);
+      case "source": {
+        sources.set(node.id, node);
         break;
       }
       case "consumer": {
@@ -116,7 +124,7 @@ export function gameTick(state: GameType) {
     }
   }
   const all = new Map<string, EntityType>([
-    ...mines.entries(),
+    ...sources.entries(),
     ...consumers.entries(),
     ...transports.entries(),
     ...stocks.entries(),
@@ -125,8 +133,8 @@ export function gameTick(state: GameType) {
   transports.forEach((transport) => {
     gameTransportTick(transport, all);
   });
-  mines.forEach((mine) => {
-    gameMineTick(mine);
+  sources.forEach((source) => {
+    gameSourceTick(source);
   });
   consumers.forEach((consumer) => {
     gameConsumerTick(consumer);
@@ -134,7 +142,7 @@ export function gameTick(state: GameType) {
   return newState;
 }
 
-export function gameMineTick(node: EntityMineType) {
+export function gameSourceTick(node: EntitySourceType) {
   node.cooldown -= 1;
   if (node.cooldown > 0) {
     return;

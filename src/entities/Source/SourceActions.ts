@@ -1,4 +1,4 @@
-import type { EntityMineType, GameType } from "../../types";
+import type { EntitySourceType, GameType } from "../../types";
 
 export type GameActionCreateSource = {
   type: "create source";
@@ -13,8 +13,8 @@ export type GameActionDeleteSource = {
 
 export function createSource(state: GameType, max: number) {
   let numberID: number = 1;
-  if (state.mines.length > 0) {
-    const lastSourceNumber = state.mines
+  if (state.sources.length > 0) {
+    const lastSourceNumber = state.sources
       .map((sourceId) => parseInt(sourceId.replace("source", "")))
       .reduce((max, current) => Math.max(max, current), 0);
     numberID = lastSourceNumber + 1;
@@ -22,25 +22,25 @@ export function createSource(state: GameType, max: number) {
 
   const newState = structuredClone(state);
   const newSourceID: string = "source" + numberID;
-  const newSourceEntity: EntityMineType = {
+  const newSourceEntity: EntitySourceType = {
     id: newSourceID,
     name: "Source " + numberID,
-    type: "mine",
+    type: "source",
     val: 0,
     max: max,
     cooldown: 1,
-    rate: 1
+    rate: 1,
   };
   newState.entities.set(newSourceID, newSourceEntity);
-  newState.mines.push(newSourceID);
+  newState.sources.push(newSourceID);
   return newState;
 }
 
 export function deleteSource(state: GameType, source: string) {
-  const sourceIndex = state.mines.indexOf(source); //pelo createSource ele sempre criara id a partir do ultimo, entao nao ocorre de ter dois iguais
+  const sourceIndex = state.sources.indexOf(source); //pelo createSource ele sempre criara id a partir do ultimo, entao nao ocorre de ter dois iguais
   if (sourceIndex !== -1) {
     const newState = structuredClone(state);
-    newState.mines.splice(sourceIndex);
+    newState.sources.splice(sourceIndex);
     newState.entities.delete(source);
     return newState;
   }

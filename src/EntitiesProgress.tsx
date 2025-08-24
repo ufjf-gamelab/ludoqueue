@@ -1,8 +1,7 @@
 import Source from "./entities/Source/Source";
-import type { EntityMineType, GameType } from "./types";
+import type { EntitySourceType, GameType } from "./types";
 
 export default function EntitiesProgress({ game }: { game: GameType }) {
-  
   return (
     <div
       style={{
@@ -12,7 +11,11 @@ export default function EntitiesProgress({ game }: { game: GameType }) {
         margin: "5px",
       }}
     >
-      {game.mines.map((mine) => {return <Source entity={game.entities.get(mine) as EntityMineType} />})}
+      {game.sources.map((source) => {
+        return (
+          <Source entity={game.entities.get(source) as EntitySourceType} />
+        );
+      })}
     </div>
   );
 }

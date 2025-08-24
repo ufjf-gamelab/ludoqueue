@@ -1,15 +1,15 @@
 type NodeIDType = string;
 
 export type EntityType =
-  | EntityMineType
+  | EntitySourceType
   | EntityStockType
   | EntityConsumerType
   | EntityTransportType;
 
-export type EntityMineType = {
+export type EntitySourceType = {
   id: NodeIDType;
   name: string;
-  type: "mine";
+  type: "source";
   val: number;
   max: number;
   rate: number;
@@ -54,10 +54,10 @@ export type LinkType = {
 
 export type GameType = {
   entities: Map<string, EntityType>;
-  mines: string[];
+  sources: string[];
   stocks: string[];
   consumers: string[];
-  transports: string[]; 
+  transports: string[];
 };
 
 export type NodeType = {
