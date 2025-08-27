@@ -27,6 +27,7 @@ import {
   type GameActionDeleteStock,
 } from "./entities/Stock/StockActions";
 import { createConsumer, deleteConsumer, type GameActionCreateConsumer, type GameActionDeleteConsumer } from "./entities/Consumer/ConsumerActions";
+import { createTransport, deleteTransport, type GameActionCreateTransport, type GameActionDeleteTransport } from "./entities/Transport/TransportActions";
 type GameProviderProps = {
   children: ReactNode;
 };
@@ -56,6 +57,10 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
       return createConsumer(state, action.max, action.rate);
     case "delete consumer":
       return deleteConsumer(state, action.id);
+    case "create transport":
+      return createTransport(state, action.max, action.rate, action.source, action.target);
+    case "delete transport":
+      return deleteTransport(state, action.id);
     case "set node value":
       return setNodeVal(state, action.id, action.value);
     case "game tick":
@@ -190,5 +195,7 @@ export type GameAction =
   | GameActionDeleteStock
   | GameActionCreateConsumer
   | GameActionDeleteConsumer
+  | GameActionCreateTransport
+  | GameActionDeleteTransport
   | GameActionSetNodeValue
   | GameActionTick;

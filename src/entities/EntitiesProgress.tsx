@@ -1,7 +1,8 @@
 import Source from "./Source/Source";
-import type { EntityConsumerType, EntitySourceType, EntityStockType, GameType } from "../types";
+import type { EntityConsumerType, EntitySourceType, EntityStockType, EntityTransportType, GameType } from "../types";
 import Stock from "./Stock/Stock";
 import Consumer from "./Consumer/Consumer";
+import Transport from "./Transport/Transporter";
 
 export default function EntitiesProgress({ game }: { game: GameType }) {
   return (
@@ -26,6 +27,11 @@ export default function EntitiesProgress({ game }: { game: GameType }) {
       {game.consumers.map((consumers) => {
         return (
           <Consumer entity={game.entities.get(consumers) as EntityConsumerType} />
+        );
+      })}
+      {game.transports.map((transports) => {
+        return (
+          <Transport entity={game.entities.get(transports) as EntityTransportType} />
         );
       })}
     </div>
