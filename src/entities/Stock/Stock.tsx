@@ -1,6 +1,6 @@
-import type { EntitySourceType } from "../EntitiesTypes";
+import type { EntityStockType } from "../EntitiesTypes";
 
-export default function Source({ entity }: { entity: EntitySourceType }) {
+export default function Stock({ entity }: { entity: EntityStockType }) {
   return (
     <div
       key={entity.id}

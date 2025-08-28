@@ -1,6 +1,6 @@
-import type { EntitySourceType } from "../EntitiesTypes";
+import type { EntityConsumerType } from "../EntitiesTypes";
 
-export default function Source({ entity }: { entity: EntitySourceType }) {
+export default function Consumer({ entity }: { entity: EntityConsumerType }) {
   return (
     <div
       key={entity.id}

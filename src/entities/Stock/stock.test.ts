@@ -1,6 +1,11 @@
 import { it, expect, describe } from "vitest";
-import type { GameType, EntityType, EntityStockType } from "../src/types.ts";
-import { GameActionCreateStock, gameReducer, GameAction, GameActionDeleteStock } from "../src/Provider.tsx";
+import type { GameType } from "../../types.ts";
+import {
+  gameReducer,
+  type GameAction,
+} from "../../Provider.tsx";
+import type { GameActionCreateStock, GameActionDeleteStock } from "./StockActions.ts";
+import type { EntityType, EntityStockType } from "../EntitiesTypes.ts";
 
 describe("Stock", () => {
   it("should create stock1 if none stocks exists", () => {
@@ -12,7 +17,7 @@ describe("Stock", () => {
     const actionTest: Partial<GameActionCreateStock> = {
       type: "create stock",
       max: 10,
-    }
+    };
 
     const result = gameReducer(stateTest as GameType, actionTest as GameAction);
     expect(result.stocks).toHaveLength(1);
@@ -42,13 +47,40 @@ describe("Stock", () => {
     const actionTest: Partial<GameActionCreateStock> = {
       type: "create stock",
       max: 15,
-    }
+    };
 
     const result = gameReducer(stateTest as GameType, actionTest as GameAction);
     expect(result.stocks).toHaveLength(2);
     expect(result.stocks[1]).toBe("stock2");
     expect(result.entities.get("stock2")).toBeDefined();
     expect(result.entities.get("stock2")?.type).toBe("stock");
+  });
+
+  it("should create stock2 with max 15", () => {
+    const stateTest: Partial<GameType> = {
+      entities: new Map<string, EntityType>([
+        [
+          "stock1",
+          {
+            id: "stock1",
+            type: "stock",
+            name: "Stock 1",
+            val: 0,
+            max: 10,
+            closed: false,
+          },
+        ],
+      ]),
+      stocks: ["stock1"],
+    };
+
+    const actionTest: Partial<GameActionCreateStock> = {
+      type: "create stock",
+      max: 15,
+    };
+
+    const result = gameReducer(stateTest as GameType, actionTest as GameAction);
+    expect(result.stocks).toHaveLength(2);
     expect((result.entities.get("stock2") as EntityStockType).max).toBe(15);
   });
 
@@ -102,7 +134,7 @@ describe("Stock", () => {
       type: "delete stock",
       id: "stock2",
     };
-    
+
     const result = gameReducer(stateTest as GameType, actionTest as GameAction);
     expect(result.stocks).toHaveLength(1);
     expect(result.entities.get("stock1")).toBeDefined();
@@ -145,9 +177,9 @@ describe("Stock", () => {
           },
         ],
         [
-          "mine1",
+          "source1",
           {
-            id: "mine1",
+            id: "source1",
             type: "consumer",
             name: "Consumer",
             val: 2,
@@ -166,7 +198,7 @@ describe("Stock", () => {
             max: 1,
             rate: 1,
             cooldown: 0,
-            source: "mine1",
+            source: "source1",
             target: "stock1",
           },
         ],
@@ -176,7 +208,7 @@ describe("Stock", () => {
 
     const result = gameReducer(stateTest as GameType, { type: "game tick" });
     expect(result.entities.get("stock1")?.val).toBe(10);
-    expect((result.entities.get("stock1") as NodeStockType).closed).toBe(false);
+    expect((result.entities.get("stock1") as EntityStockType).closed).toBe(false);
   });
 
   it("should not get items if closed", () => {
@@ -194,9 +226,9 @@ describe("Stock", () => {
           },
         ],
         [
-          "mine1",
+          "source1",
           {
-            id: "mine1",
+            id: "source1",
             type: "consumer",
             name: "Consumer",
             val: 2,
@@ -215,7 +247,7 @@ describe("Stock", () => {
             max: 1,
             rate: 1,
             cooldown: 0,
-            source: "mine1",
+            source: "source1",
             target: "stock1",
           },
         ],
@@ -232,6 +264,6 @@ describe("Stock", () => {
     const tick3 = gameReducer(tick2, { type: "game tick" });
     expect(tick3.entities.get("transport1")?.val).toBe(1);
     expect(tick3.entities.get("stock1")?.val).toBe(2);
-    expect((tick3.entities.get("stock1") as NodeStockType).closed).toBe(true);
+    expect((tick3.entities.get("stock1") as EntityStockType).closed).toBe(true);
   });
 });

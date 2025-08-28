@@ -1,83 +1,75 @@
-import { createContext, useContext, useReducer, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useReducer,
+  type Dispatch,
+  type ReactNode,
+} from "react";
 import type {
   GameType,
+} from "./types";
+import type {
   EntityConsumerType,
-  EntityMineType,
+  EntitySourceType,
   EntityStockType,
   EntityTransportType,
   EntityType,
-} from "./types";
+} from "./entities/EntitiesTypes"
 import { initialState } from "./data";
-import type { GameActionCreateSource, GameActionDeleteSource } from "./entities/Source/SourceActions";
+import {
+  createSource,
+  deleteSource,
+  type GameActionCreateSource,
+  type GameActionDeleteSource,
+} from "./entities/Source/SourceActions";
+import {
+  createStock,
+  deleteStock,
+  type GameActionCreateStock,
+  type GameActionDeleteStock,
+} from "./entities/Stock/StockActions";
+import { createConsumer, deleteConsumer, type GameActionCreateConsumer, type GameActionDeleteConsumer } from "./entities/Consumer/ConsumerActions";
+import { createTransport, deleteTransport, type GameActionCreateTransport, type GameActionDeleteTransport } from "./entities/Transport/TransportActions";
 type GameProviderProps = {
   children: ReactNode;
 };
-const GameContext = createContext(null);
-const DispatchContext = createContext(null);
+const GameContext = createContext<{
+  game: GameType;
+  dispatch: Dispatch<GameAction>;
+} | null>(null);
 export default function GameProvider({ children }: GameProviderProps) {
   const [game, dispatch] = useReducer(gameReducer, initialState);
-  return (
-    <GameContext value={game}>
-      <DispatchContext value={dispatch}>{children}</DispatchContext>
-    </GameContext>
-  );
+  return <GameContext value={{ game, dispatch }}>{children}</GameContext>;
 }
 export function useGame() {
   return useContext(GameContext);
 }
-export function useGameDispatch() {
-  return useContext(DispatchContext);
-}
 
 export function gameReducer(state: GameType, action: GameAction): GameType {
   switch (action.type) {
+    case "create source":
+      return createSource(state, action.max);
+    case "delete source":
+      return deleteSource(state, action.id);
     case "create stock":
       return createStock(state, action.max);
     case "delete stock":
       return deleteStock(state, action.id);
+    case "create consumer":
+      return createConsumer(state, action.max, action.rate);
+    case "delete consumer":
+      return deleteConsumer(state, action.id);
+    case "create transport":
+      return createTransport(state, action.max, action.rate, action.source, action.target);
+    case "delete transport":
+      return deleteTransport(state, action.id);
     case "set node value":
       return setNodeVal(state, action.id, action.value);
-
     case "game tick":
       return gameTick(state);
 
     default:
       break;
-  }
-  return state;
-}
-
-function createStock(state: GameType, max: number) {
-  let numberID: number = 1;
-  if (state.stocks.length > 0) {
-    const lastStockNumber = state.stocks
-      .map((stockId) => parseInt(stockId.replace("stock", "")))
-      .reduce((max, current) => Math.max(max, current), 0);
-    numberID = lastStockNumber + 1;
-  }
-
-  const newState = structuredClone(state);
-  const newStockID: string = "stock" + numberID;
-  const newStockEntity: EntityStockType = {
-    id: newStockID,
-    name: "Stock " + numberID,
-    type: "stock",
-    val: 0,
-    max: max,
-    closed: false,
-  };
-  newState.entities.set(newStockID, newStockEntity);
-  newState.stocks.push(newStockID);
-  return newState;
-}
-
-function deleteStock(state: GameType, stock: string) {
-  const stockIndex = state.stocks.indexOf(stock); //pelo createStock ele sempre criara id a partir do ultimo, entao nao ocorre de ter dois iguais
-  if (stockIndex !== -1) {
-    const newState = structuredClone(state);
-    newState.stocks.splice(stockIndex);
-    newState.entities.delete(stock);
-    return newState;
   }
   return state;
 }
@@ -93,7 +85,7 @@ function setNodeVal(state: GameType, nodeID: string, value: number) {
 }
 
 export function gameTick(state: GameType) {
-  const mines = new Map<string, EntityMineType>();
+  const sources = new Map<string, EntitySourceType>();
   const consumers = new Map<string, EntityConsumerType>();
   const transports = new Map<string, EntityTransportType>();
   const stocks = new Map<string, EntityStockType>();
@@ -101,8 +93,8 @@ export function gameTick(state: GameType) {
   const newState = structuredClone(state);
   for (const [, node] of newState.entities.entries()) {
     switch (node.type) {
-      case "mine": {
-        mines.set(node.id, node);
+      case "source": {
+        sources.set(node.id, node);
         break;
       }
       case "consumer": {
@@ -120,7 +112,7 @@ export function gameTick(state: GameType) {
     }
   }
   const all = new Map<string, EntityType>([
-    ...mines.entries(),
+    ...sources.entries(),
     ...consumers.entries(),
     ...transports.entries(),
     ...stocks.entries(),
@@ -129,8 +121,8 @@ export function gameTick(state: GameType) {
   transports.forEach((transport) => {
     gameTransportTick(transport, all);
   });
-  mines.forEach((mine) => {
-    gameMineTick(mine);
+  sources.forEach((source) => {
+    gameSourceTick(source);
   });
   consumers.forEach((consumer) => {
     gameConsumerTick(consumer);
@@ -138,7 +130,7 @@ export function gameTick(state: GameType) {
   return newState;
 }
 
-export function gameMineTick(node: EntityMineType) {
+export function gameSourceTick(node: EntitySourceType) {
   node.cooldown -= 1;
   if (node.cooldown > 0) {
     return;
@@ -198,21 +190,14 @@ type GameActionTick = {
   type: "game tick";
 };
 
-export type GameActionCreateStock = {
-  type: "create stock";
-  max: number;
-  val: number;
-};
-
-export type GameActionDeleteStock = {
-  type: "delete stock";
-  id: string;
-};
-
 export type GameAction =
-  | GameActionCreateStock
-  | GameActionSetNodeValue
   | GameActionCreateSource
   | GameActionDeleteSource
-  | GameActionTick
-  | GameActionDeleteStock;
+  | GameActionCreateStock
+  | GameActionDeleteStock
+  | GameActionCreateConsumer
+  | GameActionDeleteConsumer
+  | GameActionCreateTransport
+  | GameActionDeleteTransport
+  | GameActionSetNodeValue
+  | GameActionTick;

@@ -1,6 +1,6 @@
-import type { EntitySourceType } from "../EntitiesTypes";
+import type { EntityTransportType } from "../EntitiesTypes";
 
-export default function Source({ entity }: { entity: EntitySourceType }) {
+export default function Transport({ entity }: { entity: EntityTransportType }) {
   return (
     <div
       key={entity.id}

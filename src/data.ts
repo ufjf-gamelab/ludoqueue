@@ -1,13 +1,16 @@
-import type { EntityType, GameType } from "./types";
+import type { GameType } from "./types";
+import type {
+  EntityType,
+} from "./entities/EntitiesTypes"
 
 export const initialState: GameType = {
   entities: new Map<string, EntityType>([
     [
-      "mine1",
+      "source1",
       {
-        id: "mine1",
-        name: "Mine 1",
-        type: "mine",
+        id: "source1",
+        name: "Source 1",
+        type: "source",
         val: 0,
         max: 5,
         rate: 1,
@@ -36,7 +39,7 @@ export const initialState: GameType = {
         max: 1,
         rate: 0.25,
         cooldown: 1,
-        source: "mine1",
+        source: "source1",
         target: "consumer1",
       },
     ],
@@ -50,7 +53,7 @@ export const initialState: GameType = {
         max: 1,
         rate: 0.5,
         cooldown: 1,
-        source: "mine1",
+        source: "source1",
         target: "stock1",
       },
     ],
@@ -67,7 +70,7 @@ export const initialState: GameType = {
     ],
   ]),
   stocks: ["stock1"],
-  mines: ["mine1"],
+  sources: ["source1"],
   consumers: ["consumer1"],
   transports: ["transport1", "transport2"],
 };

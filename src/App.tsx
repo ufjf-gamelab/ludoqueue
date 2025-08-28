@@ -1,67 +1,18 @@
-import { useRef } from "react";
 import "./App.css";
-import type {
-  GraphType,
-  GameType,
-  LinkType,
-  NodeType,
-} from "./types";
-import R3fForceGraph, { type GraphMethods } from "r3f-forcegraph";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas } from "@react-three/fiber";
 import { TrackballControls } from "@react-three/drei";
-import SpriteText from "three-spritetext";
-import { useGame, useGameDispatch } from "./Provider";
-import GraphEditor from "./GraphEditor";
+import { useGame } from "./Provider";
 import Counter from "./Counter";
-import EntitiesProgress from "./EntitiesProgress";
-
-function Graph({ graphData }: { graphData: GraphType }) {
-  const fgRef = useRef<GraphMethods>(undefined);
-  const clonedData = structuredClone(graphData);
-  useFrame(() => fgRef.current?.tickFrame());
-
-  return (
-    <R3fForceGraph
-      ref={fgRef}
-      graphData={clonedData}
-      nodeThreeObject={(node) => {
-        const sprite = new SpriteText(String(node.id));
-        sprite.color = "white";
-        sprite.textHeight = 8;
-        return sprite;
-      }}
-    />
-  );
-}
-
-function convertGameToGraph(game: GameType): GraphType {
-  const graph: GraphType = {
-    nodes: [],
-    links: [],
-  };
-
-  game.entities.forEach((node) => {
-    graph.nodes.push({ id: node.id, name: node.name, val: 0 });
-    if (node.type === "transport") {
-      const linkToTransport: LinkType = {
-        source: node.source,
-        target: node.id,
-      };
-      const linkFromTransport: LinkType = {
-        source: node.id,
-        target: node.target,
-      };
-      graph.links.push(linkToTransport);
-      graph.links.push(linkFromTransport);
-    }
-  });
-
-  return graph;
-}
+import EntitiesProgress from "./entities/EntitiesProgress";
+import {
+  convertGameToGraph,
+  createAdjacencyList,
+} from "./GameGraph/GraphMethods";
+import Graph from "./GameGraph/Graph";
+import NodeElement from "./GameGraph/NodeElement";
 
 function App() {
-  const game = useGame();
-  const dispatch = useGameDispatch();
+  const { game } = useGame()!;
 
   if (!game) return null;
   const classicGraph = convertGameToGraph(game);
@@ -79,11 +30,10 @@ function App() {
       </Canvas>
       <div className="card">
         <EntitiesProgress game={game} />
-        <GraphEditor dispatch={dispatch}></GraphEditor>
         <h2>Nodes</h2>
         <ul>
           {classicGraph.nodes.map((node) => (
-            <NodeElement node={node} />
+            <NodeElement key={node.id} node={node} />
           ))}
         </ul>
         <h2>Connections</h2>
@@ -115,32 +65,4 @@ function App() {
   );
 }
 
-function createAdjacencyList(graphData: GraphType) {
-  const adj: Map<string, string[]> = new Map();
-  graphData.nodes.forEach((node) => {
-    adj.set(node.id, []);
-  });
-  graphData.links.forEach(({ source, target }) => {
-    if (!adj.get(source)) {
-      adj.set(source, []);
-    }
-    if (!adj.get(target)) {
-      adj.set(target, []);
-    }
-    const adjFrom = adj.get(source);
-    if (!adjFrom?.includes(target)) {
-      adjFrom?.push(target);
-    }
-  });
-  return adj;
-}
-
 export default App;
-
-function NodeElement({ node }: { node: NodeType }) {
-  return (
-    <li key={node.id}>
-      {node.id}:{JSON.stringify(node)}
-    </li>
-  );
-}
