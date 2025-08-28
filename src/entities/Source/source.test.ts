@@ -1,5 +1,6 @@
 import { it, expect, describe } from "vitest";
-import type { EntitySourceType, GameType, EntityType } from "../../types.ts";
+import type { GameType } from "../../types.ts";
+import type { EntityType, EntitySourceType } from "../EntitiesTypes.ts";
 import {
   gameSourceTick,
   gameReducer,

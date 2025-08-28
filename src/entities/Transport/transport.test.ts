@@ -1,7 +1,8 @@
 import { it, expect, describe } from "vitest";
-import type { GameType, EntityType, EntityTransportType } from "../../types.ts";
+import type { GameType } from "../../types.ts";
 import { gameReducer } from "../../Provider.tsx";
 import type { GameActionCreateTransport } from "./TransportActions.ts";
+import type { EntityType, EntityTransportType } from "../EntitiesTypes.ts";
 
 describe("Transport", () => {
   it("should create transport1 if none transports exists", () => {

@@ -1,4 +1,4 @@
-import type { EntityStockType } from "../../types";
+import type { EntityStockType } from "../EntitiesTypes";
 
 export default function Stock({ entity }: { entity: EntityStockType }) {
   return (

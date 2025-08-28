@@ -1,4 +1,7 @@
-import type { EntityType, GameType } from "./types";
+import type { GameType } from "./types";
+import type {
+  EntityType,
+} from "./entities/EntitiesTypes"
 
 export const initialState: GameType = {
   entities: new Map<string, EntityType>([

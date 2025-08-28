@@ -1,10 +1,11 @@
 import { it, expect, describe } from "vitest";
-import type { GameType, EntityType, EntityStockType } from "../../types.ts";
+import type { GameType } from "../../types.ts";
 import {
   gameReducer,
   type GameAction,
 } from "../../Provider.tsx";
 import type { GameActionCreateStock, GameActionDeleteStock } from "./StockActions.ts";
+import type { EntityType, EntityStockType } from "../EntitiesTypes.ts";
 
 describe("Stock", () => {
   it("should create stock1 if none stocks exists", () => {

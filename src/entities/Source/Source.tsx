@@ -1,4 +1,4 @@
-import type { EntitySourceType } from "../../types";
+import type { EntitySourceType } from "../EntitiesTypes";
 
 export default function Source({ entity }: { entity: EntitySourceType }) {
   return (

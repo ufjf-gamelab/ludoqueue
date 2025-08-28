@@ -1,4 +1,6 @@
-import type { EntityStockType, GameType } from "../../types";
+import type { GameType } from "../../types";
+import type { EntityStockType } from "../EntitiesTypes";
+
 
 export type GameActionCreateStock = {
   type: "create stock";

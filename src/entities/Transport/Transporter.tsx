@@ -1,4 +1,4 @@
-import type { EntityTransportType } from "../../types";
+import type { EntityTransportType } from "../EntitiesTypes";
 
 export default function Transport({ entity }: { entity: EntityTransportType }) {
   return (

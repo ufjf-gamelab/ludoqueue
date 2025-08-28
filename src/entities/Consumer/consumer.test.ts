@@ -1,7 +1,8 @@
 import { it, expect, describe } from "vitest";
-import type { EntityConsumerType, EntityType, GameType } from "../../types";
+import type { GameType } from "../../types";
 import { gameConsumerTick, gameReducer } from "../../Provider";
 import type { GameActionCreateConsumer, GameActionDeleteConsumer } from "./ConsumerActions";
+import type { EntityType, EntityConsumerType } from "../EntitiesTypes";
 
 
 describe("Consumer", () => {

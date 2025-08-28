@@ -1,4 +1,5 @@
-import type { EntitySourceType, GameType } from "../../types";
+import type { GameType } from "../../types";
+import type { EntitySourceType } from "../EntitiesTypes";
 
 export type GameActionCreateSource = {
   type: "create source";

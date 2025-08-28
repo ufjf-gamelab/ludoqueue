@@ -7,12 +7,14 @@ import {
 } from "react";
 import type {
   GameType,
+} from "./types";
+import type {
   EntityConsumerType,
   EntitySourceType,
   EntityStockType,
   EntityTransportType,
   EntityType,
-} from "./types";
+} from "./entities/EntitiesTypes"
 import { initialState } from "./data";
 import {
   createSource,

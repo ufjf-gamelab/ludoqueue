@@ -1,4 +1,5 @@
-import type { EntityTransportType, GameType } from "../../types";
+import type { GameType } from "../../types";
+import type { EntityTransportType } from "../EntitiesTypes";
 
 export type GameActionCreateTransport = {
   type: "create transport";

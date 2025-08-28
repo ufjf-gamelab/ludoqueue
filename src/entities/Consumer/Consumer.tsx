@@ -1,4 +1,4 @@
-import type { EntityConsumerType } from "../../types";
+import type { EntityConsumerType } from "../EntitiesTypes";
 
 export default function Consumer({ entity }: { entity: EntityConsumerType }) {
   return (

@@ -1,4 +1,5 @@
-import type { EntityConsumerType, GameType } from "../../types";
+import type { GameType } from "../../types";
+import type { EntityConsumerType } from "../EntitiesTypes";
 
 export type GameActionCreateConsumer = {
   type: "create consumer";
