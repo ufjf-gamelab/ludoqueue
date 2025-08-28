@@ -4,7 +4,10 @@ import { TrackballControls } from "@react-three/drei";
 import { useGame } from "./Provider";
 import Counter from "./Counter";
 import EntitiesProgress from "./entities/EntitiesProgress";
-import { convertGameToGraph, createAdjacencyList } from "./GameGraph/GraphMethods";
+import {
+  convertGameToGraph,
+  createAdjacencyList,
+} from "./GameGraph/GraphMethods";
 import Graph from "./GameGraph/Graph";
 import NodeElement from "./GameGraph/NodeElement";
 
@@ -30,7 +33,7 @@ function App() {
         <h2>Nodes</h2>
         <ul>
           {classicGraph.nodes.map((node) => (
-            <NodeElement node={node} />
+            <NodeElement key={node.id} node={node} />
           ))}
         </ul>
         <h2>Connections</h2>

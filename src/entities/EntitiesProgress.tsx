@@ -1,8 +1,14 @@
 import Source from "./Source/Source";
-import type { EntityConsumerType, EntitySourceType, EntityStockType, EntityTransportType, GameType } from "../types";
+import type { GameType } from "../types";
 import Stock from "./Stock/Stock";
 import Consumer from "./Consumer/Consumer";
 import Transport from "./Transport/Transporter";
+import type {
+  EntityConsumerType,
+  EntitySourceType,
+  EntityStockType,
+  EntityTransportType,
+} from "./EntitiesTypes";
 
 export default function EntitiesProgress({ game }: { game: GameType }) {
   return (
@@ -16,22 +22,34 @@ export default function EntitiesProgress({ game }: { game: GameType }) {
     >
       {game.sources.map((source) => {
         return (
-          <Source entity={game.entities.get(source) as EntitySourceType} />
+          <Source
+            key={game.entities.get(source)!.id}
+            entity={game.entities.get(source) as EntitySourceType}
+          />
         );
       })}
       {game.stocks.map((stock) => {
         return (
-          <Stock entity={game.entities.get(stock) as EntityStockType} />
+          <Stock
+            key={game.entities.get(stock)!.id}
+            entity={game.entities.get(stock) as EntityStockType}
+          />
         );
       })}
       {game.consumers.map((consumers) => {
         return (
-          <Consumer entity={game.entities.get(consumers) as EntityConsumerType} />
+          <Consumer
+            key={game.entities.get(consumers)!.id}
+            entity={game.entities.get(consumers) as EntityConsumerType}
+          />
         );
       })}
       {game.transports.map((transports) => {
         return (
-          <Transport entity={game.entities.get(transports) as EntityTransportType} />
+          <Transport
+            key={game.entities.get(transports)!.id}
+            entity={game.entities.get(transports) as EntityTransportType}
+          />
         );
       })}
     </div>
