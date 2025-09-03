@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./FluxTable.css";
 import { type EntityType } from "./entities/EntitiesTypes";
 import { useGame } from "./Provider";
@@ -9,35 +9,30 @@ export default function FluxTable() {
   const cols = 5;
   const { game, dispatch } = useGame()!;
   const [board, setBoard] = useState<(EntityType | null)[]>(
-    Array(rows * cols).fill(null)
-  ); //ajuda do gpt nessa. Devo rencher de vazios pra ter um array de itens vazios. Existe maneira melhor de obter nisso?
+    Array(rows * cols).fill(null) //ajuda do gpt nessa. Devo rencher de vazios pra ter um array de itens vazios. Existe maneira melhor de obter nisso?
+  );
   const [selected, setSelected] = useState<string | null>(null);
-  const handleClick = (pos: number) => {
-    if (!selected) {
-      //nao faz nada se nao selecionou tipo
-      return board;
-    }
-    setBoard((prev) => {
-      const newBoard = [...prev];
-      if (!newBoard[pos]) {
-        // so adiciona se for nulo
-        let addedItem;
-        switch (selected) {
-          case "source": {
-            const action: GameActionCreateStock = {
-              type: "create stock",
-              max: 5,
-              val: 0,
-            };
-            dispatch(action);
-            addedItem = game.sources[game.sources.length-1];
-          }
-        }
-        
-        newBoard[pos] = game.entities.get(addedItem!) as EntityType;
-      }
-      return newBoard;
+  useEffect(() => {
+    const newBoard = Array(rows * cols).fill(null); // Criar novo board do zero
+    game.entities.forEach((entity) => {
+      const entityPos = entity.row * cols + entity.col;
+      newBoard[entityPos] = entity; // Sempre atualiza a posição
     });
+    setBoard(newBoard);
+  }, [game]); // Só atualiza quando o número de entidades mudar
+  const handleClick = (row: number, col: number) => {
+    switch (selected) {
+      case "stock": {
+        const action: GameActionCreateStock = {
+          type: "create stock",
+          max: 5,
+          val: 0,
+          row: row,
+          col: col,
+        };
+        dispatch(action);
+      }
+    }
   };
 
   return (
@@ -53,7 +48,7 @@ export default function FluxTable() {
               const entity = board[pos];
 
               return (
-                <button key={`${i}-${j}`} onClick={() => handleClick(pos)}>
+                <button key={`${i}-${j}`} onClick={() => handleClick(i, j)}>
                   {entity ? entity.name : ""}
                 </button>
               );
@@ -64,7 +59,7 @@ export default function FluxTable() {
         <button onClick={() => setSelected("stock")}>Stock</button>
         <button onClick={() => setSelected("consumer")}>Consumer</button>
         <button onClick={() => setSelected("source")}>Source</button>
-        <button onClick={() => setSelected("transport")}>Stock</button>
+        <button onClick={() => setSelected("transport")}>Transport</button>
       </div>
     </div>
   );

@@ -52,7 +52,7 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
     case "delete source":
       return deleteSource(state, action.id);
     case "create stock":
-      return createStock(state, action.max);
+      return createStock(state, action.max, action.row, action.col);
     case "delete stock":
       return deleteStock(state, action.id);
     case "create consumer":

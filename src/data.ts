@@ -15,6 +15,8 @@ export const initialState: GameType = {
         max: 5,
         rate: 1,
         cooldown: 0,
+        row: 0,
+        col: 2,
       },
     ],
     [
@@ -27,6 +29,8 @@ export const initialState: GameType = {
         max: 2,
         rate: 0.8,
         cooldown: 0,
+        row: 1,
+        col: 3,
       },
     ],
     [
@@ -41,6 +45,8 @@ export const initialState: GameType = {
         cooldown: 1,
         source: "source1",
         target: "consumer1",
+        row: 2,
+        col: 2,
       },
     ],
     [
@@ -55,6 +61,8 @@ export const initialState: GameType = {
         cooldown: 1,
         source: "source1",
         target: "stock1",
+        row: 1,
+        col: 0,
       },
     ],
     [
@@ -66,6 +74,8 @@ export const initialState: GameType = {
         val: 0,
         max: 10,
         closed: false,
+        row: 1,
+        col: 1,
       },
     ],
   ]),
