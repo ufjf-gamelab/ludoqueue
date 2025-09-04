@@ -4,6 +4,7 @@ import { useGame } from "./Provider";
 import type { GameActionCreateStock } from "./entities/Stock/StockActions";
 import type { GameActionCreateSource } from "./entities/Source/SourceActions";
 import type { GameActionCreateConsumer } from "./entities/Consumer/ConsumerActions";
+import type { GameActionCreateTransport } from "./entities/Transport/TransportActions";
 
 export default function FluxTable() {
   const { game, dispatch } = useGame()!;
@@ -38,6 +39,17 @@ export default function FluxTable() {
       case "consumer": {
         const action: GameActionCreateConsumer = {
           type: "create consumer",
+          max: 5,
+          rate: 0.5,
+          posI: i,
+          posJ: j,
+        };
+        dispatch(action);
+        break;
+      }
+      case "transport": {
+        const action: GameActionCreateTransport = {
+          type: "create transport",
           max: 5,
           rate: 0.5,
           posI: i,
