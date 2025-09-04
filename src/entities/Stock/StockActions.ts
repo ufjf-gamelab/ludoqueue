@@ -6,8 +6,8 @@ export type GameActionCreateStock = {
   type: "create stock";
   max: number;
   val: number;
-  row: number;
-  col: number;
+  posI: number;
+  posJ: number;
 };
 
 export type GameActionDeleteStock = {
@@ -15,7 +15,7 @@ export type GameActionDeleteStock = {
   id: string;
 };
 
-export function createStock(state: GameType, max: number, row: number, col:number) {
+export function createStock(state: GameType, max: number, posI: number, posJ:number) {
   let numberID: number = 1;
   if (state.stocks.length > 0) {
     const lastStockNumber = state.stocks
@@ -33,11 +33,13 @@ export function createStock(state: GameType, max: number, row: number, col:numbe
     val: 0,
     max: max,
     closed: false,
-    row: row,
-    col: col,
   };
   newState.entities.set(newStockID, newStockEntity);
   newState.stocks.push(newStockID);
+
+  //define posicao no tabuleiro
+  const boardPosition = posI * newState.cols + posJ;
+  newState.board[boardPosition] = newStockID;
   return newState;
 }
 

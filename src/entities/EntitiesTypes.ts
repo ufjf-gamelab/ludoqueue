@@ -11,9 +11,7 @@ export type EntitySourceType = {
   val: number;
   max: number;
   rate: number;
-  cooldown: number;
-  row: number;
-  col: number;
+  cooldown: number
 };
 
 export type EntityStockType = {
@@ -23,9 +21,6 @@ export type EntityStockType = {
   val: number;
   max: number;
   closed: boolean;
-
-  row: number;
-  col: number;
 };
 
 export type EntityConsumerType = {
@@ -36,9 +31,6 @@ export type EntityConsumerType = {
   max: number;
   rate: number;
   cooldown: number;
-
-  row: number;
-  col: number;
 };
 
 export type EntityTransportType = {
@@ -51,7 +43,4 @@ export type EntityTransportType = {
   cooldown: number;
   source: string;
   target: string;
-
-  row: number;
-  col: number;
 };
