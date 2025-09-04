@@ -2,6 +2,8 @@ import { useState } from "react";
 import "./FluxBoard.css";
 import { useGame } from "./Provider";
 import type { GameActionCreateStock } from "./entities/Stock/StockActions";
+import type { GameActionCreateSource } from "./entities/Source/SourceActions";
+import type { GameActionCreateConsumer } from "./entities/Consumer/ConsumerActions";
 
 export default function FluxTable() {
   const { game, dispatch } = useGame()!;
@@ -20,6 +22,29 @@ export default function FluxTable() {
           posJ: j,
         };
         dispatch(action);
+        break;
+      }
+      case "source": {
+        const action: GameActionCreateSource = {
+          type: "create source",
+          max: 5,
+          val: 0,
+          posI: i,
+          posJ: j,
+        };
+        dispatch(action);
+        break;
+      }
+      case "consumer": {
+        const action: GameActionCreateConsumer = {
+          type: "create consumer",
+          max: 5,
+          rate: 0.5,
+          posI: i,
+          posJ: j,
+        };
+        dispatch(action);
+        break;
       }
     }
   };

@@ -16,6 +16,9 @@ export type GameActionDeleteStock = {
 };
 
 export function createStock(state: GameType, max: number, posI: number, posJ:number) {
+  if (posI >= state.rows || posJ >= state.cols){ //validacao da posicao
+    return state;
+  }
   let numberID: number = 1;
   if (state.stocks.length > 0) {
     const lastStockNumber = state.stocks

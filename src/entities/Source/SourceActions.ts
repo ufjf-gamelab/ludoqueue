@@ -5,6 +5,8 @@ export type GameActionCreateSource = {
   type: "create source";
   max: number;
   val: number;
+  posI: number;
+  posJ: number;
 };
 
 export type GameActionDeleteSource = {
@@ -12,7 +14,11 @@ export type GameActionDeleteSource = {
   id: string;
 };
 
-export function createSource(state: GameType, max: number) {
+export function createSource(state: GameType, max: number, posI: number, posJ:number) {
+  if (posI >= state.rows || posJ >= state.cols){ //validacao da posicao
+    return state;
+  }
+
   let numberID: number = 1;
   if (state.sources.length > 0) {
     const lastSourceNumber = state.sources
@@ -34,6 +40,9 @@ export function createSource(state: GameType, max: number) {
   };
   newState.entities.set(newSourceID, newSourceEntity);
   newState.sources.push(newSourceID);
+  //define posicao no tabuleiro
+  const boardPosition = posI * newState.cols + posJ;
+  newState.board[boardPosition] = newSourceID;
   return newState;
 }
 
