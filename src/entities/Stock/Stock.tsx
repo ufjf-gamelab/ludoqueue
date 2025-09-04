@@ -14,6 +14,9 @@ export default function Stock({ entity }: { entity: EntityStockType }) {
       <div style={{ marginTop: "5px", textAlign: "center" }}>
         {entity.val} / {entity.max}
       </div>
+      <div style={{ marginTop: "5px", textAlign: "center" }}>
+        Stock não tem cooldown!!
+      </div>
     </div>
   );
 }

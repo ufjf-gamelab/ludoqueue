@@ -14,6 +14,10 @@ export default function Consumer({ entity }: { entity: EntityConsumerType }) {
       <div style={{ marginTop: "5px", textAlign: "center" }}>
         {entity.val} / {entity.max}
       </div>
+      <progress value={entity.cooldown} style={{ width: "100%" }} />
+      <div style={{ marginTop: "5px", textAlign: "center" }}>
+        Cooldown: {entity.cooldown} /  Rate: {entity.rate}
+      </div>
     </div>
   );
 }

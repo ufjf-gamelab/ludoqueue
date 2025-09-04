@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./FluxTable.css";
+import "./FluxBoard.css";
 import { useGame } from "./Provider";
 import type { GameActionCreateStock } from "./entities/Stock/StockActions";
 
@@ -25,8 +25,8 @@ export default function FluxTable() {
   };
 
   return (
-    <div className="FluxTable">
-      <div className="Table">
+    <div className="FluxBoard">
+      <div className="Board">
         {Array.from({ length: rows }).map(
           (
             _,

@@ -10,7 +10,7 @@ import {
 } from "./GameGraph/GraphMethods";
 import Graph from "./GameGraph/Graph";
 import NodeElement from "./GameGraph/NodeElement";
-import FluxTable from "./FluxTable";
+import FluxBoard from "./FluxBoard";
 
 function App() {
   const { game } = useGame()!;
@@ -21,7 +21,7 @@ function App() {
   return (
     <>
       <h1>Vite + React</h1>
-      <FluxTable></FluxTable>
+      <FluxBoard></FluxBoard>
       <Counter></Counter>
       <Canvas flat camera={{ position: [0, 0, 80], far: 800 }}>
         <TrackballControls />
