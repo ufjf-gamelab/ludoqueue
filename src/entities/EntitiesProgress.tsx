@@ -3,6 +3,7 @@ import type { GameType } from "../types";
 import Stock from "./Stock/Stock";
 import Consumer from "./Consumer/Consumer";
 import Transport from "./Transport/Transporter";
+import "./EntitiesProgress.css"
 import type {
   EntityConsumerType,
   EntitySourceType,
@@ -12,14 +13,7 @@ import type {
 
 export default function EntitiesProgress({ game }: { game: GameType }) {
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        gap: "10px",
-        margin: "5px",
-      }}
-    >
+    <div className="EntitiesProgress">
       {game.sources.map((source) => {
         return (
           <Source

@@ -5,8 +5,10 @@ import type { GameActionCreateStock } from "./entities/Stock/StockActions";
 import type { GameActionCreateSource } from "./entities/Source/SourceActions";
 import type { GameActionCreateConsumer } from "./entities/Consumer/ConsumerActions";
 import type { GameActionCreateTransport } from "./entities/Transport/TransportActions";
+import { GiMiner } from "react-icons/gi";
 
-export default function FluxTable() {
+
+export default function FluxBoard() {
   const { game, dispatch } = useGame()!;
   const rows = game.rows;
   const cols = game.cols;
@@ -89,7 +91,7 @@ export default function FluxTable() {
       <div className="Selector">
         <button className="stock" onClick={() => setSelected("stock")}>Stock</button>
         <button className="consumer" onClick={() => setSelected("consumer")}>Consumer</button>
-        <button className="source" onClick={() => setSelected("source")}>Source</button>
+        <button className="source" onClick={() => setSelected("source")}><GiMiner /></button>
         <button className="transport" onClick={() => setSelected("transport")}>Transport</button>
       </div>
     </div>

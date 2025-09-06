@@ -22,8 +22,8 @@ export default function Counter() {
   }, [counter, playing, dispatch]);
 
   return (
-    <div>
-      <div>
+    <div style={{ display: "flex", flexDirection: "row", gap: "15px" }}>
+      <div style={{display: "flex", alignItems: "center", justifyContent: "center", height: "38px"}}>
         {playing ? "playing" : "stopped"}: {counter}
       </div>
       <button

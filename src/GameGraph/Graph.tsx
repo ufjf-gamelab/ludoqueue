@@ -1,10 +1,27 @@
-import { useFrame } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import R3fForceGraph, { type GraphMethods } from "r3f-forcegraph";
 import SpriteText from "three-spritetext";
 import type { GraphType } from "../types";
-import { useRef } from "react";
+import React, { useRef } from "react";
+import { TrackballControls } from "@react-three/drei";
 
-export default function Graph({ graphData }: { graphData: GraphType }) {
+function Graph({ graph }: { graph: GraphType }) {
+  return (
+    <Canvas
+      style={{ width: "400px", height: "400px", borderRadius: "20px"}}
+      flat
+      camera={{ position: [0, 0, 80], far: 800 }}
+    >
+      <TrackballControls />
+      <color attach="background" args={[0, 0, 0.01]} />
+      <ambientLight color={0xcccccc} intensity={Math.PI} />
+      <directionalLight intensity={0.6 * Math.PI} />
+      <GraphInner graphData={graph} />
+    </Canvas>
+  );
+}
+
+function GraphInner({ graphData }: { graphData: GraphType }) {
   const fgRef = useRef<GraphMethods>(undefined);
   const clonedData = structuredClone(graphData);
   useFrame(() => fgRef.current?.tickFrame());
@@ -22,3 +39,5 @@ export default function Graph({ graphData }: { graphData: GraphType }) {
     />
   );
 }
+
+export default React.memo(Graph);

@@ -1,0 +1,26 @@
+.Card{
+    background: rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    border-radius: 20px;
+    width: 250px;
+    height: 164px;
+    min-width: 120px;
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.CardTitle{
+   margin-bottom: 20px;
+}
+
+.CardSubtitle{
+    margin-top: 5px;
+    text-align: center;
+}
+
+.CardWarning{
+    margin-top: 20px;
+    font-weight: bold;
+}

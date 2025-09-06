@@ -1,21 +1,19 @@
 import type { EntityStockType } from "../EntitiesTypes";
+import "../EntitiesCards.css"
 
 export default function Stock({ entity }: { entity: EntityStockType }) {
   return (
-    <div
+     <div
       key={entity.id}
-      style={{
-        background: "rgba(0, 0, 0, 0.1)",
-        minWidth: "120px",
-      }}
+      className="Card"
     >
-      <div style={{ marginBottom: "5px" }}>{entity.id}</div>
+      <div className="CardTitle">{entity.id}</div>
       <progress value={entity.val} max={entity.max} style={{ width: "100%" }} />
-      <div style={{ marginTop: "5px", textAlign: "center" }}>
+      <div className="CardSubtitle">
         {entity.val} / {entity.max}
       </div>
-      <div style={{ marginTop: "5px", textAlign: "center" }}>
-        Stock não tem cooldown!!
+      <div className="CardWarning">
+        Doesnt have cooldown
       </div>
     </div>
   );
