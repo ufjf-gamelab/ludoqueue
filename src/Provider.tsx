@@ -48,19 +48,19 @@ export function useGame() {
 export function gameReducer(state: GameType, action: GameAction): GameType {
   switch (action.type) {
     case "create source":
-      return createSource(state, action.max, action.posI, action.posJ);
+      return createSource(state, action.max, action.x, action.y);
     case "delete source":
       return deleteSource(state, action.id);
     case "create stock":
-      return createStock(state, action.max, action.posI, action.posJ);
+      return createStock(state, action.max, action.x, action.y);
     case "delete stock":
       return deleteStock(state, action.id);
     case "create consumer":
-      return createConsumer(state, action.max, action.rate, action.posI, action.posJ);
+      return createConsumer(state, action.max, action.rate, action.x, action.y);
     case "delete consumer":
       return deleteConsumer(state, action.id);
     case "create transport":
-      return createTransport(state, action.max, action.rate, action.posI, action.posJ);
+      return createTransport(state, action.max, action.rate, action.source, action.target, action.x, action.y);
     case "delete transport":
       return deleteTransport(state, action.id);
     case "set node value":

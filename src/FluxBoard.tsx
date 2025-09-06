@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./FluxBoard.css";
 import { useGame } from "./Provider";
 import type { GameActionCreateStock } from "./entities/Stock/StockActions";
@@ -6,62 +6,40 @@ import type { GameActionCreateSource } from "./entities/Source/SourceActions";
 import type { GameActionCreateConsumer } from "./entities/Consumer/ConsumerActions";
 import type { GameActionCreateTransport } from "./entities/Transport/TransportActions";
 import { GiMiner } from "react-icons/gi";
+import type { EntityType } from "./entities/EntitiesTypes";
 
 
 export default function FluxBoard() {
+  const rows = 5;
+  const cols = 5;
   const { game, dispatch } = useGame()!;
-  const rows = game.rows;
-  const cols = game.cols;
+  const [board, setBoard] = useState<(EntityType | null)[]>(
+    Array(rows * cols).fill(null) //ajuda do gpt nessa. Devo rencher de vazios pra ter um array de itens vazios. Existe maneira melhor de obter nisso?
+  );
   const [selected, setSelected] = useState<string | null>(null);
-
-  const handleClick = (i: number, j: number) => {
+  useEffect(() => {
+    const newBoard = Array(rows * cols).fill(null); // Criar novo board do zero
+    game.entities.forEach((entity) => {
+      const entityPos = entity.x * cols + entity.y;
+      newBoard[entityPos] = entity; // Sempre atualiza a posição
+    });
+    setBoard(newBoard);
+  }, [game]); // Só atualiza quando o número de entidades mudar
+  const handleClick = (x: number, y: number) => {
     switch (selected) {
       case "stock": {
         const action: GameActionCreateStock = {
           type: "create stock",
           max: 5,
           val: 0,
-          posI: i,
-          posJ: j,
+          x: x,
+          y: y,
         };
         dispatch(action);
-        break;
-      }
-      case "source": {
-        const action: GameActionCreateSource = {
-          type: "create source",
-          max: 5,
-          val: 0,
-          posI: i,
-          posJ: j,
-        };
-        dispatch(action);
-        break;
-      }
-      case "consumer": {
-        const action: GameActionCreateConsumer = {
-          type: "create consumer",
-          max: 5,
-          rate: 0.5,
-          posI: i,
-          posJ: j,
-        };
-        dispatch(action);
-        break;
-      }
-      case "transport": {
-        const action: GameActionCreateTransport = {
-          type: "create transport",
-          max: 5,
-          rate: 0.5,
-          posI: i,
-          posJ: j,
-        };
-        dispatch(action);
-        break;
       }
     }
   };
+
 
   return (
     <div className="FluxBoard">
@@ -73,8 +51,7 @@ export default function FluxBoard() {
           ) =>
             Array.from({ length: cols }).map((_, j) => {
                 const boardPos = i * cols + j;
-                const entityID = game.board[boardPos];
-                const entity = entityID ? game.entities.get(entityID) : null; // tinha feito com if, mas parece que a boa pratica p evitar erro de ts e assim?
+                const entity = board[boardPos];
 
                 return (
                 <button 

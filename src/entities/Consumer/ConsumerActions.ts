@@ -5,8 +5,8 @@ export type GameActionCreateConsumer = {
   type: "create consumer";
   max: number;
   rate: number;
-  posI: number;
-  posJ: number;
+  x: number;
+  y: number;
 };
 
 export type GameActionDeleteConsumer = {
@@ -14,10 +14,7 @@ export type GameActionDeleteConsumer = {
   id: string;
 };
 
-export function createConsumer(state: GameType, max: number, rate: number, posI:number, posJ:number) {
-  if (posI >= state.rows || posJ >= state.cols){ //validacao da posicao
-    return state;
-  }
+export function createConsumer(state: GameType, max: number, rate: number, x:number, y:number) {
   let numberID: number = 1;
   if (state.consumers.length > 0) {
     const lastConsumerNumber = state.consumers
@@ -36,12 +33,11 @@ export function createConsumer(state: GameType, max: number, rate: number, posI:
     max: max,
     rate: rate,
     cooldown: 1,
+    x: x,
+    y: y,
   };
   newState.entities.set(newConsumerID, newConsumerEntity);
   newState.consumers.push(newConsumerID);
-  //define posicao no tabuleiro
-  const boardPosition = posI * newState.cols + posJ;
-  newState.board[boardPosition] = newConsumerID;
   return newState;
 }
 

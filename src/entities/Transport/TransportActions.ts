@@ -5,8 +5,10 @@ export type GameActionCreateTransport = {
   type: "create transport";
   rate: number;
   max: number;
-  posI: number;
-  posJ: number
+  source: string;
+  target: string;
+  x: number;
+  y: number;
 };
 
 export type GameActionDeleteTransport = {
@@ -14,8 +16,8 @@ export type GameActionDeleteTransport = {
   id: string;
 };
 
-export function createTransport(state: GameType, max: number, rate: number, posI: number, posJ: number) {
-  if (posI >= state.rows || posJ >= state.cols){ //validacao da posicao
+export function createTransport(state: GameType, max: number, rate: number, source: string, target: string, x: number, y: number) {
+  if (!(state.entities.has(source) && state.entities.has(target))){ // chhecagem se origem e destino existem
     return state;
   }
 
@@ -27,16 +29,8 @@ export function createTransport(state: GameType, max: number, rate: number, posI
       .reduce((max, current) => Math.max(max, current), 0);
     numberID = lastTransportNumber + 1;
   }
-  
+
   const newState = structuredClone(state);
-  //determina source
-  const sourcePos = posI * newState.cols + (posJ-1);
-  const sourceID: string = state.board[sourcePos];
-
-  //determina target
-  const targetPos = posI * newState.cols + (posJ+1);
-  const targetID: string = state.board[targetPos];
-
   const newTransportID: string = "transport" + numberID;
   const newTransportEntity: EntityTransportType = {
     id: newTransportID,
@@ -46,14 +40,13 @@ export function createTransport(state: GameType, max: number, rate: number, posI
     max: max,
     rate: rate,
     cooldown: 1,
-    source: sourceID,
-    target: targetID,
+    source: source,
+    target: target,
+    x: x,
+    y: y,
   };
   newState.entities.set(newTransportID, newTransportEntity);
   newState.transports.push(newTransportID);
-  //define posicao no tabuleiro
-  const boardPosition = posI * newState.cols + posJ;
-  newState.board[boardPosition] = newTransportID;
   return newState;
 }
 

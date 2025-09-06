@@ -6,9 +6,6 @@ export type GameType = {
   stocks: string[];
   consumers: string[];
   transports: string[];
-  board: Array<(string | null)>;
-  rows: number;
-  cols: number;
 };
 
 export type LinkType = {
