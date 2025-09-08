@@ -1,30 +1,42 @@
-import { useEffect, useState } from "react";
+import { useMemo, useState, type JSX } from "react";
 import "./FluxBoard.css";
 import { useGame } from "./Provider";
 import type { GameActionCreateStock } from "./entities/Stock/StockActions";
-import { GiMiner } from "react-icons/gi";
+import { GiMiner, GiTakeMyMoney } from "react-icons/gi";
+import { BsMinecartLoaded } from "react-icons/bs";
+import { BsSafe2 } from "react-icons/bs";
+
 import type { EntityType } from "./entities/EntitiesTypes";
 import type { GameActionCreateSource } from "./entities/Source/SourceActions";
 import type { GameActionCreateConsumer } from "./entities/Consumer/ConsumerActions";
 import type { GameActionCreateTransport } from "./entities/Transport/TransportActions";
 
+const entityIcons = new Map<string, JSX.Element>([
+  ["stock", <BsSafe2 />],
+  ["consumer", <GiTakeMyMoney />],
+  ["source", <GiMiner />],
+  ["transport", <BsMinecartLoaded />],
+]);
+
 export default function FluxBoard() {
   const rows = 5;
   const cols = 5;
   const { game, dispatch } = useGame()!;
-  const [board, setBoard] = useState<(EntityType | null)[]>(
-    Array(rows * cols).fill(null) //ajuda do gpt nessa. Devo rencher de vazios pra ter um array de itens vazios. Existe maneira melhor de obter nisso?
-  );
-  const [selected, setSelected] = useState<string | null>(null);
-  const [newTransportSource, setNewTransportSource] = useState<EntityType | null>(null);
-  useEffect(() => {
+  const board = useMemo<(EntityType | null)[]>(() => {
     const newBoard = Array(rows * cols).fill(null);
     game.entities.forEach((entity) => {
       const entityPos = entity.x * cols + entity.y;
       newBoard[entityPos] = entity;
     });
-    setBoard(newBoard);
-  }, [game.entities.size]);
+    return newBoard;
+  }, [game.entities, rows, cols]);
+
+  //seletores de criacao
+  const [selected, setSelected] = useState<string | null>(null);
+  const [newTransportSource, setNewTransportSource] = useState<EntityType | null>(null);
+
+
+
   const handleClick = (x: number, y: number) => {
     const position = x * cols + y;
     switch (selected) {
@@ -79,7 +91,7 @@ export default function FluxBoard() {
                 if (!board[newEntityPos]) {
                   const action: GameActionCreateTransport = {
                     type: "create transport",
-                    max: 5,
+                    max: 1,
                     rate: 1,
                     source: newTransportSource.id,
                     target: newTransportTarget.id,
@@ -87,6 +99,56 @@ export default function FluxBoard() {
                     y: newTransportTarget.y - 1,
                   };
                   dispatch(action);
+                  setNewTransportSource(null); //redefine source na criacao de transport
+                }
+              } else if (newTransportTarget.y - newTransportSource.y == -2) { //sentido pra esquerda
+                const newEntityPos = newTransportTarget.x * cols + (newTransportTarget.y + 1);
+                if (!board[newEntityPos]) {
+                  const action: GameActionCreateTransport = {
+                    type: "create transport",
+                    max: 1,
+                    rate: 1,
+                    source: newTransportSource.id,
+                    target: newTransportTarget.id,
+                    x: newTransportTarget.x,
+                    y: newTransportTarget.y + 1,
+                  };
+                  dispatch(action);
+                  setNewTransportSource(null);
+                }
+              }
+            } else if (newTransportTarget.y === newTransportSource.y) {
+              //mesma vertical
+              if (newTransportTarget.x - newTransportSource.x == 2) { //sentido pra baixo
+                const newEntityPos = newTransportTarget.x - 1 * cols + newTransportTarget.y;
+                if (!board[newEntityPos]) {
+                  const action: GameActionCreateTransport = {
+                    type: "create transport",
+                    max: 1,
+                    rate: 1,
+                    source: newTransportSource.id,
+                    target: newTransportTarget.id,
+                    x: newTransportTarget.x - 1,
+                    y: newTransportTarget.y,
+                  };
+                  dispatch(action);
+                  setNewTransportSource(null);
+                }
+              }
+              if (newTransportTarget.x - newTransportSource.x == -2) { //sentido pra cima
+                const newEntityPos = newTransportTarget.x + 1 * cols + newTransportTarget.y;
+                if (!board[newEntityPos]) {
+                  const action: GameActionCreateTransport = {
+                    type: "create transport",
+                    max: 1,
+                    rate: 1,
+                    source: newTransportSource.id,
+                    target: newTransportTarget.id,
+                    x: newTransportTarget.x + 1,
+                    y: newTransportTarget.y,
+                  };
+                  dispatch(action);
+                  setNewTransportSource(null);
                 }
               }
             }
@@ -101,41 +163,38 @@ export default function FluxBoard() {
   return (
     <div className="FluxBoard">
       <div className="Board">
-        {Array.from({ length: rows }).map(
-          (
-            _,
-            i //gera tabuleiro a partir da quantidade de itens
-          ) =>
-            Array.from({ length: cols }).map((_, j) => {
-              const boardPos = i * cols + j;
-              const entity = board[boardPos];
-
-              return (
-                <button
-                  className={entity?.type || "empty"}
-                  key={`${i}-${j}`}
-                  onClick={() => handleClick(i, j)}
-                >
-                  {entity?.name || ""}
-                </button>
-              );
-            })
-        )}
+        {Array.from({ length: rows }).map((_, i) =>
+            Array.from({ length: cols }).map((_, j) => (
+                <BoardItem key={`${i}-${j}`} board={board} i={i} j={j} cols={cols} handleClick={handleClick} />
+        ))
+      )}
       </div>
       <div className="Selector">
         <button className="stock" onClick={() => setSelected("stock")}>
-          Stock
+          {entityIcons.get("stock")}
         </button>
         <button className="consumer" onClick={() => setSelected("consumer")}>
-          Consumer
+          {entityIcons.get("consumer")}
         </button>
         <button className="source" onClick={() => setSelected("source")}>
-          <GiMiner />
+          {entityIcons.get("source")}
         </button>
         <button className="transport" onClick={() => setSelected("transport")}>
-          Transport
+          {entityIcons.get("transport")}
         </button>
       </div>
     </div>
   );
 }
+
+
+function BoardItem({  board,  i,  j,  cols,  handleClick,}: {board: (EntityType | null)[];i: number;j: number;cols: number;handleClick: (i: number, j: number) => void;}){
+  const boardPos = i * cols + j;
+  const entity = board[boardPos];
+  const Icon = entity ? entityIcons.get(entity.type) : null;
+    return (
+      <button className={entity?.type || "empty"} onClick={() => handleClick(i,j)}>
+        {Icon}  {entity?.name || ""}
+      </button>
+    );
+};
