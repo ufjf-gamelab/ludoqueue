@@ -8,7 +8,7 @@ import { TrackballControls } from "@react-three/drei";
 function Graph({ graph }: { graph: GraphType }) {
   return (
     <Canvas
-      style={{ width: "400px", height: "400px", borderRadius: "20px"}}
+      style={{ width: "600px", height: "400px", borderRadius: "20px"}}
       flat
       camera={{ position: [0, 0, 80], far: 800 }}
     >

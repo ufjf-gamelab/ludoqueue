@@ -1,41 +1,37 @@
-.FluxBoard{
+.FluxBoard {
     width: 100%;
-    height: 500px;
+    height: 43.75rem; /* 700px */
     display: flex;
     flex-direction: row;
-
 }
 
-.Board{
+.Board {
     display: grid;
-    grid-template-columns: repeat(5,1fr);
-    grid-template-rows: repeat(5,1fr);
-    width:100%;
-    padding: 8px;
-    gap: 20px;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    width: 100%;
+    padding: 0.5rem; /* 8px */
+    gap: 1.25rem; /* 20px */
 }
 
-.Board > button{
-    width: 200px;
-    height: 50px;
+.Board > button {
+    width: 12.5rem;  /* 200px */
+    height: 7.5rem;  /* 120px */
     margin: auto;
 }
 
-.Selector{
+.Selector {
     display: flex;
-    margin: 10px;
+    margin: 0.625rem; /* 10px */
     width: 80%;
-    gap: 15px;
+    gap: 0.9375rem; /* 15px */
     flex-direction: column;
     align-items: center;
     justify-content: center;
 }
 
-.stock{
-    border-radius: 0px;
-}
-
-.source{
-    border-radius: 20px;
-    background-color: blueviolet;
+.source, .stock, .consumer, .transport{
+    border-radius: 1.25rem; /* 20px */
+    background-color: rgb(219, 207, 219);
+    color: black;
 }

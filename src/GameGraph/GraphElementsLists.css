@@ -16,6 +16,11 @@
     padding: 1rem;
 }
 
+.ElementsUI > button{
+    margin: 0px;
+    margin-bottom: 20px;
+}
+
 ul {
     max-width: 300px;
     height: auto;
