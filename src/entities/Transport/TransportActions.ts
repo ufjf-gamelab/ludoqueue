@@ -1,6 +1,8 @@
 import type { GameType } from "../../types";
 import type { EntityTransportType } from "../EntitiesTypes";
 
+export type TransportDirection = "up" | "down" | "left" | "right";
+
 export type GameActionCreateTransport = {
   type: "create transport";
   rate: number;
@@ -9,6 +11,8 @@ export type GameActionCreateTransport = {
   target: string;
   x: number;
   y: number;
+  direction: TransportDirection;
+
 };
 
 export type GameActionDeleteTransport = {
@@ -16,7 +20,7 @@ export type GameActionDeleteTransport = {
   id: string;
 };
 
-export function createTransport(state: GameType, max: number, rate: number, source: string, target: string, x: number, y: number) {
+export function createTransport(state: GameType, max: number, rate: number, source: string, target: string, x: number, y: number, direction:TransportDirection) {
   if (!(state.entities.has(source) && state.entities.has(target))){ // chhecagem se origem e destino existem
     return state;
   }
@@ -42,8 +46,9 @@ export function createTransport(state: GameType, max: number, rate: number, sour
     cooldown: 1,
     source: source,
     target: target,
-    x: x,
-    y: y,
+    x,
+    y,
+    direction,
   };
   newState.entities.set(newTransportID, newTransportEntity);
   newState.transports.push(newTransportID);

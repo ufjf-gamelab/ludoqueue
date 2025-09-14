@@ -10,6 +10,7 @@ import type { EntityType } from "./entities/EntitiesTypes";
 import type { GameActionCreateSource } from "./entities/Source/SourceActions";
 import type { GameActionCreateConsumer } from "./entities/Consumer/ConsumerActions";
 import type { GameActionCreateTransport } from "./entities/Transport/TransportActions";
+import SourceCard from "./entities/Source/SourceCard";
 
 const entityIcons = new Map<string, JSX.Element>([
   ["stock", <BsSafe2 />],
@@ -97,6 +98,7 @@ export default function FluxBoard() {
                     target: newTransportTarget.id,
                     x: newTransportTarget.x,
                     y: newTransportTarget.y - 1,
+                    direction:"right",
                   };
                   dispatch(action);
                   setNewTransportSource(null); //redefine source na criacao de transport
@@ -112,6 +114,7 @@ export default function FluxBoard() {
                     target: newTransportTarget.id,
                     x: newTransportTarget.x,
                     y: newTransportTarget.y + 1,
+                    direction: "left",
                   };
                   dispatch(action);
                   setNewTransportSource(null);
@@ -130,6 +133,7 @@ export default function FluxBoard() {
                     target: newTransportTarget.id,
                     x: newTransportTarget.x - 1,
                     y: newTransportTarget.y,
+                    direction: "down",
                   };
                   dispatch(action);
                   setNewTransportSource(null);
@@ -146,6 +150,7 @@ export default function FluxBoard() {
                     target: newTransportTarget.id,
                     x: newTransportTarget.x + 1,
                     y: newTransportTarget.y,
+                    direction: "up",
                   };
                   dispatch(action);
                   setNewTransportSource(null);
@@ -164,9 +169,11 @@ export default function FluxBoard() {
     <div className="FluxBoard">
       <div className="Board">
         {Array.from({ length: rows }).map((_, i) =>
-            Array.from({ length: cols }).map((_, j) => (
-                <BoardItem key={`${i}-${j}`} board={board} i={i} j={j} cols={cols} handleClick={handleClick} />
-        ))
+            Array.from({ length: cols }).map((_, j) => {
+                const boardPos = i * cols + j;
+                const entity = board[boardPos];
+                return entity?.type === "source" ? (<SourceCard entity={entity} />) : (<button className="empty" onClick={() => handleClick(i,j)}></button>)
+})
       )}
       </div>
       <div className="Selector">
@@ -187,14 +194,3 @@ export default function FluxBoard() {
   );
 }
 
-
-function BoardItem({  board,  i,  j,  cols,  handleClick,}: {board: (EntityType | null)[];i: number;j: number;cols: number;handleClick: (i: number, j: number) => void;}){
-  const boardPos = i * cols + j;
-  const entity = board[boardPos];
-  const Icon = entity ? entityIcons.get(entity.type) : null;
-    return (
-      <button className={entity?.type || "empty"} onClick={() => handleClick(i,j)}>
-        {Icon}  {entity?.name || ""}
-      </button>
-    );
-};

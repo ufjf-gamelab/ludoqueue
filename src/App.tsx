@@ -13,7 +13,6 @@ function App() {
   const classicGraph = useMemo(() => convertGameToGraph(game), [game.entities.size]);
   return (
     <>
-    <div className="Game">
       <div className="GameBoard">
         <h1>Tabuleiro: </h1>
         <FluxBoard></FluxBoard>
@@ -24,7 +23,6 @@ function App() {
         <h2> Lista de Entidades: </h2>
         <EntitiesProgress game={game} />
       </div>
-    </div>
     <h1> Grafo de Conexoes: </h1>
     <div className="Graph">
       <Graph graph={classicGraph}></Graph>

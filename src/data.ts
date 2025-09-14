@@ -47,6 +47,7 @@ export const initialState: GameType = {
         target: "consumer1",
         x: 0,
         y: 1,
+        direction: "right",
       },
     ],
     [
@@ -63,6 +64,7 @@ export const initialState: GameType = {
         target: "stock1",
         x: 1,
         y: 0,
+        direction: "down",
       },
     ],
     [

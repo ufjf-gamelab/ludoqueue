@@ -12,12 +12,20 @@
     width: 100%;
     padding: 0.5rem; /* 8px */
     gap: 1.25rem; /* 20px */
+    overflow:visible;
 }
 
-.Board > button {
-    width: 12.5rem;  /* 200px */
-    height: 7.5rem;  /* 120px */
+.Board:focus{
+    -webkit-tap-highlight-color: transparent; 
+}
+
+.Board > button{
+    min-width: 12.5rem;  /* 200px */
+    min-height: 7.5rem;  /* 120px */
     margin: auto;
+}
+.Board > button:hover{
+    border:none;
 }
 
 .Selector {

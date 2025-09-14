@@ -1,3 +1,5 @@
+import type { TransportDirection } from "./Transport/TransportActions";
+
 export type EntityType =
   | EntitySourceType
   | EntityStockType
@@ -54,4 +56,5 @@ export type EntityTransportType = {
 
   x: number;
   y: number;
+  direction: TransportDirection;
 };

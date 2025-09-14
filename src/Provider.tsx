@@ -60,7 +60,7 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
     case "delete consumer":
       return deleteConsumer(state, action.id);
     case "create transport":
-      return createTransport(state, action.max, action.rate, action.source, action.target, action.x, action.y);
+      return createTransport(state, action.max, action.rate, action.source, action.target, action.x, action.y, action.direction);
     case "delete transport":
       return deleteTransport(state, action.id);
     case "set node value":

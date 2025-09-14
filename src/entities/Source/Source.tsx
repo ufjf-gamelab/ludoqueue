@@ -6,6 +6,7 @@ export default function Source({ entity }: { entity: EntitySourceType }) {
     <div
       key={entity.id}
       className="Card"
+    style={{width:"100%"}}
     >
       <div className="CardTitle">{entity.id}</div>
       <progress value={entity.val} max={entity.max} style={{ width: "100%" }} />
