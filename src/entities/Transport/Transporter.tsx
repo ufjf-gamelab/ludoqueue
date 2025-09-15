@@ -2,7 +2,7 @@ import type { EntityTransportType } from "../EntitiesTypes";
 import "../EntitiesCards.css"
 import { FaArrowDown, FaArrowLeft, FaArrowRight, FaArrowUp } from "react-icons/fa";
 
-const icons = {
+export const TransportIcons = {
   down: <FaArrowDown />,
   up: <FaArrowUp />,
   left: <FaArrowLeft />,
@@ -25,9 +25,9 @@ export default function Transport({ entity }: { entity: EntityTransportType }) {
         Cooldown: {entity.cooldown} /  Rate: {entity.rate}
       </div>
       <div className="CardSubtitle">
-        Direction:  {icons[entity.direction]}
-        {icons[entity.direction]}
-        {icons[entity.direction]}
+        Direction:  {TransportIcons[entity.direction]}
+        {TransportIcons[entity.direction]}
+        {TransportIcons[entity.direction]}
       </div>
     </div>
   );

@@ -2,7 +2,7 @@ import { useState } from "react";
 import type { EntitySourceType } from "../EntitiesTypes";
 import Source from "./Source";
 import { GiMiner } from "react-icons/gi";
-import "./SourceCard.css"
+import "./SourceCard.css";
 
 export default function SourceCard({ entity }: { entity: EntitySourceType }) {
   const [isHovering, setIsHovering] = useState(false);
@@ -19,6 +19,7 @@ export default function SourceCard({ entity }: { entity: EntitySourceType }) {
         <div>
           <GiMiner />
           <progress value={entity.val} max={entity.max}></progress>
+          {entity.val} / {entity.max}
         </div>
       )}{" "}
     </button>

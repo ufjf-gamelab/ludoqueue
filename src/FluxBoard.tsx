@@ -11,6 +11,9 @@ import type { GameActionCreateSource } from "./entities/Source/SourceActions";
 import type { GameActionCreateConsumer } from "./entities/Consumer/ConsumerActions";
 import type { GameActionCreateTransport } from "./entities/Transport/TransportActions";
 import SourceCard from "./entities/Source/SourceCard";
+import StockCard from "./entities/Stock/StockCard";
+import ConsumerCard from "./entities/Consumer/ConsumerCard";
+import TransportCard from "./entities/Transport/TransportCard";
 
 const entityIcons = new Map<string, JSX.Element>([
   ["stock", <BsSafe2 />],
@@ -172,7 +175,26 @@ export default function FluxBoard() {
             Array.from({ length: cols }).map((_, j) => {
                 const boardPos = i * cols + j;
                 const entity = board[boardPos];
-                return entity?.type === "source" ? (<SourceCard entity={entity} />) : (<button className="empty" onClick={() => handleClick(i,j)}></button>)
+                switch (entity?.type) {
+                  case "source":
+                    return (
+                        <SourceCard entity={entity} onClick={() => handleClick(i, j)}/>
+                    );
+                  case "stock":
+                    return (
+                      <StockCard entity={entity} key={boardPos} onClick={() => handleClick(i, j)}/>
+                    );
+                  case "consumer":
+                    return (
+                      <ConsumerCard entity={entity} key={boardPos} onClick={() => handleClick(i, j)}/>
+                    );
+                  case "transport":
+                    return (
+                        <TransportCard entity={entity} key={boardPos} />
+                    );
+                  default:
+                    return (<button className="empty" onClick={() => handleClick(i, j)}></button>);
+                }
 })
       )}
       </div>
@@ -193,4 +215,3 @@ export default function FluxBoard() {
     </div>
   );
 }
-

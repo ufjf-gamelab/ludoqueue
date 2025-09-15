@@ -14,15 +14,10 @@ function App() {
   return (
     <>
       <div className="GameBoard">
-        <h1>Tabuleiro: </h1>
         <FluxBoard></FluxBoard>
       </div>
-      <div className="GameStatistics">
-        <h1>Estastisticas do Jogo: </h1>
         <Counter></Counter>
-        <h2> Lista de Entidades: </h2>
         <EntitiesProgress game={game} />
-      </div>
     <h1> Grafo de Conexoes: </h1>
     <div className="Graph">
       <Graph graph={classicGraph}></Graph>
