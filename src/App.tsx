@@ -17,7 +17,7 @@ function App() {
         <FluxBoard></FluxBoard>
       </div>
         <Counter></Counter>
-        <EntitiesProgress game={game} />
+        
     <h1> Grafo de Conexoes: </h1>
     <div className="Graph">
       <Graph graph={classicGraph}></Graph>

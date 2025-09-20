@@ -10,11 +10,14 @@
     color: black;
 }
 
-.sourceCard > * {
-  height: auto;
+.sourceCard > div {
+  height: auto;  
+  background-color: rgb(219, 207, 219);
+}
+
+.sourceCard > .Card {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-background-color: rgb(219, 207, 219);
+  position-area:top right;
+  position-visibility: always;
+  width: 100%;
 }
