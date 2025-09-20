@@ -15,7 +15,7 @@ export const initialState: GameType = {
         max: 5,
         rate: 1,
         cooldown: 0,
-        x: 0,
+        x: 4,
         y: 0,
       },
     ],

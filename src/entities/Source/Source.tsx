@@ -10,9 +10,9 @@ export default function Source({ entity }: { entity: EntitySourceType }) {
       style={
         {
           position: "absolute",
-          positionAnchor: `${"--" + entity.id}`,
-          positionArea: "start end",
-          positionTryFallbacks: "flip-start",
+          positionAnchor: `${"--anchor-" + entity.id}`,
+          positionArea: "start start",
+          positionTry: "most-width, flip-block, bottom left",
         } as AnchorStyle
       }
     >
