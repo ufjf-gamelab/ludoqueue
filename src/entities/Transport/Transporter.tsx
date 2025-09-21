@@ -1,12 +1,12 @@
 import type { EntityTransportType } from "../EntitiesTypes";
 import "../EntitiesCards.css"
-import { FaArrowDown, FaArrowLeft, FaArrowRight, FaArrowUp } from "react-icons/fa";
+import { FaRightLong, FaLeftLong, FaUpLong, FaDownLong } from "react-icons/fa6";
 
 export const TransportIcons = {
-  down: <FaArrowDown />,
-  up: <FaArrowUp />,
-  left: <FaArrowLeft />,
-  right: <FaArrowRight />
+  down: <FaDownLong />,
+  up: <FaUpLong />,
+  left: <FaLeftLong />,
+  right: <FaRightLong />
 }
 
 export default function Transport({ entity }: { entity: EntityTransportType }) {
@@ -20,7 +20,7 @@ export default function Transport({ entity }: { entity: EntityTransportType }) {
       <div className="CardSubtitle">
         {entity.val} / {entity.max}
       </div>
-      <progress value={entity.cooldown} style={{ width: "100%" }} />
+      <progress value={entity.cooldown} style={{ width: "100%" }} /> 
       <div className="CardSubtitle">
         Cooldown: {entity.cooldown} /  Rate: {entity.rate}
       </div>
