@@ -11,8 +11,8 @@ export default function Source({ entity }: { entity: EntitySourceType }) {
         {
           position: "absolute",
           positionAnchor: `${"--anchor-" + entity.id}`,
-          positionArea: "start start",
-          positionTry: "most-width, flip-block, bottom left",
+          positionArea: "end end",
+          positionTry: "end start, start start, start end",
         } as AnchorStyle
       }
     >
