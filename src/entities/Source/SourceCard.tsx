@@ -16,19 +16,22 @@ export default function SourceCard({ entity }: { entity: EntitySourceType }) {
   return (
     <button
       className="sourceCard"
-      onMouseEnter={() => setIsHovering(true)}
+      onClick={() => setIsHovering(!isHovering)}
+      //onMouseEnter={() => setIsHovering(true)}
       //onMouseLeave={() => setIsHovering(false)}
-      style={{ anchorName: `${"--" + entity.id}`, position: "relative" } as AnchorStyle}
+      style={
+        {
+          anchorName: `${"--anchor-" + entity.id}`,
+        } as AnchorStyle
+      }
     >
-      {isHovering ? (<Source entity={entity} />) :
+      {isHovering && <Source entity={entity} />}
 
-      (
-        <div>
-          <GiMiner />
-          <progress value={entity.val} max={entity.max}></progress>
-          {entity.val} / {entity.max}
-        </div>
-      )}
+      <div>
+        <GiMiner />
+        <progress value={entity.val} max={entity.max}></progress>
+        {entity.val} / {entity.max}
+      </div>
     </button>
   );
 }

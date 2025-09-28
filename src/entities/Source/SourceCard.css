@@ -1,5 +1,4 @@
 .sourceCard {
-    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -15,9 +14,3 @@
   background-color: rgb(219, 207, 219);
 }
 
-.sourceCard > .Card {
-  position: absolute;
-  position-area:top right;
-  position-visibility: always;
-  width: 100%;
-}

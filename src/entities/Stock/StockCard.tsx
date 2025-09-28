@@ -18,7 +18,7 @@ export default function StockCard({ entity }: { entity: EntityStockType }) {
       ) : (
         <div className="stockMinimized">
           <div>
-            <BsSafe2 />
+            <BsSafe2 size={20}/>
             {entity.val === entity.max ? (
               <p> Stock full! </p>
             ) : (
