@@ -14,8 +14,3 @@
   background-color: rgb(219, 207, 219);
 }
 
-.sourceCard > .Card {
-  position-area:top right;
-  position-visibility: always;
-  width: fit-content;
-}
