@@ -178,19 +178,19 @@ export default function FluxBoard() {
                 switch (entity?.type) {
                   case "source":
                     return (
-                        <SourceCard entity={entity} onClick={() => handleClick(i, j)}/>
+                      <SourceCard entity={entity} />
                     );
                   case "stock":
                     return (
-                      <StockCard entity={entity} key={boardPos} onClick={() => handleClick(i, j)}/>
+                      <StockCard entity={entity} key={boardPos} />
                     );
                   case "consumer":
                     return (
-                      <ConsumerCard entity={entity} key={boardPos} onClick={() => handleClick(i, j)}/>
+                      <ConsumerCard entity={entity} key={boardPos} />
                     );
                   case "transport":
                     return (
-                        <TransportCard entity={entity} key={boardPos} />
+                      <TransportCard entity={entity} key={boardPos} />
                     );
                   default:
                     return (<button className="empty" onClick={() => handleClick(i, j)}></button>);

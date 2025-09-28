@@ -3,6 +3,7 @@ import type { EntityConsumerType } from "../EntitiesTypes";
 import Consumer from "./Consumer";
 import { GiTakeMyMoney } from "react-icons/gi";
 import "./ConsumerCard.css";
+import type { AnchorStyle } from "../Source/SourceCard";
 
 export default function ConsumerCard({
   entity,
@@ -12,14 +13,20 @@ export default function ConsumerCard({
   const [isHovering, setIsHovering] = useState(false);
 
   return (
-    <button
+    <div
       className="consumerCard"
-      onMouseEnter={() => setIsHovering(true)}
-      onMouseLeave={() => setIsHovering(false)}
+      onClick={() => setIsHovering(!isHovering)}
+      style={
+        {
+          anchorName: `${"--anchor-" + entity.id}`,
+          gridColumn: entity.x + 1,
+          gridRow: entity.y + 1,
+        } as AnchorStyle
+      }
     >
-      {isHovering ? (
-        <Consumer entity={entity} />
-      ) : (
+      {isHovering &&
+        <Consumer entity={entity} />}
+      
         <div className="consumerMinimized">
           <div>
             <GiTakeMyMoney />
@@ -27,7 +34,7 @@ export default function ConsumerCard({
           </div>
           <progress value={entity.val} max={entity.max}></progress>
         </div>
-      )}{" "}
-    </button>
+
+    </div>
   );
 }

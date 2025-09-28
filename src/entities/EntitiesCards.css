@@ -2,8 +2,8 @@
     background: rgba(0, 0, 0, 0.1);
     padding: 1rem;
     border-radius: 20px;
-    width: 250px;
-    height: 164px;
+    width: 200px;
+    height: fit-content;
     min-width: 120px;
     display:flex;
     flex-direction: column;
