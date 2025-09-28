@@ -14,24 +14,24 @@ export interface AnchorStyle extends React.CSSProperties {
 export default function SourceCard({ entity }: { entity: EntitySourceType }) {
   const [isHovering, setIsHovering] = useState(false);
   return (
-    <button
+    <div
       className="sourceCard"
       onClick={() => setIsHovering(!isHovering)}
-      //onMouseEnter={() => setIsHovering(true)}
-      //onMouseLeave={() => setIsHovering(false)}
       style={
         {
           anchorName: `${"--anchor-" + entity.id}`,
+          gridColumn: entity.x + 1,
+          gridRow: entity.y + 1,
         } as AnchorStyle
       }
     >
       {isHovering && <Source entity={entity} />}
 
-      <div>
+      <div className="sourceMinimized">
         <GiMiner />
         <progress value={entity.val} max={entity.max}></progress>
         {entity.val} / {entity.max}
       </div>
-    </button>
+    </div>
   );
 }

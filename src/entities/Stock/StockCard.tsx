@@ -3,31 +3,35 @@ import type { EntityStockType } from "../EntitiesTypes";
 import Stock from "./Stock";
 import { BsSafe2 } from "react-icons/bs";
 import "./StockCard.css";
+import type { AnchorStyle } from "../Source/SourceCard";
 
 export default function StockCard({ entity }: { entity: EntityStockType }) {
   const [isHovering, setIsHovering] = useState(false);
 
   return (
-    <button
+    <div
       className="stockCard"
-      onMouseEnter={() => setIsHovering(true)}
-      onMouseLeave={() => setIsHovering(false)}
+      onClick={() => setIsHovering(!isHovering)}
+      style={
+        {
+          anchorName: `${"--anchor-" + entity.id}`,
+          gridColumn: entity.x + 1,
+          gridRow: entity.y + 1,
+        } as AnchorStyle
+      }
     >
-      {isHovering ? (
-        <Stock entity={entity} />
-      ) : (
-        <div className="stockMinimized">
-          <div>
-            <BsSafe2 size={20}/>
-            {entity.val === entity.max ? (
-              <p> Stock full! </p>
-            ) : (
-              <p> {entity.val} items on stock. </p>
-            )}
-          </div>
-          <progress value={entity.val} max={entity.max}></progress>
+      {isHovering && <Stock entity={entity} />}
+      <div className="stockMinimized">
+        <div>
+          <BsSafe2 size={20} />
+          {entity.val === entity.max ? (
+            <p> Stock full! </p>
+          ) : (
+            <p> {entity.val} items on stock. </p>
+          )}
         </div>
-      )}{" "}
-    </button>
+        <progress value={entity.val} max={entity.max}></progress>
+      </div>
+    </div>
   );
 }

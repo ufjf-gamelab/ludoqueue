@@ -3,14 +3,20 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    overflow: visible;
-    border-radius: 1.25rem; /* 20px */
+    border-radius: 20px;
     background-color: rgb(219, 207, 219);
     color: black;
 }
-
+ 
 .sourceCard > div {
-  height: auto;  
   background-color: rgb(219, 207, 219);
 }
 
+
+.sourceMinimized{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
