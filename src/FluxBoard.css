@@ -1,45 +1,30 @@
-.FluxBoard {
+.Game {
     width: 100%;
     display: flex;
     flex-direction: row;
 }
 
 .Board {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    grid-template-rows: repeat(5, 1fr);
+    display:grid;
     width: 100%;
-    height: fit-content;
     padding: 0.5rem; 
     gap: 1.25rem; 
     position: relative;
 }
 
-.Board:focus{
-    -webkit-tap-highlight-color: transparent; 
-}
-
-.Board > button{
-    min-width: 200px;  /* 200px */
-    min-height: 200px;  /* 120px */
-    margin: auto;
-}
-.Board > button:hover{
-    border:none;
-}
 
 .Selector {
     display: flex;
-    margin: 0.625rem; /* 10px */
+    margin: 10px;
     width: 80%;
-    gap: 0.9375rem; /* 15px */
+    gap: 15px; 
     flex-direction: column;
     align-items: center;
     justify-content: center;
 }
 
 .source, .stock, .consumer, .transport{
-    border-radius: 1.25rem; /* 20px */
+    border-radius: 20px; 
     background-color: rgb(219, 207, 219);
     color: black;
 }

@@ -1,6 +1,6 @@
 import type { EntityConsumerType } from "../EntitiesTypes";
 import "../EntitiesCards.css";
-import type { AnchorStyle } from "../Source/SourceCard";
+import type { AnchorStyle } from "../Tile";
 export default function Consumer({ entity }: { entity: EntityConsumerType }) {
   return (
     <div

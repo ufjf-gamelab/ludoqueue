@@ -3,7 +3,7 @@ import type { EntityConsumerType } from "../EntitiesTypes";
 import Consumer from "./Consumer";
 import { GiTakeMyMoney } from "react-icons/gi";
 import "./ConsumerCard.css";
-import type { AnchorStyle } from "../Source/SourceCard";
+import type { AnchorStyle } from "../Tile";
 
 export default function ConsumerCard({
   entity,

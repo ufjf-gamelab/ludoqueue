@@ -3,7 +3,7 @@ import type { EntityStockType } from "../EntitiesTypes";
 import Stock from "./Stock";
 import { BsSafe2 } from "react-icons/bs";
 import "./StockCard.css";
-import type { AnchorStyle } from "../Source/SourceCard";
+import type { AnchorStyle } from "../Tile";
 
 export default function StockCard({ entity }: { entity: EntityStockType }) {
   const [isHovering, setIsHovering] = useState(false);

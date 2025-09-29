@@ -3,7 +3,7 @@ import type { EntityTransportType } from "../EntitiesTypes";
 import Transport from "./Transporter";
 import "./TransportCard.css"
 import { TransportIcons } from "./Transporter";
-import type { AnchorStyle } from "../Source/SourceCard";
+import type { AnchorStyle } from "../Tile";
 
 export default function TransportCard({ entity }: { entity: EntityTransportType }) {
   const [isHovering, setIsHovering] = useState(false);

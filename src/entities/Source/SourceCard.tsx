@@ -3,13 +3,9 @@ import type { EntitySourceType } from "../EntitiesTypes";
 import Source from "./Source";
 import { GiMiner } from "react-icons/gi";
 import "./SourceCard.css";
+import type { AnchorStyle } from "../Tile";
 
-export interface AnchorStyle extends React.CSSProperties {
-  anchorName?: string;
-  positionAnchor?: string;
-  positionArea?: string;
-  positionTryFallbacks?: string;
-}
+
 
 export default function SourceCard({ entity }: { entity: EntitySourceType }) {
   const [isHovering, setIsHovering] = useState(false);

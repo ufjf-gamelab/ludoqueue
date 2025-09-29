@@ -1,6 +1,6 @@
 import type { EntitySourceType } from "../EntitiesTypes";
 import "../EntitiesCards.css";
-import type { AnchorStyle } from "./SourceCard";
+import type { AnchorStyle } from "../Tile";
 
 export default function Source({ entity }: { entity: EntitySourceType }) {
   return (
