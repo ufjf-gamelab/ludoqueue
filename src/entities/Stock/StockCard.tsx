@@ -1,9 +1,9 @@
 import { useState } from "react";
 import type { EntityStockType } from "../EntitiesTypes";
 import Stock from "./Stock";
-import { BsSafe2 } from "react-icons/bs";
 import "./StockCard.css";
 import type { AnchorStyle } from "../Tile";
+import { EntityIcons } from "../Icons";
 
 export default function StockCard({ entity }: { entity: EntityStockType }) {
   const [isHovering, setIsHovering] = useState(false);
@@ -23,7 +23,7 @@ export default function StockCard({ entity }: { entity: EntityStockType }) {
       {isHovering && <Stock entity={entity} />}
       <div className="stockMinimized">
         <div>
-          <BsSafe2 size={20} />
+          {EntityIcons[entity.type]}
           {entity.val === entity.max ? (
             <p> Stock full! </p>
           ) : (

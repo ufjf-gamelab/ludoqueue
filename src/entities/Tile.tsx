@@ -1,11 +1,8 @@
 import { useState } from "react";
 import type { EntityType } from "./EntitiesTypes";
-import { entityIcons } from "../FluxBoard";
 import "./Tile.css";
-import Transport, { TransportIcons } from "./Transport/Transporter";
-import Source from "./Source/Source";
-import Stock from "./Stock/Stock";
-import Consumer from "./Consumer/Consumer";
+import { TransportIcons, EntityIcons } from "./Icons";
+import Toolset from "./Toolset.tsx";
 
 export interface AnchorStyle extends React.CSSProperties {
   anchorName?: string;
@@ -21,7 +18,7 @@ export default function Tile({ entity }: { entity: EntityType }) {
       case "source":
         return (
           <div className="sourceMinimized">
-            {entityIcons[entity.type]}
+            {EntityIcons[entity.type]}
             <progress value={entity.val} max={entity.max}></progress>
             {entity.val} / {entity.max}
           </div>
@@ -30,7 +27,7 @@ export default function Tile({ entity }: { entity: EntityType }) {
         return (
           <div>
             <div>
-              {entityIcons[entity.type]}
+              {EntityIcons[entity.type]}
               <p>Consuming in {entity.cooldown} seconds</p>
             </div>
             <progress value={entity.val} max={entity.max}></progress>
@@ -40,7 +37,7 @@ export default function Tile({ entity }: { entity: EntityType }) {
         return (
           <div className="stockMinimized">
             <div>
-              {entityIcons[entity.type]}
+              {EntityIcons[entity.type]}
               {entity.val === entity.max ? (
                 <p> Stock full! </p>
               ) : (
@@ -82,10 +79,7 @@ export default function Tile({ entity }: { entity: EntityType }) {
       }
     >
       {renderEntity(entity)}
-      {isClicked && entity.type === "source" && <Source entity={entity} />}
-      {isClicked && entity.type === "stock" && <Stock entity={entity} />}
-      {isClicked && entity.type === "consumer" && <Consumer entity={entity} />}
-      {isClicked && entity.type === "transport" && <Transport entity={entity} />}
+      {isClicked && <Toolset entity={entity} />}
 
     </div>
   );

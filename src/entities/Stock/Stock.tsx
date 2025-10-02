@@ -1,12 +1,12 @@
 import type { EntityStockType } from "../EntitiesTypes";
-import "../EntitiesCards.css";
+import "../Toolset.css";
 import type { AnchorStyle } from "../Tile";
 
 export default function Stock({ entity }: { entity: EntityStockType }) {
   return (
     <div
       key={entity.id}
-      className="Card"
+      className="Toolset"
       style={
         {
           position: "absolute",
@@ -16,12 +16,12 @@ export default function Stock({ entity }: { entity: EntityStockType }) {
         } as AnchorStyle
       }
     >
-      <div className="CardTitle">{entity.id}</div>
+      <div className="ToolsetTitle">{entity.id}</div>
       <progress value={entity.val} max={entity.max} style={{ width: "100%" }} />
-      <div className="CardSubtitle">
+      <div className="ToolsetSubtitle">
         {entity.val} / {entity.max}
       </div>
-      <div className="CardWarning">Doesnt have cooldown</div>
+      <div className="ToolsetWarning">Doesnt have cooldown</div>
     </div>
   );
 }

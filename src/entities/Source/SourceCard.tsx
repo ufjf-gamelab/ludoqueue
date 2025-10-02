@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { EntitySourceType } from "../EntitiesTypes";
 import Source from "./Source";
-import { GiMiner } from "react-icons/gi";
+import { EntityIcons } from "../Icons";
 import "./SourceCard.css";
 import type { AnchorStyle } from "../Tile";
 
@@ -24,7 +24,7 @@ export default function SourceCard({ entity }: { entity: EntitySourceType }) {
       {isHovering && <Source entity={entity} />}
 
       <div className="sourceMinimized">
-        <GiMiner />
+        {EntityIcons[entity.type]}
         <progress value={entity.val} max={entity.max}></progress>
         {entity.val} / {entity.max}
       </div>

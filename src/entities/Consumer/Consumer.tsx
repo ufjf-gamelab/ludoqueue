@@ -1,5 +1,5 @@
 import type { EntityConsumerType } from "../EntitiesTypes";
-import "../EntitiesCards.css";
+import "../Toolset.css";
 import type { AnchorStyle } from "../Tile";
 export default function Consumer({ entity }: { entity: EntityConsumerType }) {
   return (

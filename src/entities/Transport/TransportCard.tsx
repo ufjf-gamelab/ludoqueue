@@ -2,7 +2,7 @@ import { useState } from "react";
 import type { EntityTransportType } from "../EntitiesTypes";
 import Transport from "./Transporter";
 import "./TransportCard.css"
-import { TransportIcons } from "./Transporter";
+import { TransportIcons } from "../Icons";
 import type { AnchorStyle } from "../Tile";
 
 export default function TransportCard({ entity }: { entity: EntityTransportType }) {

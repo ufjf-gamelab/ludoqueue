@@ -1,8 +1,8 @@
 import { useState } from "react";
 import type { EntityConsumerType } from "../EntitiesTypes";
 import Consumer from "./Consumer";
-import { GiTakeMyMoney } from "react-icons/gi";
 import "./ConsumerCard.css";
+import { EntityIcons } from "../Icons";
 import type { AnchorStyle } from "../Tile";
 
 export default function ConsumerCard({
@@ -29,7 +29,7 @@ export default function ConsumerCard({
       
         <div className="consumerMinimized">
           <div>
-            <GiTakeMyMoney />
+            {EntityIcons[entity.type]}
             <p>Consuming in {entity.cooldown} seconds</p>
           </div>
           <progress value={entity.val} max={entity.max}></progress>

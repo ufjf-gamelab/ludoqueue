@@ -1,14 +1,7 @@
 import type { EntityTransportType } from "../EntitiesTypes";
-import "../EntitiesCards.css";
-import { FaRightLong, FaLeftLong, FaUpLong, FaDownLong } from "react-icons/fa6";
+import "../Toolset.css";
 import type { AnchorStyle } from "../Tile";
-
-export const TransportIcons = {
-  down: <FaDownLong />,
-  up: <FaUpLong />,
-  left: <FaLeftLong />,
-  right: <FaRightLong />,
-};
+import { TransportIcons } from "../Icons";
 
 export default function Transport({ entity }: { entity: EntityTransportType }) {
   return (

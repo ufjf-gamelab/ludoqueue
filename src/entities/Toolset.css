@@ -1,5 +1,5 @@
-.Card{
-    background: rgba(0, 0, 0, 0.1);
+.Toolset{
+    background-color: rgb(219, 207, 219);
     padding: 1rem;
     border-radius: 20px;
     width: 200px;
@@ -11,16 +11,16 @@
     align-items: center;
 }
 
-.CardTitle{
+.ToolsetTitle{
    margin-bottom: 20px;
 }
 
-.CardSubtitle{
+.ToolsetSubtitle{
     margin-top: 5px;
     text-align: center;
 }
 
-.CardWarning{
+.ToolsetWarning{
     margin-top: 20px;
     font-weight: bold;
 }

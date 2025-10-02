@@ -2,22 +2,12 @@ import { useMemo, useState } from "react";
 import "./FluxBoard.css";
 import { useGame } from "./Provider";
 import type { GameActionCreateStock } from "./entities/Stock/StockActions";
-import { GiMiner, GiTakeMyMoney } from "react-icons/gi";
-import { BsMinecartLoaded } from "react-icons/bs";
-import { BsSafe2 } from "react-icons/bs";
-
 import type { EntityType } from "./entities/EntitiesTypes";
 import type { GameActionCreateSource } from "./entities/Source/SourceActions";
 import type { GameActionCreateConsumer } from "./entities/Consumer/ConsumerActions";
 import type { GameActionCreateTransport } from "./entities/Transport/TransportActions";
 import Tile from "./entities/Tile";
-
-export const entityIcons = {
-  stock: <BsSafe2 />,
-  consumer: <GiTakeMyMoney />,
-  source: <GiMiner />,
-  transport: <BsMinecartLoaded />,
-};
+import { EntityIcons } from "./entities/Icons";
 
 export default function FluxBoard() {
   const rows = 5;
@@ -188,16 +178,16 @@ export default function FluxBoard() {
       </div>
       <div className="Selector">
         <button className="stock" onClick={() => setSelected("stock")}>
-          {entityIcons["stock"]}
+          {EntityIcons["stock"]}
         </button>
         <button className="consumer" onClick={() => setSelected("consumer")}>
-          {entityIcons["consumer"]}
+          {EntityIcons["consumer"]}
         </button>
         <button className="source" onClick={() => setSelected("source")}>
-          {entityIcons["source"]}
+          {EntityIcons["source"]}
         </button>
         <button className="transport" onClick={() => setSelected("transport")}>
-          {entityIcons["transport"]}
+          {EntityIcons["transport"]}
         </button>
       </div>
     </div>
