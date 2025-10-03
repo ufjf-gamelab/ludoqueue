@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import "./FluxBoard.css";
 import { useGame } from "./Provider";
 import type { GameActionCreateStock } from "./entities/Stock/StockActions";
@@ -13,25 +13,20 @@ export default function FluxBoard() {
   const rows = 5;
   const cols = 5;
   const { game, dispatch } = useGame()!;
-  const board = useMemo<(EntityType | null)[]>(() => {
-    const newBoard = Array(rows * cols).fill(null);
-    game.entities.forEach((entity) => {
-      const entityPos = entity.x * cols + entity.y;
-      newBoard[entityPos] = entity;
-    });
-    return newBoard;
-  }, [game.entities, rows, cols]);
 
   //seletores de criacao
   const [selected, setSelected] = useState<string | null>(null);
   const [newTransportSource, setNewTransportSource] =
     useState<EntityType | null>(null);
 
-  const handleClick = (x: number, y: number) => {
-    const position = x * cols + y;
+  const handleClick = (
+    x: number,
+    y: number,
+    entity: EntityType | undefined
+  ) => {
     switch (selected) {
       case "stock": {
-        if (!board[position]) {
+        if (!entity) {
           const action: GameActionCreateStock = {
             type: "create stock",
             max: 5,
@@ -44,7 +39,7 @@ export default function FluxBoard() {
         break;
       }
       case "source": {
-        if (!board[position]) {
+        if (!entity) {
           const action: GameActionCreateSource = {
             type: "create source",
             max: 5,
@@ -57,7 +52,7 @@ export default function FluxBoard() {
         break;
       }
       case "consumer": {
-        if (!board[position]) {
+        if (!entity) {
           const action: GameActionCreateConsumer = {
             type: "create consumer",
             max: 5,
@@ -69,85 +64,71 @@ export default function FluxBoard() {
         }
         break;
       }
-      case "transport": {
-        if (board[position]) {
-          if (!newTransportSource) {
-            setNewTransportSource(board[position]);
-          } else {
-            const newTransportTarget = board[position];
-            if (newTransportTarget.x === newTransportSource.x) {
-              //mesma horizontal
-              if (newTransportTarget.y - newTransportSource.y == 2) {
-                //sentido pra direita
-                const newEntityPos =
-                  newTransportTarget.x * cols + (newTransportTarget.y - 1);
-                if (!board[newEntityPos]) {
+      case "transport":
+        {
+          if (entity) {
+            if (!newTransportSource) {
+              setNewTransportSource(entity);
+            } else {
+              const newTransportTarget = entity;
+              if (newTransportTarget.y === newTransportSource.y) {
+                //mesma horizontal
+                if (newTransportTarget.x - newTransportSource.x == 2) {
+                  //sentido pra direita
                   const action: GameActionCreateTransport = {
                     type: "create transport",
                     max: 1,
                     rate: 1,
                     source: newTransportSource.id,
                     target: newTransportTarget.id,
-                    x: newTransportTarget.x,
-                    y: newTransportTarget.y - 1,
+                    x: newTransportTarget.y,
+                    y: newTransportTarget.x - 1,
                     direction: "right",
                   };
                   dispatch(action);
                   setNewTransportSource(null); //redefine source na criacao de transport
-                }
-              } else if (newTransportTarget.y - newTransportSource.y == -2) {
-                //sentido pra esquerda
-                const newEntityPos =
-                  newTransportTarget.x * cols + (newTransportTarget.y + 1);
-                if (!board[newEntityPos]) {
+                } else if (newTransportTarget.x - newTransportSource.x == -2) {
+                  //sentido pra esquerda
                   const action: GameActionCreateTransport = {
                     type: "create transport",
                     max: 1,
                     rate: 1,
                     source: newTransportSource.id,
                     target: newTransportTarget.id,
-                    x: newTransportTarget.x,
-                    y: newTransportTarget.y + 1,
+                    x: newTransportTarget.y,
+                    y: newTransportTarget.x + 1,
                     direction: "left",
                   };
                   dispatch(action);
                   setNewTransportSource(null);
                 }
-              }
-            } else if (newTransportTarget.y === newTransportSource.y) {
-              //mesma vertical
-              if (newTransportTarget.x - newTransportSource.x == 2) {
-                //sentido pra baixo
-                const newEntityPos =
-                  newTransportTarget.x - 1 * cols + newTransportTarget.y;
-                if (!board[newEntityPos]) {
+              } else if (newTransportTarget.x === newTransportSource.x) {
+                //mesma vertical
+                if (newTransportTarget.y - newTransportSource.y == 2) {
+                  //sentido pra baixo
                   const action: GameActionCreateTransport = {
                     type: "create transport",
                     max: 1,
                     rate: 1,
                     source: newTransportSource.id,
                     target: newTransportTarget.id,
-                    x: newTransportTarget.x - 1,
-                    y: newTransportTarget.y,
+                    x: newTransportTarget.y - 1,
+                    y: newTransportTarget.x,
                     direction: "down",
                   };
                   dispatch(action);
                   setNewTransportSource(null);
                 }
-              }
-              if (newTransportTarget.x - newTransportSource.x == -2) {
-                //sentido pra cima
-                const newEntityPos =
-                  newTransportTarget.x + 1 * cols + newTransportTarget.y;
-                if (!board[newEntityPos]) {
+                if (newTransportTarget.y - newTransportSource.y == -2) {
+                  //sentido pra cima
                   const action: GameActionCreateTransport = {
                     type: "create transport",
                     max: 1,
                     rate: 1,
                     source: newTransportSource.id,
                     target: newTransportTarget.id,
-                    x: newTransportTarget.x + 1,
-                    y: newTransportTarget.y,
+                    x: newTransportTarget.y + 1,
+                    y: newTransportTarget.x,
                     direction: "up",
                   };
                   dispatch(action);
@@ -157,9 +138,7 @@ export default function FluxBoard() {
             }
           }
         }
-
         break;
-      }
     }
   };
   return (
@@ -172,9 +151,24 @@ export default function FluxBoard() {
           gridTemplateRows: `repeat(${rows}, 200px)`,
         }}
       >
-        {Array.from(game.entities.values()).map((entity) => {
-          return <Tile key={entity.id} entity={entity} />;
-        })}
+        {Array.from({ length: rows }).map((_, i) =>
+          Array.from({ length: cols }).map((_, j) => {
+            const entity = Array.from(game.entities.values()).find(
+              (entity) => entity.x === i && entity.y === j
+            );
+
+            return (
+              <div
+                key={`${i}-${j}`}
+                className="TileWrapper" //trocar classname, usando esse so pra reaproveitar estilo p teste
+                style={{ gridColumn: `${i + 1}`, gridRow: `${j + 1}` }}
+                onClick={() => handleClick(i,j, entity)}
+              >
+                {entity && <Tile entity={entity} />}
+              </div>
+            );
+          })
+        )}
       </div>
       <div className="Selector">
         <button className="stock" onClick={() => setSelected("stock")}>

@@ -73,8 +73,6 @@ export default function Tile({ entity }: { entity: EntityType }) {
       style={
         {
           anchorName: `${"--anchor-" + entity.id}`,
-          gridColumn: entity.x + 1,
-          gridRow: entity.y + 1,
         } as AnchorStyle
       }
     >
