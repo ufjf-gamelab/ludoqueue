@@ -12,7 +12,6 @@ export type GameActionCreateTransport = {
   x: number;
   y: number;
   direction: TransportDirection;
-
 };
 
 export type GameActionDeleteTransport = {
@@ -20,11 +19,28 @@ export type GameActionDeleteTransport = {
   id: string;
 };
 
-export function createTransport(state: GameType, max: number, rate: number, source: string, target: string, x: number, y: number, direction:TransportDirection) {
-  if (!(state.entities.has(source) && state.entities.has(target))){ // chhecagem se origem e destino existem
+export function createTransport(
+  state: GameType,
+  max: number,
+  rate: number,
+  source: string,
+  target: string,
+  x: number,
+  y: number,
+  direction: TransportDirection
+) {
+  if (!(state.entities.has(source) && state.entities.has(target))) {
+    // chhecagem se origem e destino existem
     return state;
   }
-
+  if (
+    Array.from(state.entities.values()).find(
+      (entity) => entity.x === x && entity.y === y
+    )
+  ) {
+    //checagem se ja existe entidade na posicao
+    return state;
+  }
   //determina ID do transport
   let numberID: number = 1;
   if (state.transports.length > 0) {

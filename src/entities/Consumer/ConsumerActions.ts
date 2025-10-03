@@ -15,6 +15,14 @@ export type GameActionDeleteConsumer = {
 };
 
 export function createConsumer(state: GameType, max: number, rate: number, x:number, y:number) {
+  if (
+    Array.from(state.entities.values()).find(
+      (entity) => entity.x === x && entity.y === y
+    )
+  ) {
+    //checagem se ja existe entidade na posicao
+    return state;
+  }
   let numberID: number = 1;
   if (state.consumers.length > 0) {
     const lastConsumerNumber = state.consumers
