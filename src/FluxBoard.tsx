@@ -22,7 +22,7 @@ export default function FluxBoard() {
   const handleClick = (
     x: number,
     y: number,
-    
+
     entity: EntityType | undefined
   ) => {
     switch (selectedTool) {
@@ -143,49 +143,61 @@ export default function FluxBoard() {
     }
   };
   return (
-    <div className="flux-board" >
+    <div className="flux-board">
       <div
-      ref={ref}
+        ref={ref}
         className="game-board"
-        onClick={(e)=>{
-      const x = Math.floor((e.clientX - ref.current.getBoundingClientRect().x)/100);
-      const y = Math.floor((e.clientY - ref.current.getBoundingClientRect().y)/100);
+        onClick={(e) => {
+          if (ref.current === null) return;
+          const grid = ref.current as HTMLDivElement;
+          const x = Math.floor(
+            (e.clientX - grid.getBoundingClientRect().x) / 100
+          );
+          const y = Math.floor(
+            (e.clientY - grid.getBoundingClientRect().y) / 100
+          );
 
-      //alert(`${x} ${y}`)
-      handleClick(x,y, undefined);
-      e.stopPropagation();
-
-    }}
+          //alert(`${x} ${y}`)
+          handleClick(x, y, undefined);
+          e.stopPropagation();
+        }}
         style={{
           /* nao sei se seria a melhor ideia definir o tamanho fixo no grid do tabuleiro */
           gridTemplateColumns: `repeat(${cols}, 100px)`,
           gridTemplateRows: `repeat(${rows}, 100px)`,
         }}
       >
-        {Array.from(game.entities.values()).map(entity=>(
-              <div
-                key={`${entity.id}`}
-                className="tile-wrapper"
-                style={{ gridColumn: `${entity.x+1}`, gridRow: `${entity.y+1}` }}
-                // onClick={() => handleClick(i,j, entity)}
-              >
-                {entity && <Tile entity={entity} />}
-              </div>
-            )
-          )
-        }
+        {Array.from(game.entities.values()).map((entity) => (
+          <div
+            key={`${entity.id}`}
+            className="tile-wrapper"
+            style={{
+              gridColumn: `${entity.x + 1}`,
+              gridRow: `${entity.y + 1}`,
+            }}
+            // onClick={() => handleClick(i,j, entity)}
+          >
+            {entity && <Tile entity={entity} />}
+          </div>
+        ))}
       </div>
       <div className="tool-selector">
         <button className="stock" onClick={() => setSelectedTool("stock")}>
           {EntityIcons["stock"]}
         </button>
-        <button className="consumer" onClick={() => setSelectedTool("consumer")}>
+        <button
+          className="consumer"
+          onClick={() => setSelectedTool("consumer")}
+        >
           {EntityIcons["consumer"]}
         </button>
         <button className="source" onClick={() => setSelectedTool("source")}>
           {EntityIcons["source"]}
         </button>
-        <button className="transport" onClick={() => setSelectedTool("transport")}>
+        <button
+          className="transport"
+          onClick={() => setSelectedTool("transport")}
+        >
           {EntityIcons["transport"]}
         </button>
       </div>
