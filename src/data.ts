@@ -81,6 +81,7 @@ export const initialState: GameType = {
       },
     ],
   ]),
+  selected: null,
   stocks: ["stock1"],
   sources: ["source1"],
   consumers: ["consumer1"],

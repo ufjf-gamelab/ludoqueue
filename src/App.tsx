@@ -15,8 +15,8 @@ function App() {
   );
   return (
     <>
-      <FluxBoard></FluxBoard>
       <Counter></Counter>
+      <FluxBoard></FluxBoard>
       <h1> Grafo de Conexoes: </h1>
       <div className="Graph">
         <Graph graph={classicGraph}></Graph>

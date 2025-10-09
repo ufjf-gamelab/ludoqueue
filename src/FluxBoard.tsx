@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import "./FluxBoard.css";
 import { useGame } from "./Provider";
 import type { GameActionCreateStock } from "./entities/Stock/StockActions";
@@ -14,17 +14,18 @@ export default function FluxBoard() {
   const cols = 5;
   const { game, dispatch } = useGame()!;
 
-  //seletores de criacao
-  const [selected, setSelected] = useState<string | null>(null);
+  const [selectedTool, setSelectedTool] = useState<string | null>(null);
   const [newTransportSource, setNewTransportSource] =
     useState<EntityType | null>(null);
 
+  const ref = useRef(null);
   const handleClick = (
     x: number,
     y: number,
+    
     entity: EntityType | undefined
   ) => {
-    switch (selected) {
+    switch (selectedTool) {
       case "stock": {
         if (!entity) {
           const action: GameActionCreateStock = {
@@ -142,45 +143,49 @@ export default function FluxBoard() {
     }
   };
   return (
-    <div className="Game">
+    <div className="flux-board" >
       <div
-        className="Board"
+      ref={ref}
+        className="game-board"
+        onClick={(e)=>{
+      const x = Math.floor((e.clientX - ref.current.getBoundingClientRect().x)/100);
+      const y = Math.floor((e.clientY - ref.current.getBoundingClientRect().y)/100);
+
+      //alert(`${x} ${y}`)
+      handleClick(x,y, undefined);
+      e.stopPropagation();
+
+    }}
         style={{
           /* nao sei se seria a melhor ideia definir o tamanho fixo no grid do tabuleiro */
-          gridTemplateColumns: `repeat(${cols}, 200px)`,
-          gridTemplateRows: `repeat(${rows}, 200px)`,
+          gridTemplateColumns: `repeat(${cols}, 100px)`,
+          gridTemplateRows: `repeat(${rows}, 100px)`,
         }}
       >
-        {Array.from({ length: rows }).map((_, i) =>
-          Array.from({ length: cols }).map((_, j) => {
-            const entity = Array.from(game.entities.values()).find(
-              (entity) => entity.x === i && entity.y === j
-            );
-
-            return (
+        {Array.from(game.entities.values()).map(entity=>(
               <div
-                key={`${i}-${j}`}
-                className="TileWrapper" //trocar classname, usando esse so pra reaproveitar estilo p teste
-                style={{ gridColumn: `${i + 1}`, gridRow: `${j + 1}` }}
-                onClick={() => handleClick(i,j, entity)}
+                key={`${entity.id}`}
+                className="tile-wrapper"
+                style={{ gridColumn: `${entity.x+1}`, gridRow: `${entity.y+1}` }}
+                // onClick={() => handleClick(i,j, entity)}
               >
                 {entity && <Tile entity={entity} />}
               </div>
-            );
-          })
-        )}
+            )
+          )
+        }
       </div>
-      <div className="Selector">
-        <button className="stock" onClick={() => setSelected("stock")}>
+      <div className="tool-selector">
+        <button className="stock" onClick={() => setSelectedTool("stock")}>
           {EntityIcons["stock"]}
         </button>
-        <button className="consumer" onClick={() => setSelected("consumer")}>
+        <button className="consumer" onClick={() => setSelectedTool("consumer")}>
           {EntityIcons["consumer"]}
         </button>
-        <button className="source" onClick={() => setSelected("source")}>
+        <button className="source" onClick={() => setSelectedTool("source")}>
           {EntityIcons["source"]}
         </button>
-        <button className="transport" onClick={() => setSelected("transport")}>
+        <button className="transport" onClick={() => setSelectedTool("transport")}>
           {EntityIcons["transport"]}
         </button>
       </div>

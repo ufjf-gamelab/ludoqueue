@@ -2,6 +2,7 @@ import type { EntityType } from "./entities/EntitiesTypes";
 
 export type GameType = {
   entities: Map<string, EntityType>;
+  selected: EntityType|null;
   sources: string[];
   stocks: string[];
   consumers: string[];
