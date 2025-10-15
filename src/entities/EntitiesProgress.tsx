@@ -1,7 +1,7 @@
 import Source from "./Source/SourceTile";
 import type { GameType } from "../types";
 import Stock from "./Stock/StockTile";
-import Consumer from "./Consumer/Consumer";
+import ConsumerTile from "./Consumer/ConsumerTile";
 import Transport from "./Transport/TransporterTile";
 import "./EntitiesProgress.css"
 import type {
@@ -32,7 +32,7 @@ export default function EntitiesProgress({ game }: { game: GameType }) {
       })}
       {game.consumers.map((consumers) => {
         return (
-          <Consumer
+          <ConsumerTile
             key={game.entities.get(consumers)!.id}
             entity={game.entities.get(consumers) as EntityConsumerType}
           />

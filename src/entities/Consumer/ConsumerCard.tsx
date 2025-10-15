@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { EntityConsumerType } from "../EntitiesTypes";
-import Consumer from "./Consumer";
+import ConsumerTile from "./ConsumerTile";
 import "./ConsumerCard.css";
 import { EntityIcons } from "../Icons";
 import type { AnchorStyle } from "../Tile";
@@ -25,7 +25,7 @@ export default function ConsumerCard({
       }
     >
       {isHovering &&
-        <Consumer entity={entity} />}
+        <ConsumerTile entity={entity} />}
       
         <div className="consumerMinimized">
           <div>

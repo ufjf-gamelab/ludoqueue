@@ -5,11 +5,3 @@
   color: black;
   border: 1px solid lightgreen; 
 }
-
-.stockMinimized > div {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-}

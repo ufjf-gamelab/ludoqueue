@@ -1,12 +1,11 @@
-import { useState } from "react";
 import type { EntityType } from "./EntitiesTypes";
 import "./Tile.css";
-import { TransportIcons, EntityIcons } from "./Icons";
 import Toolset from "./Toolset.tsx";
 import Source from "./Source/SourceTile.tsx";
 import { useGame } from "../Provider.tsx";
 import TransporterTile from "./Transport/TransporterTile.tsx";
 import Stock from "./Stock/StockTile.tsx";
+import ConsumerTile from "./Consumer/ConsumerTile.tsx";
 
 export interface AnchorStyle extends React.CSSProperties {
   anchorName?: string;
@@ -34,19 +33,9 @@ export default function Tile({
       case "source":
         return <Source key={entity.id} entity={entity} />;
       case "consumer":
-        return (
-          <div>
-            <div>
-              {EntityIcons[entity.type]}
-              <p>Consuming in {entity.cooldown} seconds</p>
-            </div>
-            <progress value={entity.val} max={entity.max}></progress>
-          </div>
-        );
+        return <ConsumerTile key={entity.id} entity={entity} />;
       case "stock":
-        return (
-          <Stock key={entity.id} entity={entity} />
-        );
+        return <Stock key={entity.id} entity={entity} />;
       case "transport":
         return <TransporterTile key={entity.id} entity={entity} />;
     }
