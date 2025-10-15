@@ -167,7 +167,7 @@ export default function FluxBoard() {
         }}
       >
         {Array.from(game.entities.values()).map(
-          (entity) => entity && <Tile entity={entity} selected={entity.id === game.selected?.id} />
+          (entity) => entity && <Tile key={entity.id} entity={entity} selected={entity.id === game.selected?.id} />
         )}
       </div>
       <div className="tool-selector">
