@@ -67,6 +67,8 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
       return setNodeVal(state, action.id, action.value);
     case "game tick":
       return gameTick(state);
+    case "select entity":
+      return selectEntity(state, action.entityId);
 
     default:
       break;
@@ -180,6 +182,13 @@ export function gameTransportTick(
   }
 }
 
+export function selectEntity(state: GameType, entityId: string | null) {
+  const newState = structuredClone(state);
+  newState.selected = entityId ? newState.entities.get(entityId) || null : null;
+  return newState;
+}
+
+
 type GameActionSetNodeValue = {
   type: "set node value";
   id: string;
@@ -188,6 +197,11 @@ type GameActionSetNodeValue = {
 
 type GameActionTick = {
   type: "game tick";
+};
+
+type GameActionSelectEntity = {
+  type: "select entity";
+  entityId: string | null;
 };
 
 export type GameAction =
@@ -200,4 +214,5 @@ export type GameAction =
   | GameActionCreateTransport
   | GameActionDeleteTransport
   | GameActionSetNodeValue
-  | GameActionTick;
+  | GameActionTick
+  | GameActionSelectEntity;

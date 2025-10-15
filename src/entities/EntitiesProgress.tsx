@@ -1,4 +1,4 @@
-import Source from "./Source/Source";
+import Source from "./Source/SourceTile";
 import type { GameType } from "../types";
 import Stock from "./Stock/Stock";
 import Consumer from "./Consumer/Consumer";

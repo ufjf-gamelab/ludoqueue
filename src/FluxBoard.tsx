@@ -10,8 +10,9 @@ import Tile from "./entities/Tile";
 import { EntityIcons } from "./entities/Icons";
 
 export default function FluxBoard() {
-  const rows = 5;
-  const cols = 5;
+  const CELL_WIDTH = 55;
+  const NUM_ROWS = 5;
+  const NUM_COLS = 5;
   const { game, dispatch } = useGame()!;
 
   const [selectedTool, setSelectedTool] = useState<string | null>(null);
@@ -151,37 +152,26 @@ export default function FluxBoard() {
           if (ref.current === null) return;
           const grid = ref.current as HTMLDivElement;
           const x = Math.floor(
-            (e.clientX - grid.getBoundingClientRect().x) / 100
+            (e.clientX - grid.getBoundingClientRect().x) / CELL_WIDTH
           );
           const y = Math.floor(
-            (e.clientY - grid.getBoundingClientRect().y) / 100
+            (e.clientY - grid.getBoundingClientRect().y) / CELL_WIDTH
           );
 
-          //alert(`${x} ${y}`)
           handleClick(x, y, undefined);
-          e.stopPropagation();
+          
         }}
         style={{
-          /* nao sei se seria a melhor ideia definir o tamanho fixo no grid do tabuleiro */
-          gridTemplateColumns: `repeat(${cols}, 100px)`,
-          gridTemplateRows: `repeat(${rows}, 100px)`,
+          gridTemplateColumns: `repeat(${NUM_COLS}, ${CELL_WIDTH}px)`,
+          gridTemplateRows: `repeat(${NUM_ROWS}, ${CELL_WIDTH}px)`,
         }}
       >
-        {Array.from(game.entities.values()).map((entity) => (
-          <div
-            key={`${entity.id}`}
-            className="tile-wrapper"
-            style={{
-              gridColumn: `${entity.x + 1}`,
-              gridRow: `${entity.y + 1}`,
-            }}
-            // onClick={() => handleClick(i,j, entity)}
-          >
-            {entity && <Tile entity={entity} />}
-          </div>
-        ))}
+        {Array.from(game.entities.values()).map(
+          (entity) => entity && <Tile entity={entity} selected={entity.id === game.selected?.id} />
+        )}
       </div>
       <div className="tool-selector">
+        <div>Selected: {game.selected?.id}</div>
         <button className="stock" onClick={() => setSelectedTool("stock")}>
           {EntityIcons["stock"]}
         </button>
