@@ -1,17 +1,16 @@
 import type { EntitySourceType } from "../EntitiesTypes";
-import { GiMiner } from "react-icons/gi";
 import "./SourceTile.css";
-
+import { EntityIcons } from "../Icons";
 
 /**
- * 
+ *
  * Responsible for rendering a Source entity in its game tile form
- * 
+ *
  */
 export default function Source({ entity }: { entity: EntitySourceType }) {
   return (
     <div className="source-tile">
-      <GiMiner />
+      {EntityIcons[entity.type]}
       <progress
         value={entity.val}
         max={entity.max}

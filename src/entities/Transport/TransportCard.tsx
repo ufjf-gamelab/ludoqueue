@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { EntityTransportType } from "../EntitiesTypes";
-import Transport from "./Transporter";
+import Transport from "./TransporterTile";
 import "./TransportCard.css"
 import { TransportIcons } from "../Icons";
 import type { AnchorStyle } from "../Tile";

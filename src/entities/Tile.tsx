@@ -5,6 +5,7 @@ import { TransportIcons, EntityIcons } from "./Icons";
 import Toolset from "./Toolset.tsx";
 import Source from "./Source/SourceTile.tsx";
 import { useGame } from "../Provider.tsx";
+import TransporterTile from "./Transport/TransporterTile.tsx";
 
 export interface AnchorStyle extends React.CSSProperties {
   anchorName?: string;
@@ -19,13 +20,19 @@ export interface AnchorStyle extends React.CSSProperties {
  *
  */
 
-export default function Tile({ entity, selected }: { entity: EntityType, selected: boolean }) {
+export default function Tile({
+  entity,
+  selected,
+}: {
+  entity: EntityType;
+  selected: boolean;
+}) {
   const [isClicked, setIsClicked] = useState(false);
   const { game, dispatch } = useGame()!;
   const renderEntity = (entity: EntityType) => {
     switch (entity?.type) {
       case "source":
-        return <Source entity={entity} />;
+        return <Source key={entity.id} entity={entity} />;
       case "consumer":
         return (
           <div>
@@ -51,21 +58,7 @@ export default function Tile({ entity, selected }: { entity: EntityType, selecte
           </div>
         );
       case "transport":
-        return (
-          <div className="transportMinimized">
-            <div
-              style={{
-                gridColumn: "2/2",
-                gridRow: "2/2",
-                placeSelf: "center",
-                fontSize: "200%",
-              }}
-            >
-              {TransportIcons[entity.direction]}
-            </div>
-            <div style={{ gridColumn: "3/3" }}>{entity.val}</div>
-          </div>
-        );
+        return <TransporterTile key={entity.id} entity={entity} />;
     }
   };
 

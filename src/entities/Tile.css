@@ -3,18 +3,7 @@
   place-content: stretch;
   background-color: rgb(219, 207, 219);
   color: black;
-  border: 1px solid lightgreen;
-
-  
-}
-
-
-.transportMinimized {
-  width: 80%;
-  height: 80%;
-  display: grid;
-  grid-template-columns: 20% 60% 20%;
-  grid-template-rows: 20% 60% 20%;
+  border: 1px solid lightgreen; 
 }
 
 .stockMinimized > div {
