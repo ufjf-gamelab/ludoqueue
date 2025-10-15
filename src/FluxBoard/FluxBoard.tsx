@@ -23,9 +23,10 @@ export default function FluxBoard() {
   const handleClick = (
     x: number,
     y: number,
-
-    entity: EntityType | undefined
   ) => {
+    const entity = Array.from(game.entities.values()).find(
+      (e) => e.x === x && e.y === y
+    );
     switch (selectedTool) {
       case "stock": {
         if (!entity) {
@@ -83,8 +84,8 @@ export default function FluxBoard() {
                     rate: 1,
                     source: newTransportSource.id,
                     target: newTransportTarget.id,
-                    x: newTransportTarget.y,
-                    y: newTransportTarget.x - 1,
+                    x: newTransportTarget.x - 1,
+                    y: newTransportTarget.y,
                     direction: "right",
                   };
                   dispatch(action);
@@ -97,8 +98,8 @@ export default function FluxBoard() {
                     rate: 1,
                     source: newTransportSource.id,
                     target: newTransportTarget.id,
-                    x: newTransportTarget.y,
-                    y: newTransportTarget.x + 1,
+                    x: newTransportTarget.x + 1,
+                    y: newTransportTarget.y,
                     direction: "left",
                   };
                   dispatch(action);
@@ -114,8 +115,8 @@ export default function FluxBoard() {
                     rate: 1,
                     source: newTransportSource.id,
                     target: newTransportTarget.id,
-                    x: newTransportTarget.y - 1,
-                    y: newTransportTarget.x,
+                    x: newTransportTarget.x,
+                    y: newTransportTarget.y-1,
                     direction: "down",
                   };
                   dispatch(action);
@@ -129,8 +130,8 @@ export default function FluxBoard() {
                     rate: 1,
                     source: newTransportSource.id,
                     target: newTransportTarget.id,
-                    x: newTransportTarget.y + 1,
-                    y: newTransportTarget.x,
+                    x: newTransportTarget.x,
+                    y: newTransportTarget.y+1,
                     direction: "up",
                   };
                   dispatch(action);
@@ -158,7 +159,7 @@ export default function FluxBoard() {
             (e.clientY - grid.getBoundingClientRect().y) / CELL_WIDTH
           );
 
-          handleClick(x, y, undefined);
+          handleClick(x, y);
           
         }}
         style={{
