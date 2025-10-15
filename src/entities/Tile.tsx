@@ -6,6 +6,7 @@ import Toolset from "./Toolset.tsx";
 import Source from "./Source/SourceTile.tsx";
 import { useGame } from "../Provider.tsx";
 import TransporterTile from "./Transport/TransporterTile.tsx";
+import Stock from "./Stock/StockTile.tsx";
 
 export interface AnchorStyle extends React.CSSProperties {
   anchorName?: string;
@@ -27,7 +28,6 @@ export default function Tile({
   entity: EntityType;
   selected: boolean;
 }) {
-  const [isClicked, setIsClicked] = useState(false);
   const { game, dispatch } = useGame()!;
   const renderEntity = (entity: EntityType) => {
     switch (entity?.type) {
@@ -45,17 +45,7 @@ export default function Tile({
         );
       case "stock":
         return (
-          <div className="stockMinimized">
-            <div>
-              {EntityIcons[entity.type]}
-              {entity.val === entity.max ? (
-                <p> Stock full! </p>
-              ) : (
-                <p> {entity.val} items on stock. </p>
-              )}
-            </div>
-            <progress value={entity.val} max={entity.max}></progress>
-          </div>
+          <Stock key={entity.id} entity={entity} />
         );
       case "transport":
         return <TransporterTile key={entity.id} entity={entity} />;
@@ -66,8 +56,6 @@ export default function Tile({
     <div
       className="tile"
       onClick={() => {
-        //setIsClicked(!isClicked);
-
         if (game.selected?.id !== entity?.id) {
           dispatch({ type: "select entity", entityId: entity?.id || null });
         } else {

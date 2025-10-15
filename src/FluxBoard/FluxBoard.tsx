@@ -1,18 +1,18 @@
 import { useRef, useState } from "react";
 import "./FluxBoard.css";
-import { useGame } from "./Provider";
-import type { GameActionCreateStock } from "./entities/Stock/StockActions";
-import type { EntityType } from "./entities/EntitiesTypes";
-import type { GameActionCreateSource } from "./entities/Source/SourceActions";
-import type { GameActionCreateConsumer } from "./entities/Consumer/ConsumerActions";
-import type { GameActionCreateTransport } from "./entities/Transport/TransportActions";
-import Tile from "./entities/Tile";
-import { EntityIcons } from "./entities/Icons";
+import { useGame } from "../Provider";
+import type { GameActionCreateStock } from "../entities/Stock/StockActions";
+import type { EntityType } from "../entities/EntitiesTypes";
+import type { GameActionCreateSource } from "../entities/Source/SourceActions";
+import type { GameActionCreateConsumer } from "../entities/Consumer/ConsumerActions";
+import type { GameActionCreateTransport } from "../entities/Transport/TransportActions";
+import Tile from "../entities/Tile";
+import { EntityIcons } from "../entities/Icons";
 
 export default function FluxBoard() {
   const CELL_WIDTH = 55;
-  const NUM_ROWS = 5;
-  const NUM_COLS = 5;
+  const NUM_ROWS = 9;
+  const NUM_COLS = 9;
   const { game, dispatch } = useGame()!;
 
   const [selectedTool, setSelectedTool] = useState<string | null>(null);

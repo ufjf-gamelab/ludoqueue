@@ -1,6 +1,6 @@
 import Source from "./Source/SourceTile";
 import type { GameType } from "../types";
-import Stock from "./Stock/Stock";
+import Stock from "./Stock/StockTile";
 import Consumer from "./Consumer/Consumer";
 import Transport from "./Transport/TransporterTile";
 import "./EntitiesProgress.css"

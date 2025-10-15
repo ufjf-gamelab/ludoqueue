@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { EntityStockType } from "../EntitiesTypes";
-import Stock from "./Stock";
+import Stock from "./StockTile";
 import "./StockCard.css";
 import type { AnchorStyle } from "../Tile";
 import { EntityIcons } from "../Icons";
