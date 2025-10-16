@@ -1,0 +1,29 @@
+/* Transport sprites */
+@keyframes conveyorBelt {
+  from {
+    background-position-x: 0px;
+  }
+  to {
+    background-position-x: -672px;
+  }
+}
+.transporter-sprite {
+  width: 42px; /* nao consegui fazer seguir o tamanho do pai, provavelmente pq paramos de definir tamanhoe mcada */
+  height: 42px;
+  background-image: url("../assets/conveyor-green_idle.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  image-rendering: pixelated;
+  animation: conveyorBelt 2s steps(16) infinite running;
+}
+
+/* Rotation for each transproter direction */
+.transporter-sprite.right {
+  transform: rotate(180deg);
+}
+.transporter-sprite.down {
+  transform: rotate(-90deg);
+}
+.transporter-sprite.up{
+  transform: rotate(90deg);
+}

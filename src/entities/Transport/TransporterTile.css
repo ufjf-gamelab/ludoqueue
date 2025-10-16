@@ -2,8 +2,8 @@
   display: grid;
   place-content: center;
   border: 4px dashed darkred;
-  progress {
+  /*progress {
     width: 100%;
         
-  }
+  }*/
 }
