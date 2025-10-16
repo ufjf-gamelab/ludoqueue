@@ -1,0 +1,25 @@
+.tool-selector {
+  display: flex;
+  gap: 1rem;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: start;
+
+  .tile-list {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.1rem;
+  }
+
+  button {
+    border-radius: 0.5rem;
+    background-color: rgb(219, 207, 219);
+    color: black;
+  }
+
+  button.selected {
+    background-color: rgb(100, 100, 255);
+    color: white;
+    border-style: inset;
+  }
+}

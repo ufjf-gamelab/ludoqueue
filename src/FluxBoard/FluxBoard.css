@@ -14,20 +14,6 @@
       padding: 0.5rem;
     }
   }
-  .tool-selector {
-    display: flex;
-    gap: 1rem;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: start;
-  }
-}
+ }
 
-.source,
-.stock,
-.consumer,
-.transport {
-  border-radius: 20px;
-  background-color: rgb(219, 207, 219);
-  color: black;
-}
+
