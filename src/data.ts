@@ -82,6 +82,7 @@ export const initialState: GameType = {
     ],
   ]),
   selected: null,
+  status: "waiting",
   stocks: ["stock1"],
   sources: ["source1"],
   consumers: ["consumer1"],
