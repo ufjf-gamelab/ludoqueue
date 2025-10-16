@@ -1,6 +1,6 @@
 import type { EntitySourceType } from "../EntitiesTypes";
 import "./SourceTile.css";
-import { EntityIcons } from "../Icons";
+import { EntitySprites } from "../Assets";
 
 /**
  *
@@ -10,12 +10,13 @@ import { EntityIcons } from "../Icons";
 export default function Source({ entity }: { entity: EntitySourceType }) {
   return (
     <div className="source-tile">
-      {EntityIcons[entity.type]}
+      {EntitySprites(entity)}
+      {/* {EntityIcons[entity.type]}
       <progress
         value={entity.val}
         max={entity.max}
         title={`${entity.val}/${entity.max}`}
-      />
+      /> */}
     </div>
   );
 }

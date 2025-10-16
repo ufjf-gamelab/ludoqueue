@@ -1,7 +1,7 @@
-import type { EntityTransportType } from "./EntitiesTypes";
+import type { EntityType } from "./EntitiesTypes";
 import "./Assets.css";
 
 //Transport assets
-export function TransporterSprites(entity: EntityTransportType) {
-    return <div className={`transporter-sprite ${entity.direction}`}></div>;
+export function EntitySprites(entity: EntityType) {
+    return <div className={`${entity.type}-sprite ${entity.type=="transport" ? entity.direction : ""}`}></div>;
 }
