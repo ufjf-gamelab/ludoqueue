@@ -1,8 +1,9 @@
-import Source from "./Source/Source";
+import Source from "./Source/SourceTile";
 import type { GameType } from "../types";
-import Stock from "./Stock/Stock";
-import Consumer from "./Consumer/Consumer";
-import Transport from "./Transport/Transporter";
+import Stock from "./Stock/StockTile";
+import ConsumerTile from "./Consumer/ConsumerTile";
+import Transport from "./Transport/TransporterTile";
+import "./EntitiesProgress.css"
 import type {
   EntityConsumerType,
   EntitySourceType,
@@ -12,14 +13,7 @@ import type {
 
 export default function EntitiesProgress({ game }: { game: GameType }) {
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        gap: "10px",
-        margin: "5px",
-      }}
-    >
+    <div className="EntitiesProgress">
       {game.sources.map((source) => {
         return (
           <Source
@@ -38,7 +32,7 @@ export default function EntitiesProgress({ game }: { game: GameType }) {
       })}
       {game.consumers.map((consumers) => {
         return (
-          <Consumer
+          <ConsumerTile
             key={game.entities.get(consumers)!.id}
             entity={game.entities.get(consumers) as EntityConsumerType}
           />

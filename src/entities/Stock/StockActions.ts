@@ -6,6 +6,8 @@ export type GameActionCreateStock = {
   type: "create stock";
   max: number;
   val: number;
+  x: number;
+  y: number;
 };
 
 export type GameActionDeleteStock = {
@@ -13,7 +15,15 @@ export type GameActionDeleteStock = {
   id: string;
 };
 
-export function createStock(state: GameType, max: number) {
+export function createStock(state: GameType, max: number, x: number, y:number) {
+  if (
+    Array.from(state.entities.values()).find(
+      (entity) => entity.x === x && entity.y === y
+    )
+  ) {
+    //checagem se ja existe entidade na posicao
+    return state;
+  }
   let numberID: number = 1;
   if (state.stocks.length > 0) {
     const lastStockNumber = state.stocks
@@ -31,6 +41,8 @@ export function createStock(state: GameType, max: number) {
     val: 0,
     max: max,
     closed: false,
+    x: x,
+    y: y,
   };
   newState.entities.set(newStockID, newStockEntity);
   newState.stocks.push(newStockID);

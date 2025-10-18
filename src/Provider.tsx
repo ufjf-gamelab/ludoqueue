@@ -5,16 +5,14 @@ import {
   type Dispatch,
   type ReactNode,
 } from "react";
-import type {
-  GameType,
-} from "./types";
+import type { GameStatus, GameType } from "./types";
 import type {
   EntityConsumerType,
   EntitySourceType,
   EntityStockType,
   EntityTransportType,
   EntityType,
-} from "./entities/EntitiesTypes"
+} from "./entities/EntitiesTypes";
 import { initialState } from "./data";
 import {
   createSource,
@@ -28,8 +26,18 @@ import {
   type GameActionCreateStock,
   type GameActionDeleteStock,
 } from "./entities/Stock/StockActions";
-import { createConsumer, deleteConsumer, type GameActionCreateConsumer, type GameActionDeleteConsumer } from "./entities/Consumer/ConsumerActions";
-import { createTransport, deleteTransport, type GameActionCreateTransport, type GameActionDeleteTransport } from "./entities/Transport/TransportActions";
+import {
+  createConsumer,
+  deleteConsumer,
+  type GameActionCreateConsumer,
+  type GameActionDeleteConsumer,
+} from "./entities/Consumer/ConsumerActions";
+import {
+  createTransport,
+  deleteTransport,
+  type GameActionCreateTransport,
+  type GameActionDeleteTransport,
+} from "./entities/Transport/TransportActions";
 type GameProviderProps = {
   children: ReactNode;
 };
@@ -48,25 +56,45 @@ export function useGame() {
 export function gameReducer(state: GameType, action: GameAction): GameType {
   switch (action.type) {
     case "create source":
-      return createSource(state, action.max);
+      return createSource(state, action.max, action.x, action.y);
     case "delete source":
       return deleteSource(state, action.id);
     case "create stock":
-      return createStock(state, action.max);
+      return createStock(state, action.max, action.x, action.y);
     case "delete stock":
       return deleteStock(state, action.id);
     case "create consumer":
-      return createConsumer(state, action.max, action.rate);
+      return createConsumer(state, action.max, action.rate, action.x, action.y);
     case "delete consumer":
       return deleteConsumer(state, action.id);
     case "create transport":
-      return createTransport(state, action.max, action.rate, action.source, action.target);
+      return createTransport(
+        state,
+        action.max,
+        action.rate,
+        action.source,
+        action.target,
+        action.x,
+        action.y,
+        action.direction
+      );
     case "delete transport":
       return deleteTransport(state, action.id);
     case "set node value":
       return setNodeVal(state, action.id, action.value);
     case "game tick":
       return gameTick(state);
+    case "select entity":
+      return selectEntity(state, action.entityId);
+    case "set status": {
+      if (state.status === action.newStatus) {
+        return { ...state, status: "waiting" };
+      } else {
+        return { ...state, status: action.newStatus };
+      }
+    }
+    case "pointing":
+      return pointingAction(state, action);
 
     default:
       break;
@@ -180,6 +208,12 @@ export function gameTransportTick(
   }
 }
 
+export function selectEntity(state: GameType, entityId: string | null) {
+  const newState = structuredClone(state);
+  newState.selected = entityId ? newState.entities.get(entityId) || null : null;
+  return newState;
+}
+
 type GameActionSetNodeValue = {
   type: "set node value";
   id: string;
@@ -190,6 +224,21 @@ type GameActionTick = {
   type: "game tick";
 };
 
+type GameActionSelectEntity = {
+  type: "select entity";
+  entityId: string | null;
+};
+
+type GameActionSetStatus = {
+  type: "set status";
+  newStatus: GameStatus;
+};
+
+type GameActionPointing = {
+  type: "pointing";
+  x: number;
+  y: number;
+};
 export type GameAction =
   | GameActionCreateSource
   | GameActionDeleteSource
@@ -200,4 +249,172 @@ export type GameAction =
   | GameActionCreateTransport
   | GameActionDeleteTransport
   | GameActionSetNodeValue
-  | GameActionTick;
+  | GameActionTick
+  | GameActionSelectEntity
+  | GameActionSetStatus
+  | GameActionPointing;
+
+export function pointingAction(
+  state: GameType,
+  action: GameActionPointing
+): GameType {
+  const { x, y } = action;
+  const newState = structuredClone(state);
+  const entity = Array.from(state.entities.values()).find(
+    (e) => e.x === x && e.y === y
+  );
+  switch (state.status) {
+    case "stock": {
+      if (entity) return state;
+      const action: GameActionCreateStock = {
+        type: "create stock",
+        max: 5,
+        val: 0,
+        x: x,
+        y: y,
+      };
+      newState.status = "waiting";
+      return gameReducer(newState, action);
+    }
+    case "source": {
+      if (entity) return state;
+      const action: GameActionCreateSource = {
+        type: "create source",
+        max: 5,
+        val: 0,
+        x: x,
+        y: y,
+      };
+      newState.status = "waiting";
+      return gameReducer(newState, action);
+    }
+    case "consumer": {
+      if (entity) return state;
+      const action: GameActionCreateConsumer = {
+        type: "create consumer",
+        max: 5,
+        rate: 1,
+        x: x,
+        y: y,
+      };
+      newState.status = "waiting";
+      return gameReducer(newState, action);
+    }
+    case "transport right": {
+      if (entity) return state;
+      const source = Array.from(state.entities.values()).find(
+        (e) =>
+          e.x === x - 1 &&
+          e.y === y &&
+          (e.type === "source" || e.type === "stock")
+      );
+      const target = Array.from(state.entities.values()).find(
+        (e) =>
+          e.x === x + 1 &&
+          e.y === y &&
+          (e.type === "consumer" || e.type === "stock")
+      );
+      if (!source || !target) return state;
+      const action: GameActionCreateTransport = {
+        type: "create transport",
+        max: 1,
+        rate: 1,
+        source: source.id,
+        target: target.id,
+        x: x,
+        y: y,
+        direction: "right",
+      };
+      newState.status = "waiting";
+      return gameReducer(newState, action);
+    }
+    case "transport down": {
+      if (entity) return state;
+      const source = Array.from(state.entities.values()).find(
+        (e) =>
+          e.x === x &&
+          e.y === y - 1 &&
+          (e.type === "source" || e.type === "stock")
+      );
+      const target = Array.from(state.entities.values()).find(
+        (e) =>
+          e.x === x &&
+          e.y === y + 1 &&
+          (e.type === "consumer" || e.type === "stock")
+      );
+      if (!source || !target) return state;
+      const action: GameActionCreateTransport = {
+        type: "create transport",
+        max: 1,
+        rate: 1,
+        source: source.id,
+        target: target.id,
+        x: x,
+        y: y,
+        direction: "down",
+      };
+      newState.status = "waiting";
+      return gameReducer(newState, action);
+    }
+    case "transport left": {
+      if (entity) return state;
+      const source = Array.from(state.entities.values()).find(
+        (e) =>
+          e.x === x + 1 &&
+          e.y === y &&
+          (e.type === "source" || e.type === "stock")
+      );
+      const target = Array.from(state.entities.values()).find(
+        (e) =>
+          e.x === x - 1 &&
+          e.y === y &&
+          (e.type === "consumer" || e.type === "stock")
+      );
+      if (!source || !target) return state;
+      const action: GameActionCreateTransport = {
+        type: "create transport",
+        max: 1,
+        rate: 1,
+        source: source.id,
+        target: target.id,
+        x: x,
+        y: y,
+        direction: "left",
+      };
+      newState.status = "waiting";
+      return gameReducer(newState, action);
+    }
+    case "transport up": {
+      if (entity) return state;
+      const source = Array.from(state.entities.values()).find(
+        (e) =>
+          e.x === x &&
+          e.y === y + 1 &&
+          (e.type === "source" || e.type === "stock")
+      );
+      const target = Array.from(state.entities.values()).find(
+        (e) =>
+          e.x === x &&
+          e.y === y - 1 &&
+          (e.type === "consumer" || e.type === "stock")
+      );
+      if (!source || !target) return state;
+      const action: GameActionCreateTransport = {
+        type: "create transport",
+        max: 1,
+        rate: 1,
+        source: source.id,
+        target: target.id,
+        x: x,
+        y: y,
+        direction: "up",
+      };
+      newState.status = "waiting";
+      return gameReducer(newState, action);
+    }
+
+    default:
+      return state;
+  }
+  return state;
+}

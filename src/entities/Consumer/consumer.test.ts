@@ -16,6 +16,8 @@ describe("Consumer", () => {
       type: "create consumer",
       max: 10,
       rate: 1,
+      x: 0,
+      y: 0,
     };
 
     const result = gameReducer(stateTest as GameType, actionTest);
@@ -38,6 +40,8 @@ describe("Consumer", () => {
             max: 5,
             rate: 1,
             cooldown: 1.25,
+            x: 0,
+            y: 0,
           },
         ],
       ]),
@@ -48,8 +52,10 @@ describe("Consumer", () => {
       type: "create consumer",
       max: 15,
       rate: 1,
+      x: 1,
+      y: 0,
     };
-
+    expect(stateTest.consumers).toHaveLength(1);
     const result = gameReducer(stateTest as GameType, actionTest);
     expect(result.consumers).toHaveLength(2);
     expect(result.consumers[1]).toBe("consumer2");
@@ -70,6 +76,8 @@ describe("Consumer", () => {
             max: 5,
             rate: 1,
             cooldown: 1.25,
+            x: 0,
+            y: 0,
           },
         ],
       ]),
@@ -80,6 +88,8 @@ describe("Consumer", () => {
       type: "create consumer",
       max: 15,
       rate: 1,
+      x: 1,
+      y: 0,
     };
 
     const result = gameReducer(stateTest as GameType, actionTest);
@@ -102,6 +112,8 @@ describe("Consumer", () => {
             max: 5,
             rate: 1,
             cooldown: 1.25,
+            x: 0,
+            y: 0,
           },
         ],
       ]),
@@ -112,6 +124,8 @@ describe("Consumer", () => {
       type: "create consumer",
       max: 15,
       rate: 1,
+      x: 1,
+      y: 0,
     };
 
     const result = gameReducer(stateTest as GameType, actionTest);
@@ -134,6 +148,8 @@ describe("Consumer", () => {
             max: 5,
             rate: 1,
             cooldown: 1.25,
+            x: 0,
+            y: 0,
           },
         ],
       ]),
@@ -163,6 +179,8 @@ describe("Consumer", () => {
             max: 5,
             rate: 1,
             cooldown: 1.25,
+            x: 0,
+            y: 0,
           },
         ],
       ]),
@@ -188,6 +206,8 @@ describe("Consumer", () => {
       max: 2,
       rate: 1,
       cooldown: 0,
+      x: 0,
+      y: 0,
     };
     gameConsumerTick(fakeCosumer);
     expect(fakeCosumer.val).toBe(0);
@@ -202,6 +222,8 @@ describe("Consumer", () => {
       max: 2,
       rate: 1,
       cooldown: 0,
+      x: 0,
+      y: 0,
     };
     gameConsumerTick(fakeConsumer);
     expect(fakeConsumer.val).toBe(0);
@@ -216,6 +238,8 @@ describe("Consumer", () => {
       max: 2,
       rate: 1,
       cooldown: 2,
+      x: 0,
+      y: 0,
     };
     gameConsumerTick(fakeConsumer);
     expect(fakeConsumer.val).toBe(1);
@@ -232,6 +256,8 @@ describe("Consumer", () => {
       max: 2,
       rate: 1,
       cooldown: 2,
+      x: 0,
+      y: 0,
     };
     gameConsumerTick(fakeConsumer);
     expect(fakeConsumer.cooldown).toBe(1);

@@ -1,0 +1,30 @@
+import { FaRightLong, FaLeftLong, FaUpLong, FaDownLong, FaSink } from "react-icons/fa6";
+import { GiMiner } from "react-icons/gi";
+import { BsMinecartLoaded } from "react-icons/bs";
+import { BsSafe2 } from "react-icons/bs";
+import { TiArrowMove, TiCancel, TiDelete } from "react-icons/ti";
+
+
+export const EntityIcons = {
+  stock: <BsSafe2 />,
+  consumer: <FaSink />,
+  source: <GiMiner />,
+  transport: <BsMinecartLoaded />,
+  "transport right": <FaRightLong />,
+  "transport left": <FaLeftLong />,
+  "transport up": <FaUpLong />,
+  "transport down": <FaDownLong />
+};
+
+export const TransportIcons = {
+  down: <FaDownLong />,
+  up: <FaUpLong />,
+  left: <FaLeftLong />,
+  right: <FaRightLong />,
+};
+
+export const ActionIcons = {
+  delete: <TiDelete />,
+  move: <TiArrowMove />,
+  cancel: <TiCancel />,
+};

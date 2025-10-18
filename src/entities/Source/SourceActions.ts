@@ -5,6 +5,8 @@ export type GameActionCreateSource = {
   type: "create source";
   max: number;
   val: number;
+  x: number;
+  y: number;
 };
 
 export type GameActionDeleteSource = {
@@ -12,7 +14,15 @@ export type GameActionDeleteSource = {
   id: string;
 };
 
-export function createSource(state: GameType, max: number) {
+export function createSource(state: GameType, max: number, x: number, y:number) {
+  if (
+    Array.from(state.entities.values()).find(
+      (entity) => entity.x === x && entity.y === y
+    )
+  ) {
+    //checagem se ja existe entidade na posicao
+    return state;
+  }
   let numberID: number = 1;
   if (state.sources.length > 0) {
     const lastSourceNumber = state.sources
@@ -31,6 +41,8 @@ export function createSource(state: GameType, max: number) {
     max: max,
     cooldown: 1,
     rate: 1,
+    x: x,
+    y: y,
   };
   newState.entities.set(newSourceID, newSourceEntity);
   newState.sources.push(newSourceID);
