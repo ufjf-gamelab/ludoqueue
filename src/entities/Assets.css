@@ -1,10 +1,18 @@
-/* Config de tamanho geral */
+/* Config geral (tamanho e play/pause) */
 .transport-sprite,.consumer-sprite,.source-sprite,.stock-sprite {
   width: 42px; /* nao consegui fazer seguir o tamanho do pai, provavelmente pq paramos de definir tamanhoe mcada */
   height: 42px;
   background-repeat: no-repeat;
   background-size: cover;
   image-rendering: pixelated;
+}
+
+.running{
+  animation-play-state: running;
+}
+
+.cooldown{
+  animation: none !important;
 }
 
 /* Transporter sprites */
@@ -19,7 +27,7 @@
 
 .transport-sprite {
   background-image: url("../assets/conveyor-green_idle.png");
-  animation: conveyorBelt 2s steps(16) infinite running;
+  animation: conveyorBelt 2s steps(16) infinite;
 }
 
 /* Rotation for each transproter direction */
@@ -44,7 +52,7 @@
 }
 .source-sprite {
   background-image: url("../assets/drill_idle.png");
-  animation: drilling 2s steps(20) infinite running;
+  animation: drilling 2s steps(20) infinite;
 }
 
 /* Stock sprite */
@@ -58,7 +66,7 @@
 }
 .stock-sprite {
   background-image: url("../assets/storage_idle.png");
-  animation: stockIdle 1s steps(6) infinite running;
+  animation: stockIdle 1s steps(6) infinite;
 }
 
 
@@ -73,5 +81,5 @@
 }
 .consumer-sprite {
   background-image: url("../assets/furnace_idle.png");
-  animation: consumerIdle 1s steps(4) infinite running;
+  animation: consumerIdle 1s steps(4) infinite;
 }
