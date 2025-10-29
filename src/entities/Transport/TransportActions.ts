@@ -68,6 +68,7 @@ export function createTransport(
   };
   newState.entities.set(newTransportID, newTransportEntity);
   newState.transports.push(newTransportID);
+  updateTransporters(newState, newTransportID, x, y);
   return newState;
 }
 

@@ -306,13 +306,13 @@ export function pointingAction(
         (e) =>
           e.x === x - 1 &&
           e.y === y &&
-          (e.type === "source" || e.type === "stock")
+          (e.type === "source" || e.type === "stock" || e.type === "transport")
       );
       const target = Array.from(state.entities.values()).find(
         (e) =>
           e.x === x + 1 &&
           e.y === y &&
-          (e.type === "consumer" || e.type === "stock")
+          (e.type === "consumer" || e.type === "stock" || e.type === "transport")
       );
       const action: GameActionCreateTransport = {
         type: "create transport",
@@ -333,13 +333,13 @@ export function pointingAction(
         (e) =>
           e.x === x &&
           e.y === y - 1 &&
-          (e.type === "source" || e.type === "stock")
+          (e.type === "source" || e.type === "stock" || e.type === "transport")
       );
       const target = Array.from(state.entities.values()).find(
         (e) =>
           e.x === x &&
           e.y === y + 1 &&
-          (e.type === "consumer" || e.type === "stock")
+          (e.type === "consumer" || e.type === "stock" || e.type === "transport")
       );
       const action: GameActionCreateTransport = {
         type: "create transport",
@@ -360,13 +360,13 @@ export function pointingAction(
         (e) =>
           e.x === x + 1 &&
           e.y === y &&
-          (e.type === "source" || e.type === "stock")
+          (e.type === "source" || e.type === "stock" || e.type === "transport")
       );
       const target = Array.from(state.entities.values()).find(
         (e) =>
           e.x === x - 1 &&
           e.y === y &&
-          (e.type === "consumer" || e.type === "stock")
+          (e.type === "consumer" || e.type === "stock" || e.type === "transport")
       );
       const action: GameActionCreateTransport = {
         type: "create transport",
@@ -387,13 +387,13 @@ export function pointingAction(
         (e) =>
           e.x === x &&
           e.y === y + 1 &&
-          (e.type === "source" || e.type === "stock")
+          (e.type === "source" || e.type === "stock" || e.type === "transport")
       );
       const target = Array.from(state.entities.values()).find(
         (e) =>
           e.x === x &&
           e.y === y - 1 &&
-          (e.type === "consumer" || e.type === "stock")
+          (e.type === "consumer" || e.type === "stock" || e.type === "transport")
       );
       const action: GameActionCreateTransport = {
         type: "create transport",
