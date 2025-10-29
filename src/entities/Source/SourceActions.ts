@@ -47,7 +47,7 @@ export function createSource(state: GameType, max: number, x: number, y:number) 
   };
   newState.entities.set(newSourceID, newSourceEntity);
   newState.sources.push(newSourceID);
-  updateTransporters(newState,newSourceEntity);
+  updateTransporters(newState,newSourceID, x, y);
   return newState;
 }
 

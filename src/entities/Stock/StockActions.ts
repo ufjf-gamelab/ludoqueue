@@ -47,7 +47,7 @@ export function createStock(state: GameType, max: number, x: number, y:number) {
   };
   newState.entities.set(newStockID, newStockEntity);
   newState.stocks.push(newStockID);
-  updateTransporters(newState,newStockEntity);
+  updateTransporters(newState,newStockID, x, y);
   return newState;
 }
 

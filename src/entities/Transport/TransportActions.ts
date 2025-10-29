@@ -1,5 +1,5 @@
 import type { GameType } from "../../types";
-import type { EntityTransportType, EntityType } from "../EntitiesTypes";
+import type { EntityTransportType } from "../EntitiesTypes";
 
 export type TransportDirection = "up" | "down" | "left" | "right";
 
@@ -82,80 +82,80 @@ export function deleteTransport(state: GameType, transport: string) {
   return state;
 }
 
-export function updateTransporters(state: GameType, entity: EntityType) {
-  updateLeftTransporter(state, entity);
-  updateRightTransporter(state, entity);
-  updateUpperTransporter(state, entity);
-  updateLowerTransporter(state, entity);
+export function updateTransporters(state: GameType, id: string, x: number, y: number) {
+  updateLeftTransporter(state, id, x ,y);
+  updateRightTransporter(state, id, x ,y);
+  updateUpperTransporter(state, id, x ,y);
+  updateLowerTransporter(state, id, x ,y);
 }
-function updateLeftTransporter(state: GameType, entity: EntityType) {
+function updateLeftTransporter(state: GameType, id: string, x: number, y: number) {
   const entityToUpdate = Array.from(state.entities.values()).find(
-    (e) => e.x + 1 === entity.x && e.y === entity.y && e.type === "transport"
+    (e) => e.x + 1 === x && e.y === y && e.type === "transport"
   ) as EntityTransportType | undefined;
   if (entityToUpdate) {
     switch (entityToUpdate.direction) {
       case "left": {
-        entityToUpdate.source = entity.id;
+        entityToUpdate.source = id;
         break;
       }
       case "right": {
-        entityToUpdate.target = entity.id;
+        entityToUpdate.target = id;
         break;
       }
     }
   }
 }
-function updateRightTransporter(state: GameType, entity: EntityType) {
+function updateRightTransporter(state: GameType, id: string, x: number, y: number) {
   const entityToUpdate = Array.from(state.entities.values()).find(
-    (e) => e.x - 1 === entity.x && e.y === entity.y && e.type === "transport"
+    (e) => e.x - 1 === x && e.y === y && e.type === "transport"
   ) as EntityTransportType | undefined;
   if (!entityToUpdate) {
     return;
   }
   switch (entityToUpdate.direction) {
     case "left": {
-      entityToUpdate.target = entity.id;
+      entityToUpdate.target = id;
       break;
     }
     case "right": {
-      entityToUpdate.source = entity.id;
+      entityToUpdate.source = id;
       break;
     }
   }
 }
-function updateUpperTransporter(state: GameType, entity: EntityType) {
+function updateUpperTransporter(state: GameType, id: string, x: number, y: number) {
   const entityToUpdate = Array.from(state.entities.values()).find(
-    (e) => e.x === entity.x && e.y + 1 === entity.y && e.type === "transport"
+    (e) => e.x === x && e.y + 1 === y && e.type === "transport"
   ) as EntityTransportType | undefined;
   if (!entityToUpdate) {
     return;
   }
   switch (entityToUpdate.direction) {
     case "up": {
-      entityToUpdate.source = entity.id;
+      entityToUpdate.source = id;
       break;
     }
     case "down": {
-      entityToUpdate.target = entity.id;
+      entityToUpdate.target = id;
       break;
     }
   }
 }
-function updateLowerTransporter(state: GameType, entity: EntityType) {
+function updateLowerTransporter(state: GameType, id: string, x: number, y: number) {
   const entityToUpdate = Array.from(state.entities.values()).find(
     (e) =>
-      e.x === entity.x && e.y - 1 === entity.y && e.type === "transport"
+      e.x === x && e.y - 1 === y && e.type === "transport"
   ) as EntityTransportType | undefined;
   if (!entityToUpdate) {
     return;
   }
   switch (entityToUpdate.direction) {
     case "up": {
-      entityToUpdate.target = entity.id;
+      entityToUpdate.target = id;
       break;
     }
     case "down": {
-      entityToUpdate.source = entity.id;
+      entityToUpdate.source = id;
       break;
     }
   }

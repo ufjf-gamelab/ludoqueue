@@ -48,7 +48,7 @@ export function createConsumer(state: GameType, max: number, rate: number, x:num
   };
   newState.entities.set(newConsumerID, newConsumerEntity);
   newState.consumers.push(newConsumerID);
-  updateTransporters(newState,newConsumerEntity);
+  updateTransporters(newState,newConsumerID, x, y);
   return newState;
 }
 
