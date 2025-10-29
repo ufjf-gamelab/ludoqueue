@@ -1,9 +1,11 @@
 import { it, expect, describe } from "vitest";
 import type { GameType } from "../../types";
 import { gameConsumerTick, gameReducer } from "../../Provider";
-import type { GameActionCreateConsumer, GameActionDeleteConsumer } from "./ConsumerActions";
+import type {
+  GameActionCreateConsumer,
+  GameActionDeleteConsumer,
+} from "./ConsumerActions";
 import type { EntityType, EntityConsumerType } from "../EntitiesTypes";
-
 
 describe("Consumer", () => {
   it("should create consumer1 if none consumers exists", () => {
@@ -63,7 +65,7 @@ describe("Consumer", () => {
     expect(result.entities.get("consumer2")?.type).toBe("consumer");
   });
 
-      it("should create consumer with max 15", () => {
+  it("should create consumer with max 15", () => {
     const stateTest: Partial<GameType> = {
       entities: new Map<string, EntityType>([
         [
@@ -99,7 +101,7 @@ describe("Consumer", () => {
     );
   });
 
-    it("should create consumer with rate 1", () => {
+  it("should create consumer with rate 1", () => {
     const stateTest: Partial<GameType> = {
       entities: new Map<string, EntityType>([
         [
@@ -133,6 +135,39 @@ describe("Consumer", () => {
     expect((result.entities.get("consumer2") as EntityConsumerType).rate).toBe(
       1
     );
+  });
+
+  it("should not create consumer if position is ocupied", () => {
+    const stateTest: Partial<GameType> = {
+      entities: new Map<string, EntityType>([
+        [
+          "consumer1",
+          {
+            id: "consumer1",
+            type: "consumer",
+            name: "Consumer A",
+            val: 0,
+            max: 5,
+            rate: 1,
+            cooldown: 1.25,
+            x: 0,
+            y: 0,
+          },
+        ],
+      ]),
+      consumers: ["consumer1"],
+    };
+
+    const actionTest: GameActionCreateConsumer = {
+      type: "create consumer",
+      max: 15,
+      rate: 1,
+      x: 0,
+      y: 0,
+    };
+    expect(stateTest.consumers).toHaveLength(1);
+    const result = gameReducer(stateTest as GameType, actionTest);
+    expect(result.consumers).toHaveLength(1);
   });
 
   it("should delete existing consumer", () => {

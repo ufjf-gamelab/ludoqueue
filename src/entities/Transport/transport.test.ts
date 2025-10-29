@@ -18,8 +18,8 @@ describe("Transport", () => {
             max: 5,
             rate: 1,
             cooldown: 1.25,
-            x:0,
-            y:0,
+            x: 0,
+            y: 0,
           },
         ],
         [
@@ -32,8 +32,8 @@ describe("Transport", () => {
             max: 5,
             rate: 1,
             cooldown: 1.25,
-            x:2,
-            y:0,
+            x: 2,
+            y: 0,
           },
         ],
       ]),
@@ -48,8 +48,8 @@ describe("Transport", () => {
       max: 10,
       source: "source1",
       target: "consumer1",
-      x:1,
-      y:0,
+      x: 1,
+      y: 0,
       direction: "right",
     };
 
@@ -73,8 +73,8 @@ describe("Transport", () => {
             max: 5,
             rate: 1,
             cooldown: 1.25,
-            x:0,
-            y:0,
+            x: 0,
+            y: 0,
           },
         ],
         [
@@ -87,8 +87,8 @@ describe("Transport", () => {
             max: 5,
             rate: 1,
             cooldown: 1.25,
-            x:2,
-            y:0,
+            x: 2,
+            y: 0,
           },
         ],
         [
@@ -104,8 +104,8 @@ describe("Transport", () => {
             source: undefined,
             target: undefined,
             direction: "right",
-            x:3,
-            y:0,
+            x: 3,
+            y: 0,
           },
         ],
       ]),
@@ -120,8 +120,8 @@ describe("Transport", () => {
       max: 10,
       source: "source1",
       target: "consumer1",
-      x:1,
-      y:0,
+      x: 1,
+      y: 0,
       direction: "right",
     };
 
@@ -215,8 +215,8 @@ describe("Transport", () => {
             max: 5,
             rate: 1,
             cooldown: 1.25,
-            x:0,
-            y:0,
+            x: 0,
+            y: 0,
           },
         ],
         [
@@ -229,8 +229,8 @@ describe("Transport", () => {
             max: 5,
             rate: 1,
             cooldown: 1.25,
-            x:2,
-            y:0,
+            x: 2,
+            y: 0,
           },
         ],
       ]),
@@ -245,8 +245,8 @@ describe("Transport", () => {
       max: 10,
       source: "source1",
       target: "consumer1",
-      x:1,
-      y:0,
+      x: 1,
+      y: 0,
       direction: "right",
     };
 
@@ -268,8 +268,8 @@ describe("Transport", () => {
             max: 5,
             rate: 1,
             cooldown: 1.25,
-            x:0,
-            y:0,
+            x: 0,
+            y: 0,
           },
         ],
         [
@@ -282,8 +282,8 @@ describe("Transport", () => {
             max: 5,
             rate: 1,
             cooldown: 1.25,
-            x:2,
-            y:0,
+            x: 2,
+            y: 0,
           },
         ],
       ]),
@@ -298,8 +298,8 @@ describe("Transport", () => {
       max: 10,
       source: "source1",
       target: "consumer1",
-      x:1,
-      y:0,
+      x: 1,
+      y: 0,
       direction: "right",
     };
 
@@ -320,8 +320,8 @@ describe("Transport", () => {
             val: 0,
             max: 5,
             closed: false,
-            x:0,
-            y:0,
+            x: 0,
+            y: 0,
           },
         ],
         [
@@ -334,8 +334,8 @@ describe("Transport", () => {
             max: 5,
             rate: 1,
             cooldown: 1.25,
-            x:2,
-            y:0,
+            x: 2,
+            y: 0,
           },
         ],
       ]),
@@ -350,8 +350,8 @@ describe("Transport", () => {
       max: 10,
       source: "stock1",
       target: "consumer1",
-      x:1,
-      y:0,
+      x: 1,
+      y: 0,
       direction: "right",
     };
 
@@ -373,8 +373,8 @@ describe("Transport", () => {
             max: 5,
             rate: 1,
             cooldown: 1.25,
-            x:0,
-            y:0,
+            x: 0,
+            y: 0,
           },
         ],
         [
@@ -387,8 +387,8 @@ describe("Transport", () => {
             max: 5,
             rate: 1,
             cooldown: 1.25,
-            x:2,
-            y:0,
+            x: 2,
+            y: 0,
           },
         ],
       ]),
@@ -403,8 +403,8 @@ describe("Transport", () => {
       max: 10,
       source: "source1",
       target: "consumer1",
-      x:1,
-      y:0,
+      x: 1,
+      y: 0,
       direction: "right",
     };
 
@@ -413,7 +413,7 @@ describe("Transport", () => {
     expect(transport?.target).toBe("consumer1");
   });
 
-  it("deve pegar do estoque quando vazio", () => {
+  it("should not create transport if position is ocupied", () => {
     const stateTest: Partial<GameType> = {
       entities: new Map<string, EntityType>([
         [
@@ -425,8 +425,8 @@ describe("Transport", () => {
             val: 2,
             max: 10,
             closed: false,
-            x:0,
-            y:0,
+            x: 0,
+            y: 0,
           },
         ],
         [
@@ -439,8 +439,8 @@ describe("Transport", () => {
             max: 2,
             rate: 1,
             cooldown: 0,
-            x:2,
-            y:0,
+            x: 2,
+            y: 0,
           },
         ],
         [
@@ -455,8 +455,76 @@ describe("Transport", () => {
             cooldown: 1,
             source: "stock1",
             target: "transport1",
-            x:1,
-            y:0,
+            x: 1,
+            y: 0,
+            direction: "right",
+          },
+        ],
+      ]),
+      stocks: ["stock1"],
+      consumers: ["consumer1"],
+      transports: ["transport1"],
+    };
+
+    const actionTest: GameActionCreateTransport = {
+      type: "create transport",
+      rate: 1,
+      max: 10,
+      source: "source1",
+      target: "consumer1",
+      x: 1,
+      y: 0,
+      direction: "right",
+    };
+
+    const result = gameReducer(stateTest as GameType, actionTest);
+    expect(result.transports).toHaveLength(1);
+  });
+
+  it("deve pegar do estoque quando vazio", () => {
+    const stateTest: Partial<GameType> = {
+      entities: new Map<string, EntityType>([
+        [
+          "stock1",
+          {
+            id: "stock1",
+            type: "stock",
+            name: "Stock A",
+            val: 2,
+            max: 10,
+            closed: false,
+            x: 0,
+            y: 0,
+          },
+        ],
+        [
+          "consumer1",
+          {
+            id: "consumer1",
+            type: "consumer",
+            name: "Consumer A",
+            val: 0,
+            max: 2,
+            rate: 1,
+            cooldown: 0,
+            x: 2,
+            y: 0,
+          },
+        ],
+        [
+          "transport1",
+          {
+            id: "transport1",
+            type: "transport",
+            name: "Transport A",
+            val: 0,
+            max: 1,
+            rate: 1,
+            cooldown: 1,
+            source: "stock1",
+            target: "transport1",
+            x: 1,
+            y: 0,
             direction: "right",
           },
         ],
@@ -468,7 +536,7 @@ describe("Transport", () => {
 
     const result = gameReducer(stateTest as GameType, { type: "game tick" });
     expect(result.entities.get("stock1")?.val).toBe(1); // estoque diminui
-    const transport = result.entities.get("transport1") as EntityTransportType
+    const transport = result.entities.get("transport1") as EntityTransportType;
     expect(transport.val).toBe(1); // transport pega
     expect(transport.cooldown).toBe(1); // cooldown ativado
   });
@@ -485,8 +553,8 @@ describe("Transport", () => {
             val: 2,
             max: 10,
             closed: false,
-            x:0,
-            y:0,
+            x: 0,
+            y: 0,
           },
         ],
         [
@@ -499,8 +567,8 @@ describe("Transport", () => {
             max: 2,
             rate: 1,
             cooldown: 0,
-            x:2,
-            y:0,
+            x: 2,
+            y: 0,
           },
         ],
         [
@@ -515,8 +583,8 @@ describe("Transport", () => {
             cooldown: 2,
             source: "stock1",
             target: "consumer1",
-            x:1,
-            y:0,
+            x: 1,
+            y: 0,
             direction: "right",
           },
         ],
@@ -527,17 +595,23 @@ describe("Transport", () => {
     };
 
     const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
-    const transportTick1 = tick1.entities.get("transport1") as EntityTransportType; 
+    const transportTick1 = tick1.entities.get(
+      "transport1"
+    ) as EntityTransportType;
     expect(transportTick1?.cooldown).toBe(1);
     expect(transportTick1?.val).toBe(0);
 
     const tick2 = gameReducer(tick1, { type: "game tick" });
-    const transportTick2 = tick2.entities.get("transport1") as EntityTransportType; 
+    const transportTick2 = tick2.entities.get(
+      "transport1"
+    ) as EntityTransportType;
     expect(transportTick2?.cooldown).toBe(1);
     expect(transportTick2?.val).toBe(1);
 
     const tick3 = gameReducer(tick2, { type: "game tick" });
-    const transportTick3 = tick3.entities.get("transport1") as EntityTransportType; 
+    const transportTick3 = tick3.entities.get(
+      "transport1"
+    ) as EntityTransportType;
     expect(transportTick3?.cooldown).toBe(1);
     expect(transportTick3?.val).toBe(0);
   });
@@ -554,8 +628,8 @@ describe("Transport", () => {
             val: 2,
             max: 10,
             closed: false,
-            x:0,
-            y:0,
+            x: 0,
+            y: 0,
           },
         ],
         [
@@ -568,8 +642,8 @@ describe("Transport", () => {
             max: 2,
             rate: 1,
             cooldown: 0,
-            x:2,
-            y:0,
+            x: 2,
+            y: 0,
           },
         ],
         [
@@ -584,8 +658,8 @@ describe("Transport", () => {
             cooldown: 1,
             source: "stock1",
             target: "consumer1",
-            x:1,
-            y:0,
+            x: 1,
+            y: 0,
             direction: "right",
           },
         ],
@@ -596,12 +670,16 @@ describe("Transport", () => {
     };
 
     const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
-    const transportTick1 = tick1.entities.get("transport1") as EntityTransportType; 
+    const transportTick1 = tick1.entities.get(
+      "transport1"
+    ) as EntityTransportType;
     expect(transportTick1?.cooldown).toBe(1);
     expect(transportTick1?.val).toBe(1);
 
     const tick2 = gameReducer(tick1, { type: "game tick" });
-    const transportTick2 = tick2.entities.get("transport1") as EntityTransportType; 
+    const transportTick2 = tick2.entities.get(
+      "transport1"
+    ) as EntityTransportType;
 
     expect(transportTick2?.cooldown).toBe(1);
     expect(transportTick2?.val).toBe(0);
@@ -619,8 +697,8 @@ describe("Transport", () => {
             val: 2,
             max: 10,
             closed: false,
-            x:0,
-            y:0,
+            x: 0,
+            y: 0,
           },
         ],
         [
@@ -633,8 +711,8 @@ describe("Transport", () => {
             max: 2,
             rate: 0.25,
             cooldown: 1,
-            x:2,
-            y:0,
+            x: 2,
+            y: 0,
           },
         ],
         [
@@ -649,8 +727,8 @@ describe("Transport", () => {
             cooldown: 1,
             source: "stock1",
             target: "transport1",
-            x:1,
-            y:0,
+            x: 1,
+            y: 0,
             direction: "right",
           },
         ],
@@ -660,7 +738,9 @@ describe("Transport", () => {
       transports: ["transport1"],
     };
     const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
-    const transportTick1 = tick1.entities.get("transport1") as EntityTransportType;
+    const transportTick1 = tick1.entities.get(
+      "transport1"
+    ) as EntityTransportType;
     expect(transportTick1?.val).toBe(1);
     expect(transportTick1?.cooldown).toBe(1);
   });

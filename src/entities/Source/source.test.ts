@@ -98,6 +98,38 @@ describe("Source", () => {
     expect((result.entities.get("source2") as EntitySourceType).max).toBe(15);
   });
 
+    it("should not create source if position is ocupied", () => {
+      const stateTest: Partial<GameType> = {
+        entities: new Map<string, EntityType>([
+          [
+            "source1",
+            {
+              id: "source1",
+              type: "source",
+              name: "source A",
+              val: 0,
+              max: 5,
+              rate: 1,
+              cooldown: 1.25,
+              x: 0,
+              y: 0,
+            },
+          ],
+        ]),
+        sources: ["source1"],
+      };
+  
+      const actionTest: GameActionCreateSource = {
+        type: "create source",
+        max: 15,
+        val: 0,
+        x: 0,
+        y: 0,
+      };
+      const result = gameReducer(stateTest as GameType, actionTest);
+      expect(result.sources).toHaveLength(1);
+    });
+
   it("should delete existing source", () => {
     const stateTest: Partial<GameType> = {
       entities: new Map<string, EntityType>([

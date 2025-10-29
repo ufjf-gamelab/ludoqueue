@@ -94,6 +94,38 @@ describe("Stock", () => {
     expect((result.entities.get("stock2") as EntityStockType).max).toBe(15);
   });
 
+    it("should not create stock if position is ocupied", () => {
+      const stateTest: Partial<GameType> = {
+        entities: new Map<string, EntityType>([
+          [
+            "stock1",
+            {
+              id: "stock1",
+              type: "stock",
+              name: "stock A",
+              val: 0,
+              max: 5,
+              x: 0,
+              y: 0,
+              closed: false,
+            },
+          ],
+        ]),
+        stocks: ["stock1"],
+      };
+  
+      const actionTest: GameActionCreateStock = {
+        type: "create stock",
+        max: 15,
+        val: 0,
+        x: 0,
+        y: 0,
+      };
+      expect(stateTest.stocks).toHaveLength(1);
+      const result = gameReducer(stateTest as GameType, actionTest);
+      expect(result.stocks).toHaveLength(1);
+    });
+
   it("should delete existing stock", () => {
     const stateTest: Partial<GameType> = {
       entities: new Map<string, EntityType>([
