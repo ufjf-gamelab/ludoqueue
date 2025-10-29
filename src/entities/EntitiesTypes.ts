@@ -51,8 +51,8 @@ export type EntityTransportType = {
   max: number;
   rate: number;
   cooldown: number;
-  source: string;
-  target: string;
+  source: string | undefined;
+  target: string | undefined;
 
   x: number;
   y: number;

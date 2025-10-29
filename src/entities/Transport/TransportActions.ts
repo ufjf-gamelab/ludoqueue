@@ -1,5 +1,5 @@
 import type { GameType } from "../../types";
-import type { EntityTransportType } from "../EntitiesTypes";
+import type { EntityTransportType, EntityType } from "../EntitiesTypes";
 
 export type TransportDirection = "up" | "down" | "left" | "right";
 
@@ -7,8 +7,8 @@ export type GameActionCreateTransport = {
   type: "create transport";
   rate: number;
   max: number;
-  source: string;
-  target: string;
+  source: string | undefined;
+  target: string | undefined;
   x: number;
   y: number;
   direction: TransportDirection;
@@ -23,16 +23,16 @@ export function createTransport(
   state: GameType,
   max: number,
   rate: number,
-  source: string,
-  target: string,
+  source: string | undefined,
+  target: string | undefined,
   x: number,
   y: number,
   direction: TransportDirection
 ) {
-  if (!(state.entities.has(source) && state.entities.has(target))) {
-    // chhecagem se origem e destino existem
-    return state;
-  }
+  //if (!(state.entities.has(source) && state.entities.has(target))) {
+  //  // chhecagem se origem e destino existem
+  //  return state;
+  //}
   if (
     Array.from(state.entities.values()).find(
       (entity) => entity.x === x && entity.y === y
@@ -80,4 +80,83 @@ export function deleteTransport(state: GameType, transport: string) {
     return newState;
   }
   return state;
+}
+
+export function updateTransporters(state: GameType, entity: EntityType) {
+  updateLeftTransporter(state, entity);
+  updateRightTransporter(state, entity);
+  updateUpperTransporter(state, entity);
+  updateLowerTransporter(state, entity);
+}
+function updateLeftTransporter(state: GameType, entity: EntityType) {
+  const entityToUpdate = Array.from(state.entities.values()).find(
+    (e) => e.x + 1 === entity.x && e.y === entity.y && e.type === "transport"
+  ) as EntityTransportType | undefined;
+  if (entityToUpdate) {
+    switch (entityToUpdate.direction) {
+      case "left": {
+        entityToUpdate.source = entity.id;
+        break;
+      }
+      case "right": {
+        entityToUpdate.target = entity.id;
+        break;
+      }
+    }
+  }
+}
+function updateRightTransporter(state: GameType, entity: EntityType) {
+  const entityToUpdate = Array.from(state.entities.values()).find(
+    (e) => e.x - 1 === entity.x && e.y === entity.y && e.type === "transport"
+  ) as EntityTransportType | undefined;
+  if (!entityToUpdate) {
+    return;
+  }
+  switch (entityToUpdate.direction) {
+    case "left": {
+      entityToUpdate.target = entity.id;
+      break;
+    }
+    case "right": {
+      entityToUpdate.source = entity.id;
+      break;
+    }
+  }
+}
+function updateUpperTransporter(state: GameType, entity: EntityType) {
+  const entityToUpdate = Array.from(state.entities.values()).find(
+    (e) => e.x === entity.x && e.y + 1 === entity.y && e.type === "transport"
+  ) as EntityTransportType | undefined;
+  if (!entityToUpdate) {
+    return;
+  }
+  switch (entityToUpdate.direction) {
+    case "up": {
+      entityToUpdate.source = entity.id;
+      break;
+    }
+    case "down": {
+      entityToUpdate.target = entity.id;
+      break;
+    }
+  }
+}
+function updateLowerTransporter(state: GameType, entity: EntityType) {
+  const entityToUpdate = Array.from(state.entities.values()).find(
+    (e) =>
+      e.x === entity.x && e.y - 1 === entity.y && e.type === "transport"
+  ) as EntityTransportType | undefined;
+  if (!entityToUpdate) {
+    return;
+  }
+  switch (entityToUpdate.direction) {
+    case "up": {
+      entityToUpdate.target = entity.id;
+      break;
+    }
+    case "down": {
+      entityToUpdate.source = entity.id;
+      break;
+    }
+  }
 }

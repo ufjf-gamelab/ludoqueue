@@ -314,13 +314,12 @@ export function pointingAction(
           e.y === y &&
           (e.type === "consumer" || e.type === "stock")
       );
-      if (!source || !target) return state;
       const action: GameActionCreateTransport = {
         type: "create transport",
         max: 1,
         rate: 1,
-        source: source.id,
-        target: target.id,
+        source: source?.id,
+        target: target?.id,
         x: x,
         y: y,
         direction: "right",
@@ -342,13 +341,12 @@ export function pointingAction(
           e.y === y + 1 &&
           (e.type === "consumer" || e.type === "stock")
       );
-      if (!source || !target) return state;
       const action: GameActionCreateTransport = {
         type: "create transport",
         max: 1,
         rate: 1,
-        source: source.id,
-        target: target.id,
+        source: source?.id,
+        target: target?.id,
         x: x,
         y: y,
         direction: "down",
@@ -370,13 +368,12 @@ export function pointingAction(
           e.y === y &&
           (e.type === "consumer" || e.type === "stock")
       );
-      if (!source || !target) return state;
       const action: GameActionCreateTransport = {
         type: "create transport",
         max: 1,
         rate: 1,
-        source: source.id,
-        target: target.id,
+        source: source?.id,
+        target: target?.id,
         x: x,
         y: y,
         direction: "left",
@@ -398,13 +395,12 @@ export function pointingAction(
           e.y === y - 1 &&
           (e.type === "consumer" || e.type === "stock")
       );
-      if (!source || !target) return state;
       const action: GameActionCreateTransport = {
         type: "create transport",
         max: 1,
         rate: 1,
-        source: source.id,
-        target: target.id,
+        source: source?.id,
+        target: target?.id,
         x: x,
         y: y,
         direction: "up",
