@@ -17,6 +17,8 @@ describe("Stock", () => {
     const actionTest: Partial<GameActionCreateStock> = {
       type: "create stock",
       max: 10,
+      x:0,
+      y:0,
     };
 
     const result = gameReducer(stateTest as GameType, actionTest as GameAction);
@@ -38,6 +40,8 @@ describe("Stock", () => {
             val: 0,
             max: 10,
             closed: false,
+            x:0,
+            y:0,
           },
         ],
       ]),
@@ -47,6 +51,8 @@ describe("Stock", () => {
     const actionTest: Partial<GameActionCreateStock> = {
       type: "create stock",
       max: 15,
+      x:1,
+      y:0,
     };
 
     const result = gameReducer(stateTest as GameType, actionTest as GameAction);
@@ -68,6 +74,8 @@ describe("Stock", () => {
             val: 0,
             max: 10,
             closed: false,
+            x:0,
+            y:0,
           },
         ],
       ]),
@@ -77,6 +85,8 @@ describe("Stock", () => {
     const actionTest: Partial<GameActionCreateStock> = {
       type: "create stock",
       max: 15,
+      x:1,
+      y:0,
     };
 
     const result = gameReducer(stateTest as GameType, actionTest as GameAction);
@@ -96,6 +106,8 @@ describe("Stock", () => {
             val: 5,
             max: 10,
             closed: false,
+            x:0,
+            y:0,
           },
         ],
       ]),
@@ -124,6 +136,8 @@ describe("Stock", () => {
             val: 5,
             max: 10,
             closed: false,
+            x:0,
+            y:0,
           },
         ],
       ]),
@@ -149,6 +163,8 @@ describe("Stock", () => {
       max: 10,
       val: 2,
       closed: false,
+      x:0,
+      y:0,
     };
     const stateTest: Partial<GameType> = {
       entities: new Map<string, EntityType>([["stock1", fakeStock]]),
@@ -174,6 +190,8 @@ describe("Stock", () => {
             val: 10,
             max: 10,
             closed: false,
+            x:0,
+            y:0,
           },
         ],
         [
@@ -186,6 +204,8 @@ describe("Stock", () => {
             max: 2,
             rate: 1,
             cooldown: 0,
+            x:2,
+            y:0,
           },
         ],
         [
@@ -200,6 +220,9 @@ describe("Stock", () => {
             cooldown: 0,
             source: "source1",
             target: "stock1",
+            direction: "right",
+            x:1,
+            y:0,
           },
         ],
       ]),
@@ -223,6 +246,8 @@ describe("Stock", () => {
             val: 2,
             max: 10,
             closed: true,
+            x:0,
+            y:0,
           },
         ],
         [
@@ -235,6 +260,8 @@ describe("Stock", () => {
             max: 2,
             rate: 1,
             cooldown: 0,
+            x:2,
+            y:0,
           },
         ],
         [
@@ -249,6 +276,9 @@ describe("Stock", () => {
             cooldown: 0,
             source: "source1",
             target: "stock1",
+            direction: "left",
+            x:1,
+            y:0,
           },
         ],
       ]),

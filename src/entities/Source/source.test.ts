@@ -43,6 +43,8 @@ describe("Source", () => {
             max: 5,
             rate: 1,
             cooldown: 1.25,
+            x:0,
+            y:1,
           },
         ],
       ]),
@@ -52,6 +54,8 @@ describe("Source", () => {
     const actionTest: Partial<GameActionCreateSource> = {
       type: "create source",
       max: 15,
+      x:1,
+      y:1,
     };
 
     const result = gameReducer(stateTest as GameType, actionTest as GameAction);
@@ -74,6 +78,8 @@ describe("Source", () => {
             max: 5,
             rate: 1,
             cooldown: 1.25,
+            x:0,
+            y:0,
           },
         ],
       ]),
@@ -83,6 +89,8 @@ describe("Source", () => {
     const actionTest: Partial<GameActionCreateSource> = {
       type: "create source",
       max: 15,
+      x:1,
+      y:0,
     };
 
     const result = gameReducer(stateTest as GameType, actionTest as GameAction);
@@ -103,6 +111,8 @@ describe("Source", () => {
             max: 5,
             rate: 1,
             cooldown: 1.25,
+            x:0,
+            y:0,
           },
         ],
       ]),
@@ -132,6 +142,8 @@ describe("Source", () => {
             max: 5,
             rate: 1,
             cooldown: 1.25,
+            x:0,
+            y:0,
           },
         ],
       ]),
@@ -157,6 +169,8 @@ describe("Source", () => {
       max: 5,
       rate: 1,
       cooldown: 0,
+      x:0,
+      y:0,
     };
     gameSourceTick(fakeSource);
     expect(fakeSource.val).toBe(1);
@@ -171,6 +185,8 @@ describe("Source", () => {
       max: 5,
       rate: 1,
       cooldown: 0,
+      x:0,
+      y:0,
     };
     gameSourceTick(fakeSource);
     expect(fakeSource.val).toBe(5);
@@ -184,6 +200,8 @@ describe("Source", () => {
       max: 5,
       rate: 1,
       cooldown: 1.25,
+      x:0,
+      y:0,
     };
     gameSourceTick(fakeSource);
     expect(fakeSource.val).toBe(0);
@@ -197,6 +215,8 @@ describe("Source", () => {
       max: 5,
       rate: 1,
       cooldown: 1,
+      x:0,
+      y:0,
     };
     gameSourceTick(fakeSource);
     expect(fakeSource.cooldown).toBe(1 / fakeSource.rate);
