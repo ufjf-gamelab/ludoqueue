@@ -8,7 +8,7 @@ export function convertGameToGraph(game: GameType): GraphType {
 
   game.entities.forEach((node) => {
     graph.nodes.push({ id: node.id, name: node.name, val: 0 });
-    if (node.type === "transport") {
+    if (node.type === "transport" && node.source && node.target) {
       const linkToTransport: LinkType = {
         source: node.source,
         target: node.id,

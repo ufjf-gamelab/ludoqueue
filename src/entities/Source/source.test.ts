@@ -43,6 +43,8 @@ describe("Source", () => {
             max: 5,
             rate: 1,
             cooldown: 1.25,
+            x:0,
+            y:1,
           },
         ],
       ]),
@@ -52,6 +54,8 @@ describe("Source", () => {
     const actionTest: Partial<GameActionCreateSource> = {
       type: "create source",
       max: 15,
+      x:1,
+      y:1,
     };
 
     const result = gameReducer(stateTest as GameType, actionTest as GameAction);
@@ -74,6 +78,8 @@ describe("Source", () => {
             max: 5,
             rate: 1,
             cooldown: 1.25,
+            x:0,
+            y:0,
           },
         ],
       ]),
@@ -83,12 +89,46 @@ describe("Source", () => {
     const actionTest: Partial<GameActionCreateSource> = {
       type: "create source",
       max: 15,
+      x:1,
+      y:0,
     };
 
     const result = gameReducer(stateTest as GameType, actionTest as GameAction);
     expect(result.sources).toHaveLength(2);
     expect((result.entities.get("source2") as EntitySourceType).max).toBe(15);
   });
+
+    it("should not create source if position is ocupied", () => {
+      const stateTest: Partial<GameType> = {
+        entities: new Map<string, EntityType>([
+          [
+            "source1",
+            {
+              id: "source1",
+              type: "source",
+              name: "source A",
+              val: 0,
+              max: 5,
+              rate: 1,
+              cooldown: 1.25,
+              x: 0,
+              y: 0,
+            },
+          ],
+        ]),
+        sources: ["source1"],
+      };
+  
+      const actionTest: GameActionCreateSource = {
+        type: "create source",
+        max: 15,
+        val: 0,
+        x: 0,
+        y: 0,
+      };
+      const result = gameReducer(stateTest as GameType, actionTest);
+      expect(result.sources).toHaveLength(1);
+    });
 
   it("should delete existing source", () => {
     const stateTest: Partial<GameType> = {
@@ -103,6 +143,8 @@ describe("Source", () => {
             max: 5,
             rate: 1,
             cooldown: 1.25,
+            x:0,
+            y:0,
           },
         ],
       ]),
@@ -132,6 +174,8 @@ describe("Source", () => {
             max: 5,
             rate: 1,
             cooldown: 1.25,
+            x:0,
+            y:0,
           },
         ],
       ]),
@@ -157,6 +201,8 @@ describe("Source", () => {
       max: 5,
       rate: 1,
       cooldown: 0,
+      x:0,
+      y:0,
     };
     gameSourceTick(fakeSource);
     expect(fakeSource.val).toBe(1);
@@ -171,6 +217,8 @@ describe("Source", () => {
       max: 5,
       rate: 1,
       cooldown: 0,
+      x:0,
+      y:0,
     };
     gameSourceTick(fakeSource);
     expect(fakeSource.val).toBe(5);
@@ -184,6 +232,8 @@ describe("Source", () => {
       max: 5,
       rate: 1,
       cooldown: 1.25,
+      x:0,
+      y:0,
     };
     gameSourceTick(fakeSource);
     expect(fakeSource.val).toBe(0);
@@ -197,6 +247,8 @@ describe("Source", () => {
       max: 5,
       rate: 1,
       cooldown: 1,
+      x:0,
+      y:0,
     };
     gameSourceTick(fakeSource);
     expect(fakeSource.cooldown).toBe(1 / fakeSource.rate);
