@@ -147,13 +147,16 @@ export function gameTick(state: GameType) {
   ]);
 
   transports.forEach((transport) => {
-    gameTransportTick(transport, all);
+    calculatePendingMovingGoods(transport, all);
   });
-  sources.forEach((source) => {
-    gameSourceTick(source);
+  transports.forEach((transport) => {
+    transportMovingGoods(transport);
   });
   consumers.forEach((consumer) => {
     gameConsumerTick(consumer);
+  });
+  sources.forEach((source) => {
+    gameSourceTick(source);
   });
   return newState;
 }
@@ -181,31 +184,42 @@ export function gameConsumerTick(node: EntityConsumerType) {
   node.cooldown += 1 / node.rate;
 }
 
-export function gameTransportTick(
+export function calculatePendingMovingGoods(
   transport: EntityTransportType,
   all: Map<string, EntityType>
 ) {
+  transport.movingGoods = [];
   transport.cooldown -= 1;
   if (transport.cooldown > 0) {
-    return;
+    return transport.movingGoods;
   }
   transport.cooldown += 1 / transport.rate;
 
   const source = all.get(transport.source!);
   const target = all.get(transport.target!);
-  if (!source || !target) {
-    return;
-  }
-  if (transport.val === 1 && target.val < target.max) {
+  if (target && transport.val === 1 && target.val < target.max) {
     if (target.type == "stock" && target.closed) {
-      return;
+      return transport.movingGoods;
     }
-    transport.val--;
-    target.val++;
-  } else if (transport.val === 0 && source.val > 0) {
-    transport.val++;
-    source.val--;
+    transport.movingGoods.push({ source: transport, target, val: 1 });
   }
+  if (source && transport.val === 0 && source.val > 0) {
+    transport.movingGoods.push({ source, target: transport, val: 1 });
+  }
+  return transport.movingGoods;
+}
+
+export function transportMovingGoods(transport: EntityTransportType) {
+  transport.movingGoods.forEach((movingGood) => {
+    const source = movingGood.source;
+    const target = movingGood.target;
+    if (source && source.val>0) {
+      source.val -= movingGood.val;
+    }
+    if (target && target.val < target.max) {
+      target.val += movingGood.val;
+    }
+  });
 }
 
 export function selectEntity(state: GameType, entityId: string | null) {
@@ -312,7 +326,9 @@ export function pointingAction(
         (e) =>
           e.x === x + 1 &&
           e.y === y &&
-          (e.type === "consumer" || e.type === "stock" || e.type === "transport")
+          (e.type === "consumer" ||
+            e.type === "stock" ||
+            e.type === "transport")
       );
       const action: GameActionCreateTransport = {
         type: "create transport",
@@ -339,7 +355,9 @@ export function pointingAction(
         (e) =>
           e.x === x &&
           e.y === y + 1 &&
-          (e.type === "consumer" || e.type === "stock" || e.type === "transport")
+          (e.type === "consumer" ||
+            e.type === "stock" ||
+            e.type === "transport")
       );
       const action: GameActionCreateTransport = {
         type: "create transport",
@@ -366,7 +384,9 @@ export function pointingAction(
         (e) =>
           e.x === x - 1 &&
           e.y === y &&
-          (e.type === "consumer" || e.type === "stock" || e.type === "transport")
+          (e.type === "consumer" ||
+            e.type === "stock" ||
+            e.type === "transport")
       );
       const action: GameActionCreateTransport = {
         type: "create transport",
@@ -393,7 +413,9 @@ export function pointingAction(
         (e) =>
           e.x === x &&
           e.y === y - 1 &&
-          (e.type === "consumer" || e.type === "stock" || e.type === "transport")
+          (e.type === "consumer" ||
+            e.type === "stock" ||
+            e.type === "transport")
       );
       const action: GameActionCreateTransport = {
         type: "create transport",
