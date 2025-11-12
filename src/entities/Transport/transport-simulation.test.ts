@@ -2562,7 +2562,7 @@ describe("In a double transport connection between", () => {
               name: "Transport 2",
               val: 0,
               max: 1,
-              rate: 1,
+              rate: 0.5,
               cooldown: 2,
               source: "source1",
               target: "transport1",
@@ -2605,7 +2605,7 @@ describe("In a double transport connection between", () => {
       ) as EntityTransportType;
 
       expect(transport2Tick1.cooldown).toBe(1);
-      expect(transport2Tick1.val).toBe(1);
+      expect(transport2Tick1.val).toBe(0);
       expect(transport1Tick1.cooldown).toBe(1);
       expect(transport1Tick1.val).toBe(0);
 
@@ -2618,9 +2618,9 @@ describe("In a double transport connection between", () => {
       ) as EntityTransportType;
 
       expect(transport2Tick2.cooldown).toBe(2);
-      expect(transport2Tick2.val).toBe(0);
+      expect(transport2Tick2.val).toBe(1);
       expect(transport1Tick2.cooldown).toBe(1);
-      expect(transport1Tick2.val).toBe(1);
+      expect(transport1Tick2.val).toBe(0);
 
       const tick3 = gameReducer(tick2, { type: "game tick" });
       expect(tick3.entities.get("consumer1")?.val).toBe(0);
@@ -2681,7 +2681,7 @@ describe("In a double transport connection between", () => {
               id: "transport1",
               type: "transport",
               name: "Transport 1",
-              val: 0,
+              val: 1,
               max: 1,
               rate: 1,
               cooldown: 1,
@@ -2705,15 +2705,23 @@ describe("In a double transport connection between", () => {
       ) as EntityTransportType;
       expect(transport1Tick1?.cooldown).toBe(1);
       expect(transport1Tick1?.val).toBe(1);
-      expect(tick1.entities.get("consumer1")?.val).toBe(1);
+      expect(tick1.entities.get("consumer1")?.val).toBe(2);
 
       const tick2 = gameReducer(tick1, { type: "game tick" });
       const transport1Tick2 = tick2.entities.get(
         "transport1"
       ) as EntityTransportType;
       expect(transport1Tick2?.cooldown).toBe(1);
-      expect(transport1Tick2?.val).toBe(0);
-      expect(tick1.entities.get("consumer1")?.val).toBe(1);
+      expect(transport1Tick2?.val).toBe(1);
+      expect(tick2.entities.get("consumer1")?.val).toBe(1);
+    
+    const tick3 = gameReducer(tick2, { type: "game tick" });
+      const transport1Tick3 = tick3.entities.get(
+        "transport1"
+      ) as EntityTransportType;
+      expect(transport1Tick3?.cooldown).toBe(1);
+      expect(transport1Tick3?.val).toBe(0);
+      expect(tick3.entities.get("consumer1")?.val).toBe(1);
     });
   });
 });
