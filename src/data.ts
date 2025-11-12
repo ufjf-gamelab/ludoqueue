@@ -48,6 +48,7 @@ export const initialState: GameType = {
         x: 1,
         y: 0,
         direction: "right",
+        movingGoods: [],
       },
     ],
     [
@@ -65,6 +66,7 @@ export const initialState: GameType = {
         x: 0,
         y: 1,
         direction: "down",
+        movingGoods: [],
       },
     ],
     [

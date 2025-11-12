@@ -19,22 +19,46 @@
     transform-origin: 50% 50%;
     pointer-events: none;
     box-shadow: 0 0 6px rgba(255, 255, 255, 0.9);
-    animation: transport-move-left-right 1000ms linear forwards;
+    animation: 1000ms linear forwards;
     opacity: 0.8;
     --prevpercent: -580%;
     --nextpercent: 580%;
   }
-  .transported-good.up {
-    animation-name: transport-move-bottom-top;
+
+  .transported-good.up.starting {
+    animation-name: transport-move-bottom-center;
   }
-  .transported-good.down {
-    animation-name: transport-move-top-bottom;
+
+  .transported-good.up.ending{
+    animation-name: transport-move-top-center;
   }
-  .transported-good.left {
-    animation-name: transport-move-right-left;
+
+  .transported-good.down.starting {
+    animation-name: transport-move-top-center;
+    animation-direction: reverse;
   }
-  .transported-good.right {
-    animation-name: transport-move-left-right;
+
+  .transported-good.down.ending {
+    animation-name: transport-move-bottom-center;
+    animation-direction: reverse;
+  }
+
+  .transported-good.right.starting {
+    animation-name: transport-move-right-center;
+  }
+
+  .transported-good.right.ending {
+    animation-name: transport-move-left-center;
+  }
+  
+  .transported-good.left.starting {
+    animation-name: transport-move-right-center;
+    animation-direction: reverse;
+  }
+
+  .transported-good.left.ending {
+    animation-name: transport-move-left-center;
+    animation-direction: reverse;
   }
 }
 
@@ -77,16 +101,16 @@
 
 @keyframes transport-move-top-center {
   0% {
-    transform: translate(-0%, -500%);
+    transform: translate(-0%, 0%);
   }
   100% {
-    transform: translate(-0%, 0%);
+    transform: translate(-0%, var(--prevpercent));
   }
 }
 
 @keyframes transport-move-bottom-center {
   0% {
-    transform: translate(-0%, 500%);
+    transform: translate(-0%, var(--nextpercent));
   }
   100% {
     transform: translate(-0%, 0%);
@@ -95,7 +119,7 @@
 
 @keyframes transport-move-left-center {
   0% {
-    transform: translate(-500%, -0%);
+    transform: translate(var(--prevpercent), -0%);
   }
   100% {
     transform: translate(0%, -0%);
@@ -103,9 +127,9 @@
 }
 @keyframes transport-move-right-center {
   0% {
-    transform: translate(500%, -0%);
+    transform: translate(0%, -0%);
   }
   100% {
-    transform: translate(0%, -0%);
+    transform: translate(var(--nextpercent), -0%);
   }
 }

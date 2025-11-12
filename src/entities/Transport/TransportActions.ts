@@ -65,6 +65,7 @@ export function createTransport(
     x,
     y,
     direction,
+    movingGoods: [],
   };
   newState.entities.set(newTransportID, newTransportEntity);
   newState.transports.push(newTransportID);
