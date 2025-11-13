@@ -44,11 +44,11 @@
   }
 
   .transported-good.right.starting {
-    animation-name: transport-move-right-center;
+    animation-name: transport-move-left-center;
   }
 
   .transported-good.right.ending {
-    animation-name: transport-move-left-center;
+    animation-name: transport-move-right-center;
   }
   
   .transported-good.left.starting {

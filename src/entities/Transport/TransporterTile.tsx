@@ -11,12 +11,6 @@ export default function TransporterTile({ entity }: { entity: EntityTransportTyp
   const movingGoods: MovingGoodType[] = entity.movingGoods;
   if (movingGoods.length > 0) {
     shouldHaveItem = true;
-    movingGoods.forEach((movingGood) => {
-      if (movingGood.target.type === "transport")
-        isStarting = true;
-      if (movingGood.source.type === "transport")
-        isEnding = true;
-    });
   }
   if (entity.val > 0) {
     shouldHaveItem = true;
@@ -25,12 +19,19 @@ export default function TransporterTile({ entity }: { entity: EntityTransportTyp
     <div className="transporter-tile">
       {TransportIcons[entity.direction]}
       <progress value={entity.val} max={entity.max} title={`${entity.val}/${entity.max}`} />
-      <span
-        key={spanKey}
-        className={["transported-good", entity.direction, `${isStarting ? "starting" : ""}`, `${isEnding ? "ending" : ""}`].join(' ')}
-        style={{ display: shouldHaveItem ? undefined : "none" }}
-        aria-hidden="true"
-      />
+      {movingGoods.map((movingGood) => {
+        if (movingGood.target == entity)
+          isStarting = true;
+        if (movingGood.source == entity)
+          isEnding = true;
+        return (<span
+          key={spanKey}
+          className={["transported-good", entity.direction, `${isStarting ? "starting" : ""}`, `${isEnding ? "ending" : ""}`].join(' ')}
+          style={{ display: shouldHaveItem ? undefined : "none" }}
+          aria-hidden="true"
+        />);
+      })
+      }
     </div>
   );
 }
