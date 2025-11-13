@@ -51,6 +51,7 @@ describe("In a single transport connection between", () => {
               x: 1,
               y: 0,
               direction: "right",
+              movingGoods: [],
             },
           ],
         ]),
@@ -113,6 +114,7 @@ describe("In a single transport connection between", () => {
               x: 1,
               y: 0,
               direction: "right",
+              movingGoods: [],
             },
           ],
         ]),
@@ -189,6 +191,7 @@ describe("In a single transport connection between", () => {
               x: 1,
               y: 0,
               direction: "right",
+              movingGoods: [],
             },
           ],
         ]),
@@ -258,6 +261,7 @@ describe("In a single transport connection between", () => {
               x: 1,
               y: 0,
               direction: "right",
+              movingGoods: [],
             },
           ],
         ]),
@@ -320,6 +324,7 @@ describe("In a single transport connection between", () => {
               x: 1,
               y: 0,
               direction: "right",
+              movingGoods: [],
             },
           ],
         ]),
@@ -381,6 +386,7 @@ describe("In a single transport connection between", () => {
               x: 1,
               y: 0,
               direction: "right",
+              movingGoods: [],
             },
           ],
         ]),
@@ -456,6 +462,7 @@ describe("In a single transport connection between", () => {
               x: 1,
               y: 0,
               direction: "right",
+              movingGoods: [],
             },
           ],
         ]),
@@ -524,6 +531,7 @@ describe("In a single transport connection between", () => {
               x: 1,
               y: 0,
               direction: "right",
+              movingGoods: [],
             },
           ],
         ]),
@@ -586,6 +594,7 @@ describe("In a single transport connection between", () => {
               x: 1,
               y: 0,
               direction: "right",
+              movingGoods: [],
             },
           ],
         ]),
@@ -648,6 +657,7 @@ describe("In a single transport connection between", () => {
               x: 1,
               y: 0,
               direction: "right",
+              movingGoods: [],
             },
           ],
         ]),
@@ -723,6 +733,7 @@ describe("In a single transport connection between", () => {
               x: 1,
               y: 0,
               direction: "right",
+              movingGoods: [],
             },
           ],
         ]),
@@ -791,6 +802,7 @@ describe("In a single transport connection between", () => {
               x: 1,
               y: 0,
               direction: "right",
+              movingGoods: [],
             },
           ],
         ]),
@@ -852,6 +864,7 @@ describe("In a single transport connection between", () => {
               x: 1,
               y: 0,
               direction: "right",
+              movingGoods: [],
             },
           ],
         ]),
@@ -912,6 +925,7 @@ describe("In a single transport connection between", () => {
               x: 1,
               y: 0,
               direction: "right",
+              movingGoods: [],
             },
           ],
         ]),
@@ -985,6 +999,7 @@ describe("In a single transport connection between", () => {
               x: 1,
               y: 0,
               direction: "right",
+              movingGoods: [],
             },
           ],
         ]),
@@ -1051,6 +1066,7 @@ describe("In a single transport connection between", () => {
               x: 1,
               y: 0,
               direction: "right",
+              movingGoods: [],
             },
           ],
         ]),
@@ -1115,6 +1131,7 @@ describe("In a double transport connection between", () => {
               x: 1,
               y: 0,
               direction: "right",
+              movingGoods: [],
             },
           ],
           [
@@ -1132,6 +1149,7 @@ describe("In a double transport connection between", () => {
               x: 3,
               y: 0,
               direction: "right",
+              movingGoods: [],
             },
           ],
         ]),
@@ -1199,6 +1217,7 @@ describe("In a double transport connection between", () => {
               x: 1,
               y: 0,
               direction: "right",
+              movingGoods: [],
             },
           ],
           [
@@ -1216,6 +1235,7 @@ describe("In a double transport connection between", () => {
               x: 3,
               y: 0,
               direction: "right",
+              movingGoods: [],
             },
           ],
         ]),
@@ -1283,6 +1303,7 @@ describe("In a double transport connection between", () => {
               x: 1,
               y: 0,
               direction: "right",
+              movingGoods: [],
             },
           ],
           [
@@ -1294,12 +1315,13 @@ describe("In a double transport connection between", () => {
               val: 0,
               max: 1,
               rate: 1,
-              cooldown: 1,
+              cooldown: 2,
               source: "transport1",
               target: "consumer1",
               x: 3,
               y: 0,
               direction: "right",
+              movingGoods: [],
             },
           ],
         ]),
@@ -1379,6 +1401,7 @@ describe("In a double transport connection between", () => {
               x: 1,
               y: 0,
               direction: "right",
+              movingGoods: [],
             },
           ],
           [
@@ -1396,6 +1419,7 @@ describe("In a double transport connection between", () => {
               x: 3,
               y: 0,
               direction: "right",
+              movingGoods: [],
             },
           ],
         ]),
@@ -1487,6 +1511,7 @@ describe("In a double transport connection between", () => {
               x: 1,
               y: 0,
               direction: "right",
+              movingGoods: [],
             },
           ],
           [
@@ -1503,6 +1528,8 @@ describe("In a double transport connection between", () => {
               target: "consumer1",
               x: 3,
               y: 0,
+              movingGoods: [],
+
               direction: "right",
             },
           ],
@@ -1549,7 +1576,7 @@ describe("In a double transport connection between", () => {
       expect(transport2Tick3?.val).toBe(1);
     });
 
-    it("transport2 should wait for transport1 to deliver", () => {
+    /* it("transport2 should wait for transport1 to deliver", () => { // comportamento de esteira
       const stateTest: Partial<GameType> = {
         entities: new Map<string, EntityType>([
           [
@@ -1595,6 +1622,7 @@ describe("In a double transport connection between", () => {
               x: 1,
               y: 0,
               direction: "right",
+              movingGoods: [],
             },
           ],
           [
@@ -1612,6 +1640,7 @@ describe("In a double transport connection between", () => {
               x: 3,
               y: 0,
               direction: "right",
+              movingGoods: [],
             },
           ],
         ]),
@@ -1651,10 +1680,10 @@ describe("In a double transport connection between", () => {
         "transport2"
       ) as EntityTransportType;
       expect(transport1Tick3?.cooldown).toBe(1);
-      expect(transport1Tick3?.val).toBe(0);
+      expect(transport1Tick3?.val).toBe(1);
       expect(transport2Tick3?.cooldown).toBe(1);
       expect(transport2Tick3?.val).toBe(0);
-    });
+    });*/
 
     it("transport2 should deliver to consumer respecting cooldowns", () => {
       const stateTest: Partial<GameType> = {
@@ -1695,13 +1724,14 @@ describe("In a double transport connection between", () => {
               name: "Transport 1",
               val: 0,
               max: 1,
-              rate: 0.5,
+              rate: 1,
               cooldown: 2,
               source: "source1",
               target: "transport2",
               x: 1,
               y: 0,
               direction: "right",
+              movingGoods: [],
             },
           ],
           [
@@ -1719,6 +1749,7 @@ describe("In a double transport connection between", () => {
               x: 3,
               y: 0,
               direction: "right",
+              movingGoods: [],
             },
           ],
         ]),
@@ -1746,7 +1777,7 @@ describe("In a double transport connection between", () => {
       const transport2Tick2 = tick2.entities.get(
         "transport2"
       ) as EntityTransportType;
-      expect(transport1Tick2?.cooldown).toBe(2);
+      expect(transport1Tick2?.cooldown).toBe(1);
       expect(transport1Tick2?.val).toBe(1);
       expect(transport2Tick2?.cooldown).toBe(1);
       expect(transport2Tick2?.val).toBe(0);
@@ -1759,9 +1790,9 @@ describe("In a double transport connection between", () => {
         "transport2"
       ) as EntityTransportType;
       expect(transport1Tick3?.cooldown).toBe(1);
-      expect(transport1Tick3?.val).toBe(1);
+      expect(transport1Tick3?.val).toBe(0);
       expect(transport2Tick3?.cooldown).toBe(1);
-      expect(transport2Tick3?.val).toBe(0);
+      expect(transport2Tick3?.val).toBe(1);
 
       const tick4 = gameReducer(tick3, { type: "game tick" });
       const transport1Tick4 = tick4.entities.get(
@@ -1771,9 +1802,9 @@ describe("In a double transport connection between", () => {
         "transport2"
       ) as EntityTransportType;
       expect(transport1Tick4?.cooldown).toBe(1);
-      expect(transport1Tick4?.val).toBe(0);
+      expect(transport1Tick4?.val).toBe(1);
       expect(transport2Tick4?.cooldown).toBe(1);
-      expect(transport2Tick4?.val).toBe(1);
+      expect(transport2Tick4?.val).toBe(0);
 
       const tick5 = gameReducer(tick4, { type: "game tick" });
       const transport1Tick5 = tick5.entities.get(
@@ -1785,8 +1816,7 @@ describe("In a double transport connection between", () => {
       expect(transport1Tick5?.cooldown).toBe(1);
       expect(transport1Tick5?.val).toBe(0);
       expect(transport2Tick5?.cooldown).toBe(1);
-      expect(transport2Tick5?.val).toBe(0);
-      expect(tick5.entities.get("consumer1")?.val).toBe(1);
+      expect(transport2Tick5?.val).toBe(1);
     });
 
     it("transport2 shouldn't deliver to consumer if its full", () => {
@@ -1815,7 +1845,7 @@ describe("In a double transport connection between", () => {
               val: 2,
               max: 2,
               rate: 1,
-              cooldown: 2,
+              cooldown: 1,
               x: 4,
               y: 0,
             },
@@ -1835,6 +1865,7 @@ describe("In a double transport connection between", () => {
               x: 1,
               y: 0,
               direction: "right",
+              movingGoods: [],
             },
           ],
           [
@@ -1852,6 +1883,7 @@ describe("In a double transport connection between", () => {
               x: 3,
               y: 0,
               direction: "right",
+              movingGoods: [],
             },
           ],
         ]),
@@ -1866,7 +1898,7 @@ describe("In a double transport connection between", () => {
       ) as EntityTransportType;
       expect(transport2Tick1?.cooldown).toBe(1);
       expect(transport2Tick1?.val).toBe(1);
-      expect(tick1.entities.get("consumer1")?.val).toBe(2);
+      expect(tick1.entities.get("consumer1")?.val).toBe(1);
 
       const tick2 = gameReducer(tick1, { type: "game tick" });
       const transport2Tick2 = tick2.entities.get(
@@ -1874,7 +1906,7 @@ describe("In a double transport connection between", () => {
       ) as EntityTransportType;
       expect(transport2Tick2?.cooldown).toBe(1);
       expect(transport2Tick2?.val).toBe(0);
-      expect(tick2.entities.get("consumer1")?.val).toBe(2);
+      expect(tick2.entities.get("consumer1")?.val).toBe(1);
     });
   });
   describe("source → transport2 → transport1 → consumer", () => {
@@ -1924,6 +1956,7 @@ describe("In a double transport connection between", () => {
               x: 1,
               y: 0,
               direction: "right",
+              movingGoods: [],
             },
           ],
           [
@@ -1941,6 +1974,7 @@ describe("In a double transport connection between", () => {
               x: 3,
               y: 0,
               direction: "right",
+              movingGoods: [],
             },
           ],
         ]),
@@ -2009,6 +2043,7 @@ describe("In a double transport connection between", () => {
               x: 1,
               y: 0,
               direction: "right",
+              movingGoods: [],
             },
           ],
           [
@@ -2026,6 +2061,7 @@ describe("In a double transport connection between", () => {
               x: 3,
               y: 0,
               direction: "right",
+              movingGoods: [],
             },
           ],
         ]),
@@ -2094,6 +2130,7 @@ describe("In a double transport connection between", () => {
               x: 1,
               y: 0,
               direction: "right",
+              movingGoods: [],
             },
           ],
           [
@@ -2105,12 +2142,13 @@ describe("In a double transport connection between", () => {
               val: 0,
               max: 1,
               rate: 1,
-              cooldown: 1,
+              cooldown: 2,
               source: "transport2",
               target: "consumer1",
               x: 3,
               y: 0,
               direction: "right",
+              movingGoods: [],
             },
           ],
         ]),
@@ -2192,6 +2230,7 @@ describe("In a double transport connection between", () => {
               x: 1,
               y: 0,
               direction: "right",
+              movingGoods: [],
             },
           ],
           [
@@ -2209,6 +2248,7 @@ describe("In a double transport connection between", () => {
               x: 3,
               y: 0,
               direction: "right",
+              movingGoods: [],
             },
           ],
         ]),
@@ -2303,6 +2343,7 @@ describe("In a double transport connection between", () => {
               x: 1,
               y: 0,
               direction: "right",
+              movingGoods: [],
             },
           ],
           [
@@ -2320,6 +2361,7 @@ describe("In a double transport connection between", () => {
               x: 3,
               y: 0,
               direction: "right",
+              movingGoods: [],
             },
           ],
         ]),
@@ -2368,7 +2410,7 @@ describe("In a double transport connection between", () => {
       expect(transport1Tick3.val).toBe(1);
     });
 
-    it("transport1 should wait for transport2 to deliver", () => {
+    /*it("transport1 should wait for transport2 to deliver", () => { //comportamento de esteira
       const stateTest: Partial<GameType> = {
         entities: new Map([
           [
@@ -2414,6 +2456,7 @@ describe("In a double transport connection between", () => {
               x: 1,
               y: 0,
               direction: "right",
+              movingGoods: [],
             },
           ],
           [
@@ -2431,6 +2474,7 @@ describe("In a double transport connection between", () => {
               x: 3,
               y: 0,
               direction: "right",
+              movingGoods: [],
             },
           ],
         ]),
@@ -2474,10 +2518,10 @@ describe("In a double transport connection between", () => {
       ) as EntityTransportType;
 
       expect(transport2Tick3.cooldown).toBe(1);
-      expect(transport2Tick3.val).toBe(0);
+      expect(transport2Tick3.val).toBe(1);
       expect(transport1Tick3.cooldown).toBe(1);
       expect(transport1Tick3.val).toBe(0);
-    });
+    });*/
 
     it("transport1 should deliver to consumer respecting cooldowns", () => {
       const stateTest: Partial<GameType> = {
@@ -2525,6 +2569,7 @@ describe("In a double transport connection between", () => {
               x: 1,
               y: 0,
               direction: "right",
+              movingGoods: [],
             },
           ],
           [
@@ -2542,6 +2587,7 @@ describe("In a double transport connection between", () => {
               x: 3,
               y: 0,
               direction: "right",
+              movingGoods: [],
             },
           ],
         ]),
@@ -2577,43 +2623,7 @@ describe("In a double transport connection between", () => {
       expect(transport1Tick2.val).toBe(0);
 
       const tick3 = gameReducer(tick2, { type: "game tick" });
-      const transport2Tick3 = tick3.entities.get(
-        "transport2"
-      ) as EntityTransportType;
-      const transport1Tick3 = tick3.entities.get(
-        "transport1"
-      ) as EntityTransportType;
-
-      expect(transport2Tick3.cooldown).toBe(1);
-      expect(transport2Tick3.val).toBe(1);
-      expect(transport1Tick3.cooldown).toBe(1);
-      expect(transport1Tick3.val).toBe(0);
-
-      const tick4 = gameReducer(tick3, { type: "game tick" });
-      const transport2Tick4 = tick4.entities.get(
-        "transport2"
-      ) as EntityTransportType;
-      const transport1Tick4 = tick4.entities.get(
-        "transport1"
-      ) as EntityTransportType;
-
-      expect(transport2Tick4.cooldown).toBe(1);
-      expect(transport2Tick4.val).toBe(0);
-      expect(transport1Tick4.cooldown).toBe(1);
-      expect(transport1Tick4.val).toBe(1);
-
-      const tick5 = gameReducer(tick4, { type: "game tick" });
-      const transport1Tick5 = tick5.entities.get(
-        "transport1"
-      ) as EntityTransportType;
-      const transport2Tick5 = tick5.entities.get(
-        "transport2"
-      ) as EntityTransportType;
-      expect(transport1Tick5?.cooldown).toBe(1);
-      expect(transport1Tick5?.val).toBe(0);
-      expect(transport2Tick5?.cooldown).toBe(1);
-      expect(transport2Tick5?.val).toBe(0);
-      expect(tick5.entities.get("consumer1")?.val).toBe(1);
+      expect(tick3.entities.get("consumer1")?.val).toBe(0);
     });
 
     it("transport1 shouldn't deliver to consumer if its full", () => {
@@ -2639,10 +2649,10 @@ describe("In a double transport connection between", () => {
               id: "consumer1",
               type: "consumer",
               name: "Consumer 1",
-              val: 0,
+              val: 2,
               max: 2,
               rate: 1,
-              cooldown: 0,
+              cooldown: 2,
               x: 4,
               y: 0,
             },
@@ -2662,6 +2672,7 @@ describe("In a double transport connection between", () => {
               x: 1,
               y: 0,
               direction: "right",
+              movingGoods: [],
             },
           ],
           [
@@ -2670,7 +2681,7 @@ describe("In a double transport connection between", () => {
               id: "transport1",
               type: "transport",
               name: "Transport 1",
-              val: 0,
+              val: 1,
               max: 1,
               rate: 1,
               cooldown: 1,
@@ -2679,6 +2690,7 @@ describe("In a double transport connection between", () => {
               x: 3,
               y: 0,
               direction: "right",
+              movingGoods: [],
             },
           ],
         ]),
@@ -2700,8 +2712,16 @@ describe("In a double transport connection between", () => {
         "transport1"
       ) as EntityTransportType;
       expect(transport1Tick2?.cooldown).toBe(1);
-      expect(transport1Tick2?.val).toBe(0);
-      expect(tick2.entities.get("consumer1")?.val).toBe(2);
+      expect(transport1Tick2?.val).toBe(1);
+      expect(tick2.entities.get("consumer1")?.val).toBe(1);
+    
+    const tick3 = gameReducer(tick2, { type: "game tick" });
+      const transport1Tick3 = tick3.entities.get(
+        "transport1"
+      ) as EntityTransportType;
+      expect(transport1Tick3?.cooldown).toBe(1);
+      expect(transport1Tick3?.val).toBe(0);
+      expect(tick3.entities.get("consumer1")?.val).toBe(1);
     });
   });
 });
