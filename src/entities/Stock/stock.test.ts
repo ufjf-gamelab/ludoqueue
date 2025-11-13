@@ -1,10 +1,10 @@
 import { it, expect, describe } from "vitest";
 import type { GameType } from "../../types.ts";
-import {
-  gameReducer,
-  type GameAction,
-} from "../../Provider.tsx";
-import type { GameActionCreateStock, GameActionDeleteStock } from "./StockActions.ts";
+import { gameReducer, type GameAction } from "../../Provider.tsx";
+import type {
+  GameActionCreateStock,
+  GameActionDeleteStock,
+} from "./StockActions.ts";
 import type { EntityType, EntityStockType } from "../EntitiesTypes.ts";
 
 describe("Stock", () => {
@@ -17,8 +17,8 @@ describe("Stock", () => {
     const actionTest: Partial<GameActionCreateStock> = {
       type: "create stock",
       max: 10,
-      x:0,
-      y:0,
+      x: 0,
+      y: 0,
     };
 
     const result = gameReducer(stateTest as GameType, actionTest as GameAction);
@@ -40,8 +40,8 @@ describe("Stock", () => {
             val: 0,
             max: 10,
             closed: false,
-            x:0,
-            y:0,
+            x: 0,
+            y: 0,
           },
         ],
       ]),
@@ -51,8 +51,8 @@ describe("Stock", () => {
     const actionTest: Partial<GameActionCreateStock> = {
       type: "create stock",
       max: 15,
-      x:1,
-      y:0,
+      x: 1,
+      y: 0,
     };
 
     const result = gameReducer(stateTest as GameType, actionTest as GameAction);
@@ -74,8 +74,8 @@ describe("Stock", () => {
             val: 0,
             max: 10,
             closed: false,
-            x:0,
-            y:0,
+            x: 0,
+            y: 0,
           },
         ],
       ]),
@@ -85,8 +85,8 @@ describe("Stock", () => {
     const actionTest: Partial<GameActionCreateStock> = {
       type: "create stock",
       max: 15,
-      x:1,
-      y:0,
+      x: 1,
+      y: 0,
     };
 
     const result = gameReducer(stateTest as GameType, actionTest as GameAction);
@@ -94,37 +94,37 @@ describe("Stock", () => {
     expect((result.entities.get("stock2") as EntityStockType).max).toBe(15);
   });
 
-    it("should not create stock if position is ocupied", () => {
-      const stateTest: Partial<GameType> = {
-        entities: new Map<string, EntityType>([
-          [
-            "stock1",
-            {
-              id: "stock1",
-              type: "stock",
-              name: "stock A",
-              val: 0,
-              max: 5,
-              x: 0,
-              y: 0,
-              closed: false,
-            },
-          ],
-        ]),
-        stocks: ["stock1"],
-      };
-  
-      const actionTest: GameActionCreateStock = {
-        type: "create stock",
-        max: 15,
-        val: 0,
-        x: 0,
-        y: 0,
-      };
-      expect(stateTest.stocks).toHaveLength(1);
-      const result = gameReducer(stateTest as GameType, actionTest);
-      expect(result.stocks).toHaveLength(1);
-    });
+  it("should not create stock if position is ocupied", () => {
+    const stateTest: Partial<GameType> = {
+      entities: new Map<string, EntityType>([
+        [
+          "stock1",
+          {
+            id: "stock1",
+            type: "stock",
+            name: "stock A",
+            val: 0,
+            max: 5,
+            x: 0,
+            y: 0,
+            closed: false,
+          },
+        ],
+      ]),
+      stocks: ["stock1"],
+    };
+
+    const actionTest: GameActionCreateStock = {
+      type: "create stock",
+      max: 15,
+      val: 0,
+      x: 0,
+      y: 0,
+    };
+    expect(stateTest.stocks).toHaveLength(1);
+    const result = gameReducer(stateTest as GameType, actionTest);
+    expect(result.stocks).toHaveLength(1);
+  });
 
   it("should delete existing stock", () => {
     const stateTest: Partial<GameType> = {
@@ -138,8 +138,8 @@ describe("Stock", () => {
             val: 5,
             max: 10,
             closed: false,
-            x:0,
-            y:0,
+            x: 0,
+            y: 0,
           },
         ],
       ]),
@@ -168,8 +168,8 @@ describe("Stock", () => {
             val: 5,
             max: 10,
             closed: false,
-            x:0,
-            y:0,
+            x: 0,
+            y: 0,
           },
         ],
       ]),
@@ -195,8 +195,8 @@ describe("Stock", () => {
       max: 10,
       val: 2,
       closed: false,
-      x:0,
-      y:0,
+      x: 0,
+      y: 0,
     };
     const stateTest: Partial<GameType> = {
       entities: new Map<string, EntityType>([["stock1", fakeStock]]),
@@ -222,8 +222,8 @@ describe("Stock", () => {
             val: 10,
             max: 10,
             closed: false,
-            x:0,
-            y:0,
+            x: 0,
+            y: 0,
           },
         ],
         [
@@ -236,8 +236,8 @@ describe("Stock", () => {
             max: 2,
             rate: 1,
             cooldown: 0,
-            x:2,
-            y:0,
+            x: 2,
+            y: 0,
           },
         ],
         [
@@ -253,8 +253,9 @@ describe("Stock", () => {
             source: "source1",
             target: "stock1",
             direction: "right",
-            x:1,
-            y:0,
+            x: 1,
+            y: 0,
+            movingGoods: [],
           },
         ],
       ]),
@@ -263,7 +264,9 @@ describe("Stock", () => {
 
     const result = gameReducer(stateTest as GameType, { type: "game tick" });
     expect(result.entities.get("stock1")?.val).toBe(10);
-    expect((result.entities.get("stock1") as EntityStockType).closed).toBe(false);
+    expect((result.entities.get("stock1") as EntityStockType).closed).toBe(
+      false
+    );
   });
 
   it("should not get items if closed", () => {
@@ -278,8 +281,8 @@ describe("Stock", () => {
             val: 2,
             max: 10,
             closed: true,
-            x:0,
-            y:0,
+            x: 0,
+            y: 0,
           },
         ],
         [
@@ -292,8 +295,8 @@ describe("Stock", () => {
             max: 2,
             rate: 1,
             cooldown: 0,
-            x:2,
-            y:0,
+            x: 2,
+            y: 0,
           },
         ],
         [
@@ -309,8 +312,9 @@ describe("Stock", () => {
             source: "source1",
             target: "stock1",
             direction: "left",
-            x:1,
-            y:0,
+            x: 1,
+            y: 0,
+            movingGoods: [],
           },
         ],
       ]),

@@ -57,4 +57,11 @@ export type EntityTransportType = {
   x: number;
   y: number;
   direction: TransportDirection;
+  movingGoods: MovingGoodType[];
 };
+
+export type MovingGoodType = {
+  source: EntityType, 
+  target: EntityType,
+  val: number,
+}
