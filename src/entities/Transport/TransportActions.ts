@@ -1,17 +1,15 @@
 import type { GameType } from "../../types";
-import type { EntityTransportType } from "../EntitiesTypes";
-
-export type TransportDirection = "up" | "down" | "left" | "right";
+import type { EntityTransportType, DirectionType } from "../EntitiesTypes";
 
 export type GameActionCreateTransport = {
   type: "create transport";
   rate: number;
   max: number;
-  source: string | undefined;
-  target: string | undefined;
+  source: string | null;
+  target: string | null;
   x: number;
   y: number;
-  direction: TransportDirection;
+  direction: DirectionType;
 };
 
 export type GameActionDeleteTransport = {
@@ -23,16 +21,13 @@ export function createTransport(
   state: GameType,
   max: number,
   rate: number,
-  source: string | undefined,
-  target: string | undefined,
+  source: string | null,
+  target: string | null,
   x: number,
   y: number,
-  direction: TransportDirection
+  direction: DirectionType
 ) {
-  //if (!(state.entities.has(source) && state.entities.has(target))) {
-  //  // chhecagem se origem e destino existem
-  //  return state;
-  //}
+
   if (
     Array.from(state.entities.values()).find(
       (entity) => entity.x === x && entity.y === y
@@ -60,8 +55,8 @@ export function createTransport(
     max: max,
     rate: rate,
     cooldown: 1,
-    source: source,
-    target: target,
+    source: null,
+    target: null,
     x,
     y,
     direction,
@@ -69,7 +64,7 @@ export function createTransport(
   };
   newState.entities.set(newTransportID, newTransportEntity);
   newState.transports.push(newTransportID);
-  updateTransporters(newState, newTransportID, x, y);
+  updateConnections(newState, newTransportEntity);
   return newState;
 }
 
@@ -84,19 +79,34 @@ export function deleteTransport(state: GameType, transport: string) {
   return state;
 }
 
-export function updateTransporters(state: GameType, id: string, x: number, y: number) {
-  updateLeftTransporter(state, id, x ,y);
-  updateRightTransporter(state, id, x ,y);
-  updateUpperTransporter(state, id, x ,y);
-  updateLowerTransporter(state, id, x ,y);
+/*
+export function updateTransporters(
+  state: GameType,
+  id: string,
+  x: number,
+  y: number
+) {
+  updateLeftTransporter(state, id, x, y);
+  updateRightTransporter(state, id, x, y);
+  updateUpperTransporter(state, id, x, y);
+  updateLowerTransporter(state, id, x, y);
 }
-function updateLeftTransporter(state: GameType, id: string, x: number, y: number) {
+function updateLeftTransporter(
+  state: GameType,
+  id: string,
+  x: number,
+  y: number
+) {
   const entityToUpdate = Array.from(state.entities.values()).find(
-    (e) => e.x + 1 === x && e.y === y && e.type === "transport"
+    (e) => e.x + 1 === x && e.y === y
   ) as EntityTransportType | undefined;
-  if (entityToUpdate) {
+  if (!entityToUpdate) {
+    return;
+  }
+  if (entityToUpdate.type === "transport") {
     switch (entityToUpdate.direction) {
       case "left": {
+        
         entityToUpdate.source = id;
         break;
       }
@@ -107,7 +117,12 @@ function updateLeftTransporter(state: GameType, id: string, x: number, y: number
     }
   }
 }
-function updateRightTransporter(state: GameType, id: string, x: number, y: number) {
+function updateRightTransporter(
+  state: GameType,
+  id: string,
+  x: number,
+  y: number
+) {
   const entityToUpdate = Array.from(state.entities.values()).find(
     (e) => e.x - 1 === x && e.y === y && e.type === "transport"
   ) as EntityTransportType | undefined;
@@ -116,6 +131,7 @@ function updateRightTransporter(state: GameType, id: string, x: number, y: numbe
   }
   switch (entityToUpdate.direction) {
     case "left": {
+      if(entity)
       entityToUpdate.target = id;
       break;
     }
@@ -125,7 +141,12 @@ function updateRightTransporter(state: GameType, id: string, x: number, y: numbe
     }
   }
 }
-function updateUpperTransporter(state: GameType, id: string, x: number, y: number) {
+function updateUpperTransporter(
+  state: GameType,
+  id: string,
+  x: number,
+  y: number
+) {
   const entityToUpdate = Array.from(state.entities.values()).find(
     (e) => e.x === x && e.y + 1 === y && e.type === "transport"
   ) as EntityTransportType | undefined;
@@ -143,10 +164,14 @@ function updateUpperTransporter(state: GameType, id: string, x: number, y: numbe
     }
   }
 }
-function updateLowerTransporter(state: GameType, id: string, x: number, y: number) {
+function updateLowerTransporter(
+  state: GameType,
+  id: string,
+  x: number,
+  y: number
+) {
   const entityToUpdate = Array.from(state.entities.values()).find(
-    (e) =>
-      e.x === x && e.y - 1 === y && e.type === "transport"
+    (e) => e.x === x && e.y - 1 === y && e.type === "transport"
   ) as EntityTransportType | undefined;
   if (!entityToUpdate) {
     return;
@@ -159,6 +184,193 @@ function updateLowerTransporter(state: GameType, id: string, x: number, y: numbe
     case "down": {
       entityToUpdate.source = id;
       break;
+    }
+  }
+}*/
+
+
+function updateConnections(
+  state: GameType,
+  transport: EntityTransportType
+) {
+  updateLeftConnections(transport, state);
+  updateRightConnections(transport, state);
+  updateUpperConnections(transport, state);
+  updateLowerConnections(transport, state);
+}
+
+function updateLeftConnections(transport: EntityTransportType, state: GameType) {
+  const entityToConnect = Array.from(state.entities.values()).find((entity) => entity.x - 1 === transport.x && entity.y === transport.y)
+
+  if (!entityToConnect) {
+    return;
+  }
+
+  if(entityToConnect.type === "transport") {
+    switch(entityToConnect.direction) {
+      case "left": {
+        entityToConnect.source = transport.id;
+        break;
+      }
+      case "right": {
+        entityToConnect.target = transport.id;
+        break;
+      }
+    }
+  }
+  
+  else{
+    switch(transport.direction) {
+      case "left":{
+        if (entityToConnect.type=="consumer"){
+          break;
+        }
+        if (entityToConnect.leavingDirection === "left") {
+          transport.source = entityToConnect.id;
+        }
+        break;
+      }
+      case "right":{
+        if (entityToConnect.type=="source"){
+          break;
+        }
+        if (entityToConnect.entryDirection === "left") {
+          transport.target = entityToConnect.id;
+        }
+        break;
+      }
+    }
+  }
+}
+
+function updateRightConnections(transport: EntityTransportType, state: GameType) {
+const entityToConnect = Array.from(state.entities.values()).find((entity) => entity.x + 1 === transport.x && entity.y === transport.y)
+
+  if (!entityToConnect) {
+    return;
+  }
+
+  if(entityToConnect.type === "transport") {
+    switch(entityToConnect.direction) {
+      case "left": {
+        entityToConnect.target = transport.id;
+        break;
+      }
+      case "right": {
+        entityToConnect.source = transport.id;
+        break;
+      }
+    }
+  }
+  
+  else{
+    switch(transport.direction) {
+      case "right":{
+        if (entityToConnect.type=="consumer"){
+          break;
+        }
+        if (entityToConnect.leavingDirection === "right") {
+          transport.source = entityToConnect.id;
+        }
+        break;
+      }
+      case "left":{
+        if (entityToConnect.type=="source"){
+          break;
+        }
+        if (entityToConnect.entryDirection === "right") {
+          transport.target = entityToConnect.id;
+        }
+        break;
+      }
+    }
+  }
+}
+
+function updateUpperConnections(transport: EntityTransportType, state: GameType) {
+const entityToConnect = Array.from(state.entities.values()).find((entity) => entity.x === transport.x && entity.y - 1 === transport.y)
+
+  if (!entityToConnect) {
+    return;
+  }
+
+  if(entityToConnect.type === "transport") {
+    switch(entityToConnect.direction) {
+      case "up": {
+        entityToConnect.source = transport.id;
+        break;
+      }
+      case "down": {
+        entityToConnect.target = transport.id;
+        break;
+      }
+    }
+  }
+  
+  else{
+    switch(transport.direction) {
+      case "up":{
+        if (entityToConnect.type=="consumer"){
+          break;
+        }
+        if (entityToConnect.leavingDirection === "up") {
+          transport.source = entityToConnect.id;
+        }
+        break;
+      }
+      case "down":{
+        if (entityToConnect.type=="source"){
+          break;
+        }
+        if (entityToConnect.entryDirection === "up") {
+          transport.target = entityToConnect.id;
+        }
+        break;
+      }
+    }
+  }
+}
+
+function updateLowerConnections(transport: EntityTransportType, state: GameType) {
+const entityToConnect = Array.from(state.entities.values()).find((entity) => entity.x === transport.x && entity.y + 1 === transport.y)
+
+  if (!entityToConnect) {
+    return;
+  }
+
+  if(entityToConnect.type === "transport") {
+    switch(entityToConnect.direction) {
+      case "up": {
+        entityToConnect.target = transport.id;
+        break;
+      }
+      case "down": {
+        entityToConnect.source = transport.id;
+        break;
+      }
+    }
+  }
+  
+  else{
+    switch(transport.direction) {
+      case "down":{
+        if (entityToConnect.type=="consumer"){
+          break;
+        }
+        if (entityToConnect.leavingDirection === "down") {
+          transport.source = entityToConnect.id;
+        }
+        break;
+      }
+      case "up":{
+        if (entityToConnect.type=="source"){
+          break;
+        }
+        if (entityToConnect.entryDirection === "down") {
+          transport.target = entityToConnect.id;
+        }
+        break;
+      }
     }
   }
 }

@@ -1,6 +1,5 @@
 import type { GameType } from "../../types";
 import type { EntitySourceType } from "../EntitiesTypes";
-import { updateTransporters } from "../Transport/TransportActions";
 
 export type GameActionCreateSource = {
   type: "create source";
@@ -44,10 +43,10 @@ export function createSource(state: GameType, max: number, x: number, y:number) 
     rate: 1,
     x: x,
     y: y,
+    leavingDirection: "left",
   };
   newState.entities.set(newSourceID, newSourceEntity);
   newState.sources.push(newSourceID);
-  updateTransporters(newState,newSourceID, x, y);
   return newState;
 }
 

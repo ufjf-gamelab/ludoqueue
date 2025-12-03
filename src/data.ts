@@ -17,6 +17,7 @@ export const initialState: GameType = {
         cooldown: 0,
         x: 0,
         y: 0,
+        leavingDirection: "right",
       },
     ],
     [
@@ -31,6 +32,7 @@ export const initialState: GameType = {
         cooldown: 0,
         x: 2,
         y: 0,
+        entryDirection: "left",
       },
     ],
     [
@@ -61,7 +63,7 @@ export const initialState: GameType = {
         max: 1,
         rate: 1,
         cooldown: 1,
-        source: "source1",
+        source: null,
         target: "stock1",
         x: 0,
         y: 1,
@@ -80,6 +82,8 @@ export const initialState: GameType = {
         closed: false,
         x: 0,
         y: 2,
+        entryDirection: "up",
+        leavingDirection: "down",
       },
     ],
   ]),

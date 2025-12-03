@@ -1,4 +1,3 @@
-import type { TransportDirection } from "./Transport/TransportActions";
 
 export type EntityType =
   | EntitySourceType
@@ -14,6 +13,7 @@ export type EntitySourceType = {
   max: number;
   rate: number;
   cooldown: number;
+  leavingDirection: DirectionType;
   x: number;
   y: number;
 };
@@ -26,6 +26,8 @@ export type EntityStockType = {
   max: number;
   closed: boolean;
 
+  entryDirection: DirectionType;
+  leavingDirection: DirectionType;
   x: number;
   y: number;
 };
@@ -39,6 +41,7 @@ export type EntityConsumerType = {
   rate: number;
   cooldown: number;
 
+  entryDirection: DirectionType;
   x: number;
   y: number;
 };
@@ -51,17 +54,19 @@ export type EntityTransportType = {
   max: number;
   rate: number;
   cooldown: number;
-  source: string | undefined;
-  target: string | undefined;
+  source: string | null;
+  target: string | null;
 
   x: number;
   y: number;
-  direction: TransportDirection;
+  direction: DirectionType;
   movingGoods: MovingGoodType[];
 };
 
 export type MovingGoodType = {
-  source: EntityType, 
-  target: EntityType,
-  val: number,
-}
+  source: EntityType;
+  target: EntityType;
+  val: number;
+};
+
+export type DirectionType = "up" | "down" | "left" | "right";
