@@ -43,7 +43,7 @@ export function createStock(state: GameType, max: number, x: number, y:number) {
     max: max,
     closed: false,
     entryDirection: "left",
-    leavingDirection: "down",
+    leavingDirection: "right",
     x: x,
     y: y,
   };

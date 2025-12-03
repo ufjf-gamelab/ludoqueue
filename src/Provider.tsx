@@ -72,8 +72,6 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
         state,
         action.max,
         action.rate,
-        action.source,
-        action.target,
         action.x,
         action.y,
         action.direction
@@ -315,7 +313,7 @@ export function pointingAction(
       return gameReducer(newState, action);
     }
     case "transport right": {
-      if (entity) return state;
+      if (entity) return state;/*
       const source = Array.from(state.entities.values()).find(
         (e) =>
           e.x === x - 1 &&
@@ -329,13 +327,11 @@ export function pointingAction(
           (e.type === "consumer" ||
             e.type === "stock" ||
             e.type === "transport")
-      );
+      );*/
       const action: GameActionCreateTransport = {
         type: "create transport",
         max: 1,
         rate: 1,
-        source: source?.id,
-        target: target?.id,
         x: x,
         y: y,
         direction: "right",
@@ -344,7 +340,7 @@ export function pointingAction(
       return gameReducer(newState, action);
     }
     case "transport down": {
-      if (entity) return state;
+      if (entity) return state;/*
       const source = Array.from(state.entities.values()).find(
         (e) =>
           e.x === x &&
@@ -358,13 +354,11 @@ export function pointingAction(
           (e.type === "consumer" ||
             e.type === "stock" ||
             e.type === "transport")
-      );
+      );*/
       const action: GameActionCreateTransport = {
         type: "create transport",
         max: 1,
         rate: 1,
-        source: source?.id,
-        target: target?.id,
         x: x,
         y: y,
         direction: "down",
@@ -373,7 +367,7 @@ export function pointingAction(
       return gameReducer(newState, action);
     }
     case "transport left": {
-      if (entity) return state;
+      if (entity) return state;/*
       const source = Array.from(state.entities.values()).find(
         (e) =>
           e.x === x + 1 &&
@@ -387,13 +381,11 @@ export function pointingAction(
           (e.type === "consumer" ||
             e.type === "stock" ||
             e.type === "transport")
-      );
+      );*/
       const action: GameActionCreateTransport = {
         type: "create transport",
         max: 1,
         rate: 1,
-        source: source?.id,
-        target: target?.id,
         x: x,
         y: y,
         direction: "left",
@@ -402,7 +394,7 @@ export function pointingAction(
       return gameReducer(newState, action);
     }
     case "transport up": {
-      if (entity) return state;
+      if (entity) return state;/*
       const source = Array.from(state.entities.values()).find(
         (e) =>
           e.x === x &&
@@ -416,13 +408,11 @@ export function pointingAction(
           (e.type === "consumer" ||
             e.type === "stock" ||
             e.type === "transport")
-      );
+      );*/
       const action: GameActionCreateTransport = {
         type: "create transport",
         max: 1,
         rate: 1,
-        source: source?.id,
-        target: target?.id,
         x: x,
         y: y,
         direction: "up",

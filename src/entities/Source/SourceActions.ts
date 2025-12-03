@@ -44,7 +44,7 @@ export function createSource(state: GameType, max: number, x: number, y:number) 
     rate: 1,
     x: x,
     y: y,
-    leavingDirection: "left",
+    leavingDirection: "right",
   };
   newState.entities.set(newSourceID, newSourceEntity);
   newState.sources.push(newSourceID);
