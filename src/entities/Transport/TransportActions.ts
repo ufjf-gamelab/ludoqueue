@@ -1,12 +1,14 @@
 import type { GameType } from "../../types";
-import type { EntityTransportType, DirectionType } from "../EntitiesTypes";
+import type {
+  EntityTransportType,
+  DirectionType,
+  EntityType,
+} from "../EntitiesTypes";
 
 export type GameActionCreateTransport = {
   type: "create transport";
   rate: number;
   max: number;
-  source: string | null;
-  target: string | null;
   x: number;
   y: number;
   direction: DirectionType;
@@ -21,13 +23,10 @@ export function createTransport(
   state: GameType,
   max: number,
   rate: number,
-  source: string | null,
-  target: string | null,
   x: number,
   y: number,
   direction: DirectionType
 ) {
-
   if (
     Array.from(state.entities.values()).find(
       (entity) => entity.x === x && entity.y === y
@@ -188,98 +187,147 @@ function updateLowerTransporter(
   }
 }*/
 
-
-function updateConnections(
+export function updateConnections(
   state: GameType,
-  transport: EntityTransportType
+  entityToUpdate: EntityType
 ) {
-  updateLeftConnections(transport, state);
-  updateRightConnections(transport, state);
-  updateUpperConnections(transport, state);
-  updateLowerConnections(transport, state);
+  updateLeftConnections(entityToUpdate, state);
+  updateRightConnections(entityToUpdate, state);
+  updateUpperConnections(entityToUpdate, state);
+  updateLowerConnections(entityToUpdate, state);
 }
 
-function updateLeftConnections(transport: EntityTransportType, state: GameType) {
-  const entityToConnect = Array.from(state.entities.values()).find((entity) => entity.x - 1 === transport.x && entity.y === transport.y)
+function updateLeftConnections(entityToUpdate: EntityType, state: GameType) {
+  const entityToConnect = Array.from(state.entities.values()).find(
+    (entity) =>
+      entity.x === entityToUpdate.x - 1 && entity.y === entityToUpdate.y
+  );
 
   if (!entityToConnect) {
     return;
   }
 
-  if(entityToConnect.type === "transport") {
-    switch(entityToConnect.direction) {
+  if (
+    entityToConnect.type === "transport" &&
+    entityToUpdate.type === "transport"
+  ) {
+    switch (entityToConnect.direction) {
       case "left": {
-        entityToConnect.source = transport.id;
+        entityToConnect.source = entityToUpdate.id;
         break;
       }
       case "right": {
-        entityToConnect.target = transport.id;
+        entityToConnect.target = entityToUpdate.id;
         break;
       }
     }
-  }
-  
-  else{
-    switch(transport.direction) {
-      case "left":{
-        if (entityToConnect.type=="consumer"){
+  } else if (entityToConnect.type === "transport") {
+    switch (entityToConnect.direction) {
+      case "left": {
+        if (entityToUpdate.type == "consumer" || entityToUpdate.type === "transport") {
+          break;
+        }
+        if (entityToUpdate.leavingDirection === "left") {
+          entityToConnect.source = entityToUpdate.id;
+        }
+        break;
+      }
+      case "right": {
+        if (entityToUpdate.type === "source" || entityToUpdate.type === "transport") {
+          break;
+        }
+        if (entityToUpdate.entryDirection === "left") {
+          entityToConnect.target = entityToUpdate.id;
+        }
+        break;
+      }
+    }
+  } else if (entityToUpdate.type === "transport") {
+    switch (entityToUpdate.direction) {
+      case "left": {
+        if (entityToConnect.type == "consumer") {
           break;
         }
         if (entityToConnect.leavingDirection === "left") {
-          transport.source = entityToConnect.id;
+          entityToUpdate.source = entityToConnect.id;
         }
-        break;
-      }
-      case "right":{
-        if (entityToConnect.type=="source"){
-          break;
-        }
-        if (entityToConnect.entryDirection === "left") {
-          transport.target = entityToConnect.id;
-        }
-        break;
-      }
-    }
-  }
-}
-
-function updateRightConnections(transport: EntityTransportType, state: GameType) {
-const entityToConnect = Array.from(state.entities.values()).find((entity) => entity.x + 1 === transport.x && entity.y === transport.y)
-
-  if (!entityToConnect) {
-    return;
-  }
-
-  if(entityToConnect.type === "transport") {
-    switch(entityToConnect.direction) {
-      case "left": {
-        entityToConnect.target = transport.id;
         break;
       }
       case "right": {
-        entityToConnect.source = transport.id;
+        if (entityToConnect.type == "source") {
+          break;
+        }
+        if (entityToConnect.entryDirection === "left") {
+          entityToUpdate.target = entityToConnect.id;
+        }
         break;
       }
     }
   }
-  
-  else{
-    switch(transport.direction) {
-      case "right":{
-        if (entityToConnect.type=="consumer"){
+}
+
+function updateRightConnections(entityToUpdate: EntityType, state: GameType) {
+  const entityToConnect = Array.from(state.entities.values()).find(
+    (entity) =>
+      entity.x === entityToUpdate.x + 1 && entity.y === entityToUpdate.y
+  );
+
+  if (!entityToConnect) {
+    return;
+  }
+
+  if (
+    entityToConnect.type === "transport" &&
+    entityToUpdate.type === "transport"
+  ) {
+    switch (entityToConnect.direction) {
+      case "left": {
+        entityToConnect.target = entityToUpdate.id;
+        break;
+      }
+      case "right": {
+        entityToConnect.source = entityToUpdate.id;
+        break;
+      }
+    }
+  } else if (entityToConnect.type === "transport") {
+    switch (entityToConnect.direction) {
+      case "right": {
+        if (entityToUpdate.type == "consumer"  || entityToUpdate.type === "transport") {
+          break;
+        }
+        if (entityToUpdate.leavingDirection === "right") {
+          entityToConnect.source = entityToUpdate.id;
+        }
+        break;
+      }
+      case "left": {
+        if (entityToUpdate.type == "source" || entityToUpdate.type === "transport") {
+          break;
+        }
+        if (entityToUpdate.entryDirection === "right") {
+          entityToConnect.target = entityToUpdate.id;
+        }
+        break;
+      }
+    }
+  } else if (entityToUpdate.type === "transport") {
+    switch (entityToUpdate.direction) {
+      case "right": {
+        if (entityToConnect.type == "consumer") {
           break;
         }
         if (entityToConnect.leavingDirection === "right") {
-          transport.source = entityToConnect.id;
+          entityToUpdate.source = entityToConnect.id;
         }
         break;
       }
-      case "left":{
-        if (entityToConnect.type=="source"){
+      case "left": {
+        if (entityToConnect.type == "source") {
           break;
         }
         if (entityToConnect.entryDirection === "right") {
-          transport.target = entityToConnect.id;
+          entityToUpdate.target = entityToConnect.id;
         }
         break;
       }
@@ -287,43 +335,68 @@ const entityToConnect = Array.from(state.entities.values()).find((entity) => ent
   }
 }
 
-function updateUpperConnections(transport: EntityTransportType, state: GameType) {
-const entityToConnect = Array.from(state.entities.values()).find((entity) => entity.x === transport.x && entity.y - 1 === transport.y)
+function updateUpperConnections(entityToUpdate: EntityType, state: GameType) {
+  const entityToConnect = Array.from(state.entities.values()).find(
+    (entity) =>
+      entity.x === entityToUpdate.x && entity.y === entityToUpdate.y - 1
+  );
 
   if (!entityToConnect) {
     return;
   }
 
-  if(entityToConnect.type === "transport") {
-    switch(entityToConnect.direction) {
-      case "up": {
-        entityToConnect.source = transport.id;
+  if (
+    entityToConnect.type === "transport" &&
+    entityToUpdate.type === "transport"
+  ) {
+    switch (entityToConnect.direction) {
+      case "down": {
+        entityToConnect.target = entityToUpdate.id;
         break;
       }
-      case "down": {
-        entityToConnect.target = transport.id;
+      case "up": {
+        entityToConnect.source = entityToUpdate.id;
         break;
       }
     }
-  }
-  
-  else{
-    switch(transport.direction) {
-      case "up":{
-        if (entityToConnect.type=="consumer"){
+  } else if (entityToConnect.type === "transport") {
+    switch (entityToConnect.direction) {
+      case "up": {
+        if (entityToUpdate.type == "consumer"  || entityToUpdate.type === "transport") {
+          break;
+        }
+        if (entityToUpdate.leavingDirection === "up") {
+          entityToConnect.source = entityToUpdate.id;
+        }
+        break;
+      }
+      case "down": {
+        if (entityToUpdate.type == "source" || entityToUpdate.type === "transport") {
+          break;
+        }
+        if (entityToUpdate.entryDirection === "up") {
+          entityToConnect.target = entityToUpdate.id;
+        }
+        break;
+      }
+    }
+  } else if (entityToUpdate.type === "transport") {
+    switch (entityToUpdate.direction) {
+      case "up": {
+        if (entityToConnect.type == "consumer") {
           break;
         }
         if (entityToConnect.leavingDirection === "up") {
-          transport.source = entityToConnect.id;
+          entityToUpdate.source = entityToConnect.id;
         }
         break;
       }
-      case "down":{
-        if (entityToConnect.type=="source"){
+      case "down": {
+        if (entityToConnect.type == "source") {
           break;
         }
         if (entityToConnect.entryDirection === "up") {
-          transport.target = entityToConnect.id;
+          entityToUpdate.target = entityToConnect.id;
         }
         break;
       }
@@ -331,43 +404,68 @@ const entityToConnect = Array.from(state.entities.values()).find((entity) => ent
   }
 }
 
-function updateLowerConnections(transport: EntityTransportType, state: GameType) {
-const entityToConnect = Array.from(state.entities.values()).find((entity) => entity.x === transport.x && entity.y + 1 === transport.y)
+function updateLowerConnections(entityToUpdate: EntityType, state: GameType) {
+  const entityToConnect = Array.from(state.entities.values()).find(
+    (entity) =>
+      entity.x === entityToUpdate.x && entity.y === entityToUpdate.y + 1
+  );
 
   if (!entityToConnect) {
     return;
   }
 
-  if(entityToConnect.type === "transport") {
-    switch(entityToConnect.direction) {
-      case "up": {
-        entityToConnect.target = transport.id;
+  if (
+    entityToConnect.type === "transport" &&
+    entityToUpdate.type === "transport"
+  ) {
+    switch (entityToConnect.direction) {
+      case "down": {
+        entityToConnect.target = entityToUpdate.id;
         break;
       }
-      case "down": {
-        entityToConnect.source = transport.id;
+      case "up": {
+        entityToConnect.source = entityToUpdate.id;
         break;
       }
     }
-  }
-  
-  else{
-    switch(transport.direction) {
-      case "down":{
-        if (entityToConnect.type=="consumer"){
+  } else if (entityToConnect.type === "transport") {
+    switch (entityToConnect.direction) {
+      case "up": {
+        if (entityToUpdate.type == "consumer"  || entityToUpdate.type === "transport") {
           break;
         }
-        if (entityToConnect.leavingDirection === "down") {
-          transport.source = entityToConnect.id;
+        if (entityToUpdate.leavingDirection === "up") {
+          entityToConnect.source = entityToUpdate.id;
         }
         break;
       }
-      case "up":{
-        if (entityToConnect.type=="source"){
+      case "down": {
+        if (entityToUpdate.type == "source" || entityToUpdate.type === "transport") {
           break;
         }
-        if (entityToConnect.entryDirection === "down") {
-          transport.target = entityToConnect.id;
+        if (entityToUpdate.entryDirection === "up") {
+          entityToConnect.target = entityToUpdate.id;
+        }
+        break;
+      }
+    }
+  } else if (entityToUpdate.type === "transport") {
+    switch (entityToUpdate.direction) {
+      case "up": {
+        if (entityToConnect.type == "consumer") {
+          break;
+        }
+        if (entityToConnect.leavingDirection === "up") {
+          entityToUpdate.source = entityToConnect.id;
+        }
+        break;
+      }
+      case "down": {
+        if (entityToConnect.type == "source") {
+          break;
+        }
+        if (entityToConnect.entryDirection === "up") {
+          entityToUpdate.target = entityToConnect.id;
         }
         break;
       }

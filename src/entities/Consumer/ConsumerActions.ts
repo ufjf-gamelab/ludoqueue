@@ -1,5 +1,6 @@
 import type { GameType } from "../../types";
 import type { EntityConsumerType } from "../EntitiesTypes";
+import { updateConnections } from "../Transport/TransportActions";
 
 
 export type GameActionCreateConsumer = {
@@ -44,9 +45,11 @@ export function createConsumer(state: GameType, max: number, rate: number, x:num
     cooldown: 1,
     x: x,
     y: y,
+    entryDirection: "left",
   };
   newState.entities.set(newConsumerID, newConsumerEntity);
   newState.consumers.push(newConsumerID);
+  updateConnections(newState, newConsumerEntity);
   return newState;
 }
 

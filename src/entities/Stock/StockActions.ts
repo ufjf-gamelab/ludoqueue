@@ -1,5 +1,6 @@
 import type { GameType } from "../../types";
 import type { EntityStockType } from "../EntitiesTypes";
+import { updateConnections } from "../Transport/TransportActions";
 
 
 export type GameActionCreateStock = {
@@ -48,6 +49,7 @@ export function createStock(state: GameType, max: number, x: number, y:number) {
   };
   newState.entities.set(newStockID, newStockEntity);
   newState.stocks.push(newStockID);
+  updateConnections(newState, newStockEntity);  
   return newState;
 }
 
