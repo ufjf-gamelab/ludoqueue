@@ -44,6 +44,7 @@ describe("Consumer", () => {
             cooldown: 1.25,
             x: 0,
             y: 0,
+            entryDirection: "left",
           },
         ],
       ]),
@@ -80,6 +81,7 @@ describe("Consumer", () => {
             cooldown: 1.25,
             x: 0,
             y: 0,
+            entryDirection: "left",
           },
         ],
       ]),
@@ -116,6 +118,7 @@ describe("Consumer", () => {
             cooldown: 1.25,
             x: 0,
             y: 0,
+            entryDirection: "left",
           },
         ],
       ]),
@@ -152,6 +155,7 @@ describe("Consumer", () => {
             cooldown: 1.25,
             x: 0,
             y: 0,
+            entryDirection: "left",
           },
         ],
       ]),
@@ -185,6 +189,7 @@ describe("Consumer", () => {
             cooldown: 1.25,
             x: 0,
             y: 0,
+            entryDirection: "left",
           },
         ],
       ]),
@@ -216,6 +221,7 @@ describe("Consumer", () => {
             cooldown: 1.25,
             x: 0,
             y: 0,
+            entryDirection: "left",
           },
         ],
       ]),
@@ -243,6 +249,7 @@ describe("Consumer", () => {
       cooldown: 0,
       x: 0,
       y: 0,
+      entryDirection: "left",
     };
     gameConsumerTick(fakeCosumer);
     expect(fakeCosumer.val).toBe(0);
@@ -259,6 +266,7 @@ describe("Consumer", () => {
       cooldown: 0,
       x: 0,
       y: 0,
+      entryDirection: "left",
     };
     gameConsumerTick(fakeConsumer);
     expect(fakeConsumer.val).toBe(0);
@@ -275,6 +283,7 @@ describe("Consumer", () => {
       cooldown: 2,
       x: 0,
       y: 0,
+      entryDirection: "left",
     };
     gameConsumerTick(fakeConsumer);
     expect(fakeConsumer.val).toBe(1);
@@ -293,6 +302,7 @@ describe("Consumer", () => {
       cooldown: 2,
       x: 0,
       y: 0,
+      entryDirection: "left",
     };
     gameConsumerTick(fakeConsumer);
     expect(fakeConsumer.cooldown).toBe(1);

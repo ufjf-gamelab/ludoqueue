@@ -20,6 +20,7 @@ describe("Transport should", () => {
             cooldown: 1.25,
             x: 0,
             y: 0,
+            leavingDirection: "down",
           },
         ],
         [
@@ -32,8 +33,9 @@ describe("Transport should", () => {
             max: 5,
             rate: 1,
             cooldown: 1.25,
-            x: 2,
-            y: 0,
+            x: 0,
+            y: 2,
+            entryDirection: "up",
           },
         ],
       ]),
@@ -46,11 +48,9 @@ describe("Transport should", () => {
       type: "create transport",
       rate: 1,
       max: 10,
-      source: "source1",
-      target: "consumer1",
       x: 1,
       y: 0,
-      direction: "right",
+      direction: "down",
     };
 
     const result = gameReducer(stateTest as GameType, actionTest);
@@ -75,6 +75,7 @@ describe("Transport should", () => {
             cooldown: 1.25,
             x: 0,
             y: 0,
+            leavingDirection: "right",
           },
         ],
         [
@@ -89,6 +90,7 @@ describe("Transport should", () => {
             cooldown: 1.25,
             x: 2,
             y: 0,
+            entryDirection: "left",
           },
         ],
         [
@@ -101,9 +103,10 @@ describe("Transport should", () => {
             rate: 1,
             max: 10,
             cooldown: 0,
-            source: undefined,
-            target: undefined,
+            source: null,
+            target: null,
             direction: "right",
+            movingGoods: [],
             x: 3,
             y: 0,
           },
@@ -118,8 +121,6 @@ describe("Transport should", () => {
       type: "create transport",
       rate: 1,
       max: 10,
-      source: "source1",
-      target: "consumer1",
       x: 1,
       y: 0,
       direction: "right",
@@ -217,6 +218,7 @@ describe("Transport should", () => {
             cooldown: 1.25,
             x: 0,
             y: 0,
+            leavingDirection: "right",
           },
         ],
         [
@@ -231,6 +233,7 @@ describe("Transport should", () => {
             cooldown: 1.25,
             x: 2,
             y: 0,
+            entryDirection: "left",
           },
         ],
       ]),
@@ -243,8 +246,6 @@ describe("Transport should", () => {
       type: "create transport",
       rate: 1,
       max: 10,
-      source: "source1",
-      target: "consumer1",
       x: 1,
       y: 0,
       direction: "right",
@@ -252,6 +253,8 @@ describe("Transport should", () => {
 
     const result = gameReducer(stateTest as GameType, actionTest);
     const transport = result.entities.get("transport1") as EntityTransportType;
+    expect(transport.source).toBe("source1");
+    expect(transport.target).toBe("consumer1");
     expect(transport.rate).toBe(1);
   });
 
@@ -270,6 +273,7 @@ describe("Transport should", () => {
             cooldown: 1.25,
             x: 0,
             y: 0,
+            leavingDirection: "right",
           },
         ],
         [
@@ -284,6 +288,7 @@ describe("Transport should", () => {
             cooldown: 1.25,
             x: 2,
             y: 0,
+            entryDirection: "left",
           },
         ],
       ]),
@@ -296,8 +301,6 @@ describe("Transport should", () => {
       type: "create transport",
       rate: 2,
       max: 10,
-      source: "source1",
-      target: "consumer1",
       x: 1,
       y: 0,
       direction: "right",
@@ -322,6 +325,8 @@ describe("Transport should", () => {
             closed: false,
             x: 0,
             y: 0,
+            entryDirection: "left",
+            leavingDirection: "right",
           },
         ],
         [
@@ -336,6 +341,7 @@ describe("Transport should", () => {
             cooldown: 1.25,
             x: 2,
             y: 0,
+            entryDirection: "left",
           },
         ],
       ]),
@@ -348,8 +354,6 @@ describe("Transport should", () => {
       type: "create transport",
       rate: 1,
       max: 10,
-      source: "stock1",
-      target: "consumer1",
       x: 1,
       y: 0,
       direction: "right",
@@ -375,6 +379,7 @@ describe("Transport should", () => {
             cooldown: 1.25,
             x: 0,
             y: 0,
+            leavingDirection: "right",
           },
         ],
         [
@@ -389,6 +394,7 @@ describe("Transport should", () => {
             cooldown: 1.25,
             x: 2,
             y: 0,
+            entryDirection: "left",
           },
         ],
       ]),
@@ -401,8 +407,6 @@ describe("Transport should", () => {
       type: "create transport",
       rate: 1,
       max: 10,
-      source: "source1",
-      target: "consumer1",
       x: 1,
       y: 0,
       direction: "right",
@@ -427,6 +431,8 @@ describe("Transport should", () => {
             closed: false,
             x: 0,
             y: 0,
+            entryDirection: "down",
+            leavingDirection: "right",
           },
         ],
         [
@@ -441,6 +447,7 @@ describe("Transport should", () => {
             cooldown: 0,
             x: 2,
             y: 0,
+            entryDirection: "left",
           },
         ],
         [
@@ -458,6 +465,7 @@ describe("Transport should", () => {
             x: 1,
             y: 0,
             direction: "right",
+            movingGoods: [],
           },
         ],
       ]),
@@ -470,8 +478,6 @@ describe("Transport should", () => {
       type: "create transport",
       rate: 1,
       max: 10,
-      source: "source1",
-      target: "consumer1",
       x: 1,
       y: 0,
       direction: "right",
