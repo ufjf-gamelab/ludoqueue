@@ -127,6 +127,7 @@ function updateLeftConnections(entityToUpdate: EntityType, state: GameType) {
         if (entityToUpdate.type == "consumer" || entityToUpdate.type === "transport") {
           break;
         }
+        leftEntity.source = null;
         if (entityToUpdate.leavingDirection === "left") {
           leftEntity.source = entityToUpdate.id;
         }
@@ -136,6 +137,7 @@ function updateLeftConnections(entityToUpdate: EntityType, state: GameType) {
         if (entityToUpdate.type === "source" || entityToUpdate.type === "transport") {
           break;
         }
+        leftEntity.target = null;
         if (entityToUpdate.entryDirection === "left") {
           leftEntity.target = entityToUpdate.id;
         }
@@ -148,6 +150,7 @@ function updateLeftConnections(entityToUpdate: EntityType, state: GameType) {
         if (leftEntity.type == "consumer") {
           break;
         }
+        entityToUpdate.source = null;
         if (leftEntity.leavingDirection === "right") {
           entityToUpdate.source = leftEntity.id;
         }
@@ -157,6 +160,7 @@ function updateLeftConnections(entityToUpdate: EntityType, state: GameType) {
         if (leftEntity.type == "source") {
           break;
         }
+        entityToUpdate.target = null;
         if (leftEntity.entryDirection === "right") {
           entityToUpdate.target = leftEntity.id;
         }
@@ -205,6 +209,7 @@ function updateRightConnections(entityToUpdate: EntityType, state: GameType) {
         if (entityToUpdate.type == "consumer"  || entityToUpdate.type === "transport") {
           break;
         }
+        rightEntity.source = null;
         if (entityToUpdate.leavingDirection === "right") {
           rightEntity.source = entityToUpdate.id;
         }
@@ -214,6 +219,7 @@ function updateRightConnections(entityToUpdate: EntityType, state: GameType) {
         if (entityToUpdate.type == "source" || entityToUpdate.type === "transport") {
           break;
         }
+        rightEntity.target = null;
         if (entityToUpdate.entryDirection === "right") {
           rightEntity.target = entityToUpdate.id;
         }
@@ -226,6 +232,7 @@ function updateRightConnections(entityToUpdate: EntityType, state: GameType) {
         if (rightEntity.type == "consumer") {
           break;
         }
+        entityToUpdate.source = null;
         if (rightEntity.leavingDirection === "left") {
           entityToUpdate.source = rightEntity.id;
         }
@@ -235,6 +242,7 @@ function updateRightConnections(entityToUpdate: EntityType, state: GameType) {
         if (rightEntity.type == "source") {
           break;
         }
+        entityToUpdate.target = null;
         if (rightEntity.entryDirection === "left") {
           entityToUpdate.target = rightEntity.id;
         }
@@ -284,6 +292,7 @@ function updateUpperConnections(entityToUpdate: EntityType, state: GameType) {
         if (entityToUpdate.type == "consumer"  || entityToUpdate.type === "transport") {
           break;
         }
+        upperEntity.source = null;
         if (entityToUpdate.leavingDirection === "up") {
           upperEntity.source = entityToUpdate.id;
         }
@@ -293,6 +302,7 @@ function updateUpperConnections(entityToUpdate: EntityType, state: GameType) {
         if (entityToUpdate.type == "source" || entityToUpdate.type === "transport") {
           break;
         }
+        upperEntity.target = null;
         if (entityToUpdate.entryDirection === "up") {
           upperEntity.target = entityToUpdate.id;
         }
@@ -305,6 +315,7 @@ function updateUpperConnections(entityToUpdate: EntityType, state: GameType) {
         if (upperEntity.type == "consumer") {
           break;
         }
+        entityToUpdate.source = null;
         if (upperEntity.leavingDirection === "down") {
           entityToUpdate.source = upperEntity.id;
         }
@@ -314,6 +325,7 @@ function updateUpperConnections(entityToUpdate: EntityType, state: GameType) {
         if (upperEntity.type == "source") {
           break;
         }
+        entityToUpdate.target = null;
         if (upperEntity.entryDirection === "down") {
           entityToUpdate.target = upperEntity.id;
         }
@@ -363,6 +375,7 @@ function updateLowerConnections(entityToUpdate: EntityType, state: GameType) {
         if (entityToUpdate.type == "consumer"  || entityToUpdate.type === "transport") {
           break;
         }
+        lowerEntity.source = null;
         if (entityToUpdate.leavingDirection === "down") {
           lowerEntity.source = entityToUpdate.id;
         }
@@ -372,6 +385,7 @@ function updateLowerConnections(entityToUpdate: EntityType, state: GameType) {
         if (entityToUpdate.type == "source" || entityToUpdate.type === "transport") {
           break;
         }
+        lowerEntity.target = null;
         if (entityToUpdate.entryDirection === "down") {
           lowerEntity.target = entityToUpdate.id;
         }
@@ -384,6 +398,7 @@ function updateLowerConnections(entityToUpdate: EntityType, state: GameType) {
         if (lowerEntity.type == "consumer") {
           break;
         }
+        entityToUpdate.source = null;
         if (lowerEntity.leavingDirection === "up") {
           entityToUpdate.source = lowerEntity.id;
         }
@@ -393,6 +408,7 @@ function updateLowerConnections(entityToUpdate: EntityType, state: GameType) {
         if (lowerEntity.type == "source") {
           break;
         }
+        entityToUpdate.target = null;
         if (lowerEntity.entryDirection === "up") {
           entityToUpdate.target = lowerEntity.id;
         }
