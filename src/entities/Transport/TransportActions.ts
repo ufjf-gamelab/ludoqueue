@@ -112,6 +112,16 @@ function updateLeftConnections(entityToUpdate: EntityType, state: GameType) {
         break;
       }
     }
+    switch (entityToUpdate.direction) {
+      case "left": {
+        entityToUpdate.target = entityToConnect.id;
+        break;
+      }
+      case "right": {
+        entityToUpdate.source = entityToConnect.id;
+        break;
+      }
+    }
   } else if (entityToConnect.type === "transport") {
     switch (entityToConnect.direction) {
       case "left": {
@@ -181,6 +191,16 @@ function updateRightConnections(entityToUpdate: EntityType, state: GameType) {
         break;
       }
     }
+    switch (entityToUpdate.direction) {
+      case "left": {
+        entityToUpdate.source = entityToConnect.id;
+        break;
+      }
+      case "right": {
+        entityToUpdate.target = entityToConnect.id;
+        break;
+      }
+    }
   } else if (entityToConnect.type === "transport") {
     switch (entityToConnect.direction) {
       case "right": {
@@ -241,12 +261,22 @@ function updateUpperConnections(entityToUpdate: EntityType, state: GameType) {
     entityToUpdate.type === "transport"
   ) {
     switch (entityToConnect.direction) {
+      case "up": {
+        entityToConnect.source = entityToUpdate.id;
+        break;
+      }
       case "down": {
         entityToConnect.target = entityToUpdate.id;
         break;
       }
+    }
+    switch (entityToUpdate.direction) {
       case "up": {
-        entityToConnect.source = entityToUpdate.id;
+        entityToUpdate.target = entityToConnect.id;
+        break;
+      }
+      case "down": {
+        entityToUpdate.source = entityToConnect.id;
         break;
       }
     }
@@ -310,12 +340,22 @@ function updateLowerConnections(entityToUpdate: EntityType, state: GameType) {
     entityToUpdate.type === "transport"
   ) {
     switch (entityToConnect.direction) {
-      case "down": {
+      case "up": {
         entityToConnect.target = entityToUpdate.id;
         break;
       }
-      case "up": {
+      case "down": {
         entityToConnect.source = entityToUpdate.id;
+        break;
+      }
+    }
+    switch (entityToUpdate.direction) {
+      case "up": {
+        entityToUpdate.source = entityToConnect.id;
+        break;
+      }
+      case "down": {
+        entityToUpdate.target = entityToConnect.id;
         break;
       }
     }
