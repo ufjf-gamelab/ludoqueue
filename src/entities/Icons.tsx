@@ -3,6 +3,8 @@ import { GiMiner } from "react-icons/gi";
 import { BsMinecartLoaded } from "react-icons/bs";
 import { BsSafe2 } from "react-icons/bs";
 import { TiArrowMove, TiCancel, TiDelete } from "react-icons/ti";
+import { IoIosArrowBack, IoIosArrowDown, IoIosArrowForward, IoIosArrowUp } from "react-icons/io";
+import type { DirectionType } from "./EntitiesTypes";
 
 
 export const EntityIcons = {
@@ -17,7 +19,7 @@ export const EntityIcons = {
 };
 
 export const TransportIcons = {
-  down: <FaDownLong />,
+  down: <FaDownLong/>,
   up: <FaUpLong />,
   left: <FaLeftLong />,
   right: <FaRightLong />,
@@ -28,3 +30,23 @@ export const ActionIcons = {
   move: <TiArrowMove />,
   cancel: <TiCancel />,
 };
+
+export const DirectionIcons = {
+  down: <IoIosArrowDown />,
+  up: <IoIosArrowUp />,
+  left: <IoIosArrowBack />,
+  right: <IoIosArrowForward />,
+};
+
+export function getEntryIcon(direction: DirectionType) {
+  switch (direction) {
+    case "down":
+      return <IoIosArrowUp />;
+    case "up":
+      return <IoIosArrowDown />;
+    case "left":
+      return <IoIosArrowForward />;
+    case "right":
+      return <IoIosArrowBack />;
+  }
+}

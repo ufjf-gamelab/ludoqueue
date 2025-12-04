@@ -1,6 +1,6 @@
 import type { EntitySourceType } from "../EntitiesTypes";
 import "./SourceTile.css";
-import { EntityIcons } from "../Icons";
+import { DirectionIcons, EntityIcons } from "../Icons";
 
 /**
  *
@@ -16,6 +16,9 @@ export default function Source({ entity }: { entity: EntitySourceType }) {
         max={entity.max}
         title={`${entity.val}/${entity.max}`}
       />
+      <div className={"movingDirection-" + entity.leavingDirection}>
+        {DirectionIcons[entity.leavingDirection]}
+      </div>
     </div>
   );
 }
