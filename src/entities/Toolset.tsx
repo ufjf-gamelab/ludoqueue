@@ -2,8 +2,11 @@ import type { EntityType } from "./EntitiesTypes";
 import type { AnchorStyle } from "./Tile";
 import { TransportIcons } from "./Icons";
 import "./Toolset.css";
+import { useGame } from "../Provider";
 
 export default function Toolset({ entity }: { entity: EntityType }) {
+  const { dispatch } = useGame()!;
+
   return (
     <div
       key={entity.id}
@@ -37,6 +40,114 @@ export default function Toolset({ entity }: { entity: EntityType }) {
           Direction: {TransportIcons[entity.direction]}
           {TransportIcons[entity.direction]}
           {TransportIcons[entity.direction]}
+        </div>
+      )}
+      {(entity.type === "stock" || entity.type === "consumer") && (
+        <div style={{ display: "flex", gap: "4px", marginTop: "8px" }}>
+          <p style={{ margin: 0, fontSize: "12px" }}>Change Entry Direction</p>
+          <button
+            onClick={() =>
+              dispatch({
+                type: "change entering direction",
+                id: entity.id,
+                direction: "left",
+              })
+            }
+            style={{ padding: "4px 8px", fontSize: "12px" }}
+          >
+            {TransportIcons["left"]}
+          </button>
+          <button
+            onClick={() =>
+              dispatch({
+                type: "change entering direction",
+                id: entity.id,
+                direction: "right",
+              })
+            }
+            style={{ padding: "4px 8px", fontSize: "12px" }}
+          >
+            {TransportIcons["right"]}
+          </button>
+          <button
+            onClick={() =>
+              dispatch({
+                type: "change entering direction",
+                id: entity.id,
+                direction: "up",
+              })
+            }
+            style={{ padding: "4px 8px", fontSize: "12px" }}
+          >
+            {TransportIcons["up"]}
+          </button>
+          <button
+            onClick={() =>
+              dispatch({
+                type: "change entering direction",
+                id: entity.id,
+                direction: "down",
+              })
+            }
+            style={{ padding: "4px 8px", fontSize: "12px" }}
+          >
+            {TransportIcons["down"]}
+          </button>
+        </div>
+      )}
+      {(entity.type === "stock" || entity.type === "source") && (
+        <div style={{ display: "flex", gap: "4px", marginTop: "8px" }}>
+          <p style={{ margin: 0, fontSize: "12px" }}>
+            Change Leaving Direction
+          </p>
+          <button
+            onClick={() =>
+              dispatch({
+                type: "change leaving direction",
+                id: entity.id,
+                direction: "left",
+              })
+            }
+            style={{ padding: "4px 8px", fontSize: "12px" }}
+          >
+            {TransportIcons["left"]}
+          </button>
+          <button
+            onClick={() =>
+              dispatch({
+                type: "change leaving direction",
+                id: entity.id,
+                direction: "right",
+              })
+            }
+            style={{ padding: "4px 8px", fontSize: "12px" }}
+          >
+            {TransportIcons["right"]}
+          </button>
+          <button
+            onClick={() =>
+              dispatch({
+                type: "change leaving direction",
+                id: entity.id,
+                direction: "up",
+              })
+            }
+            style={{ padding: "4px 8px", fontSize: "12px" }}
+          >
+            {TransportIcons["up"]}
+          </button>
+          <button
+            onClick={() =>
+              dispatch({
+                type: "change leaving direction",
+                id: entity.id,
+                direction: "down",
+              })
+            }
+            style={{ padding: "4px 8px", fontSize: "12px" }}
+          >
+            {TransportIcons["down"]}
+          </button>
         </div>
       )}
     </div>
