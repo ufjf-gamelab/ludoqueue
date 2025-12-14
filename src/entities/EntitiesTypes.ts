@@ -26,8 +26,7 @@ export type EntityStockType = {
   max: number;
   closed: boolean;
 
-  entryDirection: DirectionType;
-  leavingDirection: DirectionType;
+  direction: DirectionType;
   x: number;
   y: number;
 };

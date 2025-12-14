@@ -1,6 +1,5 @@
 import type { GameType } from "../../types";
-import type { EntityStockType } from "../EntitiesTypes";
-import { updateConnections } from "../Transport/TransportActions";
+import type { DirectionType, EntityStockType } from "../EntitiesTypes";
 
 
 export type GameActionCreateStock = {
@@ -9,6 +8,7 @@ export type GameActionCreateStock = {
   val: number;
   x: number;
   y: number;
+  direction: DirectionType;
 };
 
 export type GameActionDeleteStock = {
@@ -16,7 +16,7 @@ export type GameActionDeleteStock = {
   id: string;
 };
 
-export function createStock(state: GameType, max: number, x: number, y:number) {
+export function createStock(state: GameType, max: number, x: number, y:number, direction: DirectionType) {
   if (
     Array.from(state.entities.values()).find(
       (entity) => entity.x === x && entity.y === y
@@ -42,14 +42,13 @@ export function createStock(state: GameType, max: number, x: number, y:number) {
     val: 0,
     max: max,
     closed: false,
-    entryDirection: "left",
-    leavingDirection: "right",
-    x: x,
-    y: y,
+    direction,
+    x,
+    y,
   };
   newState.entities.set(newStockID, newStockEntity);
   newState.stocks.push(newStockID);
-  updateConnections(newState, newStockEntity);  
+  updateStockConnections(newState, newStockEntity);  
   return newState;
 }
 
@@ -62,4 +61,43 @@ export function deleteStock(state: GameType, stock: string) {
     return newState;
   }
   return state;
+}
+
+function updateStockConnections(state: GameType, stock: EntityStockType) {
+  switch (stock.direction) {
+    case "up": {
+      const upperEntity = Array.from(state.entities.values()).find(
+        (entity) => entity.x === stock.x && entity.y === stock.y - 1
+      );
+      const lowerEntity = Array.from(state.entities.values()).find(
+        (entity) => entity.x === stock.x && entity.y === stock.y + 1
+      );
+      if (upperEntity && upperEntity.type === "transport" && upperEntity.direction === "up") {
+        upperEntity.source = stock.id;
+      };
+      if (lowerEntity && lowerEntity.type === "transport" && lowerEntity.direction === "up") {
+        lowerEntity.target = stock.id;
+      };
+      break;
+    }
+    case "down":{
+      const upperEntity = Array.from(state.entities.values()).find(
+        (entity) => entity.x === stock.x && entity.y === stock.y - 1
+      );
+      const lowerEntity = Array.from(state.entities.values()).find(
+        (entity) => entity.x === stock.x && entity.y === stock.y + 1
+      );
+      if (upperEntity && upperEntity.type === "transport" && upperEntity.direction === "down") {
+        upperEntity.target = stock.id;
+      };
+      if (lowerEntity && lowerEntity.type === "transport" && lowerEntity.direction === "down") {
+        lowerEntity.source = stock.id;
+      };
+      break;
+    }
+    case "left":
+      break;
+    case "right":
+      break;
+  }
 }

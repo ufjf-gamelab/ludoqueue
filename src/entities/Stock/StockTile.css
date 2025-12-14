@@ -10,31 +10,32 @@
       width: 100%;
     }
   
-  .movingDirection-down {
+  .leavingMovingDirection-vertical {
     position: absolute;
     bottom: -10px;
     left: 50%;
     transform: translateX(-50%);
   }
-
-  .movingDirection-right {
-    position: absolute;
-    right: -2px;
-    top: 40%;
-    transform: translateY(-50%);
-  }
-
-  .movingDirection-up {
+  
+  .entryMovingDirection-vertical {
     position: absolute;
     top: -4px;
     left: 50%;
     transform: translateX(-50%);
   }
 
-  .movingDirection-left {
+  .leavingMovingDirection-horizontal {
+    position: absolute;
+    right: -2px;
+    top: 40%;
+    transform: translateY(-50%);
+  }
+
+  .entryMovingDirection-horizontal {
     position: absolute;
     left: -2px;
     top: 40%;
     transform: translateY(-50%);
   }
+
 }
