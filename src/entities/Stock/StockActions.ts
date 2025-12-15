@@ -69,96 +69,93 @@ export function deleteStock(state: GameType, stock: string) {
   return state;
 }
 
-export function changeStockDirection(state: GameType, entityId: string, direction: DirectionType) {
-  const entity = state.entities.get(entityId) as EntityStockType;
-  if (!entity || entity.type !== "stock") {
-    return state;
-  }
-  if (entity.direction === direction) {
+export function changeStockDirection(state: GameType, stockID: string, direction: DirectionType) {
+  const stockEntity = state.entities.get(stockID) as EntityStockType | undefined;
+  if (!stockEntity || stockEntity.direction === direction) {
     return state;
   }
   const newState = structuredClone(state);
-  const newEntity = newState.entities.get(entityId) as EntityStockType;
+  const newEntity = newState.entities.get(stockID) as EntityStockType;
   newEntity.direction = direction;
   updateStockConnections(newState, newEntity);
   return newState;
 }
 
 
-function updateStockConnections(state: GameType, stock: EntityStockType) {
+function updateStockConnections(state: GameType, stockID: EntityStockType) {
   //primeiro limpar as conexoes antigas
   const oldTransportSource = Array.from(state.entities.values()).find(
-    (entity) => entity.type === "transport" && entity.source === stock.id
+    (entity) => entity.type === "transport" && entity.source === stockID.id
   ) as EntityTransportType | undefined;
   if (oldTransportSource) {
     oldTransportSource.source = null;
   }
   const oldTransportTarget = Array.from(state.entities.values()).find(
-    (entity) => entity.type === "transport" && entity.target === stock.id
+    (entity) => entity.type === "transport" && entity.target === stockID.id
   ) as EntityTransportType | undefined;
   if (oldTransportTarget) {
     oldTransportTarget.target = null;
   };
 
   //depois criar as novas conexoes
-  switch (stock.direction) {
+  switch (stockID.direction) {
     case "up": {
       const upperEntity = Array.from(state.entities.values()).find(
-        (entity) => entity.x === stock.x && entity.y === stock.y - 1
+        (entity) => entity.x === stockID.x && entity.y === stockID.y - 1
       );
       const lowerEntity = Array.from(state.entities.values()).find(
-        (entity) => entity.x === stock.x && entity.y === stock.y + 1
+        (entity) => entity.x === stockID.x && entity.y === stockID.y + 1
       );
       if (upperEntity && upperEntity.type === "transport" && upperEntity.direction === "up") {
-        upperEntity.source = stock.id;
+        upperEntity.source = stockID.id;
       };
       if (lowerEntity && lowerEntity.type === "transport" && lowerEntity.direction === "up") {
-        lowerEntity.target = stock.id;
+        lowerEntity.target = stockID.id;
       };
       break;
     }
     case "down":{
       const upperEntity = Array.from(state.entities.values()).find(
-        (entity) => entity.x === stock.x && entity.y === stock.y - 1
+        (entity) => entity.x === stockID.x && entity.y === stockID.y - 1
       );
       const lowerEntity = Array.from(state.entities.values()).find(
-        (entity) => entity.x === stock.x && entity.y === stock.y + 1
+        (entity) => entity.x === stockID.x && entity.y === stockID.y + 1
       );
       if (upperEntity && upperEntity.type === "transport" && upperEntity.direction === "down") {
-        upperEntity.target = stock.id;
+        upperEntity.target = stockID.id;
       };
       if (lowerEntity && lowerEntity.type === "transport" && lowerEntity.direction === "down") {
-        lowerEntity.source = stock.id;
+        lowerEntity.source = stockID.id;
       };
       break;
     }
     case "left":{
       const leftEntity = Array.from(state.entities.values()).find(
-        (entity) => entity.x === stock.x - 1 && entity.y === stock.y
+        (entity) => entity.x === stockID.x - 1 && entity.y === stockID.y
       );
       const rightEntity = Array.from(state.entities.values()).find(
-        (entity) => entity.x === stock.x + 1 && entity.y === stock.y
+        (entity) => entity.x === stockID.x + 1 && entity.y === stockID.y
       );
       if (leftEntity && leftEntity.type === "transport" && leftEntity.direction === "left") {
-        leftEntity.source = stock.id;
+        leftEntity.source = stockID.id;
       };
       if (rightEntity && rightEntity.type === "transport" && rightEntity.direction === "left") {
-        rightEntity.target = stock.id;
+        rightEntity.target = stockID.id;
       };
       break;
     }
     case "right":{
       const leftEntity = Array.from(state.entities.values()).find(
-        (entity) => entity.x === stock.x - 1 && entity.y === stock.y
+        (entity) => entity.x === stockID.x - 1 && entity.y === stockID.y
       );
       const rightEntity = Array.from(state.entities.values()).find(
-        (entity) => entity.x === stock.x + 1 && entity.y === stock.y
+        (entity) => entity.x === stockID.x + 1 && entity.y === stockID.y
       );
       if (leftEntity && leftEntity.type === "transport" && leftEntity.direction === "right") {
-        leftEntity.target = stock.id;
+        leftEntity.target = stockID.id;
       };
       if (rightEntity && rightEntity.type === "transport" && rightEntity.direction === "right") {
-        rightEntity.source = stock.id;
+        rightEntity.source = stockID.id;
       };
       break;
     }

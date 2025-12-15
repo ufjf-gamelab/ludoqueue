@@ -1,7 +1,9 @@
 import type { GameType } from "../../types";
-import type { EntityConsumerType } from "../EntitiesTypes";
-import { updateConnections } from "../Transport/TransportActions";
-
+import type {
+  DirectionType,
+  EntityConsumerType,
+  EntityTransportType,
+} from "../EntitiesTypes";
 
 export type GameActionCreateConsumer = {
   type: "create consumer";
@@ -16,7 +18,19 @@ export type GameActionDeleteConsumer = {
   id: string;
 };
 
-export function createConsumer(state: GameType, max: number, rate: number, x:number, y:number) {
+export type GameActionChangeConsumerEntryDirection = {
+  type: "change consumer entrydirection";
+  id: string;
+  direction: DirectionType;
+};
+
+export function createConsumer(
+  state: GameType,
+  max: number,
+  rate: number,
+  x: number,
+  y: number
+) {
   if (
     Array.from(state.entities.values()).find(
       (entity) => entity.x === x && entity.y === y
@@ -49,7 +63,7 @@ export function createConsumer(state: GameType, max: number, rate: number, x:num
   };
   newState.entities.set(newConsumerID, newConsumerEntity);
   newState.consumers.push(newConsumerID);
-  updateConnections(newState, newConsumerEntity);
+  updateConsumerConnections(newState, newConsumerEntity);
   return newState;
 }
 
@@ -62,4 +76,90 @@ export function deleteConsumer(state: GameType, consumer: string) {
     return newState;
   }
   return state;
+}
+
+export function changeConsumerEntryDirection(
+  state: GameType,
+  consumerID: string,
+  direction: DirectionType
+) {
+  const consumerEntity = state.entities.get(consumerID) as EntityConsumerType | undefined;
+  if (!consumerEntity || direction === consumerEntity.entryDirection) {
+    return state;
+  }
+  const newState = structuredClone(state);
+  const newConsumerEntity = newState.entities.get(
+    consumerID
+  ) as EntityConsumerType;
+  newConsumerEntity.entryDirection = direction;
+  updateConsumerConnections(newState, newConsumerEntity);
+  return newState;
+}
+
+function updateConsumerConnections(
+  state: GameType,
+  consumerID: EntityConsumerType
+) {
+  //primeiro limpar as conexoes antigas
+  const oldTransportTarget = Array.from(state.entities.values()).find(
+    (entity) => entity.type === "transport" && entity.target === consumerID.id
+  ) as EntityTransportType | undefined;
+  if (oldTransportTarget) {
+    oldTransportTarget.target = null;
+  }
+
+  switch (consumerID.entryDirection) {
+    case "up": {
+      const upperEntity = Array.from(state.entities.values()).find(
+        (entity) => entity.x === consumerID.x && entity.y === consumerID.y - 1
+      );
+      if (
+        upperEntity &&
+        upperEntity.type === "transport" &&
+        upperEntity.direction === "down"
+      ) {
+        upperEntity.target = consumerID.id;
+      }
+      break;
+    }
+    case "down": {
+      const lowerEntity = Array.from(state.entities.values()).find(
+        (entity) => entity.x === consumerID.x && entity.y === consumerID.y + 1
+      );
+      if (
+        lowerEntity &&
+        lowerEntity.type === "transport" &&
+        lowerEntity.direction === "up"
+      ) {
+        lowerEntity.target = consumerID.id;
+      }
+      break;
+    }
+    case "left": {
+      const leftEntity = Array.from(state.entities.values()).find(
+        (entity) => entity.x === consumerID.x - 1 && entity.y === consumerID.y
+      );
+      if (
+        leftEntity &&
+        leftEntity.type === "transport" &&
+        leftEntity.direction === "right"
+      ) {
+        leftEntity.target = consumerID.id;
+      }
+      break;
+    }
+    case "right": {
+      const rightEntity = Array.from(state.entities.values()).find(
+        (entity) => entity.x === consumerID.x + 1 && entity.y === consumerID.y
+      );
+      if (
+        rightEntity &&
+        rightEntity.type === "transport" &&
+        rightEntity.direction === "left"
+      ) {
+        rightEntity.target = consumerID.id;
+      }
+      break;
+    }
+  }
 }

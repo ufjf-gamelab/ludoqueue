@@ -1,6 +1,5 @@
 import type { GameType } from "../../types";
-import type { EntitySourceType } from "../EntitiesTypes";
-import { updateConnections } from "../Transport/TransportActions";
+import type { DirectionType, EntitySourceType, EntityTransportType } from "../EntitiesTypes";
 
 export type GameActionCreateSource = {
   type: "create source";
@@ -13,6 +12,12 @@ export type GameActionCreateSource = {
 export type GameActionDeleteSource = {
   type: "delete source";
   id: string;
+};
+
+export type GameActionChangeSourceLeavingDirection = {
+  type: "change source leaving direction";
+  id: string;
+  direction: DirectionType;
 };
 
 export function createSource(state: GameType, max: number, x: number, y:number) {
@@ -48,7 +53,7 @@ export function createSource(state: GameType, max: number, x: number, y:number) 
   };
   newState.entities.set(newSourceID, newSourceEntity);
   newState.sources.push(newSourceID);
-  updateConnections(newState, newSourceEntity);
+  updateSourceConnections(newState, newSourceEntity);
   return newState;
 }
 
@@ -61,4 +66,65 @@ export function deleteSource(state: GameType, source: string) {
     return newState;
   }
   return state;
+}
+
+export function changeSourceLeavingDirection(state: GameType, sourceID: string, direction: DirectionType) {
+  const sourceEntity = state.entities.get(sourceID) as EntitySourceType | undefined;
+  if (!sourceEntity || direction === sourceEntity.leavingDirection) {
+    return state;
+  }
+  const newState = structuredClone(state);
+  const newSourceEntity = newState.entities.get(sourceID) as EntitySourceType;
+  newSourceEntity.leavingDirection = direction;
+  updateSourceConnections(newState, newSourceEntity);
+  return newState;
+}
+
+function updateSourceConnections(state: GameType, sourceID: EntitySourceType) {
+  //primeiro limpar as conexoes antigas
+    const oldTransportSource = Array.from(state.entities.values()).find(
+      (entity) => entity.type === "transport" && entity.source === sourceID.id
+    ) as EntityTransportType | undefined;
+    if (oldTransportSource) {
+      oldTransportSource.source = null;
+    }
+  //depois criar as novas conexoes
+  switch (sourceID.leavingDirection) {
+    case "up":{
+      const upperEntity = Array.from(state.entities.values()).find(
+        (entity) => entity.x === sourceID.x && entity.y === sourceID.y - 1
+      );
+      if (upperEntity && upperEntity.type === "transport" && upperEntity.direction === "up") {
+        upperEntity.source=sourceID.id;
+      }
+      break;
+    }
+    case "down":{
+      const lowerEntity = Array.from(state.entities.values()).find(
+        (entity) => entity.x === sourceID.x && entity.y === sourceID.y + 1
+      );
+      if (lowerEntity && lowerEntity.type === "transport" && lowerEntity.direction === "down") {
+        lowerEntity.source=sourceID.id;
+      };
+      break;
+    }
+    case "left":{
+      const leftEntity = Array.from(state.entities.values()).find(
+        (entity) => entity.x === sourceID.x - 1 && entity.y === sourceID.y
+      );
+      if (leftEntity && leftEntity.type === "transport" && leftEntity.direction === "left") {
+        leftEntity.source=sourceID.id;
+      };
+      break;
+    }
+    case "right":{
+      const rightEntity = Array.from(state.entities.values()).find(
+        (entity) => entity.x === sourceID.x + 1 && entity.y === sourceID.y
+      );
+      if (rightEntity && rightEntity.type === "transport" && rightEntity.direction === "right") {
+        rightEntity.source=sourceID.id;
+      };
+      break;
+    }
+  }
 }
