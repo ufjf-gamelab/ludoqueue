@@ -1,5 +1,5 @@
 import type { GameType } from "../../types";
-import type { DirectionType, EntityStockType } from "../EntitiesTypes";
+import type { DirectionType, EntityStockType, EntityTransportType } from "../EntitiesTypes";
 
 
 export type GameActionCreateStock = {
@@ -86,6 +86,21 @@ export function changeStockDirection(state: GameType, entityId: string, directio
 
 
 function updateStockConnections(state: GameType, stock: EntityStockType) {
+  //primeiro limpar as conexoes antigas
+  const oldTransportSource = Array.from(state.entities.values()).find(
+    (entity) => entity.type === "transport" && entity.source === stock.id
+  ) as EntityTransportType | undefined;
+  if (oldTransportSource) {
+    oldTransportSource.source = null;
+  }
+  const oldTransportTarget = Array.from(state.entities.values()).find(
+    (entity) => entity.type === "transport" && entity.target === stock.id
+  ) as EntityTransportType | undefined;
+  if (oldTransportTarget) {
+    oldTransportTarget.target = null;
+  };
+
+  //depois criar as novas conexoes
   switch (stock.direction) {
     case "up": {
       const upperEntity = Array.from(state.entities.values()).find(
@@ -117,9 +132,35 @@ function updateStockConnections(state: GameType, stock: EntityStockType) {
       };
       break;
     }
-    case "left":
+    case "left":{
+      const leftEntity = Array.from(state.entities.values()).find(
+        (entity) => entity.x === stock.x - 1 && entity.y === stock.y
+      );
+      const rightEntity = Array.from(state.entities.values()).find(
+        (entity) => entity.x === stock.x + 1 && entity.y === stock.y
+      );
+      if (leftEntity && leftEntity.type === "transport" && leftEntity.direction === "left") {
+        leftEntity.source = stock.id;
+      };
+      if (rightEntity && rightEntity.type === "transport" && rightEntity.direction === "left") {
+        rightEntity.target = stock.id;
+      };
       break;
-    case "right":
+    }
+    case "right":{
+      const leftEntity = Array.from(state.entities.values()).find(
+        (entity) => entity.x === stock.x - 1 && entity.y === stock.y
+      );
+      const rightEntity = Array.from(state.entities.values()).find(
+        (entity) => entity.x === stock.x + 1 && entity.y === stock.y
+      );
+      if (leftEntity && leftEntity.type === "transport" && leftEntity.direction === "right") {
+        leftEntity.target = stock.id;
+      };
+      if (rightEntity && rightEntity.type === "transport" && rightEntity.direction === "right") {
+        rightEntity.source = stock.id;
+      };
       break;
+    }
   }
 }
