@@ -5,6 +5,7 @@ import { BsSafe2 } from "react-icons/bs";
 import { TiArrowMove, TiCancel, TiDelete } from "react-icons/ti";
 import { IoIosArrowBack, IoIosArrowDown, IoIosArrowForward, IoIosArrowUp } from "react-icons/io";
 import type { DirectionType } from "./EntitiesTypes";
+import { PiArrowClockwiseBold, PiArrowCounterClockwiseBold } from "react-icons/pi";
 
 
 export const EntityIcons = {
@@ -37,6 +38,11 @@ export const DirectionIcons = {
   left: <IoIosArrowBack />,
   right: <IoIosArrowForward />,
 };
+
+export const RotationIcons = {
+  counterclockwise: <PiArrowCounterClockwiseBold />,
+  clockwise: <PiArrowClockwiseBold />,
+} 
 
 export function getEntryIcon(direction: DirectionType) {
   switch (direction) {

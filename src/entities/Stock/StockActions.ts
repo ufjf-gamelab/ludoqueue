@@ -16,6 +16,12 @@ export type GameActionDeleteStock = {
   id: string;
 };
 
+export type GameActionChangeStockDirection = {
+  type: "change stock direction";
+  id: string;
+  direction: DirectionType;
+};
+
 export function createStock(state: GameType, max: number, x: number, y:number, direction: DirectionType) {
   if (
     Array.from(state.entities.values()).find(
@@ -62,6 +68,22 @@ export function deleteStock(state: GameType, stock: string) {
   }
   return state;
 }
+
+export function changeStockDirection(state: GameType, entityId: string, direction: DirectionType) {
+  const entity = state.entities.get(entityId) as EntityStockType;
+  if (!entity || entity.type !== "stock") {
+    return state;
+  }
+  if (entity.direction === direction) {
+    return state;
+  }
+  const newState = structuredClone(state);
+  const newEntity = newState.entities.get(entityId) as EntityStockType;
+  newEntity.direction = direction;
+  updateStockConnections(newState, newEntity);
+  return newState;
+}
+
 
 function updateStockConnections(state: GameType, stock: EntityStockType) {
   switch (stock.direction) {
