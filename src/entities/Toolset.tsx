@@ -36,7 +36,7 @@ export default function Toolset({ entity }: { entity: EntityType }) {
           </div>
         </>
       )}
-      
+
       {entity.type === "transport" && (
         <div className="CardSubtitle">
           Direction: {TransportIcons[entity.direction]}
@@ -119,107 +119,141 @@ export default function Toolset({ entity }: { entity: EntityType }) {
         <div style={{ display: "flex", gap: "4px", marginTop: "8px" }}>
           <p style={{ margin: 0, fontSize: "12px" }}>Change Entry Direction</p>
           <button
-            onClick={() =>
-              dispatch({
-                type: "change consumer entry direction",
-                id: entity.id,
-                direction: "left",
-              })
-            }
-            style={{ padding: "4px 8px", fontSize: "12px" }}
+            onClick={() => {
+              switch (entity.entryDirection) {
+                case "up":
+                  return dispatch({
+                    type: "change consumer entry direction",
+                    id: entity.id,
+                    direction: "left",
+                  });
+                case "left":
+                  return dispatch({
+                    type: "change consumer entry direction",
+                    id: entity.id,
+                    direction: "down",
+                  });
+                case "down":
+                  return dispatch({
+                    type: "change consumer entry direction",
+                    id: entity.id,
+                    direction: "right",
+                  });
+                case "right":
+                  return dispatch({
+                    type: "change consumer entry direction",
+                    id: entity.id,
+                    direction: "up",
+                  });
+              }
+            }}
+            style={{ padding: "4px 6px", fontSize: "12px" }}
           >
-            {TransportIcons["left"]}
+            {RotationIcons["counterclockwise"]}
           </button>
           <button
-            onClick={() =>
-              dispatch({
-                type: "change consumer entry direction",
-                id: entity.id,
-                direction: "right",
-              })
-            }
-            style={{ padding: "4px 8px", fontSize: "12px" }}
+            onClick={() => {
+              switch (entity.entryDirection) {
+                case "up":
+                  return dispatch({
+                    type: "change consumer entry direction",
+                    id: entity.id,
+                    direction: "right",
+                  });
+                case "right":
+                  return dispatch({
+                    type: "change consumer entry direction",
+                    id: entity.id,
+                    direction: "down",
+                  });
+                case "down":
+                  return dispatch({
+                    type: "change consumer entry direction",
+                    id: entity.id,
+                    direction: "left",
+                  });
+                case "left":
+                  return dispatch({
+                    type: "change consumer entry direction",
+                    id: entity.id,
+                    direction: "up",
+                  });
+              }
+            }}
+            style={{ padding: "4px 6px", fontSize: "12px" }}
           >
-            {TransportIcons["right"]}
-          </button>
-          <button
-            onClick={() =>
-              dispatch({
-                type: "change consumer entry direction",
-                id: entity.id,
-                direction: "up",
-              })
-            }
-            style={{ padding: "4px 8px", fontSize: "12px" }}
-          >
-            {TransportIcons["up"]}
-          </button>
-          <button
-            onClick={() =>
-              dispatch({
-                type: "change consumer entry direction",
-                id: entity.id,
-                direction: "down",
-              })
-            }
-            style={{ padding: "4px 8px", fontSize: "12px" }}
-          >
-            {TransportIcons["down"]}
+            {RotationIcons["clockwise"]}
           </button>
         </div>
       )}
       {entity.type === "source" && (
         <div style={{ display: "flex", gap: "4px", marginTop: "8px" }}>
-          <p style={{ margin: 0, fontSize: "12px" }}>
-            Change Leaving Direction
-          </p>
+          <p style={{ margin: 0, fontSize: "12px" }}>Change Leaving Direction</p>
           <button
-            onClick={() =>
-              dispatch({
-                type: "change source leaving direction",
-                id: entity.id,
-                direction: "left",
-              })
-            }
-            style={{ padding: "4px 8px", fontSize: "12px" }}
+            onClick={() => {
+              switch (entity.leavingDirection) {
+                case "up":
+                  return dispatch({
+                    type: "change source leaving direction",
+                    id: entity.id,
+                    direction: "left",
+                  });
+                case "left":
+                  return dispatch({
+                    type: "change source leaving direction",
+                    id: entity.id,
+                    direction: "down",
+                  });
+                case "down":
+                  return dispatch({
+                    type: "change source leaving direction",
+                    id: entity.id,
+                    direction: "right",
+                  });
+                case "right":
+                  return dispatch({
+                    type: "change source leaving direction",
+                    id: entity.id,
+                    direction: "up",
+                  });
+              }
+            }}
+            style={{ padding: "4px 6px", fontSize: "12px" }}
           >
-            {TransportIcons["left"]}
+            {RotationIcons["counterclockwise"]}
           </button>
           <button
-            onClick={() =>
-              dispatch({
-                type: "change source leaving direction",
-                id: entity.id,
-                direction: "right",
-              })
-            }
-            style={{ padding: "4px 8px", fontSize: "12px" }}
+            onClick={() => {
+              switch (entity.leavingDirection) {
+                case "up":
+                  return dispatch({
+                    type: "change source leaving direction",
+                    id: entity.id,
+                    direction: "right",
+                  });
+                case "right":
+                  return dispatch({
+                    type: "change source leaving direction",
+                    id: entity.id,
+                    direction: "down",
+                  });
+                case "down":
+                  return dispatch({
+                    type: "change source leaving direction",
+                    id: entity.id,
+                    direction: "left",
+                  });
+                case "left":
+                  return dispatch({
+                    type: "change source leaving direction",
+                    id: entity.id,
+                    direction: "up",
+                  });
+              }
+            }}
+            style={{ padding: "4px 6px", fontSize: "12px" }}
           >
-            {TransportIcons["right"]}
-          </button>
-          <button
-            onClick={() =>
-              dispatch({
-                type: "change source leaving direction",
-                id: entity.id,
-                direction: "up",
-              })
-            }
-            style={{ padding: "4px 8px", fontSize: "12px" }}
-          >
-            {TransportIcons["up"]}
-          </button>
-          <button
-            onClick={() =>
-              dispatch({
-                type: "change source leaving direction",
-                id: entity.id,
-                direction: "down",
-              })
-            }
-            style={{ padding: "4px 8px", fontSize: "12px" }}
-          >
-            {TransportIcons["down"]}
+            {RotationIcons["clockwise"]}
           </button>
         </div>
       )}
