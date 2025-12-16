@@ -80,49 +80,49 @@ export function changeSourceLeavingDirection(state: GameType, sourceID: string, 
   return newState;
 }
 
-function updateSourceConnections(state: GameType, sourceID: EntitySourceType) {
+function updateSourceConnections(state: GameType, source: EntitySourceType) {
   //primeiro limpar as conexoes antigas
     const oldTransportSource = Array.from(state.entities.values()).find(
-      (entity) => entity.type === "transport" && entity.source === sourceID.id
+      (entity) => entity.type === "transport" && entity.source === source.id
     ) as EntityTransportType | undefined;
     if (oldTransportSource) {
       oldTransportSource.source = null;
     }
   //depois criar as novas conexoes
-  switch (sourceID.leavingDirection) {
+  switch (source.leavingDirection) {
     case "up":{
       const upperEntity = Array.from(state.entities.values()).find(
-        (entity) => entity.x === sourceID.x && entity.y === sourceID.y - 1
+        (entity) => entity.x === source.x && entity.y === source.y - 1
       );
       if (upperEntity && upperEntity.type === "transport" && upperEntity.direction === "up") {
-        upperEntity.source=sourceID.id;
+        upperEntity.source=source.id;
       }
       break;
     }
     case "down":{
       const lowerEntity = Array.from(state.entities.values()).find(
-        (entity) => entity.x === sourceID.x && entity.y === sourceID.y + 1
+        (entity) => entity.x === source.x && entity.y === source.y + 1
       );
       if (lowerEntity && lowerEntity.type === "transport" && lowerEntity.direction === "down") {
-        lowerEntity.source=sourceID.id;
+        lowerEntity.source=source.id;
       };
       break;
     }
     case "left":{
       const leftEntity = Array.from(state.entities.values()).find(
-        (entity) => entity.x === sourceID.x - 1 && entity.y === sourceID.y
+        (entity) => entity.x === source.x - 1 && entity.y === source.y
       );
       if (leftEntity && leftEntity.type === "transport" && leftEntity.direction === "left") {
-        leftEntity.source=sourceID.id;
+        leftEntity.source=source.id;
       };
       break;
     }
     case "right":{
       const rightEntity = Array.from(state.entities.values()).find(
-        (entity) => entity.x === sourceID.x + 1 && entity.y === sourceID.y
+        (entity) => entity.x === source.x + 1 && entity.y === source.y
       );
       if (rightEntity && rightEntity.type === "transport" && rightEntity.direction === "right") {
-        rightEntity.source=sourceID.id;
+        rightEntity.source=source.id;
       };
       break;
     }

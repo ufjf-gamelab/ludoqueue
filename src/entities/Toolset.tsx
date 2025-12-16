@@ -25,6 +25,7 @@ export default function Toolset({ entity }: { entity: EntityType }) {
       <div className="ToolsetSubtitle">
         {entity.val} / {entity.max}
       </div>
+
       {entity.type === "stock" ? (
         <div className="ToolsetWarning">Doesnt have cooldown</div>
       ) : (
@@ -35,6 +36,7 @@ export default function Toolset({ entity }: { entity: EntityType }) {
           </div>
         </>
       )}
+      
       {entity.type === "transport" && (
         <div className="CardSubtitle">
           Direction: {TransportIcons[entity.direction]}
@@ -119,7 +121,7 @@ export default function Toolset({ entity }: { entity: EntityType }) {
           <button
             onClick={() =>
               dispatch({
-                type: "change entering direction",
+                type: "change consumer entry direction",
                 id: entity.id,
                 direction: "left",
               })
@@ -131,7 +133,7 @@ export default function Toolset({ entity }: { entity: EntityType }) {
           <button
             onClick={() =>
               dispatch({
-                type: "change entering direction",
+                type: "change consumer entry direction",
                 id: entity.id,
                 direction: "right",
               })
@@ -143,7 +145,7 @@ export default function Toolset({ entity }: { entity: EntityType }) {
           <button
             onClick={() =>
               dispatch({
-                type: "change entering direction",
+                type: "change consumer entry direction",
                 id: entity.id,
                 direction: "up",
               })
@@ -155,7 +157,7 @@ export default function Toolset({ entity }: { entity: EntityType }) {
           <button
             onClick={() =>
               dispatch({
-                type: "change entering direction",
+                type: "change consumer entry direction",
                 id: entity.id,
                 direction: "down",
               })
@@ -174,7 +176,7 @@ export default function Toolset({ entity }: { entity: EntityType }) {
           <button
             onClick={() =>
               dispatch({
-                type: "change leaving direction",
+                type: "change source leaving direction",
                 id: entity.id,
                 direction: "left",
               })
@@ -186,7 +188,7 @@ export default function Toolset({ entity }: { entity: EntityType }) {
           <button
             onClick={() =>
               dispatch({
-                type: "change leaving direction",
+                type: "change source leaving direction",
                 id: entity.id,
                 direction: "right",
               })
@@ -198,7 +200,7 @@ export default function Toolset({ entity }: { entity: EntityType }) {
           <button
             onClick={() =>
               dispatch({
-                type: "change leaving direction",
+                type: "change source leaving direction",
                 id: entity.id,
                 direction: "up",
               })
@@ -210,7 +212,7 @@ export default function Toolset({ entity }: { entity: EntityType }) {
           <button
             onClick={() =>
               dispatch({
-                type: "change leaving direction",
+                type: "change source leaving direction",
                 id: entity.id,
                 direction: "down",
               })

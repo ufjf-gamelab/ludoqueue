@@ -7,7 +7,6 @@ import {
 } from "react";
 import type { GameStatus, GameType } from "./types";
 import type {
-  DirectionType,
   EntityConsumerType,
   EntitySourceType,
   EntityStockType,
@@ -16,8 +15,10 @@ import type {
 } from "./entities/EntitiesTypes";
 import { initialState } from "./data";
 import {
+  changeSourceLeavingDirection,
   createSource,
   deleteSource,
+  type GameActionChangeSourceLeavingDirection,
   type GameActionCreateSource,
   type GameActionDeleteSource,
 } from "./entities/Source/SourceActions";
@@ -30,15 +31,16 @@ import {
   type GameActionDeleteStock,
 } from "./entities/Stock/StockActions";
 import {
+  changeConsumerEntryDirection,
   createConsumer,
   deleteConsumer,
+  type GameActionChangeConsumerEntryDirection,
   type GameActionCreateConsumer,
   type GameActionDeleteConsumer,
 } from "./entities/Consumer/ConsumerActions";
 import {
   createTransport,
   deleteTransport,
-  updateConnections,
   type GameActionCreateTransport,
   type GameActionDeleteTransport,
 } from "./entities/Transport/TransportActions";
@@ -63,20 +65,20 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
       return createSource(state, action.max, action.x, action.y);
     case "delete source":
       return deleteSource(state, action.id);
+    case "change source leaving direction":
+      return changeSourceLeavingDirection(state,action.id,action.direction);
     case "create stock":
       return createStock(state, action.max, action.x, action.y, action.direction);
     case "delete stock":
       return deleteStock(state, action.id);
     case "change stock direction":
       return changeStockDirection(state, action.id, action.direction);
-    case "change leaving direction":
-      return changeLeavingDirection(state, action.id, action.direction);
-    case "change entering direction":
-      return changeEnteringDirection(state, action.id, action.direction);
     case "create consumer":
       return createConsumer(state, action.max, action.rate, action.x, action.y);
     case "delete consumer":
       return deleteConsumer(state, action.id);
+    case "change consumer entry direction":
+      return changeConsumerEntryDirection(state, action.id, action.direction);
     case "create transport":
       return createTransport(
         state,
@@ -262,28 +264,17 @@ type GameActionPointing = {
   y: number;
 };
 
-type GameActionChangeLeavingDirection = {
-  type: "change leaving direction";
-  id: string;
-  direction: DirectionType;
-};
-
-type GameActionChangeEnteringDirection = {
-  type: "change entering direction";
-  id: string;
-  direction: DirectionType;
-};
 
 export type GameAction =
   | GameActionCreateSource
   | GameActionDeleteSource
+  | GameActionChangeSourceLeavingDirection
   | GameActionCreateStock
   | GameActionDeleteStock
   | GameActionChangeStockDirection
-  | GameActionChangeLeavingDirection
-  | GameActionChangeEnteringDirection
   | GameActionCreateConsumer
   | GameActionDeleteConsumer
+  | GameActionChangeConsumerEntryDirection
   | GameActionCreateTransport
   | GameActionDeleteTransport
   | GameActionSetNodeValue
@@ -340,21 +331,7 @@ export function pointingAction(
       return gameReducer(newState, action);
     }
     case "transport right": {
-      if (entity) return state; /*
-      const source = Array.from(state.entities.values()).find(
-        (e) =>
-          e.x === x - 1 &&
-          e.y === y &&
-          (e.type === "source" || e.type === "stock" || e.type === "transport")
-      );
-      const target = Array.from(state.entities.values()).find(
-        (e) =>
-          e.x === x + 1 &&
-          e.y === y &&
-          (e.type === "consumer" ||
-            e.type === "stock" ||
-            e.type === "transport")
-      );*/
+      if (entity) return state; 
       const action: GameActionCreateTransport = {
         type: "create transport",
         max: 1,
@@ -367,21 +344,7 @@ export function pointingAction(
       return gameReducer(newState, action);
     }
     case "transport down": {
-      if (entity) return state; /*
-      const source = Array.from(state.entities.values()).find(
-        (e) =>
-          e.x === x &&
-          e.y === y - 1 &&
-          (e.type === "source" || e.type === "stock" || e.type === "transport")
-      );
-      const target = Array.from(state.entities.values()).find(
-        (e) =>
-          e.x === x &&
-          e.y === y + 1 &&
-          (e.type === "consumer" ||
-            e.type === "stock" ||
-            e.type === "transport")
-      );*/
+      if (entity) return state; 
       const action: GameActionCreateTransport = {
         type: "create transport",
         max: 1,
@@ -394,21 +357,7 @@ export function pointingAction(
       return gameReducer(newState, action);
     }
     case "transport left": {
-      if (entity) return state; /*
-      const source = Array.from(state.entities.values()).find(
-        (e) =>
-          e.x === x + 1 &&
-          e.y === y &&
-          (e.type === "source" || e.type === "stock" || e.type === "transport")
-      );
-      const target = Array.from(state.entities.values()).find(
-        (e) =>
-          e.x === x - 1 &&
-          e.y === y &&
-          (e.type === "consumer" ||
-            e.type === "stock" ||
-            e.type === "transport")
-      );*/
+      if (entity) return state; 
       const action: GameActionCreateTransport = {
         type: "create transport",
         max: 1,
@@ -421,21 +370,7 @@ export function pointingAction(
       return gameReducer(newState, action);
     }
     case "transport up": {
-      if (entity) return state; /*
-      const source = Array.from(state.entities.values()).find(
-        (e) =>
-          e.x === x &&
-          e.y === y + 1 &&
-          (e.type === "source" || e.type === "stock" || e.type === "transport")
-      );
-      const target = Array.from(state.entities.values()).find(
-        (e) =>
-          e.x === x &&
-          e.y === y - 1 &&
-          (e.type === "consumer" ||
-            e.type === "stock" ||
-            e.type === "transport")
-      );*/
+      if (entity) return state; 
       const action: GameActionCreateTransport = {
         type: "create transport",
         max: 1,
@@ -451,48 +386,4 @@ export function pointingAction(
     default:
       return state;
   }
-  return state;
-}
-
-
-export function changeLeavingDirection(state: GameType, entityId: string, direction: DirectionType) {
-  const entity = state.entities.get(entityId) as EntityType;
-  if (entity.type === "stock"){
-    return state;
-  }
-  if (entity.type != "source" && entity.entryDirection === direction) {
-    return state;
-  }
-  if (entity && (entity.type === "stock" || entity.type === "source") ) {
-    const newState = structuredClone(state);
-    const newEntity = newState.entities.get(entityId) as EntityType;
-    if (newEntity.type !== "stock" && newEntity.type !== "source") {
-      return state;
-    }
-    newEntity.leavingDirection = direction;
-    updateConnections(newState, newEntity);
-    return newState;
-  }
-  return state;
-} 
-
-export function changeEnteringDirection(state: GameType, entityId: string, direction: DirectionType) {
-  const entity = state.entities.get(entityId) as EntityType;
-  if (entity.type === "stock"){
-    return state;
-  }
-  if (entity.type != "consumer" && entity.leavingDirection === direction) {
-    return state;
-  }
-  if (entity && entity.type === "consumer") {
-    const newState = structuredClone(state);
-    const newEntity = newState.entities.get(entityId) as EntityType;
-    if (newEntity.type !== "stock" && newEntity.type !== "consumer") {
-      return state;
-    }
-    newEntity.entryDirection = direction;
-    updateConnections(newState, newEntity);
-    return newState;
-  }
-  return state;
 }
