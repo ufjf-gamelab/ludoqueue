@@ -58,7 +58,8 @@ export type EntityTransportType = {
 
   x: number;
   y: number;
-  direction: DirectionType;
+  entryDirection: DirectionType;
+  leavingDirection: DirectionType;
   movingGoods: MovingGoodType[];
 };
 

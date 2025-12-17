@@ -94,7 +94,7 @@ function updateSourceConnections(state: GameType, source: EntitySourceType) {
       const upperEntity = Array.from(state.entities.values()).find(
         (entity) => entity.x === source.x && entity.y === source.y - 1
       );
-      if (upperEntity && upperEntity.type === "transport" && upperEntity.direction === "up") {
+      if (upperEntity && upperEntity.type === "transport" && upperEntity.entryDirection === "down") {
         upperEntity.source=source.id;
       }
       break;
@@ -103,7 +103,7 @@ function updateSourceConnections(state: GameType, source: EntitySourceType) {
       const lowerEntity = Array.from(state.entities.values()).find(
         (entity) => entity.x === source.x && entity.y === source.y + 1
       );
-      if (lowerEntity && lowerEntity.type === "transport" && lowerEntity.direction === "down") {
+      if (lowerEntity && lowerEntity.type === "transport" && lowerEntity.entryDirection === "up") {
         lowerEntity.source=source.id;
       };
       break;
@@ -112,7 +112,7 @@ function updateSourceConnections(state: GameType, source: EntitySourceType) {
       const leftEntity = Array.from(state.entities.values()).find(
         (entity) => entity.x === source.x - 1 && entity.y === source.y
       );
-      if (leftEntity && leftEntity.type === "transport" && leftEntity.direction === "left") {
+      if (leftEntity && leftEntity.type === "transport" && leftEntity.entryDirection === "right") {
         leftEntity.source=source.id;
       };
       break;
@@ -121,7 +121,7 @@ function updateSourceConnections(state: GameType, source: EntitySourceType) {
       const rightEntity = Array.from(state.entities.values()).find(
         (entity) => entity.x === source.x + 1 && entity.y === source.y
       );
-      if (rightEntity && rightEntity.type === "transport" && rightEntity.direction === "right") {
+      if (rightEntity && rightEntity.type === "transport" && rightEntity.entryDirection === "left") {
         rightEntity.source=source.id;
       };
       break;

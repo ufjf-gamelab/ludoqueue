@@ -116,7 +116,7 @@ function updateConsumerConnections(
       if (
         upperEntity &&
         upperEntity.type === "transport" &&
-        upperEntity.direction === "down"
+        upperEntity.leavingDirection === "down"
       ) {
         upperEntity.target = consumer.id;
       }
@@ -129,7 +129,7 @@ function updateConsumerConnections(
       if (
         lowerEntity &&
         lowerEntity.type === "transport" &&
-        lowerEntity.direction === "up"
+        lowerEntity.leavingDirection === "up"
       ) {
         lowerEntity.target = consumer.id;
       }
@@ -142,7 +142,7 @@ function updateConsumerConnections(
       if (
         leftEntity &&
         leftEntity.type === "transport" &&
-        leftEntity.direction === "right"
+        leftEntity.leavingDirection === "right"
       ) {
         leftEntity.target = consumer.id;
       }
@@ -155,7 +155,7 @@ function updateConsumerConnections(
       if (
         rightEntity &&
         rightEntity.type === "transport" &&
-        rightEntity.direction === "left"
+        rightEntity.leavingDirection === "left"
       ) {
         rightEntity.target = consumer.id;
       }

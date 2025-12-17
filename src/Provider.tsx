@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import {
   createContext,
   useContext,
@@ -86,7 +87,8 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
         action.rate,
         action.x,
         action.y,
-        action.direction
+        action.entryDirection,
+        action.leavingDirection
       );
     case "delete transport":
       return deleteTransport(state, action.id);
@@ -338,7 +340,8 @@ export function pointingAction(
         rate: 1,
         x: x,
         y: y,
-        direction: "right",
+        entryDirection: "left",
+        leavingDirection: "right",
       };
       newState.status = "waiting";
       return gameReducer(newState, action);
@@ -351,7 +354,8 @@ export function pointingAction(
         rate: 1,
         x: x,
         y: y,
-        direction: "down",
+        entryDirection: "up",
+        leavingDirection: "down",
       };
       newState.status = "waiting";
       return gameReducer(newState, action);
@@ -364,7 +368,8 @@ export function pointingAction(
         rate: 1,
         x: x,
         y: y,
-        direction: "left",
+        entryDirection: "right",
+        leavingDirection: "left",
       };
       newState.status = "waiting";
       return gameReducer(newState, action);
@@ -377,7 +382,8 @@ export function pointingAction(
         rate: 1,
         x: x,
         y: y,
-        direction: "up",
+        entryDirection: "down",
+        leavingDirection: "up",
       };
       newState.status = "waiting";
       return gameReducer(newState, action);
