@@ -3,9 +3,11 @@ import { GiMiner } from "react-icons/gi";
 import { BsMinecartLoaded } from "react-icons/bs";
 import { BsSafe2 } from "react-icons/bs";
 import { TiArrowMove, TiCancel, TiDelete } from "react-icons/ti";
-import { IoIosArrowBack, IoIosArrowDown, IoIosArrowForward, IoIosArrowUp } from "react-icons/io";
 import type { DirectionType } from "./EntitiesTypes";
 import { PiArrowClockwiseBold, PiArrowCounterClockwiseBold } from "react-icons/pi";
+import { HiArrowTurnDownLeft, HiArrowTurnDownRight, HiArrowTurnLeftDown, HiArrowTurnLeftUp, HiArrowTurnRightDown, HiArrowTurnRightUp, HiArrowTurnUpLeft, HiArrowTurnUpRight } from "react-icons/hi2";
+import type { JSX } from "react";
+import { IoIosArrowBack, IoIosArrowDown, IoIosArrowForward, IoIosArrowUp } from "react-icons/io";
 
 
 export const EntityIcons = {
@@ -19,12 +21,24 @@ export const EntityIcons = {
   "transport down": <FaDownLong />
 };
 
-export const TransportIcons = {
-  down: <FaDownLong/>,
-  up: <FaUpLong />,
-  left: <FaLeftLong />,
-  right: <FaRightLong />,
-};
+export const TransportIcons = new Map<string, JSX.Element>([
+  ["up-down", <FaDownLong />],
+  ["up-left", <HiArrowTurnDownRight />],
+  ["up-right", <HiArrowTurnDownLeft />],
+
+  ["down-up", <FaUpLong />],
+  ["down-left", <HiArrowTurnUpRight />],
+  ["down-right", <HiArrowTurnUpLeft />],
+
+  ["left-right", <FaRightLong />],
+  ["left-up", <HiArrowTurnRightUp />],
+  ["left-down", <HiArrowTurnRightDown />],
+
+  ["right-left", <FaLeftLong />],
+  ["right-up", <HiArrowTurnLeftUp />],
+  ["right-down", <HiArrowTurnLeftDown />],
+]);
+
 
 export const ActionIcons = {
   delete: <TiDelete />,
@@ -47,12 +61,12 @@ export const RotationIcons = {
 export function getEntryIcon(direction: DirectionType) {
   switch (direction) {
     case "down":
-      return <IoIosArrowUp />;
+      return (DirectionIcons["up"]);
     case "up":
-      return <IoIosArrowDown />;
+      return (DirectionIcons["down"]);
     case "left":
-      return <IoIosArrowForward />;
+      return (DirectionIcons["right"]);
     case "right":
-      return <IoIosArrowBack />;
+      return (DirectionIcons["left"]);
   }
 }

@@ -17,7 +17,7 @@ export default function TransporterTile({ entity }: { entity: EntityTransportTyp
   }
   return (
     <div className="transporter-tile">
-      {TransportIcons[entity.direction]}
+      {TransportIcons.get(`${entity.entryDirection}-${entity.leavingDirection}`)}
       <progress value={entity.val} max={entity.max} title={`${entity.val}/${entity.max}`} />
       {movingGoods.map((movingGood) => {
         if (movingGood.target == entity)
@@ -26,7 +26,7 @@ export default function TransporterTile({ entity }: { entity: EntityTransportTyp
           isEnding = true;
         return (<span
           key={spanKey}
-          className={["transported-good", entity.direction, `${isStarting ? "starting" : ""}`, `${isEnding ? "ending" : ""}`].join(' ')}
+          className={["transported-good", entity.leavingDirection, `${isStarting ? "starting" : ""}`, `${isEnding ? "ending" : ""}`].join(' ')}
           style={{ display: shouldHaveItem ? undefined : "none" }}
           aria-hidden="true"
         />);

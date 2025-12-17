@@ -1,6 +1,6 @@
 import type { EntityType } from "./EntitiesTypes";
 import type { AnchorStyle } from "./Tile";
-import { RotationIcons, TransportIcons } from "./Icons";
+import { RotationIcons, DirectionIcons } from "./Icons";
 import "./Toolset.css";
 import { useGame } from "../Provider";
 
@@ -39,9 +39,12 @@ export default function Toolset({ entity }: { entity: EntityType }) {
 
       {entity.type === "transport" && (
         <div className="CardSubtitle">
-          Direction: {TransportIcons[entity.direction]}
-          {TransportIcons[entity.direction]}
-          {TransportIcons[entity.direction]}
+          Entry Direction: {DirectionIcons[entity.entryDirection]}
+          {DirectionIcons[entity.entryDirection]}
+          {DirectionIcons[entity.entryDirection]}
+          Leaving Direction: {DirectionIcons[entity.leavingDirection]}
+          {DirectionIcons[entity.leavingDirection]}
+          {DirectionIcons[entity.leavingDirection]}
         </div>
       )}
       {entity.type === "stock" && (
