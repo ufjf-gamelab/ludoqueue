@@ -3,7 +3,7 @@ import { GiMiner } from "react-icons/gi";
 import { BsMinecartLoaded } from "react-icons/bs";
 import { BsSafe2 } from "react-icons/bs";
 import { TiArrowMove, TiCancel, TiDelete } from "react-icons/ti";
-import type { DirectionType } from "./EntitiesTypes";
+import { getInvertedDirection, type DirectionType } from "./EntitiesTypes";
 import { PiArrowClockwiseBold, PiArrowCounterClockwiseBold } from "react-icons/pi";
 import { HiArrowTurnDownLeft, HiArrowTurnDownRight, HiArrowTurnLeftDown, HiArrowTurnLeftUp, HiArrowTurnRightDown, HiArrowTurnRightUp, HiArrowTurnUpLeft, HiArrowTurnUpRight } from "react-icons/hi2";
 import type { JSX } from "react";
@@ -59,14 +59,5 @@ export const RotationIcons = {
 } 
 
 export function getEntryIcon(direction: DirectionType) {
-  switch (direction) {
-    case "down":
-      return (DirectionIcons["up"]);
-    case "up":
-      return (DirectionIcons["down"]);
-    case "left":
-      return (DirectionIcons["right"]);
-    case "right":
-      return (DirectionIcons["left"]);
-  }
+  return (DirectionIcons[getInvertedDirection(direction)]);
 }

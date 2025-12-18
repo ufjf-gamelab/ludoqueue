@@ -1,4 +1,4 @@
-import type { EntityTransportType, MovingGoodType } from "../EntitiesTypes";
+import { getInvertedDirection, type EntityTransportType, type MovingGoodType } from "../EntitiesTypes";
 import "../Toolset.css";
 import "./TransporterTile.css";
 import { TransportIcons } from "../Icons";
@@ -26,7 +26,7 @@ export default function TransporterTile({ entity }: { entity: EntityTransportTyp
           isEnding = true;
         return (<span
           key={spanKey}
-          className={["transported-good", entity.leavingDirection, `${isStarting ? "starting" : ""}`, `${isEnding ? "ending" : ""}`].join(' ')}
+          className={["transported-good",`${isStarting ? "starting " + getInvertedDirection(entity.entryDirection) : ""}`, `${isEnding ? "ending " + entity.leavingDirection : ""}`].join(' ')}
           style={{ display: shouldHaveItem ? undefined : "none" }}
           aria-hidden="true"
         />);

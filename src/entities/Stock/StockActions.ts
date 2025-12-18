@@ -135,10 +135,10 @@ function updateStockConnections(state: GameType, stock: EntityStockType) {
         (entity) => entity.x === stock.x + 1 && entity.y === stock.y
       );
       if (leftEntity && leftEntity.type === "transport" && leftEntity.entryDirection === "right") {
-        leftEntity.target = stock.id;
+        leftEntity.source = stock.id;
       };
       if (rightEntity && rightEntity.type === "transport" && rightEntity.leavingDirection === "left") {
-        rightEntity.source = stock.id;
+        rightEntity.target = stock.id;
       };
       break;
     }

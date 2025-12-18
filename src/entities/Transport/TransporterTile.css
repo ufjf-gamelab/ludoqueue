@@ -25,20 +25,20 @@
     --nextpercent: 580%;
   }
 
-  .transported-good.up.starting {
+  .transported-good.starting.up {
     animation-name: transport-move-bottom-center;
   }
 
-  .transported-good.up.ending{
+  .transported-good.ending.up{
     animation-name: transport-move-top-center;
   }
 
-  .transported-good.down.starting {
+  .transported-good.starting.down {
     animation-name: transport-move-top-center;
     animation-direction: reverse;
   }
 
-  .transported-good.down.ending {
+  .transported-good.ending.down {
     animation-name: transport-move-bottom-center;
     animation-direction: reverse;
   }

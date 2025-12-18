@@ -70,3 +70,16 @@ export type MovingGoodType = {
 };
 
 export type DirectionType = "up" | "down" | "left" | "right";
+
+export function getInvertedDirection(direction: DirectionType): DirectionType {
+  switch (direction) {
+    case "down":
+      return "up" as DirectionType;
+    case "up":
+      return "down" as DirectionType;
+    case "left":
+      return "right" as DirectionType;
+    case "right":
+      return "left" as DirectionType;
+  }
+}
