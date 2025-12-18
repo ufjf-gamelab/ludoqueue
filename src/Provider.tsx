@@ -398,7 +398,42 @@ export function pointingAction(
       newState.status = "waiting";
       return gameReducer(newState, action);
     }
-
+    case "delete": {
+      if (!entity) return state;
+      let action: GameActionDeleteConsumer | GameActionDeleteSource | GameActionDeleteTransport | GameActionDeleteStock;
+      switch (entity.type){
+        case ("transport"):{
+          action = {
+            type: "delete transport",
+            id: entity.id,
+          }
+          break;
+        }
+        case ("consumer"):{
+          action = {
+            type: "delete consumer",
+            id: entity.id,
+          }
+          break;
+        }
+        case ("source"):{
+          action = {
+            type: "delete source",
+            id: entity.id,
+          }
+          break;
+        }
+        case ("stock"):{
+          action = {
+            type: "delete stock",
+            id: entity.id,
+          }
+          break;
+        }
+      }
+      newState.status = "waiting";
+      return gameReducer(newState, action);
+    }
     default:
       return state;
   }
