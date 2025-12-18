@@ -19,6 +19,18 @@ export type GameActionDeleteTransport = {
   id: string;
 };
 
+export type GameActionChangeTransportEntryDirection = {
+  type: "change transport entry direction";
+  id: string;
+  direction: DirectionType;
+};
+
+export type GameActionChangeTransportLeavingDirection = {
+  type: "change transport leaving direction";
+  id: string;
+  direction: DirectionType;
+};
+
 export function createTransport(
   state: GameType,
   max: number,
@@ -78,6 +90,30 @@ export function deleteTransport(state: GameType, transport: string) {
     return newState;
   }
   return state;
+}
+
+export function changeTransportEntryDirection(state:GameType, transportID:string, direction:DirectionType){
+  const transportEntity = state.entities.get(transportID) as EntityTransportType | undefined;
+  if (!transportEntity || direction === transportEntity.entryDirection || direction === transportEntity.leavingDirection) {
+    return state;
+  }
+  const newState = structuredClone(state);
+  const newTransportEntity = newState.entities.get(transportID) as EntityTransportType;
+  newTransportEntity.entryDirection = direction;
+  updateTransportConnections(newState, newTransportEntity);
+  return newState;
+}
+
+export function changeTransportLeavingDirection(state:GameType, transportID:string, direction:DirectionType){
+  const transportEntity = state.entities.get(transportID) as EntityTransportType | undefined;
+  if (!transportEntity || direction === transportEntity.leavingDirection || direction === transportEntity.entryDirection) {
+    return state;
+  }
+  const newState = structuredClone(state);
+  const newTransportEntity = newState.entities.get(transportID) as EntityTransportType;
+  newTransportEntity.leavingDirection = direction;
+  updateTransportConnections(newState, newTransportEntity);
+  return newState;
 }
 
 function updateTransportConnections(

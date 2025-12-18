@@ -191,7 +191,9 @@ export default function Toolset({ entity }: { entity: EntityType }) {
       )}
       {entity.type === "source" && (
         <div style={{ display: "flex", gap: "4px", marginTop: "8px" }}>
-          <p style={{ margin: 0, fontSize: "12px" }}>Change Leaving Direction</p>
+          <p style={{ margin: 0, fontSize: "12px" }}>
+            Change Leaving Direction
+          </p>
           <button
             onClick={() => {
               switch (entity.leavingDirection) {
@@ -249,6 +251,150 @@ export default function Toolset({ entity }: { entity: EntityType }) {
                 case "left":
                   return dispatch({
                     type: "change source leaving direction",
+                    id: entity.id,
+                    direction: "up",
+                  });
+              }
+            }}
+            style={{ padding: "4px 6px", fontSize: "12px" }}
+          >
+            {RotationIcons["clockwise"]}
+          </button>
+        </div>
+      )}
+      {entity.type === "transport" && (
+        <div style={{ display: "flex", gap: "4px", marginTop: "8px" }}>
+          <p style={{ margin: 0, fontSize: "12px" }}>Change Entry Direction</p>
+          <button
+            onClick={() => {
+              switch (entity.entryDirection) {
+                case "up":
+                  return dispatch({
+                    type: "change transport entry direction",
+                    id: entity.id,
+                    direction: "left",
+                  });
+                case "left":
+                  return dispatch({
+                    type: "change transport entry direction",
+                    id: entity.id,
+                    direction: "down",
+                  });
+                case "down":
+                  return dispatch({
+                    type: "change transport entry direction",
+                    id: entity.id,
+                    direction: "right",
+                  });
+                case "right":
+                  return dispatch({
+                    type: "change transport entry direction",
+                    id: entity.id,
+                    direction: "up",
+                  });
+              }
+            }}
+            style={{ padding: "4px 6px", fontSize: "12px" }}
+          >
+            {RotationIcons["counterclockwise"]}
+          </button>
+          <button
+            onClick={() => {
+              switch (entity.entryDirection) {
+                case "up":
+                  return dispatch({
+                    type: "change transport entry direction",
+                    id: entity.id,
+                    direction: "right",
+                  });
+                case "right":
+                  return dispatch({
+                    type: "change transport entry direction",
+                    id: entity.id,
+                    direction: "down",
+                  });
+                case "down":
+                  return dispatch({
+                    type: "change transport entry direction",
+                    id: entity.id,
+                    direction: "left",
+                  });
+                case "left":
+                  return dispatch({
+                    type: "change transport entry direction",
+                    id: entity.id,
+                    direction: "up",
+                  });
+              }
+            }}
+            style={{ padding: "4px 6px", fontSize: "12px" }}
+          >
+            {RotationIcons["clockwise"]}
+          </button>
+        </div>
+      )}
+      {entity.type === "transport" && (
+        <div style={{ display: "flex", gap: "4px", marginTop: "8px" }}>
+          <p style={{ margin: 0, fontSize: "12px" }}>
+            Change Leaving Direction
+          </p>
+          <button
+            onClick={() => {
+              switch (entity.leavingDirection) {
+                case "up":
+                  return dispatch({
+                    type: "change transport leaving direction",
+                    id: entity.id,
+                    direction: "left",
+                  });
+                case "left":
+                  return dispatch({
+                    type: "change transport leaving direction",
+                    id: entity.id,
+                    direction: "down",
+                  });
+                case "down":
+                  return dispatch({
+                    type: "change transport leaving direction",
+                    id: entity.id,
+                    direction: "right",
+                  });
+                case "right":
+                  return dispatch({
+                    type: "change transport leaving direction",
+                    id: entity.id,
+                    direction: "up",
+                  });
+              }
+            }}
+            style={{ padding: "4px 6px", fontSize: "12px" }}
+          >
+            {RotationIcons["counterclockwise"]}
+          </button>
+          <button
+            onClick={() => {
+              switch (entity.leavingDirection) {
+                case "up":
+                  return dispatch({
+                    type: "change transport leaving direction",
+                    id: entity.id,
+                    direction: "right",
+                  });
+                case "right":
+                  return dispatch({
+                    type: "change transport leaving direction",
+                    id: entity.id,
+                    direction: "down",
+                  });
+                case "down":
+                  return dispatch({
+                    type: "change transport leaving direction",
+                    id: entity.id,
+                    direction: "left",
+                  });
+                case "left":
+                  return dispatch({
+                    type: "change transport leaving direction",
                     id: entity.id,
                     direction: "up",
                   });

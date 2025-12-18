@@ -40,8 +40,12 @@ import {
   type GameActionDeleteConsumer,
 } from "./entities/Consumer/ConsumerActions";
 import {
+  changeTransportEntryDirection,
+  changeTransportLeavingDirection,
   createTransport,
   deleteTransport,
+  type GameActionChangeTransportEntryDirection,
+  type GameActionChangeTransportLeavingDirection,
   type GameActionCreateTransport,
   type GameActionDeleteTransport,
 } from "./entities/Transport/TransportActions";
@@ -92,6 +96,10 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
       );
     case "delete transport":
       return deleteTransport(state, action.id);
+    case "change transport entry direction":
+      return changeTransportEntryDirection(state, action.id, action.direction);
+    case "change transport leaving direction":
+      return changeTransportLeavingDirection(state, action.id, action.direction);
     case "set node value":
       return setNodeVal(state, action.id, action.value);
     case "game tick":
@@ -279,6 +287,8 @@ export type GameAction =
   | GameActionChangeConsumerEntryDirection
   | GameActionCreateTransport
   | GameActionDeleteTransport
+  | GameActionChangeTransportEntryDirection
+  | GameActionChangeTransportLeavingDirection
   | GameActionSetNodeValue
   | GameActionTick
   | GameActionSelectEntity

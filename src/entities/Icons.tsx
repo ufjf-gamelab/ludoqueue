@@ -23,12 +23,12 @@ export const EntityIcons = {
 
 export const TransportIcons = new Map<string, JSX.Element>([
   ["up-down", <FaDownLong />],
-  ["up-left", <HiArrowTurnDownRight />],
-  ["up-right", <HiArrowTurnDownLeft />],
+  ["up-left", <HiArrowTurnDownLeft />],
+  ["up-right", <HiArrowTurnDownRight />],
 
   ["down-up", <FaUpLong />],
-  ["down-left", <HiArrowTurnUpRight />],
-  ["down-right", <HiArrowTurnUpLeft />],
+  ["down-left", <HiArrowTurnUpLeft />],
+  ["down-right", <HiArrowTurnUpRight />],
 
   ["left-right", <FaRightLong />],
   ["left-up", <HiArrowTurnRightUp />],
