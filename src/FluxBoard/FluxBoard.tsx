@@ -4,6 +4,7 @@ import { useGame } from "../Provider";
 import type { EntityType } from "../entities/EntitiesTypes";
 import Tile from "../entities/Tile";
 import ToolBar from "./ToolBar";
+import EditorMenu from "./EditorMenu";
 
 export default function FluxBoard() {
   const CELL_WIDTH = 55;
@@ -48,7 +49,10 @@ export default function FluxBoard() {
             )
         )}
       </div>
+      <div>
       <ToolBar />
+      <EditorMenu editor={game.editor}></EditorMenu>
+      </div>
     </div>
   );
 }

@@ -1,0 +1,10 @@
+.EditorMenu {
+  margin-top: 20px;
+}
+
+.EditorMenu .EditorProp {
+  display: flex;        /* isso é essencial */
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}

@@ -6,7 +6,7 @@ import {
   type Dispatch,
   type ReactNode,
 } from "react";
-import type { GameStatus, GameType } from "./types";
+import type { GameConsumerEditor, GameEditor, GameStatus, GameStockEditor, GameType } from "./types";
 import type {
   EntityConsumerType,
   EntitySourceType,
@@ -108,9 +108,10 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
       return selectEntity(state, action.entityId);
     case "set status": {
       if (state.status === action.newStatus) {
-        return { ...state, status: "waiting" };
+        return { ...state, editor: null, status: "waiting" };
       } else {
-        return { ...state, status: action.newStatus };
+        const newEditor = chooseNewEditor(action.newStatus);
+        return { ...state, editor: newEditor,status: action.newStatus };
       }
     }
     case "pointing":
@@ -306,16 +307,17 @@ export function pointingAction(
   );
   switch (state.status) {
     case "stock": {
-      if (entity) return state;
+      if (entity|| (!state.editor) || (state.editor.type !=="stock")) return state;
       const action: GameActionCreateStock = {
         type: "create stock",
-        max: 5,
-        val: 0,
+        max: state.editor.max,
+        val: state.editor.val,
         x: x,
         y: y,
-        direction: "right",
+        direction: state.editor.direction,
       };
       newState.status = "waiting";
+      newState.editor = null;
       return gameReducer(newState, action);
     }
     case "source": {
@@ -331,15 +333,16 @@ export function pointingAction(
       return gameReducer(newState, action);
     }
     case "consumer": {
-      if (entity) return state;
+      if (entity || (!state.editor) || (state.editor.type !=="consumer")) return state;
       const action: GameActionCreateConsumer = {
         type: "create consumer",
-        max: 5,
-        rate: 1,
+        max: state.editor.max,
+        rate: state.editor.rate,
         x: x,
         y: y,
       };
       newState.status = "waiting";
+      newState.editor = null;
       return gameReducer(newState, action);
     }
     case "transport right": {
@@ -432,9 +435,35 @@ export function pointingAction(
         }
       }
       newState.status = "waiting";
+      newState.selected = null;
       return gameReducer(newState, action);
     }
     default:
       return state;
+  }
+}
+
+function chooseNewEditor(status:GameStatus): GameEditor{
+  switch (status){
+    case "consumer":{
+        const newEditor: GameConsumerEditor = {
+            type: "consumer",
+            max: 1,
+            rate: 1,
+        }
+        return newEditor;
+    }
+    case "stock":{
+      const newEditor: GameStockEditor = {
+            type: "stock",
+            max: 1,
+            val: 1,
+            direction: "right",
+        }
+        return newEditor;
+    }
+    default:{
+        return null;
+    }
   }
 }
