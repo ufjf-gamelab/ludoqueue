@@ -71,9 +71,15 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
     case "delete source":
       return deleteSource(state, action.id);
     case "change source leaving direction":
-      return changeSourceLeavingDirection(state,action.id,action.direction);
+      return changeSourceLeavingDirection(state, action.id, action.direction);
     case "create stock":
-      return createStock(state, action.max, action.x, action.y, action.direction);
+      return createStock(
+        state,
+        action.max,
+        action.x,
+        action.y,
+        action.direction,
+      );
     case "delete stock":
       return deleteStock(state, action.id);
     case "change stock direction":
@@ -92,14 +98,18 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
         action.x,
         action.y,
         action.entryDirection,
-        action.leavingDirection
+        action.leavingDirection,
       );
     case "delete transport":
       return deleteTransport(state, action.id);
     case "change transport entry direction":
       return changeTransportEntryDirection(state, action.id, action.direction);
     case "change transport leaving direction":
-      return changeTransportLeavingDirection(state, action.id, action.direction);
+      return changeTransportLeavingDirection(
+        state,
+        action.id,
+        action.direction,
+      );
     case "set node value":
       return setNodeVal(state, action.id, action.value);
     case "game tick":
@@ -207,7 +217,7 @@ export function gameConsumerTick(node: EntityConsumerType) {
 
 export function calculatePendingMovingGoods(
   transport: EntityTransportType,
-  all: Map<string, EntityType>
+  all: Map<string, EntityType>,
 ) {
   transport.movingGoods = [];
   transport.cooldown -= 1;
@@ -275,7 +285,6 @@ type GameActionPointing = {
   y: number;
 };
 
-
 export type GameAction =
   | GameActionCreateSource
   | GameActionDeleteSource
@@ -298,12 +307,12 @@ export type GameAction =
 
 export function pointingAction(
   state: GameType,
-  action: GameActionPointing
+  action: GameActionPointing,
 ): GameType {
   const { x, y } = action;
   const newState = structuredClone(state);
   const entity = Array.from(state.entities.values()).find(
-    (e) => e.x === x && e.y === y
+    (e) => e.x === x && e.y === y,
   );
   switch (state.status) {
     case "stock": {
@@ -346,7 +355,7 @@ export function pointingAction(
       return gameReducer(newState, action);
     }
     case "transport right": {
-      if (entity) return state; 
+      if (entity) return state;
       const action: GameActionCreateTransport = {
         type: "create transport",
         max: 1,
@@ -360,7 +369,7 @@ export function pointingAction(
       return gameReducer(newState, action);
     }
     case "transport down": {
-      if (entity) return state; 
+      if (entity) return state;
       const action: GameActionCreateTransport = {
         type: "create transport",
         max: 1,
@@ -374,7 +383,7 @@ export function pointingAction(
       return gameReducer(newState, action);
     }
     case "transport left": {
-      if (entity) return state; 
+      if (entity) return state;
       const action: GameActionCreateTransport = {
         type: "create transport",
         max: 1,
@@ -388,7 +397,7 @@ export function pointingAction(
       return gameReducer(newState, action);
     }
     case "transport up": {
-      if (entity) return state; 
+      if (entity) return state;
       const action: GameActionCreateTransport = {
         type: "create transport",
         max: 1,
@@ -401,43 +410,46 @@ export function pointingAction(
       newState.status = "waiting";
       return gameReducer(newState, action);
     }
+
     case "delete": {
       if (!entity) return state;
-      let action: GameActionDeleteConsumer | GameActionDeleteSource | GameActionDeleteTransport | GameActionDeleteStock;
-      switch (entity.type){
-        case ("transport"):{
-          action = {
-            type: "delete transport",
-            id: entity.id,
-          }
-          break;
-        }
-        case ("consumer"):{
-          action = {
-            type: "delete consumer",
-            id: entity.id,
-          }
-          break;
-        }
-        case ("source"):{
-          action = {
+      switch (entity.type) {
+        case "source": {
+          const deleteSourceAction: GameActionDeleteSource = {
             type: "delete source",
             id: entity.id,
-          }
-          break;
+          };
+          newState.status = "waiting";
+          return gameReducer(newState, deleteSourceAction);
         }
-        case ("stock"):{
-          action = {
+        case "stock": {
+          const deleteStockAction: GameActionDeleteStock = {
             type: "delete stock",
             id: entity.id,
-          }
-          break;
+          };
+          newState.status = "waiting";
+          return gameReducer(newState, deleteStockAction);
+        }
+        case "consumer": {
+          const deleteConsumerAction: GameActionDeleteConsumer = {
+            type: "delete consumer",
+            id: entity.id,
+          };
+          newState.status = "waiting";
+          return gameReducer(newState, deleteConsumerAction);
+        }
+        case "transport": {
+          const deleteTransportAction: GameActionDeleteTransport = {
+            type: "delete transport",
+            id: entity.id,
+          };
+          newState.status = "waiting";
+          return gameReducer(newState, deleteTransportAction);
         }
       }
-      newState.status = "waiting";
-      newState.selected = null;
-      return gameReducer(newState, action);
+      break;
     }
+
     default:
       return state;
   }
