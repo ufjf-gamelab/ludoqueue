@@ -6,7 +6,7 @@ import {
   type Dispatch,
   type ReactNode,
 } from "react";
-import type { GameConsumerEditor, GameEditor, GameStatus, GameStockEditor, GameType } from "./types";
+import type { GameStatus, GameType } from "./types";
 import type {
   EntityConsumerType,
   EntitySourceType,
@@ -49,6 +49,7 @@ import {
   type GameActionCreateTransport,
   type GameActionDeleteTransport,
 } from "./entities/Transport/TransportActions";
+import type { GameConsumerEditor, GameEditor, GameStockEditor } from "./Editor/EditorTypes";
 type GameProviderProps = {
   children: ReactNode;
 };
@@ -85,7 +86,7 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
     case "change stock direction":
       return changeStockDirection(state, action.id, action.direction);
     case "create consumer":
-      return createConsumer(state, action.max, action.rate, action.x, action.y);
+      return createConsumer(state, action.max, action.rate, action.x, action.y, action.entryDirection);
     case "delete consumer":
       return deleteConsumer(state, action.id);
     case "change consumer entry direction":
@@ -349,6 +350,7 @@ export function pointingAction(
         rate: state.editor.rate,
         x: x,
         y: y,
+        entryDirection: state.editor.entryDirection,
       };
       newState.status = "waiting";
       newState.editor = null;
@@ -462,6 +464,7 @@ function chooseNewEditor(status:GameStatus): GameEditor{
             type: "consumer",
             max: 1,
             rate: 1,
+            entryDirection: "right",
         }
         return newEditor;
     }

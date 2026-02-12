@@ -11,6 +11,7 @@ export type GameActionCreateConsumer = {
   rate: number;
   x: number;
   y: number;
+  entryDirection: DirectionType;
 };
 
 export type GameActionDeleteConsumer = {
@@ -29,7 +30,8 @@ export function createConsumer(
   max: number,
   rate: number,
   x: number,
-  y: number
+  y: number,
+  entryDirection: DirectionType
 ) {
   if (
     Array.from(state.entities.values()).find(
@@ -57,9 +59,9 @@ export function createConsumer(
     max: max,
     rate: rate,
     cooldown: 1,
-    x: x,
-    y: y,
-    entryDirection: "left",
+    x,
+    y,
+    entryDirection,
   };
   newState.entities.set(newConsumerID, newConsumerEntity);
   newState.consumers.push(newConsumerID);

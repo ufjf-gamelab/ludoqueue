@@ -1,4 +1,5 @@
-import type { DirectionType, EntityType } from "./entities/EntitiesTypes";
+import type { GameEditor } from "./Editor/EditorTypes";
+import type { EntityType } from "./entities/EntitiesTypes";
 
 export type GameType = {
   entities: Map<string, EntityType>;

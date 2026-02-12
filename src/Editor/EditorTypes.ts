@@ -13,4 +13,5 @@ export type GameConsumerEditor = {
   type: "consumer";
   max: number;
   rate: number;
+  entryDirection: DirectionType;
 }

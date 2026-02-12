@@ -1,6 +1,6 @@
 import { DirectionIcons, RotationIcons } from "../entities/Icons";
-import type { GameEditor } from "../types";
 import "./EditorMenu.css"
+import type { GameEditor } from "./EditorTypes";
 
 export default function EditorMenu({ editor }: { editor: GameEditor }) {
   if (!editor) {
@@ -50,6 +50,44 @@ export default function EditorMenu({ editor }: { editor: GameEditor }) {
             </button>
             </div>
           </div>
+          <div className={"EditorProp"}>
+            Entry Direction: {editor.entryDirection}
+            <div>
+            <button
+              onClick={() => {
+                if (editor.entryDirection === "right") {
+                  editor.entryDirection = "up";
+                } else if (editor.entryDirection === "up") {
+                  editor.entryDirection = "left";
+                } else if (editor.entryDirection === "left") {
+                  editor.entryDirection = "down";
+                } else if (editor.entryDirection === "down") {
+                  editor.entryDirection = "right";
+                }
+              }}
+            >
+              {
+              RotationIcons["counterclockwise"]}
+            </button>
+            <button
+              onClick={() => {
+                if (editor.entryDirection === "right") {
+                  editor.entryDirection = "down";
+                } else if (editor.entryDirection === "down") {
+                  editor.entryDirection = "left";
+                } else if (editor.entryDirection === "left") {
+                  editor.entryDirection = "up";
+                } else if (editor.entryDirection === "up") {
+                  editor.entryDirection = "right";
+                }
+              }}
+            >
+              {
+              RotationIcons["clockwise"]}
+            </button>
+            </div>
+            
+        </div>
         </div>
       )}
       {editor.type === "stock" && (
