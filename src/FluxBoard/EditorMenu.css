@@ -1,10 +1,17 @@
 .EditorMenu {
-  margin-top: 20px;
+  background-color: #f0f0f00e;
+  padding: 10px;
+  border-radius: 20px;
+  margin-top: 10px;
+  
 }
 
-.EditorMenu .EditorProp {
-  display: flex;        /* isso é essencial */
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 10px;
-}
+.EditorProp {
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    > div > button {
+      margin-right:5px;
+      margin-left:5px;
+    }
+  }
