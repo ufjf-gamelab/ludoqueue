@@ -224,6 +224,122 @@ export default function EditorMenu({ editor }: { editor: GameEditor }) {
             </div>
         </div>
       )}
+      {editor.type === "transporter" && (
+        <div>
+          <div className={"EditorProp"}>
+            Max: {editor.max}
+            <div>
+            <button onClick={() => editor.max++}> + </button>
+            <button onClick={() => editor.max--}> - </button>
+            </div>
+          </div>
+          <div className={"EditorProp"}>
+            Rate: {editor.rate}
+            <div>
+            <button
+              onClick={() => {
+                if (editor.rate >= 1) {
+                  editor.rate = 1;
+                  return;
+                } else {
+                  editor.rate = editor.rate + 0.1;
+                }
+              }}
+            >
+              {" "}
+              +{" "}
+            </button>
+            <button
+              onClick={() => {
+                if (editor.rate <= 0) {
+                  editor.rate = 0;
+                  return;
+                } else {
+                  editor.rate = editor.rate - 0.1;
+                }
+              }}
+            >
+              {" "}
+              -{" "}
+            </button>
+            </div>
+          </div>
+          <div className={"EditorProp"}>
+            Entry Direction: {editor.entryDirection}
+            <div>
+            <button
+              onClick={() => {
+                if (editor.entryDirection === "right" && editor.leavingDirection !== "down") {
+                  editor.entryDirection = "up";
+                } else if (editor.entryDirection === "up" && editor.leavingDirection !== "left") {
+                  editor.entryDirection = "left";
+                } else if (editor.entryDirection === "left" && editor.leavingDirection !== "up") {
+                  editor.entryDirection = "down";
+                } else if (editor.entryDirection === "down" && editor.leavingDirection !== "right") {
+                  editor.entryDirection = "right";
+                }
+              }}
+            >
+              {
+              RotationIcons["counterclockwise"]}
+            </button>
+            <button
+              onClick={() => {
+                if (editor.entryDirection === "right" && editor.leavingDirection !== "down") {
+                  editor.entryDirection = "down";
+                } else if (editor.entryDirection === "down" && editor.leavingDirection !== "left") {
+                  editor.entryDirection = "left";
+                } else if (editor.entryDirection === "left" && editor.leavingDirection !== "up") {
+                  editor.entryDirection = "up";
+                } else if (editor.entryDirection === "up" && editor.leavingDirection !== "right") {
+                  editor.entryDirection = "right";
+                }
+              }}
+            >
+              {
+              RotationIcons["clockwise"]}
+            </button>
+            </div>
+          </div>
+          <div className={"EditorProp"}>
+            Direction: {editor.leavingDirection}
+            <div>
+            <button
+              onClick={() => {
+                if (editor.leavingDirection === "right" && editor.entryDirection !== "up") {
+                  editor.leavingDirection = "up";
+                } else if (editor.leavingDirection === "up" && editor.entryDirection !== "left") {
+                  editor.leavingDirection = "left";
+                } else if (editor.leavingDirection === "left" && editor.entryDirection !== "down") {
+                  editor.leavingDirection = "down";
+                } else if (editor.leavingDirection === "down" && editor.entryDirection !== "right") {
+                  editor.leavingDirection = "right";
+                }
+              }}
+            >
+              {
+              RotationIcons["counterclockwise"]}
+            </button>
+            <button
+              onClick={() => {
+                if (editor.leavingDirection === "right" && editor.entryDirection !== "down") {
+                  editor.leavingDirection = "down";
+                } else if (editor.leavingDirection === "down" && editor.entryDirection !== "left") {
+                  editor.leavingDirection = "left";
+                } else if (editor.leavingDirection === "left" && editor.entryDirection !== "up") {
+                  editor.leavingDirection = "up";
+                } else if (editor.leavingDirection === "up" && editor.entryDirection !== "right") {
+                  editor.leavingDirection = "right";
+                }
+              }}
+            >
+              {
+              RotationIcons["clockwise"]}
+            </button>
+            </div>
+            </div>
+        </div>
+      )}
     </div>
   );
 }

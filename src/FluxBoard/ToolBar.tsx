@@ -14,40 +14,13 @@ export default function ToolBar() {
 
       <div className="tile-list">
         <button
-          className={game.status === "transport right" ? "selected" : ""}
+          className={game.status === "transport" ? "selected" : ""}
           onClick={() =>
-            dispatch({ type: "set status", newStatus: "transport right" })
+            dispatch({ type: "set status", newStatus: "transport" })
           }
-          title="Create a new Transport pointing right"
+          title="Create a new Transport"
         >
           {EntityIcons["transport right"]}
-        </button>
-        <button
-          className={game.status === "transport down" ? "selected" : ""}
-          onClick={() =>
-            dispatch({ type: "set status", newStatus: "transport down" })
-          }
-          title="Create a new Transport pointing down"
-        >
-          {EntityIcons["transport down"]}
-        </button>
-        <button
-          className={game.status === "transport left" ? "selected" : ""}
-          onClick={() =>
-            dispatch({ type: "set status", newStatus: "transport left" })
-          }
-          title="Create a new Transport pointing left"
-        >
-          {EntityIcons["transport left"]}
-        </button>
-        <button
-          className={game.status === "transport up" ? "selected" : ""}
-          onClick={() =>
-            dispatch({ type: "set status", newStatus: "transport up" })
-          }
-          title="Create a new Transport pointing up"
-        >
-          {EntityIcons["transport up"]}
         </button>
         <button
           className={game.status === "stock" ? "selected" : ""}

@@ -49,7 +49,7 @@ import {
   type GameActionCreateTransport,
   type GameActionDeleteTransport,
 } from "./entities/Transport/TransportActions";
-import type { GameConsumerEditor, GameEditor, GameSourceEditor, GameStockEditor } from "./Editor/EditorTypes";
+import type { GameConsumerEditor, GameEditor, GameSourceEditor, GameStockEditor, GameTransporterEditor } from "./Editor/EditorTypes";
 type GameProviderProps = {
   children: ReactNode;
 };
@@ -357,58 +357,16 @@ export function pointingAction(
       newState.editor = null;
       return gameReducer(newState, action);
     }
-    case "transport right": {
-      if (entity) return state;
+    case "transport": {
+      if (entity || (!state.editor) || (state.editor.type !=="transporter")) return state;
       const action: GameActionCreateTransport = {
         type: "create transport",
-        max: 1,
-        rate: 1,
+        max: state.editor.max,
+        rate: state.editor.rate,
         x: x,
         y: y,
-        entryDirection: "left",
-        leavingDirection: "right",
-      };
-      newState.status = "waiting";
-      return gameReducer(newState, action);
-    }
-    case "transport down": {
-      if (entity) return state;
-      const action: GameActionCreateTransport = {
-        type: "create transport",
-        max: 1,
-        rate: 1,
-        x: x,
-        y: y,
-        entryDirection: "up",
-        leavingDirection: "down",
-      };
-      newState.status = "waiting";
-      return gameReducer(newState, action);
-    }
-    case "transport left": {
-      if (entity) return state;
-      const action: GameActionCreateTransport = {
-        type: "create transport",
-        max: 1,
-        rate: 1,
-        x: x,
-        y: y,
-        entryDirection: "right",
-        leavingDirection: "left",
-      };
-      newState.status = "waiting";
-      return gameReducer(newState, action);
-    }
-    case "transport up": {
-      if (entity) return state;
-      const action: GameActionCreateTransport = {
-        type: "create transport",
-        max: 1,
-        rate: 1,
-        x: x,
-        y: y,
-        entryDirection: "down",
-        leavingDirection: "up",
+        entryDirection: state.editor.entryDirection,
+        leavingDirection: state.editor.leavingDirection,
       };
       newState.status = "waiting";
       return gameReducer(newState, action);
@@ -487,6 +445,16 @@ function chooseNewEditor(status:GameStatus): GameEditor{
             type: "source",
             max: 1,
             rate: 1,
+            leavingDirection: "right",
+        }
+        return newEditor;
+    }
+    case "transport":{
+      const newEditor: GameTransporterEditor = {
+            type: "transporter",
+            max: 1,
+            rate: 1,
+            entryDirection: "left",
             leavingDirection: "right",
         }
         return newEditor;
