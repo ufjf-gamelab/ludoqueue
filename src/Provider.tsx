@@ -13,6 +13,7 @@ import type {
   EntityStockType,
   EntityTransportType,
   EntityType,
+  DirectionType,
 } from "./entities/EntitiesTypes";
 import { initialState } from "./data";
 import {
@@ -49,7 +50,13 @@ import {
   type GameActionCreateTransport,
   type GameActionDeleteTransport,
 } from "./entities/Transport/TransportActions";
-import type { GameConsumerEditor, GameEditor, GameSourceEditor, GameStockEditor, GameTransporterEditor } from "./Editor/EditorTypes";
+import type {
+  GameConsumerEditor,
+  GameEditor,
+  GameSourceEditor,
+  GameStockEditor,
+  GameTransporterEditor,
+} from "./Editor/EditorTypes";
 type GameProviderProps = {
   children: ReactNode;
 };
@@ -68,7 +75,13 @@ export function useGame() {
 export function gameReducer(state: GameType, action: GameAction): GameType {
   switch (action.type) {
     case "create source":
-      return createSource(state, action.max, action.x, action.y, action.leavingDirection);
+      return createSource(
+        state,
+        action.max,
+        action.x,
+        action.y,
+        action.leavingDirection,
+      );
     case "delete source":
       return deleteSource(state, action.id);
     case "change source leaving direction":
@@ -86,7 +99,14 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
     case "change stock direction":
       return changeStockDirection(state, action.id, action.direction);
     case "create consumer":
-      return createConsumer(state, action.max, action.rate, action.x, action.y, action.entryDirection);
+      return createConsumer(
+        state,
+        action.max,
+        action.rate,
+        action.x,
+        action.y,
+        action.entryDirection,
+      );
     case "delete consumer":
       return deleteConsumer(state, action.id);
     case "change consumer entry direction":
@@ -122,11 +142,67 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
         return { ...state, editor: null, status: "waiting" };
       } else {
         const newEditor = chooseNewEditor(action.newStatus);
-        return { ...state, editor: newEditor,status: action.newStatus };
+        return { ...state, editor: newEditor, status: action.newStatus };
       }
     }
     case "pointing":
       return pointingAction(state, action);
+    case "editor change max": {
+      if (!state.editor) return state;
+      return { ...state, editor: { ...state.editor, max: action.value } };
+    }
+    case "editor change rate": {
+      if (
+        !state.editor ||
+        (state.editor.type !== "consumer" &&
+          state.editor.type !== "source" &&
+          state.editor.type !== "transporter")
+      )
+        return state;
+      
+      return {
+        ...state,
+        editor: {
+          ...state.editor,
+          rate: action.value,
+        },
+      };
+    }
+    case "editor change direction": {
+      if (!state.editor || state.editor.type !== "stock") return state;
+      return {
+        ...state,
+        editor: { ...state.editor, direction: action.value as DirectionType },
+      };
+    }
+    case "editor change entry direction": {
+      if (
+        !state.editor ||
+        (state.editor.type !== "consumer" &&
+          state.editor.type !== "transporter")
+      )
+        return state;
+      const editor = state.editor as GameConsumerEditor | GameTransporterEditor;
+      return {
+        ...state,
+        editor: { ...editor, entryDirection: action.value as DirectionType },
+      };
+    }
+    case "editor change leaving direction": {
+      if (
+        !state.editor ||
+        (state.editor.type !== "source" && state.editor.type !== "transporter")
+      )
+        return state;
+      return {
+        ...state,
+        editor: { ...state.editor, leavingDirection: action.value as DirectionType },
+      };
+    }
+    case "editor change val": {
+      if (!state.editor || state.editor.type !== "stock") return state;
+      return { ...state, editor: { ...state.editor, val: action.value } };
+    }
 
     default:
       break;
@@ -286,6 +362,36 @@ type GameActionPointing = {
   y: number;
 };
 
+type GameActionEditorChangeMax = {
+  type: "editor change max";
+  value: number;
+};
+
+type GameActionEditorChangeRate = {
+  type: "editor change rate";
+  value: number;
+};
+
+type GameActionEditorChangeDirection = {
+  type: "editor change direction";
+  value: string;
+};
+
+type GameActionEditorChangeEntryDirection = {
+  type: "editor change entry direction";
+  value: string;
+};
+
+type GameActionEditorChangeLeavingDirection = {
+  type: "editor change leaving direction";
+  value: string;
+};
+
+type GameActionEditorChangeVal = {
+  type: "editor change val";
+  value: number;
+};
+
 export type GameAction =
   | GameActionCreateSource
   | GameActionDeleteSource
@@ -304,7 +410,13 @@ export type GameAction =
   | GameActionTick
   | GameActionSelectEntity
   | GameActionSetStatus
-  | GameActionPointing;
+  | GameActionPointing
+  | GameActionEditorChangeMax
+  | GameActionEditorChangeRate
+  | GameActionEditorChangeDirection
+  | GameActionEditorChangeEntryDirection
+  | GameActionEditorChangeLeavingDirection
+  | GameActionEditorChangeVal;
 
 export function pointingAction(
   state: GameType,
@@ -317,7 +429,8 @@ export function pointingAction(
   );
   switch (state.status) {
     case "stock": {
-      if (entity|| (!state.editor) || (state.editor.type !=="stock")) return state;
+      if (entity || !state.editor || state.editor.type !== "stock")
+        return state;
       const action: GameActionCreateStock = {
         type: "create stock",
         max: state.editor.max,
@@ -331,7 +444,8 @@ export function pointingAction(
       return gameReducer(newState, action);
     }
     case "source": {
-      if (entity || (!state.editor) || (state.editor.type !=="source")) return state;
+      if (entity || !state.editor || state.editor.type !== "source")
+        return state;
       const action: GameActionCreateSource = {
         type: "create source",
         max: state.editor.max,
@@ -344,7 +458,8 @@ export function pointingAction(
       return gameReducer(newState, action);
     }
     case "consumer": {
-      if (entity || (!state.editor) || (state.editor.type !=="consumer")) return state;
+      if (entity || !state.editor || state.editor.type !== "consumer")
+        return state;
       const action: GameActionCreateConsumer = {
         type: "create consumer",
         max: state.editor.max,
@@ -358,7 +473,8 @@ export function pointingAction(
       return gameReducer(newState, action);
     }
     case "transport": {
-      if (entity || (!state.editor) || (state.editor.type !=="transporter")) return state;
+      if (entity || !state.editor || state.editor.type !== "transporter")
+        return state;
       const action: GameActionCreateTransport = {
         type: "create transport",
         max: state.editor.max,
@@ -420,47 +536,47 @@ export function pointingAction(
   }
 }
 
-function chooseNewEditor(status:GameStatus): GameEditor{
-  switch (status){
-    case "consumer":{
-        const newEditor: GameConsumerEditor = {
-            type: "consumer",
-            max: 1,
-            rate: 1,
-            entryDirection: "right",
-        }
-        return newEditor;
+function chooseNewEditor(status: GameStatus): GameEditor {
+  switch (status) {
+    case "consumer": {
+      const newEditor: GameConsumerEditor = {
+        type: "consumer",
+        max: 1,
+        rate: 1,
+        entryDirection: "right",
+      };
+      return newEditor;
     }
-    case "stock":{
+    case "stock": {
       const newEditor: GameStockEditor = {
-            type: "stock",
-            max: 1,
-            val: 1,
-            direction: "right",
-        }
-        return newEditor;
+        type: "stock",
+        max: 1,
+        val: 1,
+        direction: "right",
+      };
+      return newEditor;
     }
-    case "source":{
+    case "source": {
       const newEditor: GameSourceEditor = {
-            type: "source",
-            max: 1,
-            rate: 1,
-            leavingDirection: "right",
-        }
-        return newEditor;
+        type: "source",
+        max: 1,
+        rate: 1,
+        leavingDirection: "right",
+      };
+      return newEditor;
     }
-    case "transport":{
+    case "transport": {
       const newEditor: GameTransporterEditor = {
-            type: "transporter",
-            max: 1,
-            rate: 1,
-            entryDirection: "left",
-            leavingDirection: "right",
-        }
-        return newEditor;
+        type: "transporter",
+        max: 1,
+        rate: 1,
+        entryDirection: "left",
+        leavingDirection: "right",
+      };
+      return newEditor;
     }
-    default:{
-        return null;
+    default: {
+      return null;
     }
   }
 }

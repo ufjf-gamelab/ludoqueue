@@ -1,9 +1,12 @@
 import { DirectionIcons, RotationIcons } from "../entities/Icons";
 import "./EditorMenu.css"
 import type { GameEditor } from "./EditorTypes";
+import { useGame } from "../Provider";
 
 export default function EditorMenu({ editor }: { editor: GameEditor }) {
-  if (!editor) {
+  const { dispatch } = useGame() || { dispatch: undefined };
+  
+  if (!editor || !dispatch) {
     return <></>;
   }
   return (
@@ -15,8 +18,8 @@ export default function EditorMenu({ editor }: { editor: GameEditor }) {
           <div className={"EditorProp"}>
             Max: {editor.max}
             <div>
-            <button onClick={() => editor.max++}> + </button>
-            <button onClick={() => editor.max--}> - </button>
+            <button onClick={() => dispatch({ type: "editor change max", value: editor.max + 1 })}> + </button>
+            <button onClick={() => dispatch({ type: "editor change max", value: editor.max - 1 })}> - </button>
             </div>
           </div>
           <div className={"EditorProp"}>
@@ -25,10 +28,10 @@ export default function EditorMenu({ editor }: { editor: GameEditor }) {
             <button
               onClick={() => {
                 if (editor.rate >= 1) {
-                  editor.rate = 1;
+                  dispatch({ type: "editor change rate", value: 1 });
                   return;
                 } else {
-                  editor.rate = editor.rate + 0.1;
+                  dispatch({ type: "editor change rate", value: editor.rate + 0.1 });
                 }
               }}
             >
@@ -38,10 +41,10 @@ export default function EditorMenu({ editor }: { editor: GameEditor }) {
             <button
               onClick={() => {
                 if (editor.rate <= 0) {
-                  editor.rate = 0;
+                  dispatch({ type: "editor change rate", value: 0 });
                   return;
                 } else {
-                  editor.rate = editor.rate - 0.1;
+                  dispatch({ type: "editor change rate", value: editor.rate - 0.1 });
                 }
               }}
             >
@@ -56,13 +59,13 @@ export default function EditorMenu({ editor }: { editor: GameEditor }) {
             <button
               onClick={() => {
                 if (editor.entryDirection === "right") {
-                  editor.entryDirection = "up";
+                  dispatch({ type: "editor change entry direction", value: "up" });
                 } else if (editor.entryDirection === "up") {
-                  editor.entryDirection = "left";
+                  dispatch({ type: "editor change entry direction", value: "left" });
                 } else if (editor.entryDirection === "left") {
-                  editor.entryDirection = "down";
+                  dispatch({ type: "editor change entry direction", value: "down" });
                 } else if (editor.entryDirection === "down") {
-                  editor.entryDirection = "right";
+                  dispatch({ type: "editor change entry direction", value: "right" });
                 }
               }}
             >
@@ -72,13 +75,13 @@ export default function EditorMenu({ editor }: { editor: GameEditor }) {
             <button
               onClick={() => {
                 if (editor.entryDirection === "right") {
-                  editor.entryDirection = "down";
+                  dispatch({ type: "editor change entry direction", value: "down" });
                 } else if (editor.entryDirection === "down") {
-                  editor.entryDirection = "left";
+                  dispatch({ type: "editor change entry direction", value: "left" });
                 } else if (editor.entryDirection === "left") {
-                  editor.entryDirection = "up";
+                  dispatch({ type: "editor change entry direction", value: "up" });
                 } else if (editor.entryDirection === "up") {
-                  editor.entryDirection = "right";
+                  dispatch({ type: "editor change entry direction", value: "right" });
                 }
               }}
             >
@@ -95,15 +98,15 @@ export default function EditorMenu({ editor }: { editor: GameEditor }) {
           <div className={"EditorProp"}>
             Max: {editor.max}
             <div>
-            <button onClick={() => editor.max++}> + </button>
-            <button onClick={() => editor.max--}> - </button>
+            <button onClick={() => dispatch({ type: "editor change max", value: editor.max + 1 })}> + </button>
+            <button onClick={() => dispatch({ type: "editor change max", value: editor.max - 1 })}> - </button>
             </div>
           </div>
           <div className={"EditorProp"}>
             Val: {editor.val}
             <div>
-            <button onClick={() => editor.val++}> + </button>
-            <button onClick={() => editor.val--}> - </button>
+            <button onClick={() => dispatch({ type: "editor change val", value: editor.val + 1 })}> + </button>
+            <button onClick={() => dispatch({ type: "editor change val", value: editor.val - 1 })}> - </button>
             </div>
           </div>
           <div className={"EditorProp"}>
@@ -112,13 +115,13 @@ export default function EditorMenu({ editor }: { editor: GameEditor }) {
             <button
               onClick={() => {
                 if (editor.direction === "right") {
-                  editor.direction = "up";
+                  dispatch({ type: "editor change direction", value: "up" });
                 } else if (editor.direction === "up") {
-                  editor.direction = "left";
+                  dispatch({ type: "editor change direction", value: "left" });
                 } else if (editor.direction === "left") {
-                  editor.direction = "down";
+                  dispatch({ type: "editor change direction", value: "down" });
                 } else if (editor.direction === "down") {
-                  editor.direction = "right";
+                  dispatch({ type: "editor change direction", value: "right" });
                 }
               }}
             >
@@ -128,13 +131,13 @@ export default function EditorMenu({ editor }: { editor: GameEditor }) {
             <button
               onClick={() => {
                 if (editor.direction === "right") {
-                  editor.direction = "down";
+                  dispatch({ type: "editor change direction", value: "down" });
                 } else if (editor.direction === "down") {
-                  editor.direction = "left";
+                  dispatch({ type: "editor change direction", value: "left" });
                 } else if (editor.direction === "left") {
-                  editor.direction = "up";
+                  dispatch({ type: "editor change direction", value: "up" });
                 } else if (editor.direction === "up") {
-                  editor.direction = "right";
+                  dispatch({ type: "editor change direction", value: "right" });
                 }
               }}
             >
@@ -150,8 +153,8 @@ export default function EditorMenu({ editor }: { editor: GameEditor }) {
           <div className={"EditorProp"}>
             Max: {editor.max}
             <div>
-            <button onClick={() => editor.max++}> + </button>
-            <button onClick={() => editor.max--}> - </button>
+            <button onClick={() => dispatch({ type: "editor change max", value: editor.max + 1 })}> + </button>
+            <button onClick={() => dispatch({ type: "editor change max", value: editor.max - 1 })}> - </button>
             </div>
           </div>
           <div className={"EditorProp"}>
@@ -160,10 +163,10 @@ export default function EditorMenu({ editor }: { editor: GameEditor }) {
             <button
               onClick={() => {
                 if (editor.rate >= 1) {
-                  editor.rate = 1;
+                  dispatch({ type: "editor change rate", value: 1 });
                   return;
                 } else {
-                  editor.rate = editor.rate + 0.1;
+                  dispatch({ type: "editor change rate", value: editor.rate + 0.1 });
                 }
               }}
             >
@@ -173,10 +176,10 @@ export default function EditorMenu({ editor }: { editor: GameEditor }) {
             <button
               onClick={() => {
                 if (editor.rate <= 0) {
-                  editor.rate = 0;
+                  dispatch({ type: "editor change rate", value: 0 });
                   return;
                 } else {
-                  editor.rate = editor.rate - 0.1;
+                  dispatch({ type: "editor change rate", value: editor.rate - 0.1 });
                 }
               }}
             >
@@ -191,13 +194,13 @@ export default function EditorMenu({ editor }: { editor: GameEditor }) {
             <button
               onClick={() => {
                 if (editor.leavingDirection === "right") {
-                  editor.leavingDirection = "up";
+                  dispatch({ type: "editor change leaving direction", value: "up" });
                 } else if (editor.leavingDirection === "up") {
-                  editor.leavingDirection = "left";
+                  dispatch({ type: "editor change leaving direction", value: "left" });
                 } else if (editor.leavingDirection === "left") {
-                  editor.leavingDirection = "down";
+                  dispatch({ type: "editor change leaving direction", value: "down" });
                 } else if (editor.leavingDirection === "down") {
-                  editor.leavingDirection = "right";
+                  dispatch({ type: "editor change leaving direction", value: "right" });
                 }
               }}
             >
@@ -207,13 +210,13 @@ export default function EditorMenu({ editor }: { editor: GameEditor }) {
             <button
               onClick={() => {
                 if (editor.leavingDirection === "right") {
-                  editor.leavingDirection = "down";
+                  dispatch({ type: "editor change leaving direction", value: "down" });
                 } else if (editor.leavingDirection === "down") {
-                  editor.leavingDirection = "left";
+                  dispatch({ type: "editor change leaving direction", value: "left" });
                 } else if (editor.leavingDirection === "left") {
-                  editor.leavingDirection = "up";
+                  dispatch({ type: "editor change leaving direction", value: "up" });
                 } else if (editor.leavingDirection === "up") {
-                  editor.leavingDirection = "right";
+                  dispatch({ type: "editor change leaving direction", value: "right" });
                 }
               }}
             >
@@ -229,8 +232,8 @@ export default function EditorMenu({ editor }: { editor: GameEditor }) {
           <div className={"EditorProp"}>
             Max: {editor.max}
             <div>
-            <button onClick={() => editor.max++}> + </button>
-            <button onClick={() => editor.max--}> - </button>
+            <button onClick={() => dispatch({ type: "editor change max", value: editor.max + 1 })}> + </button>
+            <button onClick={() => dispatch({ type: "editor change max", value: editor.max - 1 })}> - </button>
             </div>
           </div>
           <div className={"EditorProp"}>
@@ -239,10 +242,10 @@ export default function EditorMenu({ editor }: { editor: GameEditor }) {
             <button
               onClick={() => {
                 if (editor.rate >= 1) {
-                  editor.rate = 1;
+                  dispatch({ type: "editor change rate", value: 1 });
                   return;
                 } else {
-                  editor.rate = editor.rate + 0.1;
+                  dispatch({ type: "editor change rate", value: editor.rate + 0.1 });
                 }
               }}
             >
@@ -252,10 +255,10 @@ export default function EditorMenu({ editor }: { editor: GameEditor }) {
             <button
               onClick={() => {
                 if (editor.rate <= 0) {
-                  editor.rate = 0;
+                  dispatch({ type: "editor change rate", value: 0 });
                   return;
                 } else {
-                  editor.rate = editor.rate - 0.1;
+                  dispatch({ type: "editor change rate", value: editor.rate - 0.1 });
                 }
               }}
             >
@@ -270,13 +273,13 @@ export default function EditorMenu({ editor }: { editor: GameEditor }) {
             <button
               onClick={() => {
                 if (editor.entryDirection === "right" && editor.leavingDirection !== "down") {
-                  editor.entryDirection = "up";
+                  dispatch({ type: "editor change entry direction", value: "up" });
                 } else if (editor.entryDirection === "up" && editor.leavingDirection !== "left") {
-                  editor.entryDirection = "left";
+                  dispatch({ type: "editor change entry direction", value: "left" });
                 } else if (editor.entryDirection === "left" && editor.leavingDirection !== "up") {
-                  editor.entryDirection = "down";
+                  dispatch({ type: "editor change entry direction", value: "down" });
                 } else if (editor.entryDirection === "down" && editor.leavingDirection !== "right") {
-                  editor.entryDirection = "right";
+                  dispatch({ type: "editor change entry direction", value: "right" });
                 }
               }}
             >
@@ -286,13 +289,13 @@ export default function EditorMenu({ editor }: { editor: GameEditor }) {
             <button
               onClick={() => {
                 if (editor.entryDirection === "right" && editor.leavingDirection !== "down") {
-                  editor.entryDirection = "down";
+                  dispatch({ type: "editor change entry direction", value: "down" });
                 } else if (editor.entryDirection === "down" && editor.leavingDirection !== "left") {
-                  editor.entryDirection = "left";
+                  dispatch({ type: "editor change entry direction", value: "left" });
                 } else if (editor.entryDirection === "left" && editor.leavingDirection !== "up") {
-                  editor.entryDirection = "up";
+                  dispatch({ type: "editor change entry direction", value: "up" });
                 } else if (editor.entryDirection === "up" && editor.leavingDirection !== "right") {
-                  editor.entryDirection = "right";
+                  dispatch({ type: "editor change entry direction", value: "right" });
                 }
               }}
             >
@@ -307,13 +310,13 @@ export default function EditorMenu({ editor }: { editor: GameEditor }) {
             <button
               onClick={() => {
                 if (editor.leavingDirection === "right" && editor.entryDirection !== "up") {
-                  editor.leavingDirection = "up";
+                  dispatch({ type: "editor change leaving direction", value: "up" });
                 } else if (editor.leavingDirection === "up" && editor.entryDirection !== "left") {
-                  editor.leavingDirection = "left";
+                  dispatch({ type: "editor change leaving direction", value: "left" });
                 } else if (editor.leavingDirection === "left" && editor.entryDirection !== "down") {
-                  editor.leavingDirection = "down";
+                  dispatch({ type: "editor change leaving direction", value: "down" });
                 } else if (editor.leavingDirection === "down" && editor.entryDirection !== "right") {
-                  editor.leavingDirection = "right";
+                  dispatch({ type: "editor change leaving direction", value: "right" });
                 }
               }}
             >
@@ -323,13 +326,13 @@ export default function EditorMenu({ editor }: { editor: GameEditor }) {
             <button
               onClick={() => {
                 if (editor.leavingDirection === "right" && editor.entryDirection !== "down") {
-                  editor.leavingDirection = "down";
+                  dispatch({ type: "editor change leaving direction", value: "down" });
                 } else if (editor.leavingDirection === "down" && editor.entryDirection !== "left") {
-                  editor.leavingDirection = "left";
+                  dispatch({ type: "editor change leaving direction", value: "left" });
                 } else if (editor.leavingDirection === "left" && editor.entryDirection !== "up") {
-                  editor.leavingDirection = "up";
+                  dispatch({ type: "editor change leaving direction", value: "up" });
                 } else if (editor.leavingDirection === "up" && editor.entryDirection !== "right") {
-                  editor.leavingDirection = "right";
+                  dispatch({ type: "editor change leaving direction", value: "right" });
                 }
               }}
             >
