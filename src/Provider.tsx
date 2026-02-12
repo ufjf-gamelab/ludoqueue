@@ -49,7 +49,7 @@ import {
   type GameActionCreateTransport,
   type GameActionDeleteTransport,
 } from "./entities/Transport/TransportActions";
-import type { GameConsumerEditor, GameEditor, GameStockEditor } from "./Editor/EditorTypes";
+import type { GameConsumerEditor, GameEditor, GameSourceEditor, GameStockEditor } from "./Editor/EditorTypes";
 type GameProviderProps = {
   children: ReactNode;
 };
@@ -68,7 +68,7 @@ export function useGame() {
 export function gameReducer(state: GameType, action: GameAction): GameType {
   switch (action.type) {
     case "create source":
-      return createSource(state, action.max, action.x, action.y);
+      return createSource(state, action.max, action.x, action.y, action.leavingDirection);
     case "delete source":
       return deleteSource(state, action.id);
     case "change source leaving direction":
@@ -331,15 +331,16 @@ export function pointingAction(
       return gameReducer(newState, action);
     }
     case "source": {
-      if (entity) return state;
+      if (entity || (!state.editor) || (state.editor.type !=="source")) return state;
       const action: GameActionCreateSource = {
         type: "create source",
-        max: 5,
-        val: 0,
+        max: state.editor.max,
         x: x,
         y: y,
+        leavingDirection: state.editor.leavingDirection,
       };
       newState.status = "waiting";
+      newState.editor = null;
       return gameReducer(newState, action);
     }
     case "consumer": {
@@ -422,6 +423,7 @@ export function pointingAction(
             id: entity.id,
           };
           newState.status = "waiting";
+          newState.editor = null;
           return gameReducer(newState, deleteSourceAction);
         }
         case "stock": {
@@ -430,6 +432,7 @@ export function pointingAction(
             id: entity.id,
           };
           newState.status = "waiting";
+          newState.editor = null;
           return gameReducer(newState, deleteStockAction);
         }
         case "consumer": {
@@ -438,6 +441,7 @@ export function pointingAction(
             id: entity.id,
           };
           newState.status = "waiting";
+          newState.editor = null;
           return gameReducer(newState, deleteConsumerAction);
         }
         case "transport": {
@@ -446,6 +450,7 @@ export function pointingAction(
             id: entity.id,
           };
           newState.status = "waiting";
+          newState.editor = null;
           return gameReducer(newState, deleteTransportAction);
         }
       }
@@ -474,6 +479,15 @@ function chooseNewEditor(status:GameStatus): GameEditor{
             max: 1,
             val: 1,
             direction: "right",
+        }
+        return newEditor;
+    }
+    case "source":{
+      const newEditor: GameSourceEditor = {
+            type: "source",
+            max: 1,
+            rate: 1,
+            leavingDirection: "right",
         }
         return newEditor;
     }

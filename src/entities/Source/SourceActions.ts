@@ -4,9 +4,9 @@ import type { DirectionType, EntitySourceType, EntityTransportType } from "../En
 export type GameActionCreateSource = {
   type: "create source";
   max: number;
-  val: number;
   x: number;
   y: number;
+  leavingDirection: DirectionType;
 };
 
 export type GameActionDeleteSource = {
@@ -20,7 +20,7 @@ export type GameActionChangeSourceLeavingDirection = {
   direction: DirectionType;
 };
 
-export function createSource(state: GameType, max: number, x: number, y:number) {
+export function createSource(state: GameType, max: number, x: number, y:number, leavingDirection: DirectionType) {
   if (
     Array.from(state.entities.values()).find(
       (entity) => entity.x === x && entity.y === y
@@ -47,9 +47,9 @@ export function createSource(state: GameType, max: number, x: number, y:number) 
     max: max,
     cooldown: 1,
     rate: 1,
-    x: x,
-    y: y,
-    leavingDirection: "right",
+    x,
+    y,
+    leavingDirection,
   };
   newState.entities.set(newSourceID, newSourceEntity);
   newState.sources.push(newSourceID);
