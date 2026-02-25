@@ -10,6 +10,7 @@ export type GameType = {
   stocks: string[];
   consumers: string[];
   transports: string[];
+  splitters: string[];
 };
 
 export type LinkType = {

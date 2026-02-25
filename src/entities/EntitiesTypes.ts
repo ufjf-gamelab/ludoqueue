@@ -56,8 +56,6 @@ export type EntitySplitterType = {
   cooldown: number;
   
   entryDirection: DirectionType;
-  leavingDirection1: DirectionType;
-  leavingDirection2: DirectionType;
   x: number;
   y: number;
   source: string | null;
