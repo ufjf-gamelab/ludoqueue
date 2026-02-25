@@ -3,7 +3,8 @@ export type EntityType =
   | EntitySourceType
   | EntityStockType
   | EntityConsumerType
-  | EntityTransportType;
+  | EntityTransportType
+  | EntitySplitterType
 
 export type EntitySourceType = {
   id: string;
@@ -43,6 +44,26 @@ export type EntityConsumerType = {
   entryDirection: DirectionType;
   x: number;
   y: number;
+};
+
+export type EntitySplitterType = {
+  id: string;
+  name: string;
+  type: "splitter";
+  val: number;
+  max: number;
+  rate: number;
+  cooldown: number;
+  
+  entryDirection: DirectionType;
+  leavingDirection1: DirectionType;
+  leavingDirection2: DirectionType;
+  x: number;
+  y: number;
+  source: string | null;
+  target: string[] | null;
+  lastTargetIndex: number;
+  movingGoods: MovingGoodType[];
 };
 
 export type EntityTransportType = {

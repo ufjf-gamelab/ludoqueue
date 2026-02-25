@@ -14,6 +14,7 @@ import type {
   EntityTransportType,
   EntityType,
   DirectionType,
+  EntitySplitterType,
 } from "./entities/EntitiesTypes";
 import { initialState } from "./data";
 import {
@@ -159,7 +160,7 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
           state.editor.type !== "transporter")
       )
         return state;
-      
+
       return {
         ...state,
         editor: {
@@ -196,7 +197,10 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
         return state;
       return {
         ...state,
-        editor: { ...state.editor, leavingDirection: action.value as DirectionType },
+        editor: {
+          ...state.editor,
+          leavingDirection: action.value as DirectionType,
+        },
       };
     }
     case "editor change val": {
@@ -225,6 +229,7 @@ export function gameTick(state: GameType) {
   const consumers = new Map<string, EntityConsumerType>();
   const transports = new Map<string, EntityTransportType>();
   const stocks = new Map<string, EntityStockType>();
+  const splitters = new Map<string, EntitySplitterType>();
 
   const newState = structuredClone(state);
   for (const [, node] of newState.entities.entries()) {
@@ -245,6 +250,10 @@ export function gameTick(state: GameType) {
         stocks.set(node.id, node);
         break;
       }
+      case "splitter": {
+        splitters.set(node.id, node);
+        break;
+      }
     }
   }
   const all = new Map<string, EntityType>([
@@ -252,10 +261,11 @@ export function gameTick(state: GameType) {
     ...consumers.entries(),
     ...transports.entries(),
     ...stocks.entries(),
+    ...splitters.entries(),
   ]);
 
   transports.forEach((transport) => {
-    calculatePendingMovingGoods(transport, all);
+    calculatePendingTransportMovingGoods(transport, all);
   });
   transports.forEach((transport) => {
     transportMovingGoods(transport);
@@ -265,6 +275,12 @@ export function gameTick(state: GameType) {
   });
   sources.forEach((source) => {
     gameSourceTick(source);
+  });
+  splitters.forEach((splitter) => {
+    calculatePendingSplitterMovingGoods(splitter, all);
+  });
+  splitters.forEach((splitter) => {
+    transportMovingGoods(splitter);
   });
   return newState;
 }
@@ -292,7 +308,41 @@ export function gameConsumerTick(node: EntityConsumerType) {
   node.cooldown += 1 / node.rate;
 }
 
-export function calculatePendingMovingGoods(
+export function calculatePendingSplitterMovingGoods(
+  splitter: EntitySplitterType,
+  all: Map<string, EntityType>,
+) {
+  splitter.movingGoods = [];
+  splitter.cooldown -= 1;
+  if (splitter.cooldown > 0) {
+    return splitter.movingGoods;
+  }
+  splitter.cooldown += 1 / splitter.rate;
+
+  const source = all.get(splitter.source!);
+  const targetSize = splitter.target ? splitter.target.length : 0;
+  if (targetSize > 0) {
+    splitter.lastTargetIndex = (splitter.lastTargetIndex + 1) % targetSize;
+  }
+  if (targetSize > 0 && splitter.val === 1) {
+    const target = all.get(splitter.target![splitter.lastTargetIndex]);
+    if (!target) {
+      return splitter.movingGoods;
+    }
+    if (target.val < target.max) {
+      if (target.type == "stock" && target.closed) {
+        return splitter.movingGoods;
+      }
+      splitter.movingGoods.push({ source: splitter, target, val: 1 });
+    }
+  }
+  if (source && splitter.val === 0 && source.val > 0) {
+    splitter.movingGoods.push({ source, target: splitter, val: 1 });
+  }
+  return splitter.movingGoods;
+}
+
+export function calculatePendingTransportMovingGoods(
   transport: EntityTransportType,
   all: Map<string, EntityType>,
 ) {
@@ -317,7 +367,7 @@ export function calculatePendingMovingGoods(
   return transport.movingGoods;
 }
 
-export function transportMovingGoods(transport: EntityTransportType) {
+export function transportMovingGoods(transport: EntityTransportType|EntitySplitterType) {
   transport.movingGoods.forEach((movingGood) => {
     const source = movingGood.source;
     const target = movingGood.target;
