@@ -577,13 +577,15 @@ export function pointingAction(
           newState.editor = null;
           return gameReducer(newState, deleteTransportAction);
         }
+        default:
+          return state;
       }
-      break;
     }
 
     default:
       return state;
   }
+  return state;
 }
 
 function chooseNewEditor(status: GameStatus): GameEditor {
