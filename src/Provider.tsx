@@ -59,7 +59,7 @@ import type {
   GameTransporterEditor,
   GameSplitterEditor,
 } from "./Editor/EditorTypes";
-import { type GameActionCreateSplitter, type GameActionDeleteSplitter, createSplitter, deleteSplitter } from "./entities/Splitter/SplitterActions";
+import { type GameActionCreateSplitter, type GameActionDeleteSplitter, type GameActionChangeSplitterEntryDirection, createSplitter, deleteSplitter, changeSplitterEntryDirection } from "./entities/Splitter/SplitterActions";
 type GameProviderProps = {
   children: ReactNode;
 };
@@ -145,6 +145,8 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
       );
     case "delete splitter":
       return deleteSplitter(state, action.id);
+    case "change splitter entry direction":
+      return changeSplitterEntryDirection(state, action.id, action.direction);
     case "set node value":
       return setNodeVal(state, action.id, action.value);
     case "game tick":
@@ -479,6 +481,7 @@ export type GameAction =
   | GameActionChangeTransportLeavingDirection
   | GameActionCreateSplitter
   | GameActionDeleteSplitter
+  | GameActionChangeSplitterEntryDirection
   | GameActionSetNodeValue
   | GameActionTick
   | GameActionSelectEntity

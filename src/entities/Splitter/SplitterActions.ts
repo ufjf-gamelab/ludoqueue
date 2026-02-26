@@ -15,6 +15,12 @@ export type GameActionDeleteSplitter = {
   id: string;
 };
 
+export type GameActionChangeSplitterEntryDirection = {
+  type: "change splitter entry direction";
+  id: string;
+  direction: DirectionType;
+};
+
 export function createSplitter(
   state: GameType,
   max: number,
@@ -70,6 +76,22 @@ export function deleteSplitter(state: GameType, splitter: string) {
     const newState = structuredClone(state);
     newState.splitters.splice(splitterIndex);
     newState.entities.delete(splitter);
+    return newState;
+  }
+  return state;
+}
+
+export function changeSplitterEntryDirection(
+  state: GameType,
+  splitterID: string,
+  direction: DirectionType
+) {
+  const splitterEntity = state.entities.get(splitterID);
+  if (splitterEntity && splitterEntity.type === "splitter") {
+    const newState = structuredClone(state);
+    const newSplitterEntity = newState.entities.get(splitterID) as EntitySplitterType;
+    newSplitterEntity.entryDirection = direction;
+    updateSplitterConnections(newState, newSplitterEntity);
     return newState;
   }
   return state;
