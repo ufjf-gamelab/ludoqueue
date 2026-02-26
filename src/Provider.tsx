@@ -57,7 +57,9 @@ import type {
   GameSourceEditor,
   GameStockEditor,
   GameTransporterEditor,
+  GameSplitterEditor,
 } from "./Editor/EditorTypes";
+import { type GameActionCreateSplitter, type GameActionDeleteSplitter, createSplitter, deleteSplitter } from "./entities/Splitter/SplitterActions";
 type GameProviderProps = {
   children: ReactNode;
 };
@@ -132,6 +134,17 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
         action.id,
         action.direction,
       );
+    case "create splitter":
+      return createSplitter(
+        state,
+        action.max,
+        action.rate,
+        action.x,
+        action.y,
+        action.entryDirection,
+      );
+    case "delete splitter":
+      return deleteSplitter(state, action.id);
     case "set node value":
       return setNodeVal(state, action.id, action.value);
     case "game tick":
@@ -157,7 +170,8 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
         !state.editor ||
         (state.editor.type !== "consumer" &&
           state.editor.type !== "source" &&
-          state.editor.type !== "transporter")
+          state.editor.type !== "transporter" &&
+          state.editor.type !== "splitter")
       )
         return state;
 
@@ -180,10 +194,11 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
       if (
         !state.editor ||
         (state.editor.type !== "consumer" &&
-          state.editor.type !== "transporter")
+          state.editor.type !== "transporter" &&
+          state.editor.type !== "splitter")
       )
         return state;
-      const editor = state.editor as GameConsumerEditor | GameTransporterEditor;
+      const editor = state.editor as GameConsumerEditor | GameTransporterEditor | GameSplitterEditor;
       return {
         ...state,
         editor: { ...editor, entryDirection: action.value as DirectionType },
@@ -462,6 +477,8 @@ export type GameAction =
   | GameActionDeleteTransport
   | GameActionChangeTransportEntryDirection
   | GameActionChangeTransportLeavingDirection
+  | GameActionCreateSplitter
+  | GameActionDeleteSplitter
   | GameActionSetNodeValue
   | GameActionTick
   | GameActionSelectEntity
@@ -543,6 +560,21 @@ export function pointingAction(
       newState.status = "waiting";
       return gameReducer(newState, action);
     }
+    case "splitter": {
+      if (entity || !state.editor || state.editor.type !== "splitter")
+        return state;
+      const action: GameActionCreateSplitter = {
+        type: "create splitter",
+        max: state.editor.max,
+        rate: state.editor.rate,
+        x: x,
+        y: y,
+        entryDirection: state.editor.entryDirection,
+      };
+      newState.status = "waiting";
+      newState.editor = null;
+      return gameReducer(newState, action);
+    }
 
     case "delete": {
       if (!entity) return state;
@@ -582,6 +614,15 @@ export function pointingAction(
           newState.status = "waiting";
           newState.editor = null;
           return gameReducer(newState, deleteTransportAction);
+        }
+        case "splitter": {  
+          const deleteSplitterAction: GameActionDeleteSplitter = {
+            type: "delete splitter",
+            id: entity.id,
+          };
+          newState.status = "waiting";
+          newState.editor = null;
+          return gameReducer(newState, deleteSplitterAction);
         }
         default:
           return state;
@@ -630,6 +671,15 @@ function chooseNewEditor(status: GameStatus): GameEditor {
         rate: 1,
         entryDirection: "left",
         leavingDirection: "right",
+      };
+      return newEditor;
+    }
+    case "splitter": {
+      const newEditor: GameSplitterEditor = {
+        type: "splitter",
+        max: 1,
+        rate: 1,
+        entryDirection: "left",
       };
       return newEditor;
     }

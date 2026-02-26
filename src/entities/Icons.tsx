@@ -8,6 +8,8 @@ import { PiArrowClockwiseBold, PiArrowCounterClockwiseBold } from "react-icons/p
 import { HiArrowTurnDownLeft, HiArrowTurnDownRight, HiArrowTurnLeftDown, HiArrowTurnLeftUp, HiArrowTurnRightDown, HiArrowTurnRightUp, HiArrowTurnUpLeft, HiArrowTurnUpRight } from "react-icons/hi2";
 import type { JSX } from "react";
 import { IoIosArrowBack, IoIosArrowDown, IoIosArrowForward, IoIosArrowUp } from "react-icons/io";
+import { FiScissors } from "react-icons/fi";
+
 
 
 export const EntityIcons = {
@@ -15,6 +17,7 @@ export const EntityIcons = {
   consumer: <FaSink />,
   source: <GiMiner />,
   transport: <BsMinecartLoaded />,
+  splitter: <FiScissors />,
   "transport right": <FaRightLong />,
   "transport left": <FaLeftLong />,
   "transport up": <FaUpLong />,

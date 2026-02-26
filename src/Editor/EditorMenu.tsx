@@ -343,6 +343,85 @@ export default function EditorMenu({ editor }: { editor: GameEditor }) {
             </div>
         </div>
       )}
+      {editor.type === "splitter" && (
+        <div>
+          <div className={"EditorProp"}>
+            Max: {editor.max}
+            <div>
+            <button onClick={() => dispatch({ type: "editor change max", value: editor.max + 1 })}> + </button>
+            <button onClick={() => dispatch({ type: "editor change max", value: editor.max - 1 })}> - </button>
+            </div>
+          </div>
+          <div className={"EditorProp"}>
+            Rate: {editor.rate}
+            <div>
+            <button
+              onClick={() => {
+                if (editor.rate >= 1) {
+                  dispatch({ type: "editor change rate", value: 1 });
+                  return;
+                } else {
+                  dispatch({ type: "editor change rate", value: editor.rate + 0.1 });
+                }
+              }}
+            >
+              {" "}
+              +{" "}
+            </button>
+            <button
+              onClick={() => {
+                if (editor.rate <= 0) {
+                  dispatch({ type: "editor change rate", value: 0 });
+                  return;
+                } else {
+                  dispatch({ type: "editor change rate", value: editor.rate - 0.1 });
+                }
+              }}
+            >
+              {" "}
+              -{" "}
+            </button>
+            </div>
+          </div>
+          <div className={"EditorProp"}>
+            Entry Direction: {editor.entryDirection}
+            <div>
+            <button
+              onClick={() => {
+                if (editor.entryDirection === "right") {
+                  dispatch({ type: "editor change entry direction", value: "up" });
+                } else if (editor.entryDirection === "up") {
+                  dispatch({ type: "editor change entry direction", value: "left" });
+                } else if (editor.entryDirection === "left") {
+                  dispatch({ type: "editor change entry direction", value: "down" });
+                } else if (editor.entryDirection === "down") {
+                  dispatch({ type: "editor change entry direction", value: "right" });
+                }
+              }}
+            >
+              {
+              RotationIcons["counterclockwise"]}
+            </button>
+            <button
+              onClick={() => {
+                if (editor.entryDirection === "right") {
+                  dispatch({ type: "editor change entry direction", value: "down" });
+                } else if (editor.entryDirection === "down") {
+                  dispatch({ type: "editor change entry direction", value: "left" });
+                } else if (editor.entryDirection === "left") {
+                  dispatch({ type: "editor change entry direction", value: "up" });
+                } else if (editor.entryDirection === "up") {
+                  dispatch({ type: "editor change entry direction", value: "right" });
+                }
+              }}
+            >
+              {
+              RotationIcons["clockwise"]}
+            </button>
+            </div>
+            </div>
+          </div>
+      )}
     </div>
   );
 }

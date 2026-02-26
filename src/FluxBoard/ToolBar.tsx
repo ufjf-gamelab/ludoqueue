@@ -46,6 +46,13 @@ export default function ToolBar() {
           {EntityIcons["source"]}
         </button>
         <button
+          className={game.status === "splitter" ? "selected" : ""}
+          onClick={() => dispatch({ type: "set status", newStatus: "splitter" })}
+          title="Create a new Splitter"
+        >
+          {EntityIcons["splitter"]}
+        </button>
+        <button
           onClick={() => dispatch({ type: "set status", newStatus: "delete" })}
           title="Delete mode - click on an entity to delete it"
         >

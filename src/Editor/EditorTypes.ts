@@ -1,6 +1,6 @@
 import type { DirectionType } from "../entities/EntitiesTypes";
 
-export type GameEditor = GameStockEditor | GameConsumerEditor | GameSourceEditor | GameTransporterEditor | null;
+export type GameEditor = GameStockEditor | GameConsumerEditor | GameSourceEditor | GameTransporterEditor | GameSplitterEditor |null;
 
 export type GameStockEditor = {
   type: "stock";
@@ -29,4 +29,11 @@ export type GameTransporterEditor = {
   max: number;
   entryDirection: DirectionType;
   leavingDirection: DirectionType;
+}
+
+export type GameSplitterEditor = {
+  type: "splitter";
+  max: number;
+  rate: number;
+  entryDirection: DirectionType;
 }
