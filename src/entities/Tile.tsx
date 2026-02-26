@@ -6,6 +6,7 @@ import { useGame } from "../Provider.tsx";
 import TransporterTile from "./Transport/TransporterTile.tsx";
 import Stock from "./Stock/StockTile.tsx";
 import ConsumerTile from "./Consumer/ConsumerTile.tsx";
+import SplitterTile from "./Splitter/SplitterTile.tsx";
 
 export interface AnchorStyle extends React.CSSProperties {
   anchorName?: string;
@@ -38,6 +39,8 @@ export default function Tile({
         return <Stock key={entity.id} entity={entity} />;
       case "transport":
         return <TransporterTile key={entity.id} entity={entity} />;
+      case "splitter":
+        return <SplitterTile key={entity.id} entity={entity} />;
     }
   };
 

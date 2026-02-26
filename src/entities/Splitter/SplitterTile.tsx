@@ -1,6 +1,7 @@
 import "./SplitterTile.css";
 import { getInvertedDirection, type EntitySplitterType, type MovingGoodType } from "../EntitiesTypes";
 import "../Toolset.css";
+import { DirectionIcons, EntityIcons } from "../Icons";
 
 export default function SplitterTile({ entity }: { entity: EntitySplitterType }) {
   const spanKey = String(Math.random());
@@ -68,9 +69,34 @@ export default function SplitterTile({ entity }: { entity: EntitySplitterType })
     }
   }
   return (
-    <div className="transporter-tile">
+    <div className="splitter-tile">
+        {EntityIcons.splitter}
       <progress value={entity.val} max={entity.max} title={`${entity.val}/${entity.max}`} />
-      {movingGoods.map((movingGood) => {
+      {(entity.entryDirection === "up") && <div>
+        <div className="position-up">{DirectionIcons.down}</div>
+        <div className="position-down">{DirectionIcons.down}</div>
+        <div className="position-right">{DirectionIcons.right}</div>
+        <div className="position-left">{DirectionIcons.left}</div>
+        </div>}
+        {(entity.entryDirection === "down") && <div>
+        <div className="position-up">{DirectionIcons.up}</div>
+        <div className="position-down">{DirectionIcons.up}</div>
+        <div className="position-right">{DirectionIcons.right}</div>
+        <div className="position-left">{DirectionIcons.left}</div>
+        </div>}
+        {(entity.entryDirection === "right") && <div>
+        <div className="position-up">{DirectionIcons.up}</div>
+        <div className="position-down">{DirectionIcons.down}</div>
+        <div className="position-right">{DirectionIcons.left}</div>
+        <div className="position-left">{DirectionIcons.left}</div>
+        </div>}
+        {(entity.entryDirection === "left") && <div>
+        <div className="position-up">{DirectionIcons.up}</div>
+        <div className="position-down">{DirectionIcons.down}</div>
+        <div className="position-right">{DirectionIcons.right}</div>
+        <div className="position-left">{DirectionIcons.right}</div>
+        </div>}
+      {/*movingGoods.map((movingGood) => {
         if (movingGood.target == entity)
           isStarting = true;
         if (movingGood.source == entity)
@@ -81,7 +107,7 @@ export default function SplitterTile({ entity }: { entity: EntitySplitterType })
           style={{ display: shouldHaveItem ? undefined : "none" }}
           aria-hidden="true"
         />);
-      })
+      })*/
       }
     </div>
   );
