@@ -60,7 +60,7 @@ export function createSplitter(
   };
   newState.entities.set(newSplitterID, newSplitterEntity);
   newState.splitters.push(newSplitterID);
-  //updateSplitterConnections(newState, newSplitterEntity);
+  updateSplitterConnections(newState, newSplitterEntity);
   return newState;
 }
 
@@ -73,4 +73,62 @@ export function deleteSplitter(state: GameType, splitter: string) {
     return newState;
   }
   return state;
+}
+
+export function updateSplitterConnections(
+  state: GameType,
+  splitter: EntitySplitterType
+) {
+  splitter.source = null;
+  splitter.target = null;
+  switch (splitter.entryDirection) {
+    case "up":{
+      const sourceID = Array.from(state.entities.values()).find(
+        (entity) =>
+          entity.x === splitter.x && entity.y === splitter.y - 1
+      )?.id;
+      if (sourceID){splitter.source = sourceID};
+      const sourceEntity = sourceID ? state.entities.get(sourceID) : null;
+      if (sourceEntity && sourceEntity.type === "transport") {
+        const transportEntity = sourceEntity;
+        transportEntity.target = splitter.id;
+      }
+      //achar targets 
+      const target0 = Array.from(state.entities.values()).find(
+        (entity) =>          entity.x === splitter.x + 1 && entity.y === splitter.y //direita
+      )?.id;
+      const target0Entity = target0 ? state.entities.get(target0) : null;
+      if (target0Entity && target0Entity.type === "transport") {
+        const transportEntity = target0Entity;
+        transportEntity.source = splitter.id;
+      }
+      const target1 = Array.from(state.entities.values()).find(
+        (entity) =>          entity.x === splitter.x && entity.y === splitter.y + 1 //baixo
+      )?.id;
+      const target1Entity = target1 ? state.entities.get(target1) : null;
+      if (target1Entity && target1Entity.type === "transport") {
+        const transportEntity = target1Entity;
+        transportEntity.source = splitter.id;
+      }
+      const target2 = Array.from(state.entities.values()).find(
+        (entity) =>          entity.x === splitter.x - 1 && entity.y === splitter.y //esquerda
+      )?.id;
+      const target2Entity = target2 ? state.entities.get(target2) : null;
+      if (target2Entity && target2Entity.type === "transport") {
+        const transportEntity = target2Entity;
+        transportEntity.source = splitter.id;
+      }
+      if (target0){
+        splitter.target = [target0];
+      }
+      if (target1){
+        splitter.target = [...(splitter.target || []), target1];
+      }
+      if (target2){
+        splitter.target = [...(splitter.target || []), target2];
+      }
+      
+      break;
+    }
+  }
 }

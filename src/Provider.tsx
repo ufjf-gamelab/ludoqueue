@@ -337,6 +337,9 @@ export function calculatePendingSplitterMovingGoods(
     }
   }
   if (source && splitter.val === 0 && source.val > 0) {
+    if(source.type == "transport"){
+      return splitter.movingGoods;
+    }
     splitter.movingGoods.push({ source, target: splitter, val: 1 });
   }
   return splitter.movingGoods;
@@ -362,6 +365,9 @@ export function calculatePendingTransportMovingGoods(
     transport.movingGoods.push({ source: transport, target, val: 1 });
   }
   if (source && transport.val === 0 && source.val > 0) {
+    if(source.type == "splitter"){
+      return transport.movingGoods;
+    }
     transport.movingGoods.push({ source, target: transport, val: 1 });
   }
   return transport.movingGoods;
