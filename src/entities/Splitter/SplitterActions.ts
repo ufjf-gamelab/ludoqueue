@@ -62,7 +62,7 @@ export function createSplitter(
     y,
     entryDirection,
     movingGoods: [],
-    lastTargetIndex: 0,
+    nextTargetIndex: 0,
   };
   newState.entities.set(newSplitterID, newSplitterEntity);
   newState.splitters.push(newSplitterID);

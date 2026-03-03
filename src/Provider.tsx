@@ -59,7 +59,14 @@ import type {
   GameTransporterEditor,
   GameSplitterEditor,
 } from "./Editor/EditorTypes";
-import { type GameActionCreateSplitter, type GameActionDeleteSplitter, type GameActionChangeSplitterEntryDirection, createSplitter, deleteSplitter, changeSplitterEntryDirection } from "./entities/Splitter/SplitterActions";
+import {
+  type GameActionCreateSplitter,
+  type GameActionDeleteSplitter,
+  type GameActionChangeSplitterEntryDirection,
+  createSplitter,
+  deleteSplitter,
+  changeSplitterEntryDirection,
+} from "./entities/Splitter/SplitterActions";
 type GameProviderProps = {
   children: ReactNode;
 };
@@ -200,7 +207,10 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
           state.editor.type !== "splitter")
       )
         return state;
-      const editor = state.editor as GameConsumerEditor | GameTransporterEditor | GameSplitterEditor;
+      const editor = state.editor as
+        | GameConsumerEditor
+        | GameTransporterEditor
+        | GameSplitterEditor;
       return {
         ...state,
         editor: { ...editor, entryDirection: action.value as DirectionType },
@@ -337,27 +347,29 @@ export function calculatePendingSplitterMovingGoods(
   splitter.cooldown += 1 / splitter.rate;
 
   const source = all.get(splitter.source!);
-  const targetSize = splitter.target ? splitter.target.length : 0;
-  if (targetSize > 0) {
-    splitter.lastTargetIndex = (splitter.lastTargetIndex + 1) % targetSize;
-  }
-  if (targetSize > 0 && splitter.val === 1) {
-    const target = all.get(splitter.target![splitter.lastTargetIndex]);
-    if (!target) {
-      return splitter.movingGoods;
-    }
-    if (target.val < target.max) {
-      if (target.type == "stock" && target.closed) {
-        return splitter.movingGoods;
-      }
-      splitter.movingGoods.push({ source: splitter, target, val: 1 });
-    }
-  }
-  if (source && splitter.val === 0 && source.val > 0) {
-    if(source.type == "transport"){
+  if (source && splitter.val < splitter.max && source.val > 0) {
+    if (source.type == "transport") {
       return splitter.movingGoods;
     }
     splitter.movingGoods.push({ source, target: splitter, val: 1 });
+  }
+  for (let step = 0; step < splitter.target.length; step++) {
+    const index = (splitter.nextTargetIndex + step) % splitter.target.length;
+    const targetId = splitter.target[index];
+    const target = targetId ? all.get(targetId) : null;
+    if (!target) continue;
+    if (
+      target.val >= target.max ||
+      (target.type === "stock" && target.closed)
+    ) {
+      continue;
+    }
+    if(splitter.val<1){
+      continue;
+    }
+    splitter.movingGoods.push({ source: splitter, target, val: 1 });
+    splitter.nextTargetIndex = (index + 1) % splitter.target.length;
+    return splitter.movingGoods;
   }
   return splitter.movingGoods;
 }
@@ -382,7 +394,7 @@ export function calculatePendingTransportMovingGoods(
     transport.movingGoods.push({ source: transport, target, val: 1 });
   }
   if (source && transport.val === 0 && source.val > 0) {
-    if(source.type == "splitter"){
+    if (source.type == "splitter") {
       return transport.movingGoods;
     }
     transport.movingGoods.push({ source, target: transport, val: 1 });
@@ -390,7 +402,9 @@ export function calculatePendingTransportMovingGoods(
   return transport.movingGoods;
 }
 
-export function transportMovingGoods(transport: EntityTransportType|EntitySplitterType) {
+export function transportMovingGoods(
+  transport: EntityTransportType | EntitySplitterType,
+) {
   transport.movingGoods.forEach((movingGood) => {
     const source = movingGood.source;
     const target = movingGood.target;
@@ -618,7 +632,7 @@ export function pointingAction(
           newState.editor = null;
           return gameReducer(newState, deleteTransportAction);
         }
-        case "splitter": {  
+        case "splitter": {
           const deleteSplitterAction: GameActionDeleteSplitter = {
             type: "delete splitter",
             id: entity.id,

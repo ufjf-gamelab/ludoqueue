@@ -269,6 +269,7 @@ function updateTransportConnections(
           transport.target=upperEntity.id;
         }
         if ((upperEntity.type === "splitter") && upperEntity.entryDirection === "down"){
+          transport.target = upperEntity.id;
           upperEntity.source = transport.id;
         }
       }
@@ -286,6 +287,7 @@ function updateTransportConnections(
           transport.target=lowerEntity.id;
         }
         if ((lowerEntity.type === "splitter") && lowerEntity.entryDirection === "up"){
+          transport.target = lowerEntity.id;
           lowerEntity.source = transport.id;
         }
       }
@@ -305,6 +307,7 @@ function updateTransportConnections(
           transport.target=leftEntity.id;
         }
         if ((leftEntity.type === "splitter") && leftEntity.entryDirection === "right"){
+          transport.target = leftEntity.id;
           leftEntity.source = transport.id;
         }
       }
@@ -325,6 +328,7 @@ function updateTransportConnections(
           transport.target=rightEntity.id;
         }
         if ((rightEntity.type === "splitter") && rightEntity.entryDirection === "left"){
+          transport.target = rightEntity.id;
           rightEntity.source = transport.id;
         }
       }
