@@ -294,8 +294,14 @@ export function gameTick(state: GameType) {
   transports.forEach((transport) => {
     calculatePendingTransportMovingGoods(transport, all);
   });
+  splitters.forEach((splitter) => {
+    calculatePendingSplitterMovingGoods(splitter, all);
+  });
   transports.forEach((transport) => {
     transportMovingGoods(transport);
+  });
+   splitters.forEach((splitter) => {
+    transportMovingGoods(splitter);
   });
   consumers.forEach((consumer) => {
     gameConsumerTick(consumer);
@@ -303,12 +309,8 @@ export function gameTick(state: GameType) {
   sources.forEach((source) => {
     gameSourceTick(source);
   });
-  splitters.forEach((splitter) => {
-    calculatePendingSplitterMovingGoods(splitter, all);
-  });
-  splitters.forEach((splitter) => {
-    transportMovingGoods(splitter);
-  });
+  
+ 
   return newState;
 }
 
@@ -352,7 +354,10 @@ export function calculatePendingSplitterMovingGoods(
       return splitter.movingGoods;
     }
     splitter.movingGoods.push({ source, target: splitter, val: 1 });
+    return splitter.movingGoods;
   }
+  else
+  {
   for (let step = 0; step < splitter.target.length; step++) {
     const index = (splitter.nextTargetIndex + step) % splitter.target.length;
     const targetId = splitter.target[index];
@@ -371,6 +376,7 @@ export function calculatePendingSplitterMovingGoods(
     splitter.nextTargetIndex = (index + 1) % splitter.target.length;
     return splitter.movingGoods;
   }
+}
   return splitter.movingGoods;
 }
 

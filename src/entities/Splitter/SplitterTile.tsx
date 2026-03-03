@@ -18,8 +18,8 @@ export default function SplitterTile({ entity }: { entity: EntitySplitterType })
   const leavingDirection = calculateLeavingDirection(entity);
 
   function calculateLeavingDirection(entity: EntitySplitterType): string {
-    switch (entity.lastTargetIndex){
-        case 0:{
+    switch (entity.nextTargetIndex){
+        case 1:{
             if (entity.entryDirection === "up"){
                 return "right";
             }
@@ -33,7 +33,7 @@ export default function SplitterTile({ entity }: { entity: EntitySplitterType })
                 return "down";
             }
             return "";}
-        case 1:{
+        case 2:{
             if (entity.entryDirection === "up"){
                 return "down";
             }
@@ -48,7 +48,7 @@ export default function SplitterTile({ entity }: { entity: EntitySplitterType })
             }
             return "";
         }
-        case 2:{
+        case 0:{
             if (entity.entryDirection === "up"){
                 return "left";
             }
@@ -96,7 +96,7 @@ export default function SplitterTile({ entity }: { entity: EntitySplitterType })
         <div className="position-right">{DirectionIcons.right}</div>
         <div className="position-left">{DirectionIcons.right}</div>
         </div>}
-      {/*movingGoods.map((movingGood) => {
+      {movingGoods.map((movingGood) => {
         if (movingGood.target == entity)
           isStarting = true;
         if (movingGood.source == entity)
@@ -107,7 +107,7 @@ export default function SplitterTile({ entity }: { entity: EntitySplitterType })
           style={{ display: shouldHaveItem ? undefined : "none" }}
           aria-hidden="true"
         />);
-      })*/
+      })
       }
     </div>
   );
