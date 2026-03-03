@@ -59,7 +59,7 @@ export type EntitySplitterType = {
   x: number;
   y: number;
   source: string | null;
-  target: string[] | null;
+  target: (string|null)[];
   lastTargetIndex: number;
   movingGoods: MovingGoodType[];
 };

@@ -57,7 +57,7 @@ export function createSplitter(
     rate: rate,
     cooldown: 1,
     source: null,
-    target: null,
+    target: [null, null, null],
     x,
     y,
     entryDirection,
@@ -104,7 +104,7 @@ export function updateSplitterConnections(
   splitter: EntitySplitterType,
 ) {
   splitter.source = null;
-  splitter.target = null;
+  splitter.target = [null, null, null];
   switch (splitter.entryDirection) {
     case "up": {
       updateSplitterUpperEntry(state, splitter);
@@ -230,13 +230,13 @@ function updateSplitterUpperEntry(
     transportEntity.source = splitter.id;
   }
   if (target0) {
-    splitter.target = [target0];
+    splitter.target[0] = target0;
   }
   if (target1) {
-    splitter.target = [...(splitter.target || []), target1];
+    splitter.target[1] = target1;
   }
   if (target2) {
-    splitter.target = [...(splitter.target || []), target2];
+    splitter.target[2] = target2;
   }
 }
 
@@ -342,13 +342,13 @@ function updateSplitterDownEntry(
     transportEntity.source = splitter.id;
   }
   if (target0) {
-    splitter.target = [target0];
+    splitter.target[0] = target0;
   }
   if (target1) {
-    splitter.target = [...(splitter.target || []), target1];
+    splitter.target[1] = target1;
   }
   if (target2) {
-    splitter.target = [...(splitter.target || []), target2];
+    splitter.target[2] = target2;
   }
 }
 
@@ -455,13 +455,13 @@ function updateSplitterLeftEntry(
     transportEntity.source = splitter.id;
   }
   if (target0) {
-    splitter.target = [target0];
+    splitter.target[0] = target0;
   }
   if (target1) {
-    splitter.target = [...(splitter.target || []), target1];
+    splitter.target[1] = target1;
   }
   if (target2) {
-    splitter.target = [...(splitter.target || []), target2];
+    splitter.target[2] = target2;
   }
 }
 
@@ -567,12 +567,12 @@ function updateSplitterRightEntry(
     transportEntity.source = splitter.id;
   }
   if (target0) {
-    splitter.target = [target0];
+    splitter.target[0] = target0;
   }
   if (target1) {
-    splitter.target = [...(splitter.target || []), target1];
+    splitter.target[1] = target1;
   }
   if (target2) {
-    splitter.target = [...(splitter.target || []), target2];
+    splitter.target[2] = target2;
   }
 }

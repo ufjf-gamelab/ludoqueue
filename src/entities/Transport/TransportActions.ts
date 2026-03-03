@@ -148,6 +148,21 @@ function updateTransportConnections(
         if ((upperEntity.type === "transport" || upperEntity.type === "source") && upperEntity.leavingDirection === "down") {
           transport.source = upperEntity.id;
         }
+
+        if ((upperEntity.type === "splitter") && upperEntity.entryDirection !== "down"){
+          switch (upperEntity.entryDirection) {
+            case "up":
+              upperEntity.target[1] = transport.id;
+              break;
+            case "left":
+              upperEntity.target[2] = transport.id;
+              break;
+            case "right":
+              upperEntity.target[0] = transport.id;
+              break;
+          }
+          transport.source = upperEntity.id;
+        }
       }
       break;
     }
@@ -160,6 +175,20 @@ function updateTransportConnections(
           transport.source = lowerEntity.id;
         }
         if ((lowerEntity.type === "transport" || lowerEntity.type === "source") && lowerEntity.leavingDirection === "up") {
+          transport.source = lowerEntity.id;
+        }
+        if ((lowerEntity.type === "splitter") && lowerEntity.entryDirection !== "up"){
+          switch (lowerEntity.entryDirection) {
+            case "down":
+              lowerEntity.target[1] = transport.id;
+              break;
+            case "left":
+              lowerEntity.target[0] = transport.id;
+              break;
+            case "right":
+              lowerEntity.target[2] = transport.id;
+              break;
+          }
           transport.source = lowerEntity.id;
         }
       }
@@ -176,6 +205,20 @@ function updateTransportConnections(
           transport.source = leftEntity.id;
         }
         if ((leftEntity.type === "transport" || leftEntity.type === "source") && leftEntity.leavingDirection === "right") {
+          transport.source = leftEntity.id;
+        }
+        if ((leftEntity.type === "splitter") && leftEntity.entryDirection !== "right"){
+          switch (leftEntity.entryDirection) {
+            case "up":
+              leftEntity.target[0] = transport.id;
+              break;
+            case "left":
+              leftEntity.target[1] = transport.id;
+              break;
+            case "down":
+              leftEntity.target[2] = transport.id;
+              break;
+          }
           transport.source = leftEntity.id;
         }
       }
@@ -195,6 +238,20 @@ function updateTransportConnections(
         if ((rightEntity.type === "transport" || rightEntity.type === "source") && rightEntity.leavingDirection === "left") {
           transport.source = rightEntity.id;
         }
+        if ((rightEntity.type === "splitter") && rightEntity.entryDirection !== "left"){
+          switch (rightEntity.entryDirection) {
+            case "down":
+              rightEntity.target[0] = transport.id;
+              break;
+            case "right":
+              rightEntity.target[1] = transport.id;
+              break;
+            case "up":
+              rightEntity.target[2] = transport.id;
+              break;
+          }
+          transport.source = rightEntity.id;
+        }
       }
       break;
     }
@@ -211,6 +268,9 @@ function updateTransportConnections(
         if ((upperEntity.type === "transport" || upperEntity.type === "consumer") && upperEntity.entryDirection=== "down"){
           transport.target=upperEntity.id;
         }
+        if ((upperEntity.type === "splitter") && upperEntity.entryDirection === "down"){
+          upperEntity.source = transport.id;
+        }
       }
       break;
     }
@@ -224,6 +284,9 @@ function updateTransportConnections(
         }
         if ((lowerEntity.type === "transport" || lowerEntity.type === "consumer") && lowerEntity.entryDirection=== "up"){
           transport.target=lowerEntity.id;
+        }
+        if ((lowerEntity.type === "splitter") && lowerEntity.entryDirection === "up"){
+          lowerEntity.source = transport.id;
         }
       }
       break;
@@ -241,6 +304,9 @@ function updateTransportConnections(
         if ((leftEntity.type === "transport" || leftEntity.type === "consumer") && leftEntity.entryDirection=== "right"){
           transport.target=leftEntity.id;
         }
+        if ((leftEntity.type === "splitter") && leftEntity.entryDirection === "right"){
+          leftEntity.source = transport.id;
+        }
       }
       break;
     }
@@ -257,6 +323,9 @@ function updateTransportConnections(
         }
         if ((rightEntity.type === "transport" || rightEntity.type === "consumer") && rightEntity.entryDirection=== "left"){
           transport.target=rightEntity.id;
+        }
+        if ((rightEntity.type === "splitter") && rightEntity.entryDirection === "left"){
+          rightEntity.source = transport.id;
         }
       }
       break;

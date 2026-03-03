@@ -1,5 +1,5 @@
 import type { GameType } from "../../types";
-import type { DirectionType, EntitySourceType, EntityTransportType } from "../EntitiesTypes";
+import type { DirectionType, EntitySourceType, EntitySplitterType, EntityTransportType } from "../EntitiesTypes";
 
 export type GameActionCreateSource = {
   type: "create source";
@@ -82,11 +82,11 @@ export function changeSourceLeavingDirection(state: GameType, sourceID: string, 
 
 function updateSourceConnections(state: GameType, source: EntitySourceType) {
   //primeiro limpar as conexoes antigas
-    const oldTransportSource = Array.from(state.entities.values()).find(
-      (entity) => entity.type === "transport" && entity.source === source.id
-    ) as EntityTransportType | undefined;
-    if (oldTransportSource) {
-      oldTransportSource.source = null;
+    const oldSinkSource = Array.from(state.entities.values()).find(
+      (entity) => (entity.type === "transport" || entity.type === "splitter") && entity.source === source.id
+    ) as EntityTransportType | EntitySplitterType| undefined;
+    if (oldSinkSource) {
+      oldSinkSource.source = null;
     }
   //depois criar as novas conexoes
   switch (source.leavingDirection) {
@@ -94,26 +94,41 @@ function updateSourceConnections(state: GameType, source: EntitySourceType) {
       const upperEntity = Array.from(state.entities.values()).find(
         (entity) => entity.x === source.x && entity.y === source.y - 1
       );
-      if (upperEntity && upperEntity.type === "transport" && upperEntity.entryDirection === "down") {
-        upperEntity.source=source.id;
-      }
+      if (upperEntity){
+        if (upperEntity.type === "transport" && upperEntity.entryDirection === "down") {
+          upperEntity.source = source.id;
+        };
+        if (upperEntity.type === "splitter" && upperEntity.entryDirection === "down"){
+          upperEntity.source = source.id;
+        }
+      };
       break;
     }
     case "down":{
       const lowerEntity = Array.from(state.entities.values()).find(
         (entity) => entity.x === source.x && entity.y === source.y + 1
       );
-      if (lowerEntity && lowerEntity.type === "transport" && lowerEntity.entryDirection === "up") {
-        lowerEntity.source=source.id;
+      if (lowerEntity){
+        if(lowerEntity.type === "transport" && lowerEntity.entryDirection === "up") {
+        lowerEntity.source = source.id;
       };
+        if (lowerEntity.type === "splitter" && lowerEntity.entryDirection === "up"){
+          lowerEntity.source = source.id;
+        }
+    };
       break;
     }
     case "left":{
       const leftEntity = Array.from(state.entities.values()).find(
         (entity) => entity.x === source.x - 1 && entity.y === source.y
       );
-      if (leftEntity && leftEntity.type === "transport" && leftEntity.entryDirection === "right") {
-        leftEntity.source=source.id;
+      if (leftEntity){
+        if(leftEntity.type === "transport" && leftEntity.entryDirection === "right") {
+          leftEntity.source = source.id;
+        };
+        if (leftEntity.type === "splitter" && leftEntity.entryDirection === "right"){
+          leftEntity.source = source.id;
+        }
       };
       break;
     }
@@ -121,9 +136,14 @@ function updateSourceConnections(state: GameType, source: EntitySourceType) {
       const rightEntity = Array.from(state.entities.values()).find(
         (entity) => entity.x === source.x + 1 && entity.y === source.y
       );
-      if (rightEntity && rightEntity.type === "transport" && rightEntity.entryDirection === "left") {
-        rightEntity.source=source.id;
-      };
+      if (rightEntity){
+        if(rightEntity.type === "transport" && rightEntity.entryDirection === "left") {
+          rightEntity.source = source.id;
+        };
+        if (rightEntity.type === "splitter" && rightEntity.entryDirection === "left"){
+          rightEntity.source = source.id;
+        }
+      }
       break;
     }
   }
