@@ -58,6 +58,7 @@ import type {
   GameStockEditor,
   GameTransporterEditor,
   GameSplitterEditor,
+  GameMergerEditor,
 } from "./Editor/EditorTypes";
 import {
   type GameActionCreateSplitter,
@@ -67,6 +68,7 @@ import {
   deleteSplitter,
   changeSplitterEntryDirection,
 } from "./entities/Splitter/SplitterActions";
+import { createMerger, deleteMerger, type GameActionChangeMergerLeavingDirection, type GameActionCreateMerger, type GameActionDeleteMerger } from "./entities/Merger/MergerActions";
 type GameProviderProps = {
   children: ReactNode;
 };
@@ -154,6 +156,17 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
       return deleteSplitter(state, action.id);
     case "change splitter entry direction":
       return changeSplitterEntryDirection(state, action.id, action.direction);
+    case "create merger":
+      return createMerger(
+        state,
+        action.max,
+        action.rate,
+        action.x,
+        action.y,
+        action.leavingDirection,
+      );
+    case "delete merger":
+      return deleteMerger(state, action.id);
     case "set node value":
       return setNodeVal(state, action.id, action.value);
     case "game tick":
@@ -502,6 +515,9 @@ export type GameAction =
   | GameActionCreateSplitter
   | GameActionDeleteSplitter
   | GameActionChangeSplitterEntryDirection
+  | GameActionCreateMerger
+  | GameActionDeleteMerger
+  | GameActionChangeMergerLeavingDirection
   | GameActionSetNodeValue
   | GameActionTick
   | GameActionSelectEntity
@@ -581,6 +597,7 @@ export function pointingAction(
         leavingDirection: state.editor.leavingDirection,
       };
       newState.status = "waiting";
+      newState.editor = null;
       return gameReducer(newState, action);
     }
     case "splitter": {
@@ -598,7 +615,21 @@ export function pointingAction(
       newState.editor = null;
       return gameReducer(newState, action);
     }
-
+    case "merger": {
+      if (entity || !state.editor || state.editor.type !== "merger")
+        return state;
+      const action: GameActionCreateMerger = {
+        type: "create merger",
+        max: state.editor.max,
+        rate: state.editor.rate,
+        x: x,
+        y: y,
+        leavingDirection: state.editor.leavingDirection,
+      };
+      newState.status = "waiting";
+      newState.editor = null;
+      return gameReducer(newState, action);
+    }
     case "delete": {
       if (!entity) return state;
       switch (entity.type) {
@@ -646,6 +677,15 @@ export function pointingAction(
           newState.status = "waiting";
           newState.editor = null;
           return gameReducer(newState, deleteSplitterAction);
+        }
+        case "merger": {
+          const deleteMergerAction: GameActionDeleteMerger = {
+            type: "delete merger",
+            id: entity.id,
+          };
+          newState.status = "waiting";
+          newState.editor = null;
+          return gameReducer(newState, deleteMergerAction);
         }
         default:
           return state;
@@ -703,6 +743,15 @@ function chooseNewEditor(status: GameStatus): GameEditor {
         max: 1,
         rate: 1,
         entryDirection: "left",
+      };
+      return newEditor;
+    }
+    case "merger": {
+      const newEditor: GameMergerEditor = {
+        type: "merger",
+        max: 1,
+        rate: 1,
+        leavingDirection: "left",
       };
       return newEditor;
     }

@@ -5,6 +5,7 @@ export type EntityType =
   | EntityConsumerType
   | EntityTransportType
   | EntitySplitterType
+  | EntityMergerType;
 
 export type EntitySourceType = {
   id: string;
@@ -81,6 +82,24 @@ export type EntityTransportType = {
   leavingDirection: DirectionType;
   movingGoods: MovingGoodType[];
 };
+
+export type EntityMergerType = {
+  id: string;
+  name: string;
+  type: "merger";
+  val: number;
+  max: number;
+  rate: number;
+  cooldown: number;
+  
+  leavingDirection: DirectionType;
+  x: number;
+  y: number;
+  source: string | null;
+  target: (string|null)[];
+  nextTargetIndex: number;
+  movingGoods: MovingGoodType[];
+}
 
 export type MovingGoodType = {
   source: EntityType;

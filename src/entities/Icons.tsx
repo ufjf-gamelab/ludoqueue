@@ -7,7 +7,7 @@ import { getInvertedDirection, type DirectionType } from "./EntitiesTypes";
 import { PiArrowClockwiseBold, PiArrowCounterClockwiseBold } from "react-icons/pi";
 import { HiArrowTurnDownLeft, HiArrowTurnDownRight, HiArrowTurnLeftDown, HiArrowTurnLeftUp, HiArrowTurnRightDown, HiArrowTurnRightUp, HiArrowTurnUpLeft, HiArrowTurnUpRight } from "react-icons/hi2";
 import type { JSX } from "react";
-import { IoIosArrowBack, IoIosArrowDown, IoIosArrowForward, IoIosArrowUp } from "react-icons/io";
+import { IoIosGitMerge, IoIosArrowBack, IoIosArrowDown, IoIosArrowForward, IoIosArrowUp } from "react-icons/io";
 import { FiScissors } from "react-icons/fi";
 
 
@@ -18,6 +18,7 @@ export const EntityIcons = {
   source: <GiMiner />,
   transport: <BsMinecartLoaded />,
   splitter: <FiScissors />,
+  merger: <IoIosGitMerge />,
   "transport right": <FaRightLong />,
   "transport left": <FaLeftLong />,
   "transport up": <FaUpLong />,

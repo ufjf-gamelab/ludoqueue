@@ -305,7 +305,7 @@ export default function EditorMenu({ editor }: { editor: GameEditor }) {
             </div>
           </div>
           <div className={"EditorProp"}>
-            Direction: {editor.leavingDirection}
+            Leaving Direction: {editor.leavingDirection}
             <div>
             <button
               onClick={() => {
@@ -412,6 +412,85 @@ export default function EditorMenu({ editor }: { editor: GameEditor }) {
                   dispatch({ type: "editor change entry direction", value: "up" });
                 } else if (editor.entryDirection === "up") {
                   dispatch({ type: "editor change entry direction", value: "right" });
+                }
+              }}
+            >
+              {
+              RotationIcons["clockwise"]}
+            </button>
+            </div>
+            </div>
+          </div>
+      )}
+      {editor.type === "merger" && (
+        <div>
+          <div className={"EditorProp"}>
+            Max: {editor.max}
+            <div>
+            <button onClick={() => dispatch({ type: "editor change max", value: editor.max + 1 })}> + </button>
+            <button onClick={() => dispatch({ type: "editor change max", value: editor.max - 1 })}> - </button>
+            </div>
+          </div>
+          <div className={"EditorProp"}>
+            Rate: {editor.rate}
+            <div>
+            <button
+              onClick={() => {
+                if (editor.rate >= 1) {
+                  dispatch({ type: "editor change rate", value: 1 });
+                  return;
+                } else {
+                  dispatch({ type: "editor change rate", value: editor.rate + 0.1 });
+                }
+              }}
+            >
+              {" "}
+              +{" "}
+            </button>
+            <button
+              onClick={() => {
+                if (editor.rate <= 0) {
+                  dispatch({ type: "editor change rate", value: 0 });
+                  return;
+                } else {
+                  dispatch({ type: "editor change rate", value: editor.rate - 0.1 });
+                }
+              }}
+            >
+              {" "}
+              -{" "}
+            </button>
+            </div>
+          </div>
+          <div className={"EditorProp"}>
+            Leaving Direction: {editor.leavingDirection}
+            <div>
+            <button
+              onClick={() => {
+                if (editor.leavingDirection === "right") {
+                  dispatch({ type: "editor change leaving direction", value: "up" });
+                } else if (editor.leavingDirection === "up") {
+                  dispatch({ type: "editor change leaving direction", value: "left" });
+                } else if (editor.leavingDirection === "left") {
+                  dispatch({ type: "editor change leaving direction", value: "down" });
+                } else if (editor.leavingDirection === "down") {
+                  dispatch({ type: "editor change leaving direction", value: "right" });
+                }
+              }}
+            >
+              {
+              RotationIcons["counterclockwise"]}
+            </button>
+            <button
+              onClick={() => {
+                if (editor.leavingDirection === "right") {
+                  dispatch({ type: "editor change leaving direction", value: "down" });
+                } else if (editor.leavingDirection === "down") {
+                  dispatch({ type: "editor change leaving direction", value: "left" });
+                } else if (editor.leavingDirection === "left") {
+                  dispatch({ type: "editor change leaving direction", value: "up" });
+                } else if (editor.leavingDirection === "up") {
+                  dispatch({ type: "editor change leaving direction", value: "right" });
                 }
               }}
             >

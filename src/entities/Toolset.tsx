@@ -477,6 +477,77 @@ export default function Toolset({ entity }: { entity: EntityType }) {
           </button>
         </div>
       )}
+      {entity.type === "merger" && (
+        <div style={{ display: "flex", gap: "4px", marginTop: "8px" }}>
+          <p style={{ margin: 0, fontSize: "12px" }}>Change Leaving Direction</p>
+          <button
+            onClick={() => {
+              switch (entity.leavingDirection) {
+                case "up":
+                  return dispatch({
+                    type: "change merger leaving direction",
+                    id: entity.id,
+                    direction: "left",
+                  });
+                case "left":
+                  return dispatch({
+                    type: "change merger leaving direction",
+                    id: entity.id,
+                    direction: "down",
+                  });
+                case "down":
+                  return dispatch({
+                    type: "change merger leaving direction",
+                    id: entity.id,
+                    direction: "right",
+                  });
+                case "right":
+                  return dispatch({
+                    type: "change merger leaving direction",
+                    id: entity.id,
+                    direction: "up",
+                  });
+              }
+            }}
+            style={{ padding: "4px 6px", fontSize: "12px" }}
+          >
+            {RotationIcons["counterclockwise"]}
+          </button>
+          <button
+            onClick={() => {
+              switch (entity.leavingDirection) {
+                case "up":
+                  return dispatch({
+                    type: "change merger leaving direction",
+                    id: entity.id,
+                    direction: "right",
+                  });
+                case "right":
+                  return dispatch({
+                    type: "change merger leaving direction",
+                    id: entity.id,
+                    direction: "down",
+                  });
+                case "down":
+                  return dispatch({
+                    type: "change merger leaving direction",
+                    id: entity.id,
+                    direction: "left",
+                  });
+                case "left":
+                  return dispatch({
+                    type: "change merger leaving direction",
+                    id: entity.id,
+                    direction: "up",
+                  });
+              }
+            }}
+            style={{ padding: "4px 6px", fontSize: "12px" }}
+          >
+            {RotationIcons["clockwise"]}
+          </button>
+        </div>
+      )}
     </div>
   );
 }

@@ -19,7 +19,7 @@ export default function SplitterTile({ entity }: { entity: EntitySplitterType })
 
   function calculateLeavingDirection(entity: EntitySplitterType): string {
     switch (entity.nextTargetIndex){
-        case 1:{
+        case 1:{ //ta 1 2 e 0 pq next e o ultimo somado com 1
             if (entity.entryDirection === "up"){
                 return "right";
             }

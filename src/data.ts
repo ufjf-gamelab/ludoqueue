@@ -95,5 +95,6 @@ export const initialState: GameType = {
   consumers: ["consumer1"],
   transports: ["transport1", "transport2"],
   splitters: [],
+  mergers: [],
   editor: null,
 };

@@ -11,6 +11,7 @@ export type GameType = {
   consumers: string[];
   transports: string[];
   splitters: string[];
+  mergers: string[];
 };
 
 export type LinkType = {
@@ -30,4 +31,4 @@ export type GraphType = {
   links: LinkType[];
 };
 
-export type GameStatus = "waiting" | "stock" | "source" | "consumer" | "transport" | "splitter" | "select entity" | "delete";
+export type GameStatus = "waiting" | "stock" | "source" | "consumer" | "transport" | "splitter" | "merger" |"select entity" | "delete";

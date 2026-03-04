@@ -53,6 +53,13 @@ export default function ToolBar() {
           {EntityIcons["splitter"]}
         </button>
         <button
+          className={game.status === "merger" ? "selected" : ""}
+          onClick={() => dispatch({ type: "set status", newStatus: "merger" })}
+          title="Create a new Merger"
+        >
+          {EntityIcons["merger"]}
+        </button>
+        <button
           onClick={() => dispatch({ type: "set status", newStatus: "delete" })}
           title="Delete mode - click on an entity to delete it"
         >
