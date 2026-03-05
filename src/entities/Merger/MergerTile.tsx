@@ -22,7 +22,7 @@ export default function MergerTile({ entity }: { entity: EntityMergerType }) {
   const entryDirection = calculateEntryDirection(entity);
 
   function calculateEntryDirection(entity: EntityMergerType): string {
-    switch (entity.nextTargetIndex) {
+    switch (entity.nextSourceIndex) {
       case 1: { //ta 1 2 e 0 pq next e o ultimo somado com 1
         if (entity.leavingDirection === "up") {
           return "right";
@@ -104,7 +104,7 @@ export default function MergerTile({ entity }: { entity: EntityMergerType }) {
           <div className="position-left">{DirectionIcons.left}</div>
         </div>
       )}
-      {/*movingGoods.map((movingGood) => {
+      {movingGoods.map((movingGood) => {
         if (movingGood.target == entity) isStarting = true;
         if (movingGood.source == entity) isEnding = true;
         return (
@@ -112,14 +112,14 @@ export default function MergerTile({ entity }: { entity: EntityMergerType }) {
             key={spanKey}
             className={[
               "transported-good",
-              `${isStarting ? "starting " + getInvertedDirection(entity.entryDirection) : ""}`,
-              `${isEnding ? "ending " + leavingDirection : ""}`,
+              `${isStarting ? "starting " + getInvertedDirection(entryDirection) : ""}`,
+              `${isEnding ? "ending " + entity.leavingDirection : ""}`,
             ].join(" ")}
             style={{ display: shouldHaveItem ? undefined : "none" }}
             aria-hidden="true"
           />
         );
-      })*/}
+      })}
     </div>
   );
 }
