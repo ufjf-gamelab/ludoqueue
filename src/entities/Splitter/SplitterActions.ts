@@ -169,6 +169,26 @@ function updateSplitterUpperEntry(
       const mergerEntity = sourceEntity;
       mergerEntity.target = splitter.id;
     }
+    if (
+      sourceEntity.type === "splitter" &&
+      sourceEntity.entryDirection !== "down"
+    ) {
+      const upperSplitterEntity = sourceEntity;
+      switch (upperSplitterEntity.entryDirection) {
+        case "up": {
+          upperSplitterEntity.target[1] = splitter.id;
+          break;
+        }
+        case "left": {
+          upperSplitterEntity.target[2] = splitter.id;
+          break;
+        }
+        case "right": {
+          upperSplitterEntity.target[0] = splitter.id;
+          break;
+        }
+      }
+    }
   }
   //achar targets
   let target0 =
@@ -185,6 +205,8 @@ function updateSplitterUpperEntry(
         target0Entity.entryDirection !== "left") ||
       (target0Entity.type === "splitter" &&
         target0Entity.entryDirection !== "left") ||
+      (target0Entity.type === "merger" &&
+        target0Entity.leavingDirection === "left") ||
       target0Entity.type === "source")
   ) {
     target0Entity = null;
@@ -205,6 +227,8 @@ function updateSplitterUpperEntry(
         target1Entity.entryDirection !== "up") ||
       (target1Entity.type === "splitter" &&
         target1Entity.entryDirection !== "up") ||
+      (target1Entity.type === "merger" &&
+        target1Entity.leavingDirection === "up") ||
       target1Entity.type === "source")
   ) {
     target1Entity = null;
@@ -225,6 +249,8 @@ function updateSplitterUpperEntry(
         target2Entity.entryDirection !== "right") ||
       (target2Entity.type === "splitter" &&
         target2Entity.entryDirection !== "right") ||
+      (target2Entity.type === "merger" &&
+        target2Entity.leavingDirection === "right") ||
       target2Entity.type === "source")
   ) {
     target2Entity = null;
@@ -255,8 +281,11 @@ function updateSplitterUpperEntry(
           break;
         }
       }
-      splitter.target[0] = target0;
     }
+    if (target0Entity.type === "splitter") {
+      target0Entity.source = splitter.id;
+    }
+    splitter.target[0] = target0;
   }
   if (target1Entity) {
     if (target1Entity.type === "transport") {
@@ -281,6 +310,9 @@ function updateSplitterUpperEntry(
           break;
         }
       }
+    }
+    if (target1Entity.type === "splitter") {
+      target1Entity.source = splitter.id;
     }
     splitter.target[1] = target1;
   }
@@ -307,6 +339,9 @@ function updateSplitterUpperEntry(
           break;
         }
       }
+    }
+    if (target2Entity.type === "splitter") {
+      target2Entity.source = splitter.id;
     }
     splitter.target[2] = target2;
   }
@@ -352,6 +387,26 @@ function updateSplitterDownEntry(
     ) {
       sourceEntity.target = splitter.id;
     }
+    if (
+      sourceEntity.type === "splitter" &&
+      sourceEntity.entryDirection !== "up"
+    ) {
+      const lowerSplitterEntity = sourceEntity;
+      switch (lowerSplitterEntity.entryDirection) {
+        case "down": {
+          lowerSplitterEntity.target[1] = splitter.id;
+          break;
+        }
+        case "left": {
+          lowerSplitterEntity.target[0] = splitter.id;
+          break;
+        }
+        case "right": {
+          lowerSplitterEntity.target[2] = splitter.id;
+          break;
+        }
+      }
+    }
   }
   //achar targets
   let target0 =
@@ -368,6 +423,8 @@ function updateSplitterDownEntry(
         target0Entity.entryDirection !== "right") ||
       (target0Entity.type === "splitter" &&
         target0Entity.entryDirection !== "right") ||
+      (target0Entity.type === "merger" &&
+        target0Entity.leavingDirection === "right") ||
       target0Entity.type === "source")
   ) {
     target0Entity = null;
@@ -388,6 +445,8 @@ function updateSplitterDownEntry(
         target1Entity.entryDirection !== "down") ||
       (target1Entity.type === "splitter" &&
         target1Entity.entryDirection !== "down") ||
+      (target1Entity.type === "merger" &&
+        target1Entity.leavingDirection === "down") ||
       target1Entity.type === "source")
   ) {
     target1Entity = null;
@@ -408,6 +467,8 @@ function updateSplitterDownEntry(
         target2Entity.entryDirection !== "left") ||
       (target2Entity.type === "splitter" &&
         target2Entity.entryDirection !== "left") ||
+      (target2Entity.type === "merger" &&
+        target2Entity.leavingDirection === "left") ||
       target2Entity.type === "source")
   ) {
     target2Entity = null;
@@ -438,6 +499,9 @@ function updateSplitterDownEntry(
         }
       }
     }
+    if (target0Entity.type === "splitter") {
+      target0Entity.source = splitter.id;
+    }
     splitter.target[0] = target0;
   }
   if (target1Entity) {
@@ -460,6 +524,9 @@ function updateSplitterDownEntry(
           target1Entity.source[2] = splitter.id;
           break;
       }
+    }
+    if (target1Entity.type === "splitter") {
+      target1Entity.source = splitter.id;
     }
     splitter.target[1] = target1;
   }
@@ -487,8 +554,11 @@ function updateSplitterDownEntry(
           break;
         }
       }
-      splitter.target[2] = target2;
     }
+    if (target2Entity.type === "splitter") {
+      target2Entity.source = splitter.id;
+    }
+    splitter.target[2] = target2;
   }
 }
 
@@ -533,6 +603,25 @@ function updateSplitterLeftEntry(
       const mergerEntity = sourceEntity;
       mergerEntity.target = splitter.id;
     }
+    if (
+      sourceEntity.type === "splitter" &&
+      sourceEntity.entryDirection !== "right"
+    ) {
+      switch (sourceEntity.entryDirection) {
+        case "up": {
+          sourceEntity.target[0] = splitter.id;
+          break;
+        }
+        case "down": {
+          sourceEntity.target[2] = splitter.id;
+          break;
+        }
+        case "left": {
+          sourceEntity.target[1] = splitter.id;
+          break;
+        }
+      }
+    }
   }
   //achar targets
   let target0 =
@@ -549,6 +638,8 @@ function updateSplitterLeftEntry(
         target0Entity.entryDirection !== "down") ||
       (target0Entity.type === "splitter" &&
         target0Entity.entryDirection !== "down") ||
+      (target0Entity.type === "merger" &&
+        target0Entity.leavingDirection === "down") ||
       target0Entity.type === "source")
   ) {
     target0Entity = null;
@@ -569,6 +660,8 @@ function updateSplitterLeftEntry(
         target1Entity.entryDirection !== "left") ||
       (target1Entity.type === "splitter" &&
         target1Entity.entryDirection !== "left") ||
+      (target1Entity.type === "merger" &&
+        target1Entity.leavingDirection === "left") ||
       target1Entity.type === "source")
   ) {
     target1Entity = null;
@@ -589,6 +682,8 @@ function updateSplitterLeftEntry(
         target2Entity.entryDirection !== "up") ||
       (target2Entity.type === "splitter" &&
         target2Entity.entryDirection !== "up") ||
+      (target2Entity.type === "merger" &&
+        target2Entity.leavingDirection === "up") ||
       target2Entity.type === "source")
   ) {
     target2Entity = null;
@@ -615,6 +710,9 @@ function updateSplitterLeftEntry(
           target0Entity.source[2] = splitter.id;
           break;
       }
+    }
+    if (target0Entity.type === "splitter") {
+      target0Entity.source = splitter.id;
     }
     splitter.target[0] = target0;
   }
@@ -643,6 +741,9 @@ function updateSplitterLeftEntry(
         }
       }
     }
+    if (target1Entity.type === "splitter") {
+      target1Entity.source = splitter.id;
+    }
     splitter.target[1] = target1;
   }
   if (target2Entity) {
@@ -668,6 +769,9 @@ function updateSplitterLeftEntry(
           break;
         }
       }
+    }
+    if (target2Entity.type === "splitter") {
+      target2Entity.source = splitter.id;
     }
     splitter.target[2] = target2;
   }
@@ -699,13 +803,41 @@ function updateSplitterRightEntry(
   if (sourceID) {
     splitter.source = sourceID;
   }
-  if (
-    sourceEntity &&
-    sourceEntity.type === "transport" &&
-    sourceEntity.leavingDirection === "down"
-  ) {
-    const transportEntity = sourceEntity;
-    transportEntity.target = splitter.id;
+  if (sourceEntity) {
+    if (
+      sourceEntity.type === "transport" &&
+      sourceEntity.leavingDirection === "down"
+    ) {
+      const transportEntity = sourceEntity;
+      transportEntity.target = splitter.id;
+    }
+    if (
+      sourceEntity.type === "merger" &&
+      sourceEntity.leavingDirection === "left"
+    ) {
+      const mergerEntity = sourceEntity;
+      mergerEntity.target = splitter.id;
+    }
+    if (
+      sourceEntity.type === "splitter" &&
+      sourceEntity.entryDirection !== "left"
+    ) {
+      const rightSplitterEntity = sourceEntity;
+      switch (rightSplitterEntity.entryDirection) {
+        case "up": {
+          rightSplitterEntity.target[2] = splitter.id;
+          break;
+        }
+        case "down": {
+          rightSplitterEntity.target[0] = splitter.id;
+          break;
+        }
+        case "right": {
+          rightSplitterEntity.target[1] = splitter.id;
+          break;
+        }
+      }
+    }
   }
   //achar targets
   let target0 =
@@ -722,12 +854,14 @@ function updateSplitterRightEntry(
         target0Entity.entryDirection !== "up") ||
       (target0Entity.type === "splitter" &&
         target0Entity.entryDirection !== "up") ||
+      (target0Entity.type === "merger" &&
+        target0Entity.leavingDirection === "up") ||
       target0Entity.type === "source")
   ) {
     target0Entity = null;
     target0 = null;
   }
-  
+
   let target1 =
     Array.from(state.entities.values()).find(
       (entity) => entity.x === splitter.x - 1 && entity.y === splitter.y, //esquerda
@@ -742,12 +876,14 @@ function updateSplitterRightEntry(
         target1Entity.entryDirection !== "right") ||
       (target1Entity.type === "splitter" &&
         target1Entity.entryDirection !== "right") ||
+      (target1Entity.type === "merger" &&
+        target1Entity.leavingDirection === "right") ||
       target1Entity.type === "source")
   ) {
     target1Entity = null;
     target1 = null;
   }
- 
+
   let target2 =
     Array.from(state.entities.values()).find(
       (entity) => entity.x === splitter.x && entity.y === splitter.y - 1, //cima
@@ -762,12 +898,14 @@ function updateSplitterRightEntry(
         target2Entity.entryDirection !== "down") ||
       (target2Entity.type === "splitter" &&
         target2Entity.entryDirection !== "down") ||
+      (target2Entity.type === "merger" &&
+        target2Entity.leavingDirection === "down") ||
       target2Entity.type === "source")
   ) {
     target2Entity = null;
     target2 = null;
   }
-  
+
   if (target0Entity) {
     if (target0Entity.type === "transport") {
       const transportEntity = target0Entity;
@@ -791,6 +929,9 @@ function updateSplitterRightEntry(
           break;
         }
       }
+    }
+    if (target0Entity.type === "splitter") {
+      target0Entity.source = splitter.id;
     }
     splitter.target[0] = target0;
   }
@@ -818,6 +959,9 @@ function updateSplitterRightEntry(
         }
       }
     }
+    if (target1Entity.type === "splitter") {
+      target1Entity.source = splitter.id;
+    }
     splitter.target[1] = target1;
   }
   if (target2Entity) {
@@ -840,6 +984,9 @@ function updateSplitterRightEntry(
           target2Entity.source[2] = splitter.id;
           break;
       }
+    }
+    if (target2Entity.type === "splitter") {
+      target2Entity.source = splitter.id;
     }
     splitter.target[2] = target2;
   }
