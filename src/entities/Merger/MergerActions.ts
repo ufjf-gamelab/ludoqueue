@@ -144,6 +144,25 @@ function updateMergerLeftEntry(state: GameType, merger: EntityMergerType) {
     targetEntity = null;
   }
   if (targetEntity) {
+    if (targetEntity.type === "transport" && targetEntity.entryDirection === "right") {
+      targetEntity.source = merger.id;
+    }
+    if (targetEntity.type === "splitter" && targetEntity.entryDirection === "right"){
+      targetEntity.source = merger.id;
+    }
+    if (targetEntity.type === "merger" && targetEntity.leavingDirection !== "right"){
+      switch (targetEntity.leavingDirection) {
+        case "up":
+          targetEntity.source[0] = merger.id;
+          break;
+        case "down":
+          targetEntity.source[2] = merger.id;
+          break;
+        case "left":
+          targetEntity.source[1] = merger.id;
+          break;
+      }
+    }
     merger.target = targetEntity.id;
   }
 
@@ -203,12 +222,72 @@ function updateMergerLeftEntry(state: GameType, merger: EntityMergerType) {
   }
 
   if (source0Entity) {
+    if (source0Entity.type === "transport"){
+      source0Entity.target = merger.id;
+    }
+    if (source0Entity.type === "splitter"){
+      const spliterEntity = source0Entity;
+      switch (spliterEntity.entryDirection) {
+        case "up":
+          spliterEntity.target[1] = merger.id;
+          break;
+        case "left":
+          spliterEntity.target[2] = merger.id;
+          break;
+        case "right":
+          spliterEntity.target[0] = merger.id;
+          break;
+      }
+    }
+    if (source0Entity.type === "merger"){
+    source0Entity.target = merger.id;
+  }
     merger.source[0] = source0Entity.id;
   }
   if (source1Entity) {
+    if (source1Entity.type === "transport"){
+      source1Entity.target = merger.id;
+    }
+    if (source1Entity.type === "splitter"){
+      const spliterEntity = source1Entity;
+      switch (spliterEntity.entryDirection) {
+        case "up":
+          spliterEntity.target[2] = merger.id;
+          break;
+        case "down":
+          spliterEntity.target[0] = merger.id;
+          break;
+        case "right":
+          spliterEntity.target[1] = merger.id;
+          break;
+      }
+    }
+    if (source1Entity.type === "merger"){
+    source1Entity.target = merger.id;
+  }
     merger.source[1] = source1Entity.id;
   }
   if (source2Entity) {
+    if (source2Entity.type === "transport"){
+      source2Entity.target = merger.id;
+    }
+    if (source2Entity.type === "splitter"){
+      const spliterEntity = source2Entity;
+      switch (spliterEntity.entryDirection) {
+        case "down":
+          spliterEntity.target[1] = merger.id;
+          break;
+        case "left":
+          spliterEntity.target[0] = merger.id;
+          break;
+        case "right":
+          spliterEntity.target[2] = merger.id;
+          break;
+      }
+    }
+    if (source2Entity.type === "merger"){
+    source2Entity.target = merger.id;
+  }
     merger.source[2] = source2Entity.id;
   }
 }
@@ -234,6 +313,25 @@ function updateMergerRightEntry(state: GameType, merger: EntityMergerType) {
     targetEntity = null;
   }
   if (targetEntity) {
+    if (targetEntity.type === "transport" && targetEntity.entryDirection === "left") {
+      targetEntity.source = merger.id;
+    }
+    if (targetEntity.type === "splitter" && targetEntity.entryDirection === "left"){
+      targetEntity.source = merger.id;
+    }
+    if (targetEntity.type === "merger" && targetEntity.leavingDirection !== "left"){
+      switch (targetEntity.leavingDirection) {
+        case "up":
+          targetEntity.source[2] = merger.id;
+          break;
+        case "down":
+          targetEntity.source[0] = merger.id;
+          break;
+        case "right":
+          targetEntity.source[1] = merger.id;
+          break;
+      }
+    }
     merger.target = targetEntity.id;
   }
 
@@ -295,12 +393,72 @@ function updateMergerRightEntry(state: GameType, merger: EntityMergerType) {
   }
   
   if (source0Entity) {
+    if (source0Entity.type === "transport"){
+      source0Entity.target = merger.id;
+    }
+    if (source0Entity.type === "splitter"){
+      const spliterEntity = source0Entity;
+      switch (spliterEntity.entryDirection) {
+        case "down":
+          spliterEntity.target[1] = merger.id;
+          break;
+        case "left":
+          spliterEntity.target[0] = merger.id;
+          break;
+        case "right":
+          spliterEntity.target[2] = merger.id;
+          break;
+      }
+    }
+    if (source0Entity.type === "merger"){
+    source0Entity.target = merger.id;
+  }
     merger.source[0] = source0Entity.id;
   }
   if (source1Entity) {
+    if(source1Entity.type === "transport"){
+      source1Entity.target = merger.id;
+    }
+    if (source1Entity.type === "splitter"){
+      const spliterEntity = source1Entity;
+      switch (spliterEntity.entryDirection) {
+        case "up":
+          spliterEntity.target[0] = merger.id;
+          break;
+        case "down":
+          spliterEntity.target[2] = merger.id;
+          break;
+        case "left":
+          spliterEntity.target[1] = merger.id;
+          break;
+      }
+    }
+    if (source1Entity.type === "merger"){
+    source1Entity.target = merger.id;
+  }
     merger.source[1] = source1Entity.id;
   }
   if (source2Entity) {
+    if (source2Entity.type === "transport"){
+      source2Entity.target = merger.id;
+    }
+    if (source2Entity.type === "splitter"){
+      const spliterEntity = source2Entity;
+      switch (spliterEntity.entryDirection) {
+        case "up":
+          spliterEntity.target[1] = merger.id;
+          break;
+        case "left":
+          spliterEntity.target[2] = merger.id;
+          break;
+        case "right":
+          spliterEntity.target[0] = merger.id;
+          break;
+      }
+    }
+    if (source2Entity.type === "merger"){
+    source2Entity.target = merger.id;
+  }
     merger.source[2] = source2Entity.id;
   }
 }
@@ -325,6 +483,25 @@ function updateMergerUpperEntry(state: GameType, merger: EntityMergerType) {
     targetEntity = null;
   }
   if (targetEntity) {
+    if (targetEntity.type === "transport" && targetEntity.entryDirection === "down") {
+      targetEntity.source = merger.id;
+    }
+    if (targetEntity.type === "splitter" && targetEntity.entryDirection === "down"){
+      targetEntity.source = merger.id;
+    }
+    if (targetEntity.type === "merger" && targetEntity.leavingDirection !== "down"){
+      switch (targetEntity.leavingDirection) {
+        case "up":
+          targetEntity.source[1] = merger.id;
+          break;
+        case "left":
+          targetEntity.source[2] = merger.id;
+          break;
+        case "right":
+          targetEntity.source[0] = merger.id;
+          break;
+      }
+    }
     merger.target = targetEntity.id;
   }
 
@@ -383,12 +560,72 @@ let source2Entity = Array.from(state.entities.values()).find(
   }
 
   if (source0Entity) {
+    if (source0Entity.type === "transport"){
+      source0Entity.target = merger.id;
+    }
+    if (source0Entity.type === "splitter"){
+      const spliterEntity = source0Entity;
+      switch (spliterEntity.entryDirection) {
+        case "up":
+          spliterEntity.target[2] = merger.id;
+          break;
+        case "down":
+          spliterEntity.target[0] = merger.id;
+          break;
+        case "right":
+          spliterEntity.target[1] = merger.id;
+          break;
+      }
+    }
+  if (source0Entity.type === "merger"){
+    source0Entity.target = merger.id;
+  }
     merger.source[0] = source0Entity.id;
   }
   if (source1Entity) {
+    if (source1Entity.type === "transport"){
+      source1Entity.target = merger.id;
+    }
+    if (source1Entity.type === "splitter"){
+      const spliterEntity = source1Entity;
+      switch (spliterEntity.entryDirection) {
+        case "down":
+          spliterEntity.target[1] = merger.id;
+          break;
+        case "left":
+          spliterEntity.target[0] = merger.id;
+          break;
+        case "right":
+          spliterEntity.target[2] = merger.id;
+          break;
+      }
+    }
+    if (source1Entity.type === "merger"){
+    source1Entity.target = merger.id;
+  }
     merger.source[1] = source1Entity.id;
   }
   if (source2Entity) {
+    if(source2Entity.type === "transport"){
+      source2Entity.target = merger.id;
+    }
+    if (source2Entity.type === "splitter"){
+      const spliterEntity = source2Entity;
+      switch (spliterEntity.entryDirection) {
+        case "up":
+          spliterEntity.target[0] = merger.id;
+          break;
+        case "down":
+          spliterEntity.target[2] = merger.id;
+          break;
+        case "left":
+          spliterEntity.target[1] = merger.id;
+          break;
+      }
+    }
+    if (source2Entity.type === "merger"){
+    source2Entity.target = merger.id;
+  }
     merger.source[2] = source2Entity.id;
   }
 }
@@ -413,6 +650,25 @@ function updateMergerDownEntry(state: GameType, merger: EntityMergerType) {
     targetEntity = null;
   }
   if (targetEntity) {
+    if (targetEntity.type === "transport" && targetEntity.entryDirection === "up") {
+      targetEntity.source = merger.id;
+    }
+    if (targetEntity.type === "splitter" && targetEntity.entryDirection === "up"){
+      targetEntity.source = merger.id;
+    }
+    if (targetEntity.type === "merger" && targetEntity.leavingDirection !== "up"){
+      switch (targetEntity.leavingDirection) {
+        case "down":
+          targetEntity.source[1] = merger.id;
+          break;
+        case "left":
+          targetEntity.source[0] = merger.id;
+          break;
+        case "right":
+          targetEntity.source[2] = merger.id;
+          break;
+      }
+    }
     merger.target = targetEntity.id;
   }
 
@@ -471,12 +727,72 @@ let source0Entity = Array.from(state.entities.values()).find(
   }
 
   if (source0Entity) {
+    if(source0Entity.type === "transport"){
+      source0Entity.target = merger.id;
+    }
+    if (source0Entity.type === "splitter"){
+      const spliterEntity = source0Entity;
+      switch (spliterEntity.entryDirection) {
+        case "up":
+          spliterEntity.target[0] = merger.id;
+          break;
+        case "down":
+          spliterEntity.target[2] = merger.id;
+          break;
+        case "left":
+          spliterEntity.target[1] = merger.id;
+          break;
+      }
+    }
+    if (source0Entity.type === "merger"){
+    source0Entity.target = merger.id;
+  }
     merger.source[0] = source0Entity.id;
   }
   if (source1Entity) {
+    if (source1Entity.type === "transport"){
+      source1Entity.target = merger.id;
+    }
+    if (source1Entity.type === "splitter"){
+      const spliterEntity = source1Entity;
+      switch (spliterEntity.entryDirection) {
+        case "up":
+          spliterEntity.target[1] = merger.id;
+          break;
+        case "left":
+          spliterEntity.target[2] = merger.id;
+          break;
+        case "right":
+          spliterEntity.target[0] = merger.id;
+          break;
+      }
+    }
+    if (source1Entity.type === "merger"){
+    source1Entity.target = merger.id;
+  }
     merger.source[1] = source1Entity.id;
   }
   if (source2Entity) {
+    if (source2Entity.type === "transport"){
+      source2Entity.target = merger.id;
+    }
+    if (source2Entity.type === "splitter"){
+      const spliterEntity = source2Entity;
+      switch (spliterEntity.entryDirection) {
+        case "up":
+          spliterEntity.target[2] = merger.id;
+          break;
+        case "down":
+          spliterEntity.target[0] = merger.id;
+          break;
+        case "right":
+          spliterEntity.target[1] = merger.id;
+          break;
+      }
+    }
+    if (source2Entity.type === "merger"){
+    source2Entity.target = merger.id;
+  }
     merger.source[2] = source2Entity.id;
   }
 }
