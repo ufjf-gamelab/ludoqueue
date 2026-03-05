@@ -74,7 +74,10 @@ export function createTransport(
     entryDirection,
     leavingDirection,
     movingGoods: [],
-  };
+    processing: false,
+    processingPercentage: 0,
+    currentGood: null,
+};
   newState.entities.set(newTransportID, newTransportEntity);
   newState.transports.push(newTransportID);
   updateTransportConnections(newState, newTransportEntity);

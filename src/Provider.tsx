@@ -16,6 +16,7 @@ import type {
   DirectionType,
   EntitySplitterType,
   EntityMergerType,
+  MovingGoodType,
 } from "./entities/EntitiesTypes";
 import { initialState } from "./data";
 import {
@@ -358,6 +359,14 @@ export function gameSourceTick(node: EntitySourceType) {
 
   if (node.val < node.max) {
     node.val += node.rate;
+    const newGood: MovingGoodType = {
+      source: node,
+      target: node,
+      val: 1,
+      size: 2,
+    };
+    node.goods.push(newGood);
+
   }
   node.cooldown += 1 / node.rate;
 }
@@ -389,7 +398,7 @@ export function calculatePendingMergerMovingGoods(
     if ((target.type == "stock" && target.closed) || target.type === "merger") {
       return merger.movingGoods;
     }
-    merger.movingGoods.push({ source: merger, target, val: 1 });
+    //merger.movingGoods.push({ source: merger, target, val: 1 });
   }
 
   for (let step = 0; step < merger.source.length; step++) {
@@ -401,7 +410,7 @@ export function calculatePendingMergerMovingGoods(
       continue;
     }
     if (merger.val < merger.max) {
-      merger.movingGoods.push({ source, target: merger, val: 1 });
+      //merger.movingGoods.push({ source, target: merger, val: 1 });
       merger.nextSourceIndex = (index + 1) % merger.source.length;
       return merger.movingGoods;
     }
@@ -425,7 +434,7 @@ export function calculatePendingSplitterMovingGoods(
     if (source.type == "transport") {
       return splitter.movingGoods;
     }
-    splitter.movingGoods.push({ source, target: splitter, val: 1 });
+    //splitter.movingGoods.push({ source, target: splitter, val: 1 });
     return splitter.movingGoods;
   } else {
     for (let step = 0; step < splitter.target.length; step++) {
@@ -443,7 +452,7 @@ export function calculatePendingSplitterMovingGoods(
       if (splitter.val < 1) {
         continue;
       }
-      splitter.movingGoods.push({ source: splitter, target, val: 1 });
+      //splitter.movingGoods.push({ source: splitter, target, val: 1 });
       splitter.nextTargetIndex = (index + 1) % splitter.target.length;
       return splitter.movingGoods;
     }
@@ -456,26 +465,78 @@ export function calculatePendingTransportMovingGoods(
   all: Map<string, EntityType>,
 ) {
   transport.movingGoods = [];
-  transport.cooldown -= 1;
-  if (transport.cooldown > 0) {
-    return transport.movingGoods;
-  }
+
+  transport.cooldown--;
+  if (transport.cooldown > 0) return transport.movingGoods;
   transport.cooldown += 1 / transport.rate;
 
   const source = all.get(transport.source!);
   const target = all.get(transport.target!);
-  if (target && transport.val === 1 && target.val < target.max) {
-    if ((target.type == "stock" && target.closed) || target.type === "merger") {
+  //joga pra fora caso processou
+  if (
+    transport.currentGood &&
+    transport.progress >= 1 &&
+    target &&
+    target.val < target.max
+  ) {
+    if (
+      (target.type === "stock" && target.closed) ||
+      target.type === "merger"
+    ) {
       return transport.movingGoods;
     }
-    transport.movingGoods.push({ source: transport, target, val: 1 });
+
+    transport.movingGoods.push({
+      source: transport,
+      target,
+      val: 1,
+      size: transport.currentGood.size,
+    });
+
+    transport.currentGood = null;
+    transport.progress = 0;
+
+    return transport.movingGoods;
   }
-  if (source && transport.val === 0 && source.val > 0) {
-    if (source.type == "splitter") {
-      return transport.movingGoods;
+
+  //processa
+  if (transport.currentGood && transport.progress < 1) {
+    transport.progress += transport.rate / transport.currentGood.size;
+    return transport.movingGoods;
+  }
+
+
+  //puxa
+  if (!transport.currentGood && source && source.val > 0) {
+    if (source.type === "splitter") return transport.movingGoods;
+
+    let size = 1;
+
+    if (source.type === "source" && source.goods.length > 0) {
+      const good = source.goods.shift();
+      if (!good) return transport.movingGoods;
+      size = good.size;
     }
-    transport.movingGoods.push({ source, target: transport, val: 1 });
+
+    transport.currentGood = {
+      source,
+      target: transport,
+      val: 1,
+      size,
+    };
+
+    transport.progress = 0;
+
+    transport.movingGoods.push({
+      source,
+      target: transport,
+      val: 1,
+      size,
+    });
+
+    return transport.movingGoods;
   }
+
   return transport.movingGoods;
 }
 

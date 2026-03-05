@@ -18,6 +18,7 @@ export type EntitySourceType = {
   leavingDirection: DirectionType;
   x: number;
   y: number;
+  goods: MovingGoodType[];
 };
 
 export type EntityStockType = {
@@ -41,7 +42,7 @@ export type EntityConsumerType = {
   max: number;
   rate: number;
   cooldown: number;
-
+  goods: MovingGoodType[];
   entryDirection: DirectionType;
   x: number;
   y: number;
@@ -81,6 +82,8 @@ export type EntityTransportType = {
   entryDirection: DirectionType;
   leavingDirection: DirectionType;
   movingGoods: MovingGoodType[];
+  currentGood: MovingGoodType | null;
+  progress: number;
 };
 
 export type EntityMergerType = {
@@ -105,6 +108,7 @@ export type MovingGoodType = {
   source: EntityType;
   target: EntityType;
   val: number;
+  size: number;
 };
 
 export type DirectionType = "up" | "down" | "left" | "right";

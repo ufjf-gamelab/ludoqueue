@@ -63,6 +63,7 @@ export function createConsumer(
     x,
     y,
     entryDirection,
+    goods: [],
   };
   newState.entities.set(newConsumerID, newConsumerEntity);
   newState.consumers.push(newConsumerID);

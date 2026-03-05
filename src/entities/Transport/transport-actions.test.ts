@@ -21,6 +21,7 @@ describe("Transport should", () => {
             x: 0,
             y: 0,
             leavingDirection: "down",
+            goods: [],
           },
         ],
         [

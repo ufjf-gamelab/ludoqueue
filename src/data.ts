@@ -18,6 +18,7 @@ export const initialState: GameType = {
         x: 0,
         y: 0,
         leavingDirection: "right",
+        goods: [],
       },
     ],
     [
@@ -33,6 +34,7 @@ export const initialState: GameType = {
         x: 2,
         y: 0,
         entryDirection: "left",
+        goods: [],
       },
     ],
     [
@@ -52,6 +54,8 @@ export const initialState: GameType = {
         entryDirection: "left",
         leavingDirection: "right",
         movingGoods: [],
+        currentGood: null,
+        progress: 0,
       },
     ],
     [
@@ -71,6 +75,8 @@ export const initialState: GameType = {
         entryDirection: "up",
         leavingDirection: "down",
         movingGoods: [],
+        currentGood: null,
+        progress: 0,
       },
     ],
     [
