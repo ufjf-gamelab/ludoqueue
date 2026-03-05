@@ -68,7 +68,7 @@ import {
   deleteSplitter,
   changeSplitterEntryDirection,
 } from "./entities/Splitter/SplitterActions";
-import { createMerger, deleteMerger, type GameActionChangeMergerLeavingDirection, type GameActionCreateMerger, type GameActionDeleteMerger } from "./entities/Merger/MergerActions";
+import { changeMergerLeavingDirection, createMerger, deleteMerger, type GameActionChangeMergerLeavingDirection, type GameActionCreateMerger, type GameActionDeleteMerger } from "./entities/Merger/MergerActions";
 type GameProviderProps = {
   children: ReactNode;
 };
@@ -167,6 +167,8 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
       );
     case "delete merger":
       return deleteMerger(state, action.id);
+    case "change merger leaving direction":
+      return changeMergerLeavingDirection(state, action.id, action.direction);
     case "set node value":
       return setNodeVal(state, action.id, action.value);
     case "game tick":

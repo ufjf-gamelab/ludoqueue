@@ -95,8 +95,8 @@ export type EntityMergerType = {
   leavingDirection: DirectionType;
   x: number;
   y: number;
-  source: string | null;
-  target: (string|null)[];
+  target: string | null;
+  source: (string|null)[];
   nextTargetIndex: number;
   movingGoods: MovingGoodType[];
 }

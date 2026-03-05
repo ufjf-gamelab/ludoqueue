@@ -74,34 +74,34 @@ export default function MergerTile({ entity }: { entity: EntityMergerType }) {
       />
       {entity.leavingDirection === "up" && (
         <div>
-          <div className="position-up">{DirectionIcons.down}</div>
-          <div className="position-down">{DirectionIcons.down}</div>
-          <div className="position-right">{DirectionIcons.right}</div>
-          <div className="position-left">{DirectionIcons.left}</div>
+          <div className="position-up">{DirectionIcons.up}</div>
+          <div className="position-down">{DirectionIcons.up}</div>
+          <div className="position-right">{DirectionIcons.left}</div>
+          <div className="position-left">{DirectionIcons.right}</div>
         </div>
       )}
       {entity.leavingDirection === "down" && (
         <div>
-          <div className="position-up">{DirectionIcons.up}</div>
-          <div className="position-down">{DirectionIcons.up}</div>
-          <div className="position-right">{DirectionIcons.right}</div>
-          <div className="position-left">{DirectionIcons.left}</div>
+          <div className="position-up">{DirectionIcons.down}</div>
+          <div className="position-down">{DirectionIcons.down}</div>
+          <div className="position-right">{DirectionIcons.left}</div>
+          <div className="position-left">{DirectionIcons.right}</div>
         </div>
       )}
       {entity.leavingDirection === "right" && (
         <div>
-          <div className="position-up">{DirectionIcons.up}</div>
-          <div className="position-down">{DirectionIcons.down}</div>
-          <div className="position-right">{DirectionIcons.left}</div>
-          <div className="position-left">{DirectionIcons.left}</div>
+          <div className="position-up">{DirectionIcons.down}</div>
+          <div className="position-down">{DirectionIcons.up}</div>
+          <div className="position-right">{DirectionIcons.right}</div>
+          <div className="position-left">{DirectionIcons.right}</div>
         </div>
       )}
       {entity.leavingDirection === "left" && (
         <div>
-          <div className="position-up">{DirectionIcons.up}</div>
-          <div className="position-down">{DirectionIcons.down}</div>
-          <div className="position-right">{DirectionIcons.right}</div>
-          <div className="position-left">{DirectionIcons.right}</div>
+          <div className="position-up">{DirectionIcons.down}</div>
+          <div className="position-down">{DirectionIcons.up}</div>
+          <div className="position-right">{DirectionIcons.left}</div>
+          <div className="position-left">{DirectionIcons.left}</div>
         </div>
       )}
       {/*movingGoods.map((movingGood) => {
