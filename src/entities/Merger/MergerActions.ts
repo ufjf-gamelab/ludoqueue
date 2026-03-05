@@ -62,7 +62,7 @@ export function createMerger(
     y,
     leavingDirection,
     movingGoods: [],
-    nextTargetIndex: 0,
+    nextSourceIndex: 0,
   };
   newState.entities.set(newMergerID, newMergerEntity);
   newState.mergers.push(newMergerID);
