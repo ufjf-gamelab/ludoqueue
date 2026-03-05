@@ -195,7 +195,8 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
         (state.editor.type !== "consumer" &&
           state.editor.type !== "source" &&
           state.editor.type !== "transporter" &&
-          state.editor.type !== "splitter")
+          state.editor.type !== "splitter"
+          && state.editor.type !== "merger")
       )
         return state;
 
@@ -234,7 +235,7 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
     case "editor change leaving direction": {
       if (
         !state.editor ||
-        (state.editor.type !== "source" && state.editor.type !== "transporter")
+        (state.editor.type !== "source" && state.editor.type !== "transporter" && state.editor.type !== "merger")
       )
         return state;
       return {
