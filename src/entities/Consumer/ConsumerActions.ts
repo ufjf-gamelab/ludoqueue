@@ -151,7 +151,9 @@ function updateConsumerConnections(
               break;
           }
         }
-      }
+        if (upperEntity.type === "merger" && upperEntity.leavingDirection === "down"){
+          upperEntity.target = consumer.id;
+      }}
       break;
     }
     case "down": {
@@ -181,6 +183,8 @@ function updateConsumerConnections(
               break;
           }
       }
+        if (lowerEntity.type === "merger" && lowerEntity.leavingDirection === "up"){
+          lowerEntity.target = consumer.id;}
     }
   }
       break;
@@ -211,6 +215,9 @@ function updateConsumerConnections(
               break;
           }
         }
+        if(leftEntity.type === "merger" && leftEntity.leavingDirection === "right"){
+          leftEntity.target = consumer.id;
+        }
       }
       break;
     }
@@ -240,6 +247,9 @@ function updateConsumerConnections(
               rightEntity.target[2] = consumer.id;
               break;
           }
+        }
+        if(rightEntity.type === "merger" && rightEntity.leavingDirection === "left"){
+          rightEntity.target = consumer.id;
         }
       }
       break;

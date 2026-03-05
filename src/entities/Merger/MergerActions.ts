@@ -329,19 +329,19 @@ function updateMergerUpperEntry(state: GameType, merger: EntityMergerType) {
   }
 
   let source0Entity = Array.from(state.entities.values()).find(
-    (entity) => entity.x === merger.x - 1 && entity.y === merger.y,
-  ) || null; //esquerda
+    (entity) => entity.x === merger.x + 1 && entity.y === merger.y,
+  ) || null; //direita
   if (
     source0Entity &&
     (source0Entity.type === "consumer" ||
-      (source0Entity.type === "stock" && source0Entity.direction !== "right") ||
+      (source0Entity.type === "stock" && source0Entity.direction !== "left") ||
       (source0Entity.type === "transport" &&
-        source0Entity.leavingDirection !== "right") ||
+        source0Entity.leavingDirection !== "left") ||
       (source0Entity.type === "splitter" &&
-        source0Entity.entryDirection === "right") ||
+        source0Entity.entryDirection === "left") ||
       (source0Entity.type === "merger" &&
-        source0Entity.leavingDirection !== "right")
-      || (source0Entity.type === "source" && source0Entity.leavingDirection !== "right"))
+        source0Entity.leavingDirection !== "left") ||
+      (source0Entity.type === "source" && source0Entity.leavingDirection !== "left"))
   ) {
     source0Entity = null;
   }
@@ -364,20 +364,20 @@ function updateMergerUpperEntry(state: GameType, merger: EntityMergerType) {
     source1Entity = null;
   }
 
-  let source2Entity = Array.from(state.entities.values()).find(
-    (entity) => entity.x === merger.x + 1 && entity.y === merger.y,
-  ) || null; //direita
+let source2Entity = Array.from(state.entities.values()).find(
+    (entity) => entity.x === merger.x - 1 && entity.y === merger.y,
+  ) || null; //esquerda
   if (
     source2Entity &&
     (source2Entity.type === "consumer" ||
-      (source2Entity.type === "stock" && source2Entity.direction !== "left") ||
+      (source2Entity.type === "stock" && source2Entity.direction !== "right") ||
       (source2Entity.type === "transport" &&
-        source2Entity.leavingDirection !== "left") ||
+        source2Entity.leavingDirection !== "right") ||
       (source2Entity.type === "splitter" &&
-        source2Entity.entryDirection === "left") ||
+        source2Entity.entryDirection === "right") ||
       (source2Entity.type === "merger" &&
-        source2Entity.leavingDirection !== "left") ||
-      (source2Entity.type === "source" && source2Entity.leavingDirection !== "left"))
+        source2Entity.leavingDirection !== "right")
+      || (source2Entity.type === "source" && source2Entity.leavingDirection !== "right"))
   ) {
     source2Entity = null;
   }
@@ -417,19 +417,19 @@ function updateMergerDownEntry(state: GameType, merger: EntityMergerType) {
   }
 
 let source0Entity = Array.from(state.entities.values()).find(
-    (entity) => entity.x === merger.x + 1 && entity.y === merger.y,
-  ) || null; //direita
+    (entity) => entity.x === merger.x - 1 && entity.y === merger.y,
+  ) || null; //esquerda
   if (
     source0Entity &&
     (source0Entity.type === "consumer" ||
-      (source0Entity.type === "stock" && source0Entity.direction !== "left") ||
+      (source0Entity.type === "stock" && source0Entity.direction !== "right") ||
       (source0Entity.type === "transport" &&
-        source0Entity.leavingDirection !== "left") ||
+        source0Entity.leavingDirection !== "right") ||
       (source0Entity.type === "splitter" &&
-        source0Entity.entryDirection === "left") ||
+        source0Entity.entryDirection === "right") ||
       (source0Entity.type === "merger" &&
-        source0Entity.leavingDirection !== "left") ||
-      (source0Entity.type === "source" && source0Entity.leavingDirection !== "left"))
+        source0Entity.leavingDirection !== "right")
+      || (source0Entity.type === "source" && source0Entity.leavingDirection !== "right"))
   ) {
     source0Entity = null;
   }
@@ -453,19 +453,19 @@ let source0Entity = Array.from(state.entities.values()).find(
   }
 
   let source2Entity = Array.from(state.entities.values()).find(
-    (entity) => entity.x === merger.x - 1 && entity.y === merger.y,
-  ) || null; //esquerda
+    (entity) => entity.x === merger.x + 1 && entity.y === merger.y,
+  ) || null; //direita
   if (
     source2Entity &&
     (source2Entity.type === "consumer" ||
-      (source2Entity.type === "stock" && source2Entity.direction !== "right") ||
+      (source2Entity.type === "stock" && source2Entity.direction !== "left") ||
       (source2Entity.type === "transport" &&
-        source2Entity.leavingDirection !== "right") ||
+        source2Entity.leavingDirection !== "left") ||
       (source2Entity.type === "splitter" &&
-        source2Entity.entryDirection === "right") ||
+        source2Entity.entryDirection === "left") ||
       (source2Entity.type === "merger" &&
-        source2Entity.leavingDirection !== "right")
-      || (source2Entity.type === "source" && source2Entity.leavingDirection !== "right"))
+        source2Entity.leavingDirection !== "left") ||
+      (source2Entity.type === "source" && source2Entity.leavingDirection !== "left"))
   ) {
     source2Entity = null;
   }

@@ -101,6 +101,22 @@ function updateSourceConnections(state: GameType, source: EntitySourceType) {
         if (upperEntity.type === "splitter" && upperEntity.entryDirection === "down"){
           upperEntity.source = source.id;
         }
+        if (upperEntity.type === "merger" && upperEntity.leavingDirection !== "down"){
+          switch (upperEntity.leavingDirection){
+            case "up":{
+              upperEntity.source[1] = source.id;
+              break;
+            }
+            case "left":{
+              upperEntity.source[2] = source.id;
+              break;
+            }
+            case "right":{
+              upperEntity.source[0] = source.id;
+              break;
+          }
+        }
+        }
       };
       break;
     }
@@ -115,6 +131,21 @@ function updateSourceConnections(state: GameType, source: EntitySourceType) {
         if (lowerEntity.type === "splitter" && lowerEntity.entryDirection === "up"){
           lowerEntity.source = source.id;
         }
+        if (lowerEntity.type === "merger" && lowerEntity.leavingDirection !== "up"){
+          switch (lowerEntity.leavingDirection){
+            case "down":{
+              lowerEntity.source[1] = source.id;
+              break;
+            }
+            case "left":{
+              lowerEntity.source[0] = source.id;
+              break;
+            }
+            case "right":{
+              lowerEntity.source[2] = source.id;
+              break;
+          }
+        }}
     };
       break;
     }
@@ -129,6 +160,21 @@ function updateSourceConnections(state: GameType, source: EntitySourceType) {
         if (leftEntity.type === "splitter" && leftEntity.entryDirection === "right"){
           leftEntity.source = source.id;
         }
+        if (leftEntity.type === "merger" && leftEntity.leavingDirection !== "right"){
+          switch (leftEntity.leavingDirection){
+            case "up":{
+              leftEntity.source[0] = source.id;
+              break;
+            }
+            case "down":{
+              leftEntity.source[2] = source.id;
+              break;
+            }
+            case "left":{
+              leftEntity.source[1] = source.id;
+              break;
+          }
+        }}
       };
       break;
     }
@@ -143,6 +189,21 @@ function updateSourceConnections(state: GameType, source: EntitySourceType) {
         if (rightEntity.type === "splitter" && rightEntity.entryDirection === "left"){
           rightEntity.source = source.id;
         }
+        if (rightEntity.type === "merger" && rightEntity.leavingDirection !== "left"){
+          switch (rightEntity.leavingDirection){
+            case "up":{
+              rightEntity.source[2] = source.id;
+              break;
+            }
+            case "down":{
+              rightEntity.source[0] = source.id;
+              break;
+            }
+            case "right":{
+              rightEntity.source[1] = source.id;
+              break;
+          }
+        }}  
       }
       break;
     }
