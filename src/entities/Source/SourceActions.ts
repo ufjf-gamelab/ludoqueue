@@ -6,6 +6,7 @@ export type GameActionCreateSource = {
   max: number;
   x: number;
   y: number;
+  goodType: "red" | "blue" | "green";
   leavingDirection: DirectionType;
 };
 
@@ -20,7 +21,14 @@ export type GameActionChangeSourceLeavingDirection = {
   direction: DirectionType;
 };
 
-export function createSource(state: GameType, max: number, x: number, y:number, leavingDirection: DirectionType) {
+export type GameActionChangeSourceGoodType
+ = {
+  type: "change source good type";
+  id: string;
+  goodType: "red" | "blue" | "green";
+}
+
+export function createSource(state: GameType, max: number, x: number, y:number, leavingDirection: DirectionType, goodType: "red" | "blue" | "green") {
   if (
     Array.from(state.entities.values()).find(
       (entity) => entity.x === x && entity.y === y
@@ -50,6 +58,8 @@ export function createSource(state: GameType, max: number, x: number, y:number, 
     x,
     y,
     leavingDirection,
+    goodType,
+    goods: [],
   };
   newState.entities.set(newSourceID, newSourceEntity);
   newState.sources.push(newSourceID);
@@ -77,6 +87,17 @@ export function changeSourceLeavingDirection(state: GameType, sourceID: string, 
   const newSourceEntity = newState.entities.get(sourceID) as EntitySourceType;
   newSourceEntity.leavingDirection = direction;
   updateSourceConnections(newState, newSourceEntity);
+  return newState;
+}
+
+export function changeSourceGoodType(state: GameType, sourceID: string, goodType: "red" | "blue" | "green") {
+  const sourceEntity = state.entities.get(sourceID) as EntitySourceType | undefined;
+  if (!sourceEntity || goodType === sourceEntity.goodType) {
+    return state;
+  }
+  const newState = structuredClone(state);
+  const newSourceEntity = newState.entities.get(sourceID) as EntitySourceType;
+  newSourceEntity.goodType = goodType;
   return newState;
 }
 

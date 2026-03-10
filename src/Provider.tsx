@@ -20,9 +20,11 @@ import type {
 } from "./entities/EntitiesTypes";
 import { initialState } from "./data";
 import {
+  changeSourceGoodType,
   changeSourceLeavingDirection,
   createSource,
   deleteSource,
+  type GameActionChangeSourceGoodType,
   type GameActionChangeSourceLeavingDirection,
   type GameActionCreateSource,
   type GameActionDeleteSource,
@@ -102,11 +104,14 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
         action.x,
         action.y,
         action.leavingDirection,
+        action.goodType,
       );
     case "delete source":
       return deleteSource(state, action.id);
     case "change source leaving direction":
       return changeSourceLeavingDirection(state, action.id, action.direction);
+    case "change source good type":
+      return changeSourceGoodType(state, action.id, action.goodType);
     case "create stock":
       return createStock(
         state,
@@ -626,6 +631,7 @@ export type GameAction =
   | GameActionChangeSourceLeavingDirection
   | GameActionCreateStock
   | GameActionDeleteStock
+  | GameActionChangeSourceGoodType
   | GameActionChangeStockDirection
   | GameActionCreateConsumer
   | GameActionDeleteConsumer

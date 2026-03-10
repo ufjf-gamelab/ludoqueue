@@ -548,13 +548,55 @@ export default function Toolset({ entity }: { entity: EntityType }) {
           </button>
         </div>
       )}
+      {entity.type === "source" && (<div style={{ display: "flex", gap: "4px", marginTop: "8px" }}>
+          <p style={{ margin: 0, fontSize: "12px" }}>Change Good Type</p>
+          <button
+            onClick={() => {dispatch({
+              type: "change source good type",
+              id: entity.id,
+              goodType: "red",
+            })}}
+            style={{ padding: "4px 6px", fontSize: "12px" }}
+          >
+            <span
+                      className={"good red"}
+                    aria-hidden="true"
+                  />
+          </button>
+          <button
+            onClick={() => {dispatch({
+              type: "change source good type",
+              id: entity.id,
+              goodType: "blue",
+            })}}
+            style={{ padding: "4px 6px", fontSize: "12px" }}
+          >
+            <span
+                      className={"good blue"}
+                    aria-hidden="true"
+                  />
+          </button>
+          <button
+            onClick={() => {dispatch({
+              type: "change source good type",
+              id: entity.id,
+              goodType: "green",
+            })}}
+            style={{ padding: "4px 6px", fontSize: "12px" }}
+          >
+            <span
+                      className={"good green"}
+                    aria-hidden="true"
+                  />
+          </button>
+        </div>)}
       {entity.type ==="source" && (
         <div style={{ display: "flex", alignItems: "center", gap: "4px", marginTop: "8px" }}>
           <p style={{ margin: 0, fontSize: "12px" }}>Queue:</p>
           {Array.from(entity.goods).map((good, index) => (
             <span
                       key={index}
-                      className={`good-${good.goodType}`}
+                      className={`good ${good.goodType}`}
                     aria-hidden="true"
                   />
                   
