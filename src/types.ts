@@ -12,6 +12,7 @@ export type GameType = {
   transports: string[];
   splitters: string[];
   mergers: string[];
+  time: number;
 };
 
 export type LinkType = {

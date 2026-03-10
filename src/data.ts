@@ -11,6 +11,7 @@ export const initialState: GameType = {
         id: "source1",
         name: "Source 1",
         type: "source",
+        goodType: "red",
         val: 0,
         max: 5,
         rate: 1,
@@ -103,4 +104,5 @@ export const initialState: GameType = {
   splitters: [],
   mergers: [],
   editor: null,
+  time: 0,
 };

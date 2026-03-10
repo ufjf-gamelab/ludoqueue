@@ -11,6 +11,7 @@ export type EntitySourceType = {
   id: string;
   name: string;
   type: "source";
+  goodType: "red" | "blue" | "green";
   val: number;
   max: number;
   rate: number;
@@ -109,6 +110,8 @@ export type MovingGoodType = {
   target: EntityType;
   val: number;
   size: number;
+  time: number;
+  goodType: "red" | "blue" | "green";
 };
 
 export type DirectionType = "up" | "down" | "left" | "right";

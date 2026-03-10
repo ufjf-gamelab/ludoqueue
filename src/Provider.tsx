@@ -287,6 +287,7 @@ export function gameTick(state: GameType) {
   const mergers = new Map<string, EntityMergerType>();
 
   const newState = structuredClone(state);
+  newState.time += 1;
   for (const [, node] of newState.entities.entries()) {
     switch (node.type) {
       case "source": {
@@ -345,13 +346,13 @@ export function gameTick(state: GameType) {
     gameConsumerTick(consumer);
   });
   sources.forEach((source) => {
-    gameSourceTick(source);
+    gameSourceTick(newState,source);
   });
 
   return newState;
 }
 
-export function gameSourceTick(node: EntitySourceType) {
+export function gameSourceTick(state: GameType, node: EntitySourceType) {
   node.cooldown -= 1;
   if (node.cooldown > 0) {
     return;
@@ -364,6 +365,8 @@ export function gameSourceTick(node: EntitySourceType) {
       target: node,
       val: 1,
       size: 2,
+      time: state.time,
+      goodType: node.goodType,
     };
     node.goods.push(newGood);
 
