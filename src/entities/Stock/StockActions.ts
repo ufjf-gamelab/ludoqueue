@@ -351,18 +351,18 @@ function updateStockConnections(state: GameType, stock: EntityStockType) {
           rightEntity.source = stock.id;
         }
         if (
-          rightEntity.type === "splitter" &&
-          rightEntity.entryDirection !== "left"
+          rightEntity.type === "merger" &&
+          rightEntity.leavingDirection !== "left"
         ) {
-          switch (rightEntity.entryDirection) {
+          switch (rightEntity.leavingDirection) {
             case "down":
-              rightEntity.target[0] = stock.id;
+              rightEntity.source[0] = stock.id;
               break;
             case "right":
-              rightEntity.target[1] = stock.id;
+              rightEntity.source[1] = stock.id;
               break;
             case "up":
-              rightEntity.target[2] = stock.id;
+              rightEntity.source[2] = stock.id;
               break;
           }
         }
