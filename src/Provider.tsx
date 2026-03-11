@@ -17,6 +17,7 @@ import type {
   EntitySplitterType,
   EntityMergerType,
   MovingGoodType,
+  GoodType,
 } from "./entities/EntitiesTypes";
 import { initialState } from "./data";
 import {
@@ -201,7 +202,7 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
       return pointingAction(state, action);
     case "editor change max": {
       if (!state.editor) return state;
-      return { ...state, editor: { ...state.editor, max: action.value } };
+      return { ...state, editor: { ...state.editor, max: action.max } };
     }
     case "editor change rate": {
       if (
@@ -218,7 +219,7 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
         ...state,
         editor: {
           ...state.editor,
-          rate: action.value,
+          rate: action.rate,
         },
       };
     }
@@ -226,7 +227,7 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
       if (!state.editor || state.editor.type !== "stock") return state;
       return {
         ...state,
-        editor: { ...state.editor, direction: action.value as DirectionType },
+        editor: { ...state.editor, direction: action.direction as DirectionType },
       };
     }
     case "editor change entry direction": {
@@ -243,7 +244,7 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
         | GameSplitterEditor;
       return {
         ...state,
-        editor: { ...editor, entryDirection: action.value as DirectionType },
+        editor: { ...editor, entryDirection: action.entryDirection as DirectionType },
       };
     }
     case "editor change leaving direction": {
@@ -258,13 +259,21 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
         ...state,
         editor: {
           ...state.editor,
-          leavingDirection: action.value as DirectionType,
+          leavingDirection: action.leavingDirection as DirectionType,
         },
       };
     }
     case "editor change val": {
       if (!state.editor || state.editor.type !== "stock") return state;
       return { ...state, editor: { ...state.editor, val: action.value } };
+    }
+    case "editor change good type": {
+      if (!state.editor || state.editor.type !== "source") return state;
+      const editor = state.editor as GameSourceEditor;
+      return {
+        ...state,
+        editor: { ...editor, goodType: action.goodType as GoodType },
+      };
     }
 
     default:
@@ -330,7 +339,7 @@ export function gameTick(state: GameType) {
   ]);
 
   transports.forEach((transport) => {
-    calculatePendingTransportMovingGoods(transport, all);
+    calculatePendingTransportMovingGoods(transport, all, state);
   });
   splitters.forEach((splitter) => {
     calculatePendingSplitterMovingGoods(splitter, all);
@@ -471,6 +480,7 @@ export function calculatePendingSplitterMovingGoods(
 export function calculatePendingTransportMovingGoods(
   transport: EntityTransportType,
   all: Map<string, EntityType>,
+  state: GameType,
 ) {
   transport.movingGoods = [];
 
@@ -499,6 +509,8 @@ export function calculatePendingTransportMovingGoods(
       target,
       val: 1,
       size: transport.currentGood.size,
+      time: transport.currentGood.time,
+      goodType: transport.currentGood.goodType,
     });
 
     transport.currentGood = null;
@@ -519,11 +531,14 @@ export function calculatePendingTransportMovingGoods(
     if (source.type === "splitter") return transport.movingGoods;
 
     let size = 1;
-
+    let time = state.time;
+    let type
     if (source.type === "source" && source.goods.length > 0) {
       const good = source.goods.shift();
       if (!good) return transport.movingGoods;
       size = good.size;
+      time = good.time;
+      type = good.goodType;
     }
 
     transport.currentGood = {
@@ -531,6 +546,8 @@ export function calculatePendingTransportMovingGoods(
       target: transport,
       val: 1,
       size,
+      time,
+      goodType: type,
     };
 
     transport.progress = 0;
@@ -540,6 +557,8 @@ export function calculatePendingTransportMovingGoods(
       target: transport,
       val: 1,
       size,
+      time,
+      goodType: type,
     });
 
     return transport.movingGoods;
@@ -597,27 +616,27 @@ type GameActionPointing = {
 
 type GameActionEditorChangeMax = {
   type: "editor change max";
-  value: number;
+  max: number;
 };
 
 type GameActionEditorChangeRate = {
   type: "editor change rate";
-  value: number;
+  rate: number;
 };
 
 type GameActionEditorChangeDirection = {
   type: "editor change direction";
-  value: string;
+  direction: DirectionType;
 };
 
 type GameActionEditorChangeEntryDirection = {
   type: "editor change entry direction";
-  value: string;
+  entryDirection: DirectionType;
 };
 
 type GameActionEditorChangeLeavingDirection = {
   type: "editor change leaving direction";
-  value: string;
+  leavingDirection: DirectionType;
 };
 
 type GameActionEditorChangeVal = {
@@ -625,6 +644,10 @@ type GameActionEditorChangeVal = {
   value: number;
 };
 
+type GameActionEditorChangeGoodType = {
+  type: "editor change good type";
+  goodType: string;
+};
 export type GameAction =
   | GameActionCreateSource
   | GameActionDeleteSource
@@ -656,7 +679,8 @@ export type GameAction =
   | GameActionEditorChangeDirection
   | GameActionEditorChangeEntryDirection
   | GameActionEditorChangeLeavingDirection
-  | GameActionEditorChangeVal;
+  | GameActionEditorChangeVal
+  | GameActionEditorChangeGoodType;
 
 export function pointingAction(
   state: GameType,
@@ -692,6 +716,7 @@ export function pointingAction(
         x: x,
         y: y,
         leavingDirection: state.editor.leavingDirection,
+        goodType: state.editor.goodType,
       };
       newState.status = "waiting";
       newState.editor = null;
@@ -852,6 +877,7 @@ function chooseNewEditor(status: GameStatus): GameEditor {
         max: 1,
         rate: 1,
         leavingDirection: "right",
+        goodType: "red",
       };
       return newEditor;
     }

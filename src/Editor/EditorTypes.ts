@@ -21,6 +21,7 @@ export type GameSourceEditor = {
   max: number;
   rate: number;
   leavingDirection: DirectionType;
+  goodType: "red" | "blue" | "green";
 }
 
 export type GameTransporterEditor = {

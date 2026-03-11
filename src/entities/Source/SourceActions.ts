@@ -1,12 +1,12 @@
 import type { GameType } from "../../types";
-import type { DirectionType, EntitySourceType, EntitySplitterType, EntityTransportType } from "../EntitiesTypes";
+import type { DirectionType, EntitySourceType, EntitySplitterType, EntityTransportType, GoodType } from "../EntitiesTypes";
 
 export type GameActionCreateSource = {
   type: "create source";
   max: number;
   x: number;
   y: number;
-  goodType: "red" | "blue" | "green";
+  goodType: GoodType;
   leavingDirection: DirectionType;
 };
 
@@ -25,10 +25,10 @@ export type GameActionChangeSourceGoodType
  = {
   type: "change source good type";
   id: string;
-  goodType: "red" | "blue" | "green";
+  goodType: GoodType;
 }
 
-export function createSource(state: GameType, max: number, x: number, y:number, leavingDirection: DirectionType, goodType: "red" | "blue" | "green") {
+export function createSource(state: GameType, max: number, x: number, y:number, leavingDirection: DirectionType, goodType: GoodType) {
   if (
     Array.from(state.entities.values()).find(
       (entity) => entity.x === x && entity.y === y
@@ -90,7 +90,7 @@ export function changeSourceLeavingDirection(state: GameType, sourceID: string, 
   return newState;
 }
 
-export function changeSourceGoodType(state: GameType, sourceID: string, goodType: "red" | "blue" | "green") {
+export function changeSourceGoodType(state: GameType, sourceID: string, goodType: GoodType) {
   const sourceEntity = state.entities.get(sourceID) as EntitySourceType | undefined;
   if (!sourceEntity || goodType === sourceEntity.goodType) {
     return state;
