@@ -29,7 +29,7 @@ export type EntityStockType = {
   val: number;
   max: number;
   closed: boolean;
-
+  goods: MovingGoodType[];
   direction: DirectionType;
   x: number;
   y: number;

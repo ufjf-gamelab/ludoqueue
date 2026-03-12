@@ -512,7 +512,16 @@ export function calculatePendingTransportMovingGoods(
       time: transport.currentGood.time,
       goodType: transport.currentGood.goodType,
     });
-
+    if (target.type === "stock") {
+      target.goods.push({
+        source: target,
+        target,
+        val: 1,
+        size: transport.currentGood.size,
+        time: transport.currentGood.time,
+        goodType: transport.currentGood.goodType,
+      });
+    }
     transport.currentGood = null;
     transport.progress = 0;
 

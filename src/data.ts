@@ -92,6 +92,7 @@ export const initialState: GameType = {
         x: 0,
         y: 2,
         direction: "down",
+        goods: [],
       },
     ],
   ]),
