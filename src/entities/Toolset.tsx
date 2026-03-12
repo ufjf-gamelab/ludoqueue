@@ -597,6 +597,7 @@ export default function Toolset({ entity }: { entity: EntityType }) {
             <span
                       key={index}
                       className={`good ${good.goodType}`}
+                      title={`Good Type: ${good.goodType}, Size: ${good.size}, Creation Time: ${good.time}`}
                     aria-hidden="true"
                   />
                   
