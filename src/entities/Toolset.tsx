@@ -590,7 +590,7 @@ export default function Toolset({ entity }: { entity: EntityType }) {
                   />
           </button>
         </div>)}
-      {(entity.type ==="source" || entity.type === "stock") && (
+      {(entity.type ==="source" || entity.type === "stock" || entity.type === "consumer") && (
       <div style={{ display: "flex", alignItems: "center", gap: "4px", marginTop: "8px", flexWrap: "wrap" }}>
           <p style={{ margin: 0, fontSize: "12px" }}>Queue:</p>
           {Array.from(entity.goods).map((good, index) => (

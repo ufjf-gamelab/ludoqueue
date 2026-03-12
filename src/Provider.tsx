@@ -394,6 +394,7 @@ export function gameConsumerTick(node: EntityConsumerType) {
     return;
   }
   if (node.val > 0) {
+    node.goods.shift();
     node.val--;
   }
   node.cooldown += 1 / node.rate;
@@ -512,7 +513,7 @@ export function calculatePendingTransportMovingGoods(
       time: transport.currentGood.time,
       goodType: transport.currentGood.goodType,
     });
-    if (target.type === "stock") {
+    if (target.type === "stock" || target.type === "consumer") {
       target.goods.push({
         source: target,
         target,
