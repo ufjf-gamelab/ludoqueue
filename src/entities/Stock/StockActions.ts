@@ -60,6 +60,7 @@ export function createStock(
     direction,
     x,
     y,
+    goods: [],
   };
   newState.entities.set(newStockID, newStockEntity);
   newState.stocks.push(newStockID);

@@ -81,6 +81,7 @@ import {
   type GameActionCreateMerger,
   type GameActionDeleteMerger,
 } from "./entities/Merger/MergerActions";
+import type { GameActionEditorChangeDirection, GameActionEditorChangeEntryDirection, GameActionEditorChangeGoodType, GameActionEditorChangeLeavingDirection, GameActionEditorChangeMax, GameActionEditorChangeRate, GameActionEditorChangeVal } from "./Editor/EditorActions";
 type GameProviderProps = {
   children: ReactNode;
 };
@@ -624,40 +625,6 @@ type GameActionPointing = {
   y: number;
 };
 
-type GameActionEditorChangeMax = {
-  type: "editor change max";
-  max: number;
-};
-
-type GameActionEditorChangeRate = {
-  type: "editor change rate";
-  rate: number;
-};
-
-type GameActionEditorChangeDirection = {
-  type: "editor change direction";
-  direction: DirectionType;
-};
-
-type GameActionEditorChangeEntryDirection = {
-  type: "editor change entry direction";
-  entryDirection: DirectionType;
-};
-
-type GameActionEditorChangeLeavingDirection = {
-  type: "editor change leaving direction";
-  leavingDirection: DirectionType;
-};
-
-type GameActionEditorChangeVal = {
-  type: "editor change val";
-  value: number;
-};
-
-type GameActionEditorChangeGoodType = {
-  type: "editor change good type";
-  goodType: string;
-};
 export type GameAction =
   | GameActionCreateSource
   | GameActionDeleteSource
