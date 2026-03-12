@@ -26,7 +26,7 @@ export default function TransporterTile({ entity }: { entity: EntityTransportTyp
           isEnding = true;
         return (<span
           key={spanKey}
-          className={["transported-good",`${isStarting ? "starting " + getInvertedDirection(entity.entryDirection) : ""}`, `${isEnding ? "ending " + entity.leavingDirection : ""}`].join(' ')}
+          className={["transported-good",`${isStarting ? "starting " + getInvertedDirection(entity.entryDirection) : ""}`, `${isEnding ? "ending " + entity.leavingDirection : ""}`, `${entity.movingGoods[0].goodType}`].join(' ')}
           style={{ display: shouldHaveItem ? undefined : "none" }}
           aria-hidden="true"
         />);

@@ -81,7 +81,15 @@ import {
   type GameActionCreateMerger,
   type GameActionDeleteMerger,
 } from "./entities/Merger/MergerActions";
-import type { GameActionEditorChangeDirection, GameActionEditorChangeEntryDirection, GameActionEditorChangeGoodType, GameActionEditorChangeLeavingDirection, GameActionEditorChangeMax, GameActionEditorChangeRate, GameActionEditorChangeVal } from "./Editor/EditorActions";
+import type {
+  GameActionEditorChangeDirection,
+  GameActionEditorChangeEntryDirection,
+  GameActionEditorChangeGoodType,
+  GameActionEditorChangeLeavingDirection,
+  GameActionEditorChangeMax,
+  GameActionEditorChangeRate,
+  GameActionEditorChangeVal,
+} from "./Editor/EditorActions";
 type GameProviderProps = {
   children: ReactNode;
 };
@@ -228,7 +236,10 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
       if (!state.editor || state.editor.type !== "stock") return state;
       return {
         ...state,
-        editor: { ...state.editor, direction: action.direction as DirectionType },
+        editor: {
+          ...state.editor,
+          direction: action.direction as DirectionType,
+        },
       };
     }
     case "editor change entry direction": {
@@ -245,7 +256,10 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
         | GameSplitterEditor;
       return {
         ...state,
-        editor: { ...editor, entryDirection: action.entryDirection as DirectionType },
+        editor: {
+          ...editor,
+          entryDirection: action.entryDirection as DirectionType,
+        },
       };
     }
     case "editor change leaving direction": {
@@ -337,10 +351,11 @@ export function gameTick(state: GameType) {
     ...transports.entries(),
     ...stocks.entries(),
     ...splitters.entries(),
+    ...mergers.entries(),
   ]);
 
   transports.forEach((transport) => {
-    calculatePendingTransportMovingGoods(transport, all, state);
+    calculatePendingTransportMovingGoods(transport, all, newState);
   });
   splitters.forEach((splitter) => {
     calculatePendingSplitterMovingGoods(splitter, all);
@@ -361,7 +376,7 @@ export function gameTick(state: GameType) {
     gameConsumerTick(consumer);
   });
   sources.forEach((source) => {
-    gameSourceTick(newState,source);
+    gameSourceTick(newState, source);
   });
 
   return newState;
@@ -384,7 +399,6 @@ export function gameSourceTick(state: GameType, node: EntitySourceType) {
       goodType: node.goodType,
     };
     node.goods.push(newGood);
-
   }
   node.cooldown += 1 / node.rate;
 }
@@ -506,14 +520,6 @@ export function calculatePendingTransportMovingGoods(
       return transport.movingGoods;
     }
 
-    transport.movingGoods.push({
-      source: transport,
-      target,
-      val: 1,
-      size: transport.currentGood.size,
-      time: transport.currentGood.time,
-      goodType: transport.currentGood.goodType,
-    });
     if (target.type === "stock" || target.type === "consumer") {
       target.goods.push({
         source: target,
@@ -524,6 +530,30 @@ export function calculatePendingTransportMovingGoods(
         goodType: transport.currentGood.goodType,
       });
     }
+    if (target.type === "transport") {
+      if (target.currentGood) {
+        return transport.movingGoods; 
+      }
+
+      target.currentGood = {
+        source: transport,
+        target,
+        val: 1,
+        size: transport.currentGood.size,
+        time: transport.currentGood.time,
+        goodType: transport.currentGood.goodType,
+      };
+
+      target.progress = 0;
+    }
+    transport.movingGoods.push({
+      source: transport,
+      target,
+      val: 1,
+      size: transport.currentGood.size,
+      time: transport.currentGood.time,
+      goodType: transport.currentGood.goodType,
+    });
     transport.currentGood = null;
     transport.progress = 0;
 
@@ -536,15 +566,15 @@ export function calculatePendingTransportMovingGoods(
     return transport.movingGoods;
   }
 
-
   //puxa
   if (!transport.currentGood && source && source.val > 0) {
-    if (source.type === "splitter") return transport.movingGoods;
+    if (source.type === "splitter" || source.type === "transport")
+      return transport.movingGoods;
 
     let size = 1;
     let time = state.time;
-    let type
-    if (source.type === "source" && source.goods.length > 0) {
+    let type;
+    if (source.goods.length > 0) {
       const good = source.goods.shift();
       if (!good) return transport.movingGoods;
       size = good.size;
