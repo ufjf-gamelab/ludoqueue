@@ -56,7 +56,6 @@ export function createConsumer(
     id: newConsumerID,
     name: "Consumer " + numberID,
     type: "consumer",
-    val: 0,
     max: max,
     rate: rate,
     cooldown: 1,

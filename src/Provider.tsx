@@ -193,8 +193,6 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
       return deleteMerger(state, action.id);
     case "change merger leaving direction":
       return changeMergerLeavingDirection(state, action.id, action.direction);
-    case "set node value":
-      return setNodeVal(state, action.id, action.value);
     case "game tick":
       return gameTick(state);
     case "select entity":
@@ -297,16 +295,6 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
   return state;
 }
 
-function setNodeVal(state: GameType, nodeID: string, value: number) {
-  const newState = structuredClone(state);
-  const node = newState.entities.get(nodeID);
-  if (!node) {
-    return state;
-  }
-  node.val = value;
-  return newState;
-}
-
 export function gameTick(state: GameType) {
   const sources = new Map<string, EntitySourceType>();
   const consumers = new Map<string, EntityConsumerType>();
@@ -355,7 +343,7 @@ export function gameTick(state: GameType) {
   ]);
 
   transports.forEach((transport) => {
-    calculatePendingTransportMovingGoods(transport, all, newState);
+    calculatePendingTransportMovingGoods(transport, all);
   });
   splitters.forEach((splitter) => {
     calculatePendingSplitterMovingGoods(splitter, all);
@@ -364,13 +352,13 @@ export function gameTick(state: GameType) {
     calculatePendingMergerMovingGoods(merger, all);
   });
   transports.forEach((transport) => {
-    transportMovingGoods(transport);
+    transportMovingGoods(transport, newState);
   });
   splitters.forEach((splitter) => {
-    transportMovingGoods(splitter);
+    transportMovingGoods(splitter, newState);
   });
   mergers.forEach((merger) => {
-    transportMovingGoods(merger);
+    transportMovingGoods(merger, newState);
   });
   consumers.forEach((consumer) => {
     gameConsumerTick(consumer);
@@ -383,18 +371,17 @@ export function gameTick(state: GameType) {
 }
 
 export function gameSourceTick(state: GameType, node: EntitySourceType) {
-  node.cooldown -= 1;
+  const dt = 1.0;
+  node.cooldown -= dt;
   if (node.cooldown > 0) {
     return;
   }
 
-  if (node.val < node.max) {
-    node.val += node.rate;
+  if (node.goods.length < node.max) {
     const newGood: MovingGoodType = {
-      source: node,
-      target: node,
-      val: 1,
-      size: 2,
+      source: null,
+      target: null,
+      size: 1,
       time: state.time,
       goodType: node.goodType,
     };
@@ -408,9 +395,8 @@ export function gameConsumerTick(node: EntityConsumerType) {
   if (node.cooldown > 0) {
     return;
   }
-  if (node.val > 0) {
+  if (node.goods.length > 0) {
     node.goods.shift();
-    node.val--;
   }
   node.cooldown += 1 / node.rate;
 }
@@ -427,66 +413,80 @@ export function calculatePendingMergerMovingGoods(
   merger.cooldown += 1 / merger.rate;
 
   const target = all.get(merger.target!);
-  if (target && merger.val > 0 && target.val < target.max) {
+  if (target && merger.goods.length > 0 && target.goods.length < target.max) {
     if ((target.type == "stock" && target.closed) || target.type === "merger") {
       return merger.movingGoods;
     }
-    //merger.movingGoods.push({ source: merger, target, val: 1 });
+    const good = merger.goods[0];
+    if(!good){
+      return merger.movingGoods
+    }
+    merger.movingGoods.push({ source:merger.id, target: target.id, size: good.size, time: good.time, goodType: good.goodType});
   }
-
+  if (merger.goods.length === 0){
   for (let step = 0; step < merger.source.length; step++) {
     const index = (merger.nextSourceIndex + step) % merger.source.length;
     const sourceId = merger.source[index];
     const source = sourceId ? all.get(sourceId) : null;
     if (!source) continue;
-    if (source.val <= 0) {
+    if (source.goods.length <= 0) {
       continue;
     }
-    if (merger.val < merger.max) {
-      //merger.movingGoods.push({ source, target: merger, val: 1 });
-      merger.nextSourceIndex = (index + 1) % merger.source.length;
-      return merger.movingGoods;
+    const good = source.goods[0];
+    if (!good){
+      return merger.movingGoods
+    }
+    merger.movingGoods.push({ source:source.id, target: merger.id, size: good.size, time: good.time, goodType: good.goodType});
+    merger.nextSourceIndex = (index + 1) % merger.source.length;
+    return merger.movingGoods;
     }
   }
   return merger.movingGoods;
 }
 
+
 export function calculatePendingSplitterMovingGoods(
   splitter: EntitySplitterType,
   all: Map<string, EntityType>,
 ) {
+  const dt = 1.0
   splitter.movingGoods = [];
-  splitter.cooldown -= 1;
+  splitter.cooldown = Math.max(0, splitter.cooldown - dt);
   if (splitter.cooldown > 0) {
     return splitter.movingGoods;
   }
-  splitter.cooldown += 1 / splitter.rate;
-
+  
   const source = all.get(splitter.source!);
-  if (source && splitter.val < splitter.max && source.val > 0) {
-    if (source.type == "transport") {
+  if (source && splitter.goods.length < splitter.max && source.goods.length > 0) {
+    if (source.type === "transport" || (source.type === "splitter")){return splitter.movingGoods}
+    const good = source.goods[0]
+    if (!good){
       return splitter.movingGoods;
     }
-    //splitter.movingGoods.push({ source, target: splitter, val: 1 });
+    splitter.movingGoods.push({ source:source.id, target: splitter.id, size: good.size, time: good.time, goodType: good.goodType});
+    splitter.cooldown += 1 / splitter.rate;
     return splitter.movingGoods;
-  } else {
+  } 
+  if (splitter.goods.length>0) {
     for (let step = 0; step < splitter.target.length; step++) {
       const index = (splitter.nextTargetIndex + step) % splitter.target.length;
       const targetId = splitter.target[index];
       const target = targetId ? all.get(targetId) : null;
       if (!target) continue;
       if (
-        target.val >= target.max ||
+        target.goods.length >= target.max ||
         (target.type === "stock" && target.closed) ||
-        target.type === "merger"
+        target.type === "merger" 
       ) {
         continue;
       }
-      if (splitter.val < 1) {
-        continue;
+      const good = splitter.goods[0]
+      if(!good){
+        return splitter.movingGoods
       }
-      //splitter.movingGoods.push({ source: splitter, target, val: 1 });
+      splitter.movingGoods.push({ source:splitter.id, target: target.id, size: good.size, time: good.time, goodType: good.goodType});
       splitter.nextTargetIndex = (index + 1) % splitter.target.length;
+      splitter.cooldown += 1 / splitter.rate;
       return splitter.movingGoods;
     }
   }
@@ -496,22 +496,19 @@ export function calculatePendingSplitterMovingGoods(
 export function calculatePendingTransportMovingGoods(
   transport: EntityTransportType,
   all: Map<string, EntityType>,
-  state: GameType,
 ) {
+  const dt = 1.0;
   transport.movingGoods = [];
 
-  transport.cooldown--;
+  transport.cooldown = Math.max(0, transport.cooldown - dt);
   if (transport.cooldown > 0) return transport.movingGoods;
-  transport.cooldown += 1 / transport.rate;
 
   const source = all.get(transport.source!);
   const target = all.get(transport.target!);
-  //joga pra fora caso processou
   if (
-    transport.currentGood &&
-    transport.progress >= 1 &&
+    transport.goods.length > 0 &&
     target &&
-    target.val < target.max
+    target.goods.length < target.max
   ) {
     if (
       (target.type === "stock" && target.closed) ||
@@ -519,89 +516,42 @@ export function calculatePendingTransportMovingGoods(
     ) {
       return transport.movingGoods;
     }
-
-    if (target.type === "stock" || target.type === "consumer") {
-      target.goods.push({
-        source: target,
-        target,
-        val: 1,
-        size: transport.currentGood.size,
-        time: transport.currentGood.time,
-        goodType: transport.currentGood.goodType,
-      });
-    }
-    if (target.type === "transport") {
-      if (target.currentGood) {
-        return transport.movingGoods; 
-      }
-
-      target.currentGood = {
-        source: transport,
-        target,
-        val: 1,
-        size: transport.currentGood.size,
-        time: transport.currentGood.time,
-        goodType: transport.currentGood.goodType,
-      };
-
-      target.progress = 0;
-    }
-    transport.movingGoods.push({
-      source: transport,
-      target,
-      val: 1,
-      size: transport.currentGood.size,
-      time: transport.currentGood.time,
-      goodType: transport.currentGood.goodType,
-    });
-    transport.currentGood = null;
-    transport.progress = 0;
-
-    return transport.movingGoods;
-  }
-
-  //processa
-  if (transport.currentGood && transport.progress < 1) {
-    transport.progress += transport.rate / transport.currentGood.size;
-    return transport.movingGoods;
-  }
-
-  //puxa
-  if (!transport.currentGood && source && source.val > 0) {
-    if (source.type === "splitter" || source.type === "transport")
+    const good = transport.goods[0];
+    if (!good) {
       return transport.movingGoods;
-
-    let size = 1;
-    let time = state.time;
-    let type;
-    if (source.goods.length > 0) {
-      const good = source.goods.shift();
-      if (!good) return transport.movingGoods;
-      size = good.size;
-      time = good.time;
-      type = good.goodType;
     }
 
-    transport.currentGood = {
-      source,
-      target: transport,
-      val: 1,
-      size,
-      time,
-      goodType: type,
-    };
-
-    transport.progress = 0;
+    transport.movingGoods.push({
+      source: transport.id,
+      target: target.id,
+      size: good.size,
+      time: good.time,
+      goodType: good.goodType,
+    });
+    transport.cooldown += 1 / transport.rate;
+    return transport.movingGoods;
+  }
+  //puxa
+  if (transport.goods.length == 0 && source && source.goods.length > 0) {
+    if (source.type === "transport" || source.type === "splitter"){
+      return transport.movingGoods
+    }
+    let size = 1;
+    const good = source.goods[0];
+    if (!good) return transport.movingGoods;
+    size = good.size;
+    const time = good.time;
+    const type = good.goodType;
 
     transport.movingGoods.push({
-      source,
-      target: transport,
-      val: 1,
+      source: source.id,
+      target: transport.id,
       size,
       time,
       goodType: type,
     });
 
+    transport.cooldown += 1 / transport.rate;
     return transport.movingGoods;
   }
 
@@ -610,16 +560,22 @@ export function calculatePendingTransportMovingGoods(
 
 export function transportMovingGoods(
   transport: EntityTransportType | EntitySplitterType | EntityMergerType,
+  state: GameType,
 ) {
   transport.movingGoods.forEach((movingGood) => {
-    const source = movingGood.source;
-    const target = movingGood.target;
-    if (source && source.val > 0) {
-      source.val -= movingGood.val;
-    }
-    if (target && target.val < target.max) {
-      target.val += movingGood.val;
-    }
+    if (!movingGood.source || !movingGood.target) return;
+    const source = state.entities.get(movingGood.source);
+    const target = state.entities.get(movingGood.target);
+
+    if (!source || !target) return;
+    if (!source.goods.length) return;
+    if (target.goods.length >= target.max) return;
+
+    const good = source.goods.shift();
+    if (!good) return;
+    good.source = source.id;
+    good.target = target.id;
+    target.goods.push(good);
   });
 }
 
@@ -629,11 +585,6 @@ export function selectEntity(state: GameType, entityId: string | null) {
   return newState;
 }
 
-type GameActionSetNodeValue = {
-  type: "set node value";
-  id: string;
-  value: number;
-};
 
 type GameActionTick = {
   type: "game tick";
@@ -676,7 +627,6 @@ export type GameAction =
   | GameActionCreateMerger
   | GameActionDeleteMerger
   | GameActionChangeMergerLeavingDirection
-  | GameActionSetNodeValue
   | GameActionTick
   | GameActionSelectEntity
   | GameActionSetStatus

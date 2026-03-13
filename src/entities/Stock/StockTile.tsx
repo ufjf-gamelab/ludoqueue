@@ -6,7 +6,7 @@ export default function Stock({ entity }: { entity: EntityStockType }) {
   return (
     <div className="stock-tile">
       {EntityIcons[entity.type]}
-      <progress value={entity.val} max={entity.max} />
+      <progress value={entity.goods.length} max={entity.max} />
       <div
         className={
           "entryMovingDirection-" +

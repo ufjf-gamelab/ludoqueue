@@ -63,7 +63,6 @@ export function createTransport(
     id: newTransportID,
     name: "Transport " + numberID,
     type: "transport",
-    val: 0,
     max: max,
     rate: rate,
     cooldown: 1,
@@ -74,8 +73,7 @@ export function createTransport(
     entryDirection,
     leavingDirection,
     movingGoods: [],
-    progress: 0,
-    currentGood: null,
+    goods: [],
 };
   newState.entities.set(newTransportID, newTransportEntity);
   newState.transports.push(newTransportID);

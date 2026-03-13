@@ -12,7 +12,7 @@ export default function SplitterTile({ entity }: { entity: EntitySplitterType })
   if (movingGoods.length > 0) {
     shouldHaveItem = true;
   }
-  if (entity.val > 0) {
+  if (entity.goods.length > 0) {
     shouldHaveItem = true;
   }
   const leavingDirection = calculateLeavingDirection(entity);
@@ -71,7 +71,7 @@ export default function SplitterTile({ entity }: { entity: EntitySplitterType })
   return (
     <div className="splitter-tile">
         {EntityIcons.splitter}
-      <progress value={entity.val} max={entity.max} title={`${entity.val}/${entity.max}`} />
+      <progress value={entity.goods.length} max={entity.max} title={`${entity.goods.length}/${entity.max}`} />
       {(entity.entryDirection === "up") && <div>
         <div className="position-up">{DirectionIcons.down}</div>
         <div className="position-down">{DirectionIcons.down}</div>
@@ -97,13 +97,13 @@ export default function SplitterTile({ entity }: { entity: EntitySplitterType })
         <div className="position-left">{DirectionIcons.right}</div>
         </div>}
       {movingGoods.map((movingGood) => {
-        if (movingGood.target == entity)
+        if (movingGood.target == entity.id)
           isStarting = true;
-        if (movingGood.source == entity)
+        if (movingGood.source == entity.id)
           isEnding = true;
         return (<span
           key={spanKey}
-          className={["transported-good",`${isStarting ? "starting " + getInvertedDirection(entity.entryDirection) : ""}`, `${isEnding ? "ending " + leavingDirection : ""}`].join(' ')}
+          className={["transported-good",`${isStarting ? "starting " + getInvertedDirection(entity.entryDirection) : ""}`, `${isEnding ? "ending " + leavingDirection : ""}`,`${entity.movingGoods[0].goodType}`].join(' ')}
           style={{ display: shouldHaveItem ? undefined : "none" }}
           aria-hidden="true"
         />);

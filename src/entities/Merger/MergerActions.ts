@@ -52,7 +52,6 @@ export function createMerger(
     id: newMergerID,
     name: "Merger " + numberID,
     type: "merger",
-    val: 0,
     max: max,
     rate: rate,
     cooldown: 1,
@@ -63,6 +62,7 @@ export function createMerger(
     leavingDirection,
     movingGoods: [],
     nextSourceIndex: 0,
+    goods: [],
   };
   newState.entities.set(newMergerID, newMergerEntity);
   newState.mergers.push(newMergerID);

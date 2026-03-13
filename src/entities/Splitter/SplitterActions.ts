@@ -52,7 +52,6 @@ export function createSplitter(
     id: newSplitterID,
     name: "Splitter " + numberID,
     type: "splitter",
-    val: 0,
     max: max,
     rate: rate,
     cooldown: 1,
@@ -63,6 +62,7 @@ export function createSplitter(
     entryDirection,
     movingGoods: [],
     nextTargetIndex: 0,
+    goods: [],
   };
   newState.entities.set(newSplitterID, newSplitterEntity);
   newState.splitters.push(newSplitterID);

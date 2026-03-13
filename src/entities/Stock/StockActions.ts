@@ -54,7 +54,6 @@ export function createStock(
     id: newStockID,
     name: "Stock " + numberID,
     type: "stock",
-    val: 0,
     max: max,
     closed: false,
     direction,

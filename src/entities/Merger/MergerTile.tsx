@@ -1,6 +1,7 @@
 import "./MergerTile.css";
 import {
   getInvertedDirection,
+  type DirectionType,
   type EntityMergerType,
   type MovingGoodType,
 } from "../EntitiesTypes";
@@ -16,7 +17,7 @@ export default function MergerTile({ entity }: { entity: EntityMergerType }) {
   if (movingGoods.length > 0) {
     shouldHaveItem = true;
   }
-  if (entity.val > 0) {
+  if (entity.goods.length > 0) {
     shouldHaveItem = true;
   }
   const entryDirection = calculateEntryDirection(entity);
@@ -68,9 +69,9 @@ export default function MergerTile({ entity }: { entity: EntityMergerType }) {
     <div className="splitter-tile">
       {EntityIcons.merger}
       <progress
-        value={entity.val}
+        value={entity.goods.length}
         max={entity.max}
-        title={`${entity.val}/${entity.max}`}
+        title={`${entity.goods.length}/${entity.max}`}
       />
       {entity.leavingDirection === "up" && (
         <div>
@@ -105,15 +106,16 @@ export default function MergerTile({ entity }: { entity: EntityMergerType }) {
         </div>
       )}
       {movingGoods.map((movingGood) => {
-        if (movingGood.target == entity) isStarting = true;
-        if (movingGood.source == entity) isEnding = true;
+        if (movingGood.target == entity.id) isStarting = true;
+        if (movingGood.source == entity.id) isEnding = true;
         return (
           <span
             key={spanKey}
             className={[
               "transported-good",
-              `${isStarting ? "starting " + getInvertedDirection(entryDirection) : ""}`,
+              `${isStarting ? "starting " + getInvertedDirection(entryDirection as DirectionType) : ""}`,
               `${isEnding ? "ending " + entity.leavingDirection : ""}`,
+              `${entity.movingGoods[0].goodType}`
             ].join(" ")}
             style={{ display: shouldHaveItem ? undefined : "none" }}
             aria-hidden="true"

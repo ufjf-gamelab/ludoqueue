@@ -12,7 +12,6 @@ export type EntitySourceType = {
   name: string;
   type: "source";
   goodType: GoodType;
-  val: number;
   max: number;
   rate: number;
   cooldown: number;
@@ -26,7 +25,6 @@ export type EntityStockType = {
   id: string;
   name: string;
   type: "stock";
-  val: number;
   max: number;
   closed: boolean;
   goods: MovingGoodType[];
@@ -39,7 +37,6 @@ export type EntityConsumerType = {
   id: string;
   name: string;
   type: "consumer";
-  val: number;
   max: number;
   rate: number;
   cooldown: number;
@@ -53,11 +50,9 @@ export type EntitySplitterType = {
   id: string;
   name: string;
   type: "splitter";
-  val: number;
   max: number;
   rate: number;
   cooldown: number;
-  
   entryDirection: DirectionType;
   x: number;
   y: number;
@@ -65,37 +60,33 @@ export type EntitySplitterType = {
   target: (string|null)[];
   nextTargetIndex: number;
   movingGoods: MovingGoodType[];
+  goods: MovingGoodType[];
 };
 
 export type EntityTransportType = {
   id: string;
   name: string;
   type: "transport";
-  val: number;
   max: number;
   rate: number;
   cooldown: number;
   source: string | null;
   target: string | null;
-
   x: number;
   y: number;
   entryDirection: DirectionType;
   leavingDirection: DirectionType;
   movingGoods: MovingGoodType[];
-  currentGood: MovingGoodType | null;
-  progress: number;
+  goods: MovingGoodType[];
 };
 
 export type EntityMergerType = {
   id: string;
   name: string;
   type: "merger";
-  val: number;
   max: number;
   rate: number;
   cooldown: number;
-  
   leavingDirection: DirectionType;
   x: number;
   y: number;
@@ -103,12 +94,12 @@ export type EntityMergerType = {
   source: (string|null)[];
   nextSourceIndex: number;
   movingGoods: MovingGoodType[];
+  goods: MovingGoodType[];
 }
 
 export type MovingGoodType = {
-  source: EntityType;
-  target: EntityType;
-  val: number;
+  source: string|null;
+  target: string|null;
   size: number;
   time: number;
   goodType: GoodType;

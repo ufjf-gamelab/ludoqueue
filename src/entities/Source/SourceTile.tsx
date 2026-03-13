@@ -12,9 +12,9 @@ export default function Source({ entity }: { entity: EntitySourceType }) {
     <div className="source-tile">
       {EntityIcons[entity.type]}
       <progress
-        value={entity.val}
+        value={entity.goods.length}
         max={entity.max}
-        title={`${entity.val}/${entity.max}`}
+        title={`${entity.goods.length}/${entity.max}`}
       />
       <div className={"movingDirection-" + entity.leavingDirection}>
         {DirectionIcons[entity.leavingDirection]}

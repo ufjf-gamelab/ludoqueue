@@ -12,17 +12,17 @@ export default function TransporterTile({ entity }: { entity: EntityTransportTyp
   if (movingGoods.length > 0) {
     shouldHaveItem = true;
   }
-  if (entity.val > 0) {
+  if (entity.goods.length > 0) {
     shouldHaveItem = true;
   }
   return (
     <div className="transporter-tile">
       {TransportIcons.get(`${entity.entryDirection}-${entity.leavingDirection}`)}
-      <progress value={entity.val} max={entity.max} title={`${entity.val}/${entity.max}`} />
+      <progress value={entity.goods.length} max={entity.max} title={`${entity.goods.length}/${entity.max}`} />
       {movingGoods.map((movingGood) => {
-        if (movingGood.target == entity)
+        if (movingGood.target == entity.id)
           isStarting = true;
-        if (movingGood.source == entity)
+        if (movingGood.source == entity.id)
           isEnding = true;
         return (<span
           key={spanKey}
