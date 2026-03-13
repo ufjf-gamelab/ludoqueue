@@ -50,6 +50,21 @@
     --nextpercent: 580%;
   }
 
+  .transported-good.red {
+    background: rgb(246, 25, 25);
+    box-shadow: 0 0 6px rgba(246, 25, 25, 0.9);
+  }
+
+  .transported-good.blue {
+    background: rgb(25, 25, 246);
+    box-shadow: 0 0 6px rgba(25, 25, 246, 0.9);
+  }
+
+  .transported-good.green {
+    background: rgb(25, 246, 25);
+    box-shadow: 0 0 6px rgba(25, 246, 25, 0.9);
+  }
+
   .transported-good.starting.up {
     animation-name: transport-move-bottom-center;
   }
