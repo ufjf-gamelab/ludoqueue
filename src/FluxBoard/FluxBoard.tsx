@@ -27,10 +27,10 @@ export default function FluxBoard() {
           if (ref.current === null) return;
           const grid = ref.current as HTMLDivElement;
           const x = Math.floor(
-            (e.clientX - grid.getBoundingClientRect().x) / CELL_WIDTH
+            (e.clientX - grid.getBoundingClientRect().x) / CELL_WIDTH,
           );
           const y = Math.floor(
-            (e.clientY - grid.getBoundingClientRect().y) / CELL_WIDTH
+            (e.clientY - grid.getBoundingClientRect().y) / CELL_WIDTH,
           );
 
           dispatch({ type: "pointing", x, y });
@@ -48,13 +48,29 @@ export default function FluxBoard() {
                 entity={entity}
                 selected={entity.id === game.selected?.id}
               />
-            )
+            ),
         )}
       </div>
       <div>
-      <ToolBar />
-      <EditorMenu editor={game.editor}></EditorMenu>
-      <button onClick={()=>{dispatch({type: "change game data", data: initialState})}}>Data1</button> <button onClick={()=>{dispatch({type: "change game data", data: initialState2})}}>Data2</button>
+        <div style={{marginTop:"5px", fontSize: "12px", display: "flex", justifyContent:"space-between"}}>
+          <p>Select Data:</p>
+          <button
+            onClick={() => {
+              dispatch({ type: "change game data", data: initialState });
+            }}
+          >
+            Data1
+          </button>{" "}
+          <button
+            onClick={() => {
+              dispatch({ type: "change game data", data: initialState2 });
+            }}
+          >
+            Data2
+          </button>
+        </div>
+        <ToolBar />
+        <EditorMenu editor={game.editor}></EditorMenu>
       </div>
     </div>
   );
