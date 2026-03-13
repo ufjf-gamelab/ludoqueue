@@ -7,6 +7,7 @@ import ToolBar from "./ToolBar";
 import EditorMenu from "../Editor/EditorMenu";
 import { initialState } from "../data";
 import { initialState2 } from "../data2";
+import { initialState3 } from "../data3";
 
 export default function FluxBoard() {
   const CELL_WIDTH = 55;
@@ -67,6 +68,13 @@ export default function FluxBoard() {
             }}
           >
             Data2
+          </button>
+          <button
+            onClick={() => {
+              dispatch({ type: "change game data", data: initialState3 });
+            }}
+          >
+            Data3
           </button>
         </div>
         <ToolBar />
