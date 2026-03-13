@@ -207,6 +207,10 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
     }
     case "pointing":
       return pointingAction(state, action);
+    case "change game data":{
+      return action.data
+    }
+
     case "editor change max": {
       if (!state.editor) return state;
       return { ...state, editor: { ...state.editor, max: action.max } };
@@ -606,6 +610,10 @@ type GameActionPointing = {
   y: number;
 };
 
+type GameActionChangeData = {
+  type: "change game data";
+  data: GameType;
+}
 export type GameAction =
   | GameActionCreateSource
   | GameActionDeleteSource
@@ -631,6 +639,7 @@ export type GameAction =
   | GameActionSelectEntity
   | GameActionSetStatus
   | GameActionPointing
+  | GameActionChangeData
   | GameActionEditorChangeMax
   | GameActionEditorChangeRate
   | GameActionEditorChangeDirection

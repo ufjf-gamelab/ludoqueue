@@ -5,6 +5,8 @@ import type { EntityType } from "../entities/EntitiesTypes";
 import Tile from "../entities/Tile";
 import ToolBar from "./ToolBar";
 import EditorMenu from "../Editor/EditorMenu";
+import { initialState } from "../data";
+import { initialState2 } from "../data2";
 
 export default function FluxBoard() {
   const CELL_WIDTH = 55;
@@ -52,6 +54,7 @@ export default function FluxBoard() {
       <div>
       <ToolBar />
       <EditorMenu editor={game.editor}></EditorMenu>
+      <button onClick={()=>{dispatch({type: "change game data", data: initialState})}}>Data1</button> <button onClick={()=>{dispatch({type: "change game data", data: initialState2})}}>Data2</button>
       </div>
     </div>
   );
