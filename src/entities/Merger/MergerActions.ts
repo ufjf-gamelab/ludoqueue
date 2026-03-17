@@ -1,5 +1,14 @@
 import type { GameType } from "../../types";
-import type { DirectionType, EntityMergerType } from "../EntitiesTypes";
+import type {
+  DirectionType,
+  EntityMergerType,
+} from "../EntitiesTypes";
+import {
+  clearConnectionsToEntity,
+  getEntityAt,
+  tryToConnectSource,
+  tryToConnectTarget,
+} from "../EntityActions";
 
 export type GameActionCreateMerger = {
   type: "create merger";
@@ -71,10 +80,12 @@ export function createMerger(
 }
 
 export function deleteMerger(state: GameType, merger: string) {
-  const mergerIndex = state.mergers.indexOf(merger); //pelo createMerger ele sempre criara id a partir do ultimo, entao nao ocorre de ter dois iguais
+  const mergerIndex = state.mergers.indexOf(merger); // pelo createMerger ele sempre criara id a partir do ultimo, entao nao ocorre de ter dois iguais
   if (mergerIndex !== -1) {
     const newState = structuredClone(state);
-    newState.mergers.splice(mergerIndex);
+    const mergerEntity = newState.entities.get(newState.mergers[mergerIndex]);
+    clearConnectionsToEntity(newState,mergerEntity!);
+    newState.mergers.splice(mergerIndex, 1);
     newState.entities.delete(merger);
     return newState;
   }
@@ -100,6 +111,7 @@ export function changeMergerLeavingDirection(
 function updateMergerConnections(state: GameType, merger: EntityMergerType) {
   merger.target = null;
   merger.source = [null, null, null];
+  clearConnectionsToEntity(state,merger);
   switch (merger.leavingDirection) {
     case "up": {
       updateMergerUpperEntry(state, merger);
@@ -124,10 +136,8 @@ function updateMergerConnections(state: GameType, merger: EntityMergerType) {
 }
 
 function updateMergerLeftEntry(state: GameType, merger: EntityMergerType) {
-  let targetEntity =
-    Array.from(state.entities.values()).find(
-      (entity) => entity.x === merger.x - 1 && entity.y === merger.y,
-    ) || null;
+  let targetEntity = getEntityAt(state, merger.x - 1, merger.y);
+
   if (
     targetEntity &&
     ((targetEntity.type === "consumer" &&
@@ -139,18 +149,18 @@ function updateMergerLeftEntry(state: GameType, merger: EntityMergerType) {
         targetEntity.entryDirection !== "right") ||
       (targetEntity.type === "merger" &&
         targetEntity.leavingDirection === "right") ||
-      (targetEntity.type === "source"))
+      targetEntity.type === "source")
   ) {
     targetEntity = null;
   }
+
   if (targetEntity) {
-    if (targetEntity.type === "transport" && targetEntity.entryDirection === "right") {
-      targetEntity.source = merger.id;
-    }
-    if (targetEntity.type === "splitter" && targetEntity.entryDirection === "right"){
-      targetEntity.source = merger.id;
-    }
-    if (targetEntity.type === "merger" && targetEntity.leavingDirection !== "right"){
+    tryToConnectSource(targetEntity, "right", merger.id);
+
+    if (
+      targetEntity.type === "merger" &&
+      targetEntity.leavingDirection !== "right"
+    ) {
       switch (targetEntity.leavingDirection) {
         case "up":
           targetEntity.source[0] = merger.id;
@@ -163,13 +173,14 @@ function updateMergerLeftEntry(state: GameType, merger: EntityMergerType) {
           break;
       }
     }
+
     merger.target = targetEntity.id;
   }
 
-  let source0Entity =
-    Array.from(state.entities.values()).find(
-      (entity) => entity.x === merger.x && entity.y === merger.y - 1,
-    ) || null; //cima
+  let source0Entity = getEntityAt(state, merger.x, merger.y - 1);
+  let source1Entity = getEntityAt(state, merger.x + 1, merger.y);
+  let source2Entity = getEntityAt(state, merger.x, merger.y + 1);
+
   if (
     source0Entity &&
     (source0Entity.type === "consumer" ||
@@ -179,15 +190,13 @@ function updateMergerLeftEntry(state: GameType, merger: EntityMergerType) {
       (source0Entity.type === "splitter" &&
         source0Entity.entryDirection === "down") ||
       (source0Entity.type === "merger" &&
-        source0Entity.leavingDirection !== "down")
-      || (source0Entity.type === "source" && source0Entity.leavingDirection !== "down"))
+        source0Entity.leavingDirection !== "down") ||
+      (source0Entity.type === "source" &&
+        source0Entity.leavingDirection !== "down"))
   ) {
     source0Entity = null;
   }
 
-  let source1Entity = Array.from(state.entities.values()).find(
-    (entity) => entity.x === merger.x + 1 && entity.y === merger.y,
-  ) || null; //direita
   if (
     source1Entity &&
     (source1Entity.type === "consumer" ||
@@ -198,14 +207,12 @@ function updateMergerLeftEntry(state: GameType, merger: EntityMergerType) {
         source1Entity.entryDirection === "left") ||
       (source1Entity.type === "merger" &&
         source1Entity.leavingDirection !== "left") ||
-      (source1Entity.type === "source" && source1Entity.leavingDirection !== "left"))
+      (source1Entity.type === "source" &&
+        source1Entity.leavingDirection !== "left"))
   ) {
     source1Entity = null;
   }
 
-  let source2Entity = Array.from(state.entities.values()).find(
-    (entity) => entity.x === merger.x && entity.y === merger.y + 1,
-  ) || null; //baixo
   if (
     source2Entity &&
     (source2Entity.type === "consumer" ||
@@ -216,87 +223,75 @@ function updateMergerLeftEntry(state: GameType, merger: EntityMergerType) {
         source2Entity.entryDirection !== "up") ||
       (source2Entity.type === "merger" &&
         source2Entity.leavingDirection !== "up") ||
-      (source2Entity.type === "source" && source2Entity.leavingDirection !== "up"))
+      (source2Entity.type === "source" &&
+        source2Entity.leavingDirection !== "up"))
   ) {
     source2Entity = null;
   }
 
   if (source0Entity) {
-    if (source0Entity.type === "transport"){
-      source0Entity.target = merger.id;
-    }
-    if (source0Entity.type === "splitter"){
-      const spliterEntity = source0Entity;
-      switch (spliterEntity.entryDirection) {
+    tryToConnectTarget(source0Entity, "down", merger.id);
+
+    if (source0Entity.type === "splitter") {
+      switch (source0Entity.entryDirection) {
         case "up":
-          spliterEntity.target[1] = merger.id;
+          source0Entity.target[1] = merger.id;
           break;
         case "left":
-          spliterEntity.target[2] = merger.id;
+          source0Entity.target[2] = merger.id;
           break;
         case "right":
-          spliterEntity.target[0] = merger.id;
+          source0Entity.target[0] = merger.id;
           break;
       }
     }
-    if (source0Entity.type === "merger"){
-    source0Entity.target = merger.id;
-  }
+
     merger.source[0] = source0Entity.id;
   }
+
   if (source1Entity) {
-    if (source1Entity.type === "transport"){
-      source1Entity.target = merger.id;
-    }
-    if (source1Entity.type === "splitter"){
-      const spliterEntity = source1Entity;
-      switch (spliterEntity.entryDirection) {
+    tryToConnectTarget(source1Entity, "left", merger.id);
+
+    if (source1Entity.type === "splitter") {
+      switch (source1Entity.entryDirection) {
         case "up":
-          spliterEntity.target[2] = merger.id;
+          source1Entity.target[2] = merger.id;
           break;
         case "down":
-          spliterEntity.target[0] = merger.id;
+          source1Entity.target[0] = merger.id;
           break;
         case "right":
-          spliterEntity.target[1] = merger.id;
+          source1Entity.target[1] = merger.id;
           break;
       }
     }
-    if (source1Entity.type === "merger"){
-    source1Entity.target = merger.id;
-  }
+
     merger.source[1] = source1Entity.id;
   }
+
   if (source2Entity) {
-    if (source2Entity.type === "transport"){
-      source2Entity.target = merger.id;
-    }
-    if (source2Entity.type === "splitter"){
-      const spliterEntity = source2Entity;
-      switch (spliterEntity.entryDirection) {
+    tryToConnectTarget(source2Entity, "up", merger.id);
+
+    if (source2Entity.type === "splitter") {
+      switch (source2Entity.entryDirection) {
         case "down":
-          spliterEntity.target[1] = merger.id;
+          source2Entity.target[1] = merger.id;
           break;
         case "left":
-          spliterEntity.target[0] = merger.id;
+          source2Entity.target[0] = merger.id;
           break;
         case "right":
-          spliterEntity.target[2] = merger.id;
+          source2Entity.target[2] = merger.id;
           break;
       }
     }
-    if (source2Entity.type === "merger"){
-    source2Entity.target = merger.id;
-  }
+
     merger.source[2] = source2Entity.id;
   }
 }
 
 function updateMergerRightEntry(state: GameType, merger: EntityMergerType) {
-  let targetEntity =
-    Array.from(state.entities.values()).find(
-      (entity) => entity.x === merger.x + 1 && entity.y === merger.y,
-    ) || null;
+  let targetEntity = getEntityAt(state, merger.x + 1, merger.y);
   if (
     targetEntity &&
     ((targetEntity.type === "consumer" &&
@@ -308,18 +303,16 @@ function updateMergerRightEntry(state: GameType, merger: EntityMergerType) {
         targetEntity.entryDirection !== "left") ||
       (targetEntity.type === "merger" &&
         targetEntity.leavingDirection === "left") ||
-        targetEntity.type === "source")
+      targetEntity.type === "source")
   ) {
     targetEntity = null;
   }
   if (targetEntity) {
-    if (targetEntity.type === "transport" && targetEntity.entryDirection === "left") {
-      targetEntity.source = merger.id;
-    }
-    if (targetEntity.type === "splitter" && targetEntity.entryDirection === "left"){
-      targetEntity.source = merger.id;
-    }
-    if (targetEntity.type === "merger" && targetEntity.leavingDirection !== "left"){
+    tryToConnectSource(targetEntity, "left", merger.id);
+    if (
+      targetEntity.type === "merger" &&
+      targetEntity.leavingDirection !== "left"
+    ) {
       switch (targetEntity.leavingDirection) {
         case "up":
           targetEntity.source[2] = merger.id;
@@ -335,10 +328,10 @@ function updateMergerRightEntry(state: GameType, merger: EntityMergerType) {
     merger.target = targetEntity.id;
   }
 
+  let source0Entity = getEntityAt(state, merger.x, merger.y + 1); // baixo
+  let source1Entity = getEntityAt(state, merger.x - 1, merger.y); // esquerda
+  let source2Entity = getEntityAt(state, merger.x, merger.y - 1); // cima
 
-  let source0Entity = Array.from(state.entities.values()).find(
-    (entity) => entity.x === merger.x && entity.y === merger.y + 1,
-  ) || null; //baixo
   if (
     source0Entity &&
     (source0Entity.type === "consumer" ||
@@ -348,16 +341,13 @@ function updateMergerRightEntry(state: GameType, merger: EntityMergerType) {
       (source0Entity.type === "splitter" &&
         source0Entity.entryDirection !== "up") ||
       (source0Entity.type === "merger" &&
-        source0Entity.leavingDirection !== "up")
-      || (source0Entity.type === "source" && source0Entity.leavingDirection !== "up"))
+        source0Entity.leavingDirection !== "up") ||
+      (source0Entity.type === "source" &&
+        source0Entity.leavingDirection !== "up"))
   ) {
     source0Entity = null;
   }
 
-
-  let source1Entity = Array.from(state.entities.values()).find(
-    (entity) => entity.x === merger.x - 1 && entity.y === merger.y,
-  ) || null; //esquerda
   if (
     source1Entity &&
     (source1Entity.type === "consumer" ||
@@ -367,16 +357,13 @@ function updateMergerRightEntry(state: GameType, merger: EntityMergerType) {
       (source1Entity.type === "splitter" &&
         source1Entity.entryDirection === "right") ||
       (source1Entity.type === "merger" &&
-        source1Entity.leavingDirection !== "right")
-      || (source1Entity.type === "source" && source1Entity.leavingDirection !== "right"))
+        source1Entity.leavingDirection !== "right") ||
+      (source1Entity.type === "source" &&
+        source1Entity.leavingDirection !== "right"))
   ) {
     source1Entity = null;
   }
 
-  let source2Entity =
-    Array.from(state.entities.values()).find(
-      (entity) => entity.x === merger.x && entity.y === merger.y - 1,
-    ) || null; //cima
   if (
     source2Entity &&
     (source2Entity.type === "consumer" ||
@@ -386,91 +373,83 @@ function updateMergerRightEntry(state: GameType, merger: EntityMergerType) {
       (source2Entity.type === "splitter" &&
         source2Entity.entryDirection === "down") ||
       (source2Entity.type === "merger" &&
-        source2Entity.leavingDirection !== "down")
-      || (source2Entity.type === "source" && source2Entity.leavingDirection !== "down"))
+        source2Entity.leavingDirection !== "down") ||
+      (source2Entity.type === "source" &&
+        source2Entity.leavingDirection !== "down"))
   ) {
     source2Entity = null;
   }
-  
+
   if (source0Entity) {
-    if (source0Entity.type === "transport"){
-      source0Entity.target = merger.id;
-    }
-    if (source0Entity.type === "splitter"){
-      const spliterEntity = source0Entity;
-      switch (spliterEntity.entryDirection) {
+    tryToConnectTarget(source0Entity, "up", merger.id);
+
+    if (source0Entity.type === "splitter") {
+      const splitterEntity = source0Entity;
+      switch (splitterEntity.entryDirection) {
         case "down":
-          spliterEntity.target[1] = merger.id;
+          splitterEntity.target[1] = merger.id;
           break;
         case "left":
-          spliterEntity.target[0] = merger.id;
+          splitterEntity.target[0] = merger.id;
           break;
         case "right":
-          spliterEntity.target[2] = merger.id;
+          splitterEntity.target[2] = merger.id;
           break;
       }
     }
-    if (source0Entity.type === "merger"){
-    source0Entity.target = merger.id;
-  }
+
     merger.source[0] = source0Entity.id;
   }
+
   if (source1Entity) {
-    if(source1Entity.type === "transport"){
-      source1Entity.target = merger.id;
-    }
-    if (source1Entity.type === "splitter"){
-      const spliterEntity = source1Entity;
-      switch (spliterEntity.entryDirection) {
+    tryToConnectTarget(source1Entity, "right", merger.id);
+
+    if (source1Entity.type === "splitter") {
+      const splitterEntity = source1Entity;
+      switch (splitterEntity.entryDirection) {
         case "up":
-          spliterEntity.target[0] = merger.id;
+          splitterEntity.target[0] = merger.id;
           break;
         case "down":
-          spliterEntity.target[2] = merger.id;
+          splitterEntity.target[2] = merger.id;
           break;
         case "left":
-          spliterEntity.target[1] = merger.id;
+          splitterEntity.target[1] = merger.id;
           break;
       }
     }
-    if (source1Entity.type === "merger"){
-    source1Entity.target = merger.id;
-  }
+
     merger.source[1] = source1Entity.id;
   }
+
   if (source2Entity) {
-    if (source2Entity.type === "transport"){
-      source2Entity.target = merger.id;
-    }
-    if (source2Entity.type === "splitter"){
-      const spliterEntity = source2Entity;
-      switch (spliterEntity.entryDirection) {
+    tryToConnectTarget(source2Entity, "down", merger.id);
+
+    if (source2Entity.type === "splitter") {
+      const splitterEntity = source2Entity;
+      switch (splitterEntity.entryDirection) {
         case "up":
-          spliterEntity.target[1] = merger.id;
+          splitterEntity.target[1] = merger.id;
           break;
         case "left":
-          spliterEntity.target[2] = merger.id;
+          splitterEntity.target[2] = merger.id;
           break;
         case "right":
-          spliterEntity.target[0] = merger.id;
+          splitterEntity.target[0] = merger.id;
           break;
       }
     }
-    if (source2Entity.type === "merger"){
-    source2Entity.target = merger.id;
-  }
+
     merger.source[2] = source2Entity.id;
   }
 }
 
 function updateMergerUpperEntry(state: GameType, merger: EntityMergerType) {
-  let targetEntity =
-    Array.from(state.entities.values()).find(
-      (entity) => entity.x === merger.x && entity.y === merger.y - 1,
-    ) || null;
+  let targetEntity = getEntityAt(state, merger.x, merger.y - 1);
   if (
     targetEntity &&
-    ((targetEntity.type === "consumer" && targetEntity.entryDirection !== "down") ||
+    ((targetEntity.type === "consumer" &&
+      targetEntity.entryDirection !== "down") ||
       (targetEntity.type === "stock" && targetEntity.direction !== "up") ||
       (targetEntity.type === "transport" &&
         targetEntity.entryDirection !== "down") ||
@@ -478,18 +457,16 @@ function updateMergerUpperEntry(state: GameType, merger: EntityMergerType) {
         targetEntity.entryDirection !== "down") ||
       (targetEntity.type === "merger" &&
         targetEntity.leavingDirection === "down") ||
-        targetEntity.type === "source")
+      targetEntity.type === "source")
   ) {
     targetEntity = null;
   }
   if (targetEntity) {
-    if (targetEntity.type === "transport" && targetEntity.entryDirection === "down") {
-      targetEntity.source = merger.id;
-    }
-    if (targetEntity.type === "splitter" && targetEntity.entryDirection === "down"){
-      targetEntity.source = merger.id;
-    }
-    if (targetEntity.type === "merger" && targetEntity.leavingDirection !== "down"){
+    tryToConnectSource(targetEntity, "down", merger.id);
+    if (
+      targetEntity.type === "merger" &&
+      targetEntity.leavingDirection !== "down"
+    ) {
       switch (targetEntity.leavingDirection) {
         case "up":
           targetEntity.source[1] = merger.id;
@@ -505,9 +482,10 @@ function updateMergerUpperEntry(state: GameType, merger: EntityMergerType) {
     merger.target = targetEntity.id;
   }
 
-  let source0Entity = Array.from(state.entities.values()).find(
-    (entity) => entity.x === merger.x + 1 && entity.y === merger.y,
-  ) || null; //direita
+  let source0Entity = getEntityAt(state, merger.x + 1, merger.y); //direita
+  let source1Entity = getEntityAt(state, merger.x, merger.y + 1); //baixo
+  let source2Entity = getEntityAt(state, merger.x - 1, merger.y); //esquerda
+
   if (
     source0Entity &&
     (source0Entity.type === "consumer" ||
@@ -518,14 +496,12 @@ function updateMergerUpperEntry(state: GameType, merger: EntityMergerType) {
         source0Entity.entryDirection === "left") ||
       (source0Entity.type === "merger" &&
         source0Entity.leavingDirection !== "left") ||
-      (source0Entity.type === "source" && source0Entity.leavingDirection !== "left"))
+      (source0Entity.type === "source" &&
+        source0Entity.leavingDirection !== "left"))
   ) {
     source0Entity = null;
   }
 
-  let source1Entity = Array.from(state.entities.values()).find(
-    (entity) => entity.x === merger.x && entity.y === merger.y+1,
-  ) || null; //baixo
   if (
     source1Entity &&
     (source1Entity.type === "consumer" ||
@@ -536,14 +512,12 @@ function updateMergerUpperEntry(state: GameType, merger: EntityMergerType) {
         source1Entity.entryDirection === "up") ||
       (source1Entity.type === "merger" &&
         source1Entity.leavingDirection !== "up") ||
-      (source1Entity.type === "source" && source1Entity.leavingDirection !== "up"))
+      (source1Entity.type === "source" &&
+        source1Entity.leavingDirection !== "up"))
   ) {
     source1Entity = null;
   }
 
-let source2Entity = Array.from(state.entities.values()).find(
-    (entity) => entity.x === merger.x - 1 && entity.y === merger.y,
-  ) || null; //esquerda
   if (
     source2Entity &&
     (source2Entity.type === "consumer" ||
@@ -553,91 +527,83 @@ let source2Entity = Array.from(state.entities.values()).find(
       (source2Entity.type === "splitter" &&
         source2Entity.entryDirection === "right") ||
       (source2Entity.type === "merger" &&
-        source2Entity.leavingDirection !== "right")
-      || (source2Entity.type === "source" && source2Entity.leavingDirection !== "right"))
+        source2Entity.leavingDirection !== "right") ||
+      (source2Entity.type === "source" &&
+        source2Entity.leavingDirection !== "right"))
   ) {
     source2Entity = null;
   }
 
   if (source0Entity) {
-    if (source0Entity.type === "transport"){
-      source0Entity.target = merger.id;
-    }
-    if (source0Entity.type === "splitter"){
-      const spliterEntity = source0Entity;
-      switch (spliterEntity.entryDirection) {
+    tryToConnectTarget(source0Entity, "left", merger.id);
+
+    if (source0Entity.type === "splitter") {
+      const splitterEntity = source0Entity;
+      switch (splitterEntity.entryDirection) {
         case "up":
-          spliterEntity.target[2] = merger.id;
+          splitterEntity.target[2] = merger.id;
           break;
         case "down":
-          spliterEntity.target[0] = merger.id;
+          splitterEntity.target[0] = merger.id;
           break;
         case "right":
-          spliterEntity.target[1] = merger.id;
+          splitterEntity.target[1] = merger.id;
           break;
       }
     }
-  if (source0Entity.type === "merger"){
-    source0Entity.target = merger.id;
-  }
+
     merger.source[0] = source0Entity.id;
   }
+
   if (source1Entity) {
-    if (source1Entity.type === "transport"){
-      source1Entity.target = merger.id;
-    }
-    if (source1Entity.type === "splitter"){
-      const spliterEntity = source1Entity;
-      switch (spliterEntity.entryDirection) {
+    tryToConnectTarget(source1Entity, "up", merger.id);
+
+    if (source1Entity.type === "splitter") {
+      const splitterEntity = source1Entity;
+      switch (splitterEntity.entryDirection) {
         case "down":
-          spliterEntity.target[1] = merger.id;
+          splitterEntity.target[1] = merger.id;
           break;
         case "left":
-          spliterEntity.target[0] = merger.id;
+          splitterEntity.target[0] = merger.id;
           break;
         case "right":
-          spliterEntity.target[2] = merger.id;
+          splitterEntity.target[2] = merger.id;
           break;
       }
     }
-    if (source1Entity.type === "merger"){
-    source1Entity.target = merger.id;
-  }
+
     merger.source[1] = source1Entity.id;
   }
+
   if (source2Entity) {
-    if(source2Entity.type === "transport"){
-      source2Entity.target = merger.id;
-    }
-    if (source2Entity.type === "splitter"){
-      const spliterEntity = source2Entity;
-      switch (spliterEntity.entryDirection) {
+    tryToConnectTarget(source2Entity, "right", merger.id);
+
+    if (source2Entity.type === "splitter") {
+      const splitterEntity = source2Entity;
+      switch (splitterEntity.entryDirection) {
         case "up":
-          spliterEntity.target[0] = merger.id;
+          splitterEntity.target[0] = merger.id;
           break;
         case "down":
-          spliterEntity.target[2] = merger.id;
+          splitterEntity.target[2] = merger.id;
           break;
         case "left":
-          spliterEntity.target[1] = merger.id;
+          splitterEntity.target[1] = merger.id;
           break;
       }
     }
-    if (source2Entity.type === "merger"){
-    source2Entity.target = merger.id;
-  }
+
     merger.source[2] = source2Entity.id;
   }
 }
 
 function updateMergerDownEntry(state: GameType, merger: EntityMergerType) {
-  let targetEntity =
-    Array.from(state.entities.values()).find(
-      (entity) => entity.x === merger.x && entity.y === merger.y + 1,
-    ) || null;
+  let targetEntity = getEntityAt(state, merger.x, merger.y + 1);
   if (
     targetEntity &&
-    ((targetEntity.type === "consumer" && targetEntity.entryDirection !== "up") ||
+    ((targetEntity.type === "consumer" &&
+      targetEntity.entryDirection !== "up") ||
       (targetEntity.type === "stock" && targetEntity.direction !== "down") ||
       (targetEntity.type === "transport" &&
         targetEntity.entryDirection !== "up") ||
@@ -645,18 +611,16 @@ function updateMergerDownEntry(state: GameType, merger: EntityMergerType) {
         targetEntity.entryDirection !== "up") ||
       (targetEntity.type === "merger" &&
         targetEntity.leavingDirection === "up") ||
-        targetEntity.type === "source")
+      targetEntity.type === "source")
   ) {
     targetEntity = null;
   }
   if (targetEntity) {
-    if (targetEntity.type === "transport" && targetEntity.entryDirection === "up") {
-      targetEntity.source = merger.id;
-    }
-    if (targetEntity.type === "splitter" && targetEntity.entryDirection === "up"){
-      targetEntity.source = merger.id;
-    }
-    if (targetEntity.type === "merger" && targetEntity.leavingDirection !== "up"){
+    tryToConnectSource(targetEntity, "up", merger.id);
+    if (
+      targetEntity.type === "merger" &&
+      targetEntity.leavingDirection !== "up"
+    ) {
       switch (targetEntity.leavingDirection) {
         case "down":
           targetEntity.source[1] = merger.id;
@@ -672,9 +636,10 @@ function updateMergerDownEntry(state: GameType, merger: EntityMergerType) {
     merger.target = targetEntity.id;
   }
 
-let source0Entity = Array.from(state.entities.values()).find(
-    (entity) => entity.x === merger.x - 1 && entity.y === merger.y,
-  ) || null; //esquerda
+  let source2Entity = getEntityAt(state, merger.x + 1, merger.y); //direita
+  let source1Entity = getEntityAt(state, merger.x, merger.y - 1); //cima
+  let source0Entity = getEntityAt(state, merger.x - 1, merger.y); //esquerda
+
   if (
     source0Entity &&
     (source0Entity.type === "consumer" ||
@@ -684,15 +649,13 @@ let source0Entity = Array.from(state.entities.values()).find(
       (source0Entity.type === "splitter" &&
         source0Entity.entryDirection === "right") ||
       (source0Entity.type === "merger" &&
-        source0Entity.leavingDirection !== "right")
-      || (source0Entity.type === "source" && source0Entity.leavingDirection !== "right"))
+        source0Entity.leavingDirection !== "right") ||
+      (source0Entity.type === "source" &&
+        source0Entity.leavingDirection !== "right"))
   ) {
     source0Entity = null;
   }
 
-  let source1Entity = Array.from(state.entities.values()).find(
-    (entity) => entity.x === merger.x && entity.y === merger.y-1,
-  ) || null; //cima
   if (
     source1Entity &&
     (source1Entity.type === "consumer" ||
@@ -702,15 +665,13 @@ let source0Entity = Array.from(state.entities.values()).find(
       (source1Entity.type === "splitter" &&
         source1Entity.entryDirection === "down") ||
       (source1Entity.type === "merger" &&
-        source1Entity.leavingDirection !== "down")
-      || (source1Entity.type === "source" && source1Entity.leavingDirection !== "down"))
+        source1Entity.leavingDirection !== "down") ||
+      (source1Entity.type === "source" &&
+        source1Entity.leavingDirection !== "down"))
   ) {
     source1Entity = null;
   }
 
-  let source2Entity = Array.from(state.entities.values()).find(
-    (entity) => entity.x === merger.x + 1 && entity.y === merger.y,
-  ) || null; //direita
   if (
     source2Entity &&
     (source2Entity.type === "consumer" ||
@@ -721,78 +682,72 @@ let source0Entity = Array.from(state.entities.values()).find(
         source2Entity.entryDirection === "left") ||
       (source2Entity.type === "merger" &&
         source2Entity.leavingDirection !== "left") ||
-      (source2Entity.type === "source" && source2Entity.leavingDirection !== "left"))
+      (source2Entity.type === "source" &&
+        source2Entity.leavingDirection !== "left"))
   ) {
     source2Entity = null;
   }
 
   if (source0Entity) {
-    if(source0Entity.type === "transport"){
-      source0Entity.target = merger.id;
-    }
-    if (source0Entity.type === "splitter"){
-      const spliterEntity = source0Entity;
-      switch (spliterEntity.entryDirection) {
+    tryToConnectTarget(source0Entity, "right", merger.id);
+
+    if (source0Entity.type === "splitter") {
+      const splitterEntity = source0Entity;
+      switch (splitterEntity.entryDirection) {
         case "up":
-          spliterEntity.target[0] = merger.id;
+          splitterEntity.target[0] = merger.id;
           break;
         case "down":
-          spliterEntity.target[2] = merger.id;
+          splitterEntity.target[2] = merger.id;
           break;
         case "left":
-          spliterEntity.target[1] = merger.id;
+          splitterEntity.target[1] = merger.id;
           break;
       }
     }
-    if (source0Entity.type === "merger"){
-    source0Entity.target = merger.id;
-  }
+
     merger.source[0] = source0Entity.id;
   }
+
   if (source1Entity) {
-    if (source1Entity.type === "transport"){
-      source1Entity.target = merger.id;
-    }
-    if (source1Entity.type === "splitter"){
-      const spliterEntity = source1Entity;
-      switch (spliterEntity.entryDirection) {
+    tryToConnectTarget(source1Entity, "down", merger.id);
+
+    if (source1Entity.type === "splitter") {
+      const splitterEntity = source1Entity;
+      switch (splitterEntity.entryDirection) {
         case "up":
-          spliterEntity.target[1] = merger.id;
+          splitterEntity.target[1] = merger.id;
           break;
         case "left":
-          spliterEntity.target[2] = merger.id;
+          splitterEntity.target[2] = merger.id;
           break;
         case "right":
-          spliterEntity.target[0] = merger.id;
+          splitterEntity.target[0] = merger.id;
           break;
       }
     }
-    if (source1Entity.type === "merger"){
-    source1Entity.target = merger.id;
-  }
+
     merger.source[1] = source1Entity.id;
   }
+
   if (source2Entity) {
-    if (source2Entity.type === "transport"){
-      source2Entity.target = merger.id;
-    }
-    if (source2Entity.type === "splitter"){
-      const spliterEntity = source2Entity;
-      switch (spliterEntity.entryDirection) {
+    tryToConnectTarget(source2Entity, "left", merger.id);
+
+    if (source2Entity.type === "splitter") {
+      const splitterEntity = source2Entity;
+      switch (splitterEntity.entryDirection) {
         case "up":
-          spliterEntity.target[2] = merger.id;
+          splitterEntity.target[2] = merger.id;
           break;
         case "down":
-          spliterEntity.target[0] = merger.id;
+          splitterEntity.target[0] = merger.id;
           break;
         case "right":
-          spliterEntity.target[1] = merger.id;
+          splitterEntity.target[1] = merger.id;
           break;
       }
     }
-    if (source2Entity.type === "merger"){
-    source2Entity.target = merger.id;
-  }
+
     merger.source[2] = source2Entity.id;
   }
 }

@@ -1,5 +1,11 @@
 import type { GameType } from "../../types";
 import type { DirectionType, EntitySplitterType } from "../EntitiesTypes";
+import {
+  clearConnectionsToEntity,
+  getEntityAt,
+  tryToConnectSource,
+  tryToConnectTarget,
+} from "../EntityActions";
 
 export type GameActionCreateSplitter = {
   type: "create splitter";
@@ -74,6 +80,8 @@ export function deleteSplitter(state: GameType, splitter: string) {
   const splitterIndex = state.splitters.indexOf(splitter); //pelo createSplitter ele sempre criara id a partir do ultimo, entao nao ocorre de ter dois iguais
   if (splitterIndex !== -1) {
     const newState = structuredClone(state);
+    const splitterEntity = newState.entities.get(newState.splitters[splitterIndex]);
+    clearConnectionsToEntity(newState,splitterEntity!);
     newState.splitters.splice(splitterIndex);
     newState.entities.delete(splitter);
     return newState;
@@ -105,6 +113,7 @@ export function updateSplitterConnections(
 ) {
   splitter.source = null;
   splitter.target = [null, null, null];
+  clearConnectionsToEntity(state,splitter);
   switch (splitter.entryDirection) {
     case "up": {
       updateSplitterUpperEntry(state, splitter);
@@ -132,11 +141,9 @@ function updateSplitterUpperEntry(
   state: GameType,
   splitter: EntitySplitterType,
 ) {
-  let sourceID =
-    Array.from(state.entities.values()).find(
-      (entity) => entity.x === splitter.x && entity.y === splitter.y - 1,
-    )?.id ?? null;
-  let sourceEntity = sourceID ? state.entities.get(sourceID) : null;
+  let sourceEntity = getEntityAt(state, splitter.x, splitter.y - 1);
+  let sourceID = sourceEntity?.id ?? null;
+
   if (
     sourceEntity &&
     ((sourceEntity.type === "transport" &&
@@ -145,57 +152,41 @@ function updateSplitterUpperEntry(
       (sourceEntity.type === "source" &&
         sourceEntity.leavingDirection !== "down") ||
       (sourceEntity.type === "splitter" &&
-        sourceEntity.entryDirection == "down") ||
+        sourceEntity.entryDirection === "down") ||
       sourceEntity.type === "consumer")
   ) {
     sourceEntity = null;
     sourceID = null;
   }
+
   if (sourceID) {
     splitter.source = sourceID;
   }
+
   if (sourceEntity) {
-    if (
-      sourceEntity.type === "transport" &&
-      sourceEntity.leavingDirection === "down"
-    ) {
-      const transportEntity = sourceEntity;
-      transportEntity.target = splitter.id;
-    }
-    if (
-      sourceEntity.type === "merger" &&
-      sourceEntity.leavingDirection === "down"
-    ) {
-      const mergerEntity = sourceEntity;
-      mergerEntity.target = splitter.id;
-    }
+    tryToConnectTarget(sourceEntity, "down", splitter.id);
+
     if (
       sourceEntity.type === "splitter" &&
       sourceEntity.entryDirection !== "down"
     ) {
-      const upperSplitterEntity = sourceEntity;
-      switch (upperSplitterEntity.entryDirection) {
-        case "up": {
-          upperSplitterEntity.target[1] = splitter.id;
+      switch (sourceEntity.entryDirection) {
+        case "up":
+          sourceEntity.target[1] = splitter.id;
           break;
-        }
-        case "left": {
-          upperSplitterEntity.target[2] = splitter.id;
+        case "left":
+          sourceEntity.target[2] = splitter.id;
           break;
-        }
-        case "right": {
-          upperSplitterEntity.target[0] = splitter.id;
+        case "right":
+          sourceEntity.target[0] = splitter.id;
           break;
-        }
       }
     }
   }
-  //achar targets
-  let target0 =
-    Array.from(state.entities.values()).find(
-      (entity) => entity.x === splitter.x + 1 && entity.y === splitter.y, //direita
-    )?.id ?? null;
-  let target0Entity = target0 ? state.entities.get(target0) : null;
+
+  let target0Entity = getEntityAt(state, splitter.x + 1, splitter.y);
+  let target0 = target0Entity?.id ?? null;
+
   if (
     target0Entity &&
     ((target0Entity.type === "transport" &&
@@ -213,11 +204,9 @@ function updateSplitterUpperEntry(
     target0 = null;
   }
 
-  let target1 =
-    Array.from(state.entities.values()).find(
-      (entity) => entity.x === splitter.x && entity.y === splitter.y + 1, //baixo
-    )?.id ?? null;
-  let target1Entity = target1 ? state.entities.get(target1) : null;
+  let target1Entity = getEntityAt(state, splitter.x, splitter.y + 1);
+  let target1 = target1Entity?.id ?? null;
+
   if (
     target1Entity &&
     ((target1Entity.type === "transport" &&
@@ -235,11 +224,9 @@ function updateSplitterUpperEntry(
     target1 = null;
   }
 
-  let target2 =
-    Array.from(state.entities.values()).find(
-      (entity) => entity.x === splitter.x - 1 && entity.y === splitter.y, //esquerda
-    )?.id ?? null;
-  let target2Entity = target2 ? state.entities.get(target2) : null;
+  let target2Entity = getEntityAt(state, splitter.x - 1, splitter.y);
+  let target2 = target2Entity?.id ?? null;
+
   if (
     target2Entity &&
     ((target2Entity.type === "transport" &&
@@ -258,90 +245,64 @@ function updateSplitterUpperEntry(
   }
 
   if (target0Entity) {
-    if (target0Entity.type === "transport") {
-      const transportEntity = target0Entity;
-      transportEntity.source = splitter.id;
-    }
+    tryToConnectSource(target0Entity, "left", splitter.id);
     if (
       target0Entity.type === "merger" &&
       target0Entity.leavingDirection !== "left"
     ) {
-      const mergerEntity = target0Entity;
-      switch (mergerEntity.leavingDirection) {
-        case "up": {
-          mergerEntity.source[2] = splitter.id;
+      switch (target0Entity.leavingDirection) {
+        case "up":
+          target0Entity.source[2] = splitter.id;
           break;
-        }
-        case "right": {
-          mergerEntity.source[1] = splitter.id;
+        case "right":
+          target0Entity.source[1] = splitter.id;
           break;
-        }
-        case "down": {
-          mergerEntity.source[0] = splitter.id;
+        case "down":
+          target0Entity.source[0] = splitter.id;
           break;
-        }
       }
-    }
-    if (target0Entity.type === "splitter") {
-      target0Entity.source = splitter.id;
     }
     splitter.target[0] = target0;
   }
+
   if (target1Entity) {
-    if (target1Entity.type === "transport") {
-      const transportEntity = target1Entity;
-      transportEntity.source = splitter.id;
-    }
+    tryToConnectSource(target1Entity, "up", splitter.id);
     if (
       target1Entity.type === "merger" &&
       target1Entity.leavingDirection !== "up"
     ) {
       switch (target1Entity.leavingDirection) {
-        case "down": {
+        case "down":
           target1Entity.source[1] = splitter.id;
           break;
-        }
-        case "left": {
+        case "left":
           target1Entity.source[0] = splitter.id;
           break;
-        }
-        case "right": {
+        case "right":
           target1Entity.source[2] = splitter.id;
           break;
-        }
       }
-    }
-    if (target1Entity.type === "splitter") {
-      target1Entity.source = splitter.id;
     }
     splitter.target[1] = target1;
   }
+
   if (target2Entity) {
-    if (target2Entity.type === "transport") {
-      const transportEntity = target2Entity;
-      transportEntity.source = splitter.id;
-    }
+    tryToConnectSource(target2Entity, "right", splitter.id);
     if (
       target2Entity.type === "merger" &&
       target2Entity.leavingDirection !== "right"
     ) {
       switch (target2Entity.leavingDirection) {
-        case "up": {
+        case "up":
           target2Entity.source[0] = splitter.id;
           break;
-        }
-        case "down": {
+        case "down":
           target2Entity.source[2] = splitter.id;
           break;
-        }
-        case "left": {
+        case "left":
           target2Entity.source[1] = splitter.id;
           break;
-        }
       }
-    }
-    if (target2Entity.type === "splitter") {
-      target2Entity.source = splitter.id;
     }
     splitter.target[2] = target2;
   }
@@ -351,11 +312,10 @@ function updateSplitterDownEntry(
   state: GameType,
   splitter: EntitySplitterType,
 ) {
-  let sourceID =
-    Array.from(state.entities.values()).find(
-      (entity) => entity.x === splitter.x && entity.y === splitter.y + 1,
-    )?.id ?? null;
-  let sourceEntity = sourceID ? state.entities.get(sourceID) : null;
+  // SOURCE (DOWN)
+  let sourceEntity = getEntityAt(state, splitter.x, splitter.y + 1);
+  let sourceID = sourceEntity?.id ?? null;
+
   if (
     sourceEntity &&
     ((sourceEntity.type === "transport" &&
@@ -364,56 +324,42 @@ function updateSplitterDownEntry(
       (sourceEntity.type === "source" &&
         sourceEntity.leavingDirection !== "up") ||
       (sourceEntity.type === "splitter" &&
-        sourceEntity.entryDirection == "up") ||
+        sourceEntity.entryDirection === "up") ||
       sourceEntity.type === "consumer")
   ) {
     sourceEntity = null;
     sourceID = null;
   }
+
   if (sourceID) {
     splitter.source = sourceID;
   }
+
   if (sourceEntity) {
-    if (
-      sourceEntity.type === "transport" &&
-      sourceEntity.leavingDirection === "down"
-    ) {
-      const transportEntity = sourceEntity;
-      transportEntity.target = splitter.id;
-    }
-    if (
-      sourceEntity.type === "merger" &&
-      sourceEntity.leavingDirection === "up"
-    ) {
-      sourceEntity.target = splitter.id;
-    }
+    tryToConnectTarget(sourceEntity, "up", splitter.id);
+
     if (
       sourceEntity.type === "splitter" &&
       sourceEntity.entryDirection !== "up"
     ) {
-      const lowerSplitterEntity = sourceEntity;
-      switch (lowerSplitterEntity.entryDirection) {
-        case "down": {
-          lowerSplitterEntity.target[1] = splitter.id;
+      switch (sourceEntity.entryDirection) {
+        case "down":
+          sourceEntity.target[1] = splitter.id;
           break;
-        }
-        case "left": {
-          lowerSplitterEntity.target[0] = splitter.id;
+        case "left":
+          sourceEntity.target[0] = splitter.id;
           break;
-        }
-        case "right": {
-          lowerSplitterEntity.target[2] = splitter.id;
+        case "right":
+          sourceEntity.target[2] = splitter.id;
           break;
-        }
       }
     }
   }
-  //achar targets
-  let target0 =
-    Array.from(state.entities.values()).find(
-      (entity) => entity.x === splitter.x - 1 && entity.y === splitter.y, //esquerda
-    )?.id ?? null;
-  let target0Entity = target0 ? state.entities.get(target0) : null;
+
+  // TARGET LEFT
+  let target0Entity = getEntityAt(state, splitter.x - 1, splitter.y);
+  let target0 = target0Entity?.id ?? null;
+
   if (
     target0Entity &&
     ((target0Entity.type === "transport" &&
@@ -431,11 +377,10 @@ function updateSplitterDownEntry(
     target0 = null;
   }
 
-  let target1 =
-    Array.from(state.entities.values()).find(
-      (entity) => entity.x === splitter.x && entity.y === splitter.y - 1, //cima
-    )?.id ?? null;
-  let target1Entity = target1 ? state.entities.get(target1) : null;
+  // TARGET UP
+  let target1Entity = getEntityAt(state, splitter.x, splitter.y - 1);
+  let target1 = target1Entity?.id ?? null;
+
   if (
     target1Entity &&
     ((target1Entity.type === "transport" &&
@@ -453,11 +398,10 @@ function updateSplitterDownEntry(
     target1 = null;
   }
 
-  let target2 =
-    Array.from(state.entities.values()).find(
-      (entity) => entity.x === splitter.x + 1 && entity.y === splitter.y, //direita
-    )?.id ?? null;
-  let target2Entity = target2 ? state.entities.get(target2) : null;
+  // TARGET RIGHT
+  let target2Entity = getEntityAt(state, splitter.x + 1, splitter.y);
+  let target2 = target2Entity?.id ?? null;
+
   if (
     target2Entity &&
     ((target2Entity.type === "transport" &&
@@ -476,39 +420,31 @@ function updateSplitterDownEntry(
   }
 
   if (target0Entity) {
-    if (target0Entity.type === "transport") {
-      const transportEntity = target0Entity;
-      transportEntity.source = splitter.id;
-    }
+    tryToConnectSource(target0Entity, "right", splitter.id);
+
     if (
       target0Entity.type === "merger" &&
       target0Entity.leavingDirection !== "right"
     ) {
       switch (target0Entity.leavingDirection) {
-        case "up": {
+        case "up":
           target0Entity.source[0] = splitter.id;
           break;
-        }
-        case "down": {
+        case "down":
           target0Entity.source[2] = splitter.id;
           break;
-        }
-        case "left": {
+        case "left":
           target0Entity.source[1] = splitter.id;
           break;
-        }
       }
     }
-    if (target0Entity.type === "splitter") {
-      target0Entity.source = splitter.id;
-    }
+
     splitter.target[0] = target0;
   }
+
   if (target1Entity) {
-    if (target1Entity.type === "transport") {
-      const transportEntity = target1Entity;
-      transportEntity.source = splitter.id;
-    }
+    tryToConnectSource(target1Entity, "down", splitter.id);
+
     if (
       target1Entity.type === "merger" &&
       target1Entity.leavingDirection !== "down"
@@ -525,39 +461,30 @@ function updateSplitterDownEntry(
           break;
       }
     }
-    if (target1Entity.type === "splitter") {
-      target1Entity.source = splitter.id;
-    }
+
     splitter.target[1] = target1;
   }
+
   if (target2Entity) {
-    if (target2Entity.type === "transport") {
-      const transportEntity = target2Entity;
-      transportEntity.source = splitter.id;
-    }
+    tryToConnectSource(target2Entity, "left", splitter.id);
+
     if (
       target2Entity.type === "merger" &&
       target2Entity.leavingDirection !== "left"
     ) {
-      const mergerEntity = target2Entity;
-      switch (mergerEntity.leavingDirection) {
-        case "up": {
-          mergerEntity.source[2] = splitter.id;
+      switch (target2Entity.leavingDirection) {
+        case "up":
+          target2Entity.source[2] = splitter.id;
           break;
-        }
-        case "right": {
-          mergerEntity.source[1] = splitter.id;
+        case "right":
+          target2Entity.source[1] = splitter.id;
           break;
-        }
-        case "down": {
-          mergerEntity.source[0] = splitter.id;
+        case "down":
+          target2Entity.source[0] = splitter.id;
           break;
-        }
       }
     }
-    if (target2Entity.type === "splitter") {
-      target2Entity.source = splitter.id;
-    }
+
     splitter.target[2] = target2;
   }
 }
@@ -566,11 +493,10 @@ function updateSplitterLeftEntry(
   state: GameType,
   splitter: EntitySplitterType,
 ) {
-  let sourceID =
-    Array.from(state.entities.values()).find(
-      (entity) => entity.x === splitter.x - 1 && entity.y === splitter.y,
-    )?.id ?? null;
-  let sourceEntity = sourceID ? state.entities.get(sourceID) : null;
+  // SOURCE (LEFT)
+  let sourceEntity = getEntityAt(state, splitter.x - 1, splitter.y);
+  let sourceID = sourceEntity?.id ?? null;
+
   if (
     sourceEntity &&
     ((sourceEntity.type === "transport" &&
@@ -579,56 +505,42 @@ function updateSplitterLeftEntry(
       (sourceEntity.type === "source" &&
         sourceEntity.leavingDirection !== "right") ||
       (sourceEntity.type === "splitter" &&
-        sourceEntity.entryDirection == "right") ||
+        sourceEntity.entryDirection === "right") ||
       sourceEntity.type === "consumer")
   ) {
     sourceEntity = null;
     sourceID = null;
   }
+
   if (sourceID) {
     splitter.source = sourceID;
   }
+
   if (sourceEntity) {
-    if (
-      sourceEntity.type === "transport" &&
-      sourceEntity.leavingDirection === "down"
-    ) {
-      const transportEntity = sourceEntity;
-      transportEntity.target = splitter.id;
-    }
-    if (
-      sourceEntity.type === "merger" &&
-      sourceEntity.leavingDirection === "right"
-    ) {
-      const mergerEntity = sourceEntity;
-      mergerEntity.target = splitter.id;
-    }
+    tryToConnectTarget(sourceEntity, "right", splitter.id);
+
     if (
       sourceEntity.type === "splitter" &&
       sourceEntity.entryDirection !== "right"
     ) {
       switch (sourceEntity.entryDirection) {
-        case "up": {
+        case "up":
           sourceEntity.target[0] = splitter.id;
           break;
-        }
-        case "down": {
+        case "down":
           sourceEntity.target[2] = splitter.id;
           break;
-        }
-        case "left": {
+        case "left":
           sourceEntity.target[1] = splitter.id;
           break;
-        }
       }
     }
   }
-  //achar targets
-  let target0 =
-    Array.from(state.entities.values()).find(
-      (entity) => entity.x === splitter.x && entity.y === splitter.y - 1, //cima
-    )?.id ?? null;
-  let target0Entity = target0 ? state.entities.get(target0) : null;
+
+  // TARGET UP
+  let target0Entity = getEntityAt(state, splitter.x, splitter.y - 1);
+  let target0 = target0Entity?.id ?? null;
+
   if (
     target0Entity &&
     ((target0Entity.type === "transport" &&
@@ -646,11 +558,10 @@ function updateSplitterLeftEntry(
     target0 = null;
   }
 
-  let target1 =
-    Array.from(state.entities.values()).find(
-      (entity) => entity.x === splitter.x + 1 && entity.y === splitter.y, //direita
-    )?.id ?? null;
-  let target1Entity = target1 ? state.entities.get(target1) : null;
+  // TARGET RIGHT
+  let target1Entity = getEntityAt(state, splitter.x + 1, splitter.y);
+  let target1 = target1Entity?.id ?? null;
+
   if (
     target1Entity &&
     ((target1Entity.type === "transport" &&
@@ -668,11 +579,10 @@ function updateSplitterLeftEntry(
     target1 = null;
   }
 
-  let target2 =
-    Array.from(state.entities.values()).find(
-      (entity) => entity.x === splitter.x && entity.y === splitter.y + 1, //baixo
-    )?.id ?? null;
-  let target2Entity = target2 ? state.entities.get(target2) : null;
+  // TARGET DOWN
+  let target2Entity = getEntityAt(state, splitter.x, splitter.y + 1);
+  let target2 = target2Entity?.id ?? null;
+
   if (
     target2Entity &&
     ((target2Entity.type === "transport" &&
@@ -691,10 +601,8 @@ function updateSplitterLeftEntry(
   }
 
   if (target0Entity) {
-    if (target0Entity.type === "transport") {
-      const transportEntity = target0Entity;
-      transportEntity.source = splitter.id;
-    }
+    tryToConnectSource(target0Entity, "down", splitter.id);
+
     if (
       target0Entity.type === "merger" &&
       target0Entity.leavingDirection !== "down"
@@ -711,68 +619,53 @@ function updateSplitterLeftEntry(
           break;
       }
     }
-    if (target0Entity.type === "splitter") {
-      target0Entity.source = splitter.id;
-    }
+
     splitter.target[0] = target0;
   }
+
   if (target1Entity) {
-    if (target1Entity.type === "transport") {
-      const transportEntity = target1Entity;
-      transportEntity.source = splitter.id;
-    }
+    tryToConnectSource(target1Entity, "left", splitter.id);
+
     if (
       target1Entity.type === "merger" &&
       target1Entity.leavingDirection !== "left"
     ) {
-      const mergerEntity = target1Entity;
-      switch (mergerEntity.leavingDirection) {
-        case "up": {
-          mergerEntity.source[2] = splitter.id;
+      switch (target1Entity.leavingDirection) {
+        case "up":
+          target1Entity.source[2] = splitter.id;
           break;
-        }
-        case "right": {
-          mergerEntity.source[1] = splitter.id;
+        case "right":
+          target1Entity.source[1] = splitter.id;
           break;
-        }
-        case "down": {
-          mergerEntity.source[0] = splitter.id;
+        case "down":
+          target1Entity.source[0] = splitter.id;
           break;
-        }
       }
     }
-    if (target1Entity.type === "splitter") {
-      target1Entity.source = splitter.id;
-    }
+
     splitter.target[1] = target1;
   }
+
   if (target2Entity) {
-    if (target2Entity.type === "transport") {
-      const transportEntity = target2Entity;
-      transportEntity.source = splitter.id;
-    }
+    tryToConnectSource(target2Entity, "up", splitter.id);
+
     if (
       target2Entity.type === "merger" &&
       target2Entity.leavingDirection !== "up"
     ) {
       switch (target2Entity.leavingDirection) {
-        case "down": {
+        case "down":
           target2Entity.source[1] = splitter.id;
           break;
-        }
-        case "left": {
+        case "left":
           target2Entity.source[0] = splitter.id;
           break;
-        }
-        case "right": {
+        case "right":
           target2Entity.source[2] = splitter.id;
           break;
-        }
       }
     }
-    if (target2Entity.type === "splitter") {
-      target2Entity.source = splitter.id;
-    }
+
     splitter.target[2] = target2;
   }
 }
@@ -781,11 +674,10 @@ function updateSplitterRightEntry(
   state: GameType,
   splitter: EntitySplitterType,
 ) {
-  let sourceID =
-    Array.from(state.entities.values()).find(
-      (entity) => entity.x === splitter.x + 1 && entity.y === splitter.y,
-    )?.id ?? null;
-  let sourceEntity = sourceID ? state.entities.get(sourceID) : null;
+  // SOURCE (RIGHT)
+  let sourceEntity = getEntityAt(state, splitter.x + 1, splitter.y);
+  let sourceID = sourceEntity?.id ?? null;
+
   if (
     sourceEntity &&
     ((sourceEntity.type === "transport" &&
@@ -794,57 +686,42 @@ function updateSplitterRightEntry(
       (sourceEntity.type === "source" &&
         sourceEntity.leavingDirection !== "left") ||
       (sourceEntity.type === "splitter" &&
-        sourceEntity.entryDirection == "left") ||
+        sourceEntity.entryDirection === "left") ||
       sourceEntity.type === "consumer")
   ) {
     sourceEntity = null;
     sourceID = null;
   }
+
   if (sourceID) {
     splitter.source = sourceID;
   }
+
   if (sourceEntity) {
-    if (
-      sourceEntity.type === "transport" &&
-      sourceEntity.leavingDirection === "down"
-    ) {
-      const transportEntity = sourceEntity;
-      transportEntity.target = splitter.id;
-    }
-    if (
-      sourceEntity.type === "merger" &&
-      sourceEntity.leavingDirection === "left"
-    ) {
-      const mergerEntity = sourceEntity;
-      mergerEntity.target = splitter.id;
-    }
+    tryToConnectTarget(sourceEntity, "left", splitter.id);
+
     if (
       sourceEntity.type === "splitter" &&
       sourceEntity.entryDirection !== "left"
     ) {
-      const rightSplitterEntity = sourceEntity;
-      switch (rightSplitterEntity.entryDirection) {
-        case "up": {
-          rightSplitterEntity.target[2] = splitter.id;
+      switch (sourceEntity.entryDirection) {
+        case "up":
+          sourceEntity.target[2] = splitter.id;
           break;
-        }
-        case "down": {
-          rightSplitterEntity.target[0] = splitter.id;
+        case "down":
+          sourceEntity.target[0] = splitter.id;
           break;
-        }
-        case "right": {
-          rightSplitterEntity.target[1] = splitter.id;
+        case "right":
+          sourceEntity.target[1] = splitter.id;
           break;
-        }
       }
     }
   }
-  //achar targets
-  let target0 =
-    Array.from(state.entities.values()).find(
-      (entity) => entity.x === splitter.x && entity.y === splitter.y + 1, //baixo
-    )?.id ?? null;
-  let target0Entity = target0 ? state.entities.get(target0) : null;
+
+  // TARGET DOWN
+  let target0Entity = getEntityAt(state, splitter.x, splitter.y + 1);
+  let target0 = target0Entity?.id ?? null;
+
   if (
     target0Entity &&
     ((target0Entity.type === "transport" &&
@@ -862,11 +739,10 @@ function updateSplitterRightEntry(
     target0 = null;
   }
 
-  let target1 =
-    Array.from(state.entities.values()).find(
-      (entity) => entity.x === splitter.x - 1 && entity.y === splitter.y, //esquerda
-    )?.id ?? null;
-  let target1Entity = target1 ? state.entities.get(target1) : null;
+  // TARGET LEFT
+  let target1Entity = getEntityAt(state, splitter.x - 1, splitter.y);
+  let target1 = target1Entity?.id ?? null;
+
   if (
     target1Entity &&
     ((target1Entity.type === "transport" &&
@@ -884,11 +760,10 @@ function updateSplitterRightEntry(
     target1 = null;
   }
 
-  let target2 =
-    Array.from(state.entities.values()).find(
-      (entity) => entity.x === splitter.x && entity.y === splitter.y - 1, //cima
-    )?.id ?? null;
-  let target2Entity = target2 ? state.entities.get(target2) : null;
+  // TARGET UP
+  let target2Entity = getEntityAt(state, splitter.x, splitter.y - 1);
+  let target2 = target2Entity?.id ?? null;
+
   if (
     target2Entity &&
     ((target2Entity.type === "transport" &&
@@ -907,68 +782,54 @@ function updateSplitterRightEntry(
   }
 
   if (target0Entity) {
-    if (target0Entity.type === "transport") {
-      const transportEntity = target0Entity;
-      transportEntity.source = splitter.id;
-    }
+    tryToConnectSource(target0Entity, "up", splitter.id);
+
     if (
       target0Entity.type === "merger" &&
       target0Entity.leavingDirection !== "up"
     ) {
       switch (target0Entity.leavingDirection) {
-        case "down": {
+        case "down":
           target0Entity.source[1] = splitter.id;
           break;
-        }
-        case "left": {
+        case "left":
           target0Entity.source[0] = splitter.id;
           break;
-        }
-        case "right": {
+        case "right":
           target0Entity.source[2] = splitter.id;
           break;
-        }
       }
     }
-    if (target0Entity.type === "splitter") {
-      target0Entity.source = splitter.id;
-    }
+
     splitter.target[0] = target0;
   }
+
   if (target1Entity) {
-    if (target1Entity.type === "transport") {
-      const transportEntity = target1Entity;
-      transportEntity.source = splitter.id;
-    }
+    tryToConnectSource(target1Entity, "right", splitter.id);
+
     if (
       target1Entity.type === "merger" &&
       target1Entity.leavingDirection !== "right"
     ) {
       switch (target1Entity.leavingDirection) {
-        case "up": {
+        case "up":
           target1Entity.source[0] = splitter.id;
           break;
-        }
-        case "down": {
+        case "down":
           target1Entity.source[2] = splitter.id;
           break;
-        }
-        case "left": {
+        case "left":
           target1Entity.source[1] = splitter.id;
           break;
-        }
       }
     }
-    if (target1Entity.type === "splitter") {
-      target1Entity.source = splitter.id;
-    }
+
     splitter.target[1] = target1;
   }
+
   if (target2Entity) {
-    if (target2Entity.type === "transport") {
-      const transportEntity = target2Entity;
-      transportEntity.source = splitter.id;
-    }
+    tryToConnectSource(target2Entity, "down", splitter.id);
+
     if (
       target2Entity.type === "merger" &&
       target2Entity.leavingDirection !== "down"
@@ -985,9 +846,7 @@ function updateSplitterRightEntry(
           break;
       }
     }
-    if (target2Entity.type === "splitter") {
-      target2Entity.source = splitter.id;
-    }
+
     splitter.target[2] = target2;
   }
 }

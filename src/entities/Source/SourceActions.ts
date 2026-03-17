@@ -1,5 +1,6 @@
 import type { GameType } from "../../types";
-import type { DirectionType, EntitySourceType, EntitySplitterType, EntityTransportType, GoodType } from "../EntitiesTypes";
+import type { DirectionType, EntitySourceType, GoodType } from "../EntitiesTypes";
+import { clearConnectionsToEntity, getEntityAt, tryToConnectSource } from "../EntityActions";
 
 export type GameActionCreateSource = {
   type: "create source";
@@ -70,6 +71,8 @@ export function deleteSource(state: GameType, source: string) {
   const sourceIndex = state.sources.indexOf(source); //pelo createSource ele sempre criara id a partir do ultimo, entao nao ocorre de ter dois iguais
   if (sourceIndex !== -1) {
     const newState = structuredClone(state);
+    const sourceEntity = newState.entities.get(newState.sources[sourceIndex]);
+    clearConnectionsToEntity(newState,sourceEntity!);
     newState.sources.splice(sourceIndex);
     newState.entities.delete(source);
     return newState;
@@ -100,132 +103,130 @@ export function changeSourceGoodType(state: GameType, sourceID: string, goodType
   return newState;
 }
 
-function updateSourceConnections(state: GameType, source: EntitySourceType) {
-  //primeiro limpar as conexoes antigas
-    const oldSinkSource = Array.from(state.entities.values()).find(
-      (entity) => (entity.type === "transport" || entity.type === "splitter") && entity.source === source.id
-    ) as EntityTransportType | EntitySplitterType| undefined;
-    if (oldSinkSource) {
-      oldSinkSource.source = null;
-    }
-  //depois criar as novas conexoes
+
+
+function updateSourceConnections(
+  state: GameType,
+  source: EntitySourceType
+) {
+
+  // limpar conexões antigas
+  clearConnectionsToEntity(state, source);
+
   switch (source.leavingDirection) {
-    case "up":{
-      const upperEntity = Array.from(state.entities.values()).find(
-        (entity) => entity.x === source.x && entity.y === source.y - 1
-      );
-      if (upperEntity){
-        if (upperEntity.type === "transport" && upperEntity.entryDirection === "down") {
-          upperEntity.source = source.id;
-        };
-        if (upperEntity.type === "splitter" && upperEntity.entryDirection === "down"){
-          upperEntity.source = source.id;
+
+    case "up": {
+
+      const upperEntity = getEntityAt(state, source.x, source.y - 1)
+
+      if (!upperEntity) break
+
+      tryToConnectSource(upperEntity, "down", source.id)
+
+      if (
+        upperEntity.type === "merger" &&
+        upperEntity.leavingDirection !== "down"
+      ) {
+        switch (upperEntity.leavingDirection) {
+          case "up":
+            upperEntity.source[1] = source.id
+            break
+          case "left":
+            upperEntity.source[2] = source.id
+            break
+          case "right":
+            upperEntity.source[0] = source.id
+            break
         }
-        if (upperEntity.type === "merger" && upperEntity.leavingDirection !== "down"){
-          switch (upperEntity.leavingDirection){
-            case "up":{
-              upperEntity.source[1] = source.id;
-              break;
-            }
-            case "left":{
-              upperEntity.source[2] = source.id;
-              break;
-            }
-            case "right":{
-              upperEntity.source[0] = source.id;
-              break;
-          }
-        }
-        }
-      };
-      break;
-    }
-    case "down":{
-      const lowerEntity = Array.from(state.entities.values()).find(
-        (entity) => entity.x === source.x && entity.y === source.y + 1
-      );
-      if (lowerEntity){
-        if(lowerEntity.type === "transport" && lowerEntity.entryDirection === "up") {
-        lowerEntity.source = source.id;
-      };
-        if (lowerEntity.type === "splitter" && lowerEntity.entryDirection === "up"){
-          lowerEntity.source = source.id;
-        }
-        if (lowerEntity.type === "merger" && lowerEntity.leavingDirection !== "up"){
-          switch (lowerEntity.leavingDirection){
-            case "down":{
-              lowerEntity.source[1] = source.id;
-              break;
-            }
-            case "left":{
-              lowerEntity.source[0] = source.id;
-              break;
-            }
-            case "right":{
-              lowerEntity.source[2] = source.id;
-              break;
-          }
-        }}
-    };
-      break;
-    }
-    case "left":{
-      const leftEntity = Array.from(state.entities.values()).find(
-        (entity) => entity.x === source.x - 1 && entity.y === source.y
-      );
-      if (leftEntity){
-        if(leftEntity.type === "transport" && leftEntity.entryDirection === "right") {
-          leftEntity.source = source.id;
-        };
-        if (leftEntity.type === "splitter" && leftEntity.entryDirection === "right"){
-          leftEntity.source = source.id;
-        }
-        if (leftEntity.type === "merger" && leftEntity.leavingDirection !== "right"){
-          switch (leftEntity.leavingDirection){
-            case "up":{
-              leftEntity.source[0] = source.id;
-              break;
-            }
-            case "down":{
-              leftEntity.source[2] = source.id;
-              break;
-            }
-            case "left":{
-              leftEntity.source[1] = source.id;
-              break;
-          }
-        }}
-      };
-      break;
-    }
-    case "right":{
-      const rightEntity = Array.from(state.entities.values()).find(
-        (entity) => entity.x === source.x + 1 && entity.y === source.y
-      );
-      if (rightEntity){
-        if(rightEntity.type === "transport" && rightEntity.entryDirection === "left") {
-          rightEntity.source = source.id;
-        };
-        if (rightEntity.type === "splitter" && rightEntity.entryDirection === "left"){
-          rightEntity.source = source.id;
-        }
-        if (rightEntity.type === "merger" && rightEntity.leavingDirection !== "left"){
-          switch (rightEntity.leavingDirection){
-            case "up":{
-              rightEntity.source[2] = source.id;
-              break;
-            }
-            case "down":{
-              rightEntity.source[0] = source.id;
-              break;
-            }
-            case "right":{
-              rightEntity.source[1] = source.id;
-              break;
-          }
-        }}  
       }
-      break;
+
+      break
     }
+
+    case "down": {
+
+      const lowerEntity = getEntityAt(state, source.x, source.y + 1)
+
+      if (!lowerEntity) break
+
+      tryToConnectSource(lowerEntity, "up", source.id)
+
+      if (
+        lowerEntity.type === "merger" &&
+        lowerEntity.leavingDirection !== "up"
+      ) {
+        switch (lowerEntity.leavingDirection) {
+          case "down":
+            lowerEntity.source[1] = source.id
+            break
+          case "left":
+            lowerEntity.source[0] = source.id
+            break
+          case "right":
+            lowerEntity.source[2] = source.id
+            break
+        }
+      }
+
+      break
+    }
+
+    case "left": {
+
+      const leftEntity = getEntityAt(state, source.x - 1, source.y)
+
+      if (!leftEntity) break
+
+      tryToConnectSource(leftEntity, "right", source.id)
+
+      if (
+        leftEntity.type === "merger" &&
+        leftEntity.leavingDirection !== "right"
+      ) {
+        switch (leftEntity.leavingDirection) {
+          case "up":
+            leftEntity.source[0] = source.id
+            break
+          case "down":
+            leftEntity.source[2] = source.id
+            break
+          case "left":
+            leftEntity.source[1] = source.id
+            break
+        }
+      }
+
+      break
+    }
+
+    case "right": {
+
+      const rightEntity = getEntityAt(state, source.x + 1, source.y)
+
+      if (!rightEntity) break
+
+      tryToConnectSource(rightEntity, "left", source.id)
+
+      if (
+        rightEntity.type === "merger" &&
+        rightEntity.leavingDirection !== "left"
+      ) {
+        switch (rightEntity.leavingDirection) {
+          case "up":
+            rightEntity.source[2] = source.id
+            break
+          case "down":
+            rightEntity.source[0] = source.id
+            break
+          case "right":
+            rightEntity.source[1] = source.id
+            break
+        }
+      }
+
+      break
+    }
+
   }
+
 }

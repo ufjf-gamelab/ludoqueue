@@ -4,6 +4,7 @@ import type {
   EntityStockType,
   EntityTransportType,
 } from "../EntitiesTypes";
+import { clearConnectionsToEntity, getEntityAt, tryToConnectSource, tryToConnectTarget } from "../EntityActions";
 
 export type GameActionCreateStock = {
   type: "create stock";
@@ -71,6 +72,8 @@ export function deleteStock(state: GameType, stock: string) {
   const stockIndex = state.stocks.indexOf(stock); //pelo createStock ele sempre criara id a partir do ultimo, entao nao ocorre de ter dois iguais
   if (stockIndex !== -1) {
     const newState = structuredClone(state);
+    const stockEntity = newState.entities.get(newState.stocks[stockIndex]);
+    clearConnectionsToEntity(newState,stockEntity!);
     newState.stocks.splice(stockIndex);
     newState.entities.delete(stock);
     return newState;
@@ -109,52 +112,36 @@ export function changeStockDirection(
 }
 
 function updateStockConnections(state: GameType, stock: EntityStockType) {
-  //depois criar as novas conexoes
+  clearConnectionsToEntity(state,stock);
   switch (stock.direction) {
     case "up": {
-      const upperEntity = Array.from(state.entities.values()).find(
-        (entity) => entity.x === stock.x && entity.y === stock.y - 1,
-      );
-      const lowerEntity = Array.from(state.entities.values()).find(
-        (entity) => entity.x === stock.x && entity.y === stock.y + 1,
-      );
+      const upperEntity = getEntityAt(state, stock.x, stock.y - 1);
+      const lowerEntity = getEntityAt(state, stock.x, stock.y + 1);
+
       if (upperEntity) {
+        tryToConnectSource(upperEntity, "down", stock.id);
+
         if (
-          upperEntity.type === "transport" &&
-          upperEntity.entryDirection === "down"
+          upperEntity.type === "merger" &&
+          upperEntity.leavingDirection !== "down"
         ) {
-          upperEntity.source = stock.id;
-        }
-        if (
-          upperEntity.type === "splitter" &&
-          upperEntity.entryDirection === "down"
-        ) {
-          upperEntity.source = stock.id;
-        }
-        if (upperEntity.type === "merger" && upperEntity.leavingDirection !== "down"){
-          switch (upperEntity.leavingDirection){
-            case "up":{
+          switch (upperEntity.leavingDirection) {
+            case "up":
               upperEntity.source[1] = stock.id;
               break;
-            }
-            case "left":{
+            case "left":
               upperEntity.source[2] = stock.id;
               break;
-            }
-            case "right":{
+            case "right":
               upperEntity.source[0] = stock.id;
               break;
           }
         }
-        }
       }
+
       if (lowerEntity) {
-        if (
-          lowerEntity.type === "transport" &&
-          lowerEntity.leavingDirection === "up"
-        ) {
-          lowerEntity.target = stock.id;
-        }
+        tryToConnectTarget(lowerEntity, "up", stock.id);
+
         if (
           lowerEntity.type === "splitter" &&
           lowerEntity.entryDirection !== "up"
@@ -171,25 +158,17 @@ function updateStockConnections(state: GameType, stock: EntityStockType) {
               break;
           }
         }
-        if (lowerEntity.type === "merger" && lowerEntity.leavingDirection === "up"){
-          lowerEntity.target = stock.id;}
+
       }
       break;
     }
     case "down": {
-      const upperEntity = Array.from(state.entities.values()).find(
-        (entity) => entity.x === stock.x && entity.y === stock.y - 1,
-      );
-      const lowerEntity = Array.from(state.entities.values()).find(
-        (entity) => entity.x === stock.x && entity.y === stock.y + 1,
-      );
+      const upperEntity = getEntityAt(state, stock.x, stock.y - 1);
+      const lowerEntity = getEntityAt(state, stock.x, stock.y + 1);
+
       if (upperEntity) {
-        if (
-          upperEntity.type === "transport" &&
-          upperEntity.leavingDirection === "down"
-        ) {
-          upperEntity.target = stock.id;
-        }
+        tryToConnectTarget(upperEntity, "down", stock.id);
+
         if (
           upperEntity.type === "splitter" &&
           upperEntity.entryDirection !== "down"
@@ -206,83 +185,56 @@ function updateStockConnections(state: GameType, stock: EntityStockType) {
               break;
           }
         }
-        if (upperEntity.type === "merger" && upperEntity.leavingDirection === "down"){
-          upperEntity.target = stock.id;}
       }
       if (lowerEntity) {
+        tryToConnectSource(lowerEntity, "up", stock.id);
+
         if (
-          lowerEntity.type === "transport" &&
-          lowerEntity.entryDirection === "up"
+          lowerEntity.type === "merger" &&
+          lowerEntity.leavingDirection !== "up"
         ) {
-          lowerEntity.source = stock.id;
-        }
-        if (
-          lowerEntity.type === "splitter" &&
-          lowerEntity.entryDirection === "up"
-        ) {
-          lowerEntity.source = stock.id;
-        }
-        if (lowerEntity.type === "merger" && lowerEntity.leavingDirection !== "up"){
-          switch (lowerEntity.leavingDirection){
-            case "down":{
+          switch (lowerEntity.leavingDirection) {
+            case "down":
               lowerEntity.source[1] = stock.id;
               break;
-            }
-            case "left":{
+            case "left":
               lowerEntity.source[0] = stock.id;
               break;
-            }
-            case "right":{
+            case "right":
               lowerEntity.source[2] = stock.id;
               break;
           }
-        }}
+        }
       }
       break;
     }
     case "left": {
-      const leftEntity = Array.from(state.entities.values()).find(
-        (entity) => entity.x === stock.x - 1 && entity.y === stock.y,
-      );
-      const rightEntity = Array.from(state.entities.values()).find(
-        (entity) => entity.x === stock.x + 1 && entity.y === stock.y,
-      );
+      const leftEntity = getEntityAt(state, stock.x - 1, stock.y);
+      const rightEntity = getEntityAt(state, stock.x + 1, stock.y);
+
       if (leftEntity) {
+        tryToConnectSource(leftEntity, "right", stock.id);
+
         if (
-          leftEntity.type === "transport" &&
-          leftEntity.entryDirection === "right"
+          leftEntity.type === "merger" &&
+          leftEntity.leavingDirection !== "right"
         ) {
-          leftEntity.source = stock.id;
-        }
-        if (
-          leftEntity.type === "splitter" &&
-          leftEntity.entryDirection === "right"
-        ) {
-          leftEntity.source = stock.id;
-        }
-        if (leftEntity.type === "merger" && leftEntity.leavingDirection !== "right"){
-          switch (leftEntity.leavingDirection){
-            case "up":{
+          switch (leftEntity.leavingDirection) {
+            case "up":
               leftEntity.source[0] = stock.id;
               break;
-            }
-            case "down":{
+            case "down":
               leftEntity.source[2] = stock.id;
               break;
-            }
-            case "left":{
+            case "left":
               leftEntity.source[1] = stock.id;
               break;
           }
-        }}
+        }
       }
       if (rightEntity) {
-        if (
-          rightEntity.type === "transport" &&
-          rightEntity.leavingDirection === "left"
-        ) {
-          rightEntity.target = stock.id;
-        }
+        tryToConnectTarget(rightEntity, "left", stock.id);
+
         if (
           rightEntity.type === "splitter" &&
           rightEntity.entryDirection !== "left"
@@ -299,25 +251,16 @@ function updateStockConnections(state: GameType, stock: EntityStockType) {
               break;
           }
         }
-        if (rightEntity.type === "merger" && rightEntity.leavingDirection === "left"){
-          rightEntity.target = stock.id;}
       }
       break;
     }
     case "right": {
-      const leftEntity = Array.from(state.entities.values()).find(
-        (entity) => entity.x === stock.x - 1 && entity.y === stock.y,
-      );
-      const rightEntity = Array.from(state.entities.values()).find(
-        (entity) => entity.x === stock.x + 1 && entity.y === stock.y,
-      );
+      const leftEntity = getEntityAt(state, stock.x - 1, stock.y);
+      const rightEntity = getEntityAt(state, stock.x + 1, stock.y);
+
       if (leftEntity) {
-        if (
-          leftEntity.type === "transport" &&
-          leftEntity.leavingDirection === "right"
-        ) {
-          leftEntity.target = stock.id;
-        }
+        tryToConnectTarget(leftEntity, "right", stock.id);
+
         if (
           leftEntity.type === "splitter" &&
           leftEntity.entryDirection !== "right"
@@ -334,22 +277,10 @@ function updateStockConnections(state: GameType, stock: EntityStockType) {
               break;
           }
         }
-        if (leftEntity.type === "merger" && leftEntity.leavingDirection === "right"){
-          leftEntity.target = stock.id;}
       }
       if (rightEntity) {
-        if (
-          rightEntity.type === "transport" &&
-          rightEntity.entryDirection === "left"
-        ) {
-          rightEntity.source = stock.id;
-        }
-        if (
-          rightEntity.type === "splitter" &&
-          rightEntity.entryDirection === "left"
-        ) {
-          rightEntity.source = stock.id;
-        }
+        tryToConnectSource(rightEntity, "left", stock.id);
+
         if (
           rightEntity.type === "merger" &&
           rightEntity.leavingDirection !== "left"
