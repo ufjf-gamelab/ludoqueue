@@ -234,7 +234,7 @@ export const initialState3: GameType = {
   stocks: [],
   sources: ["source1", "source2","source3","source4","source5","source6"],
   consumers: ["consumer1", "consumer2"],
-  transports: ["transport1", "transport2","transport33"],
+  transports: ["transport1", "transport2","transport3"],
   splitters: [],
   mergers: ["merger1", "merger2"],
   editor: null,

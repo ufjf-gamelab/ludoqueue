@@ -5,13 +5,43 @@ import type {
   GameActionCreateStock,
   GameActionDeleteStock,
 } from "./StockActions.ts";
-import type { EntityType, EntityStockType } from "../EntitiesTypes.ts";
+import type {
+  EntityType,
+  EntityStockType,
+  MovingGoodType,
+} from "../EntitiesTypes.ts";
+
+function makeGood(overrides?: Partial<MovingGoodType>): MovingGoodType {
+  return {
+    source: null,
+    target: null,
+    size: 1,
+    time: 0,
+    goodType: "red",
+    ...overrides,
+  };
+}
+
+function makeBaseState(): Partial<GameType> {
+  return {
+    entities: new Map<string, EntityType>(),
+    stocks: [],
+    sources: [],
+    consumers: [],
+    transports: [],
+    splitters: [],
+    mergers: [],
+    time: 0,
+    selected: null,
+    status: "waiting",
+    editor: null as any,
+  };
+}
 
 describe("Stock", () => {
   it("should create stock1 if none stocks exists", () => {
     const stateTest: Partial<GameType> = {
-      entities: new Map<string, EntityType>(),
-      stocks: [],
+      ...makeBaseState(),
     };
 
     const actionTest: Partial<GameActionCreateStock> = {
@@ -19,17 +49,23 @@ describe("Stock", () => {
       max: 10,
       x: 0,
       y: 0,
+      direction: "right",
+      val: 0,
     };
 
     const result = gameReducer(stateTest as GameType, actionTest as GameAction);
     expect(result.stocks).toHaveLength(1);
-    expect(result.stocks[0]).toBe("stock1");
-    expect(result.entities.get("stock1")).toBeDefined();
-    expect(result.entities.get("stock1")?.type).toBe("stock");
+    const stock = result.entities.get("stock1") as EntityStockType;
+    expect(stock).toBeDefined();
+    expect(stock.type).toBe("stock");
+    expect(stock.max).toBe(10);
+    expect(stock.goods).toEqual([]);
+    expect(stock.direction).toBe("right");
   });
 
   it("should create stock2 if the last stock is stock1", () => {
     const stateTest: Partial<GameType> = {
+      ...makeBaseState(),
       entities: new Map<string, EntityType>([
         [
           "stock1",
@@ -37,13 +73,12 @@ describe("Stock", () => {
             id: "stock1",
             type: "stock",
             name: "Stock 1",
-            val: 0,
             max: 10,
             closed: false,
+            direction: "right",
+            goods: [],
             x: 0,
             y: 0,
-            entryDirection: "left",
-            leavingDirection: "right",
           },
         ],
       ]),
@@ -55,6 +90,8 @@ describe("Stock", () => {
       max: 15,
       x: 1,
       y: 0,
+      direction: "right",
+      val: 0,
     };
 
     const result = gameReducer(stateTest as GameType, actionTest as GameAction);
@@ -66,6 +103,7 @@ describe("Stock", () => {
 
   it("should create stock2 with max 15", () => {
     const stateTest: Partial<GameType> = {
+      ...makeBaseState(),
       entities: new Map<string, EntityType>([
         [
           "stock1",
@@ -73,13 +111,12 @@ describe("Stock", () => {
             id: "stock1",
             type: "stock",
             name: "Stock 1",
-            val: 0,
             max: 10,
             closed: false,
+            direction: "right",
+            goods: [],
             x: 0,
             y: 0,
-            entryDirection: "left",
-            leavingDirection: "right",
           },
         ],
       ]),
@@ -91,15 +128,17 @@ describe("Stock", () => {
       max: 15,
       x: 1,
       y: 0,
+      direction: "right",
+      val: 0,
     };
 
     const result = gameReducer(stateTest as GameType, actionTest as GameAction);
-    expect(result.stocks).toHaveLength(2);
     expect((result.entities.get("stock2") as EntityStockType).max).toBe(15);
   });
 
   it("should not create stock if position is ocupied", () => {
     const stateTest: Partial<GameType> = {
+      ...makeBaseState(),
       entities: new Map<string, EntityType>([
         [
           "stock1",
@@ -107,13 +146,12 @@ describe("Stock", () => {
             id: "stock1",
             type: "stock",
             name: "stock A",
-            val: 0,
             max: 5,
+            closed: false,
+            direction: "right",
+            goods: [],
             x: 0,
             y: 0,
-            closed: false,
-            entryDirection: "left",
-            leavingDirection: "right",
           },
         ],
       ]),
@@ -126,6 +164,7 @@ describe("Stock", () => {
       val: 0,
       x: 0,
       y: 0,
+      direction: "right",
     };
     expect(stateTest.stocks).toHaveLength(1);
     const result = gameReducer(stateTest as GameType, actionTest);
@@ -134,6 +173,7 @@ describe("Stock", () => {
 
   it("should delete existing stock", () => {
     const stateTest: Partial<GameType> = {
+      ...makeBaseState(),
       entities: new Map<string, EntityType>([
         [
           "stock1",
@@ -141,13 +181,12 @@ describe("Stock", () => {
             id: "stock1",
             type: "stock",
             name: "Stock 1",
-            val: 5,
             max: 10,
             closed: false,
+            direction: "right",
+            goods: [makeGood(), makeGood({ time: 1 })],
             x: 0,
             y: 0,
-            entryDirection: "left",
-            leavingDirection: "right",
           },
         ],
       ]),
@@ -166,6 +205,7 @@ describe("Stock", () => {
 
   it("should not delete any stock if stock isnt present", () => {
     const stateTest: Partial<GameType> = {
+      ...makeBaseState(),
       entities: new Map<string, EntityType>([
         [
           "stock1",
@@ -173,13 +213,12 @@ describe("Stock", () => {
             id: "stock1",
             type: "stock",
             name: "Stock 1",
-            val: 5,
             max: 10,
             closed: false,
+            direction: "right",
+            goods: [makeGood()],
             x: 0,
             y: 0,
-            entryDirection: "left",
-            leavingDirection: "right",
           },
         ],
       ]),
@@ -194,7 +233,9 @@ describe("Stock", () => {
     const result = gameReducer(stateTest as GameType, actionTest as GameAction);
     expect(result.stocks).toHaveLength(1);
     expect(result.entities.get("stock1")).toBeDefined();
-    expect((result.entities.get("stock1") as EntityStockType).val).toBe(5);
+    expect(
+      (result.entities.get("stock1") as EntityStockType).goods,
+    ).toHaveLength(1);
   });
 
   it("should keep items unchanged", () => {
@@ -203,27 +244,30 @@ describe("Stock", () => {
       type: "stock",
       name: "Stock A",
       max: 10,
-      val: 2,
       closed: false,
+      direction: "right",
+      goods: [makeGood(), makeGood({ time: 1 })],
       x: 0,
       y: 0,
-      entryDirection: "left",
-            leavingDirection: "right",
     };
     const stateTest: Partial<GameType> = {
+      ...makeBaseState(),
       entities: new Map<string, EntityType>([["stock1", fakeStock]]),
       stocks: ["stock1"],
     };
 
     const result = gameReducer(stateTest as GameType, { type: "game tick" });
-    expect(result.entities.get("stock1")?.val).toBe(2);
+    expect(
+      (result.entities.get("stock1") as EntityStockType).goods,
+    ).toHaveLength(2);
     expect((result.entities.get("stock1") as EntityStockType).closed).toBe(
-      false
+      false,
     );
   });
 
   it("should not get items if full", () => {
     const stateTest: Partial<GameType> = {
+      ...makeBaseState(),
       entities: new Map<string, EntityType>([
         [
           "stock1",
@@ -231,13 +275,12 @@ describe("Stock", () => {
             id: "stock1",
             type: "stock",
             name: "Stock",
-            val: 10,
             max: 10,
             closed: false,
+            direction: "down",
+            goods: Array.from({ length: 10 }, () => makeGood()),
             x: 0,
             y: 0,
-            leavingDirection: "down",
-            entryDirection: "right",
           },
         ],
         [
@@ -246,13 +289,14 @@ describe("Stock", () => {
             id: "source1",
             type: "source",
             name: "Source 1",
-            val: 2,
             max: 2,
             rate: 1,
             cooldown: 0,
+            leavingDirection: "left",
+            goodType: "red",
+            goods: [makeGood(), makeGood({ time: 1 })],
             x: 2,
             y: 0,
-            leavingDirection: "left",
           },
         ],
         [
@@ -261,32 +305,34 @@ describe("Stock", () => {
             id: "transport1",
             type: "transport",
             name: "Transport",
-            val: 1,
             max: 1,
             rate: 1,
             cooldown: 0,
             source: "source1",
             target: "stock1",
-            direction: "left",
+            entryDirection: "left",
+            leavingDirection: "left",
             x: 1,
             y: 0,
             movingGoods: [],
+            goods: [],
           },
         ],
       ]),
       stocks: ["stock1"],
       sources: ["source1"],
+      transports: ["transport1"],
     };
 
     const result = gameReducer(stateTest as GameType, { type: "game tick" });
-    expect(result.entities.get("stock1")?.val).toBe(10);
-    expect((result.entities.get("stock1") as EntityStockType).closed).toBe(
-      false
-    );
+    expect(
+      (result.entities.get("stock1") as EntityStockType).goods,
+    ).toHaveLength(10);
   });
 
   it("should not get items if closed", () => {
     const stateTest: Partial<GameType> = {
+      ...makeBaseState(),
       entities: new Map<string, EntityType>([
         [
           "stock1",
@@ -294,13 +340,12 @@ describe("Stock", () => {
             id: "stock1",
             type: "stock",
             name: "Stock",
-            val: 2,
             max: 10,
             closed: true,
+            direction: "down",
+            goods: [makeGood(), makeGood({ time: 1 })],
             x: 0,
             y: 0,
-            leavingDirection: "down",
-            entryDirection: "right",
           },
         ],
         [
@@ -309,13 +354,14 @@ describe("Stock", () => {
             id: "source1",
             type: "source",
             name: "Source 1",
-            val: 2,
             max: 2,
             rate: 1,
             cooldown: 0,
+            leavingDirection: "left",
+            goodType: "red",
+            goods: [makeGood(), makeGood({ time: 1 })],
             x: 2,
             y: 0,
-            leavingDirection: "left",
           },
         ],
         [
@@ -324,32 +370,36 @@ describe("Stock", () => {
             id: "transport1",
             type: "transport",
             name: "Transport",
-            val: 1,
             max: 1,
             rate: 1,
             cooldown: 0,
             source: "source1",
             target: "stock1",
-            direction: "left",
+            entryDirection: "left",
+            leavingDirection: "left",
             x: 1,
             y: 0,
             movingGoods: [],
+            goods: [],
           },
         ],
       ]),
       stocks: ["stock1"],
       sources: ["source1"],
+      transports: ["transport1"],
     };
 
     const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
-    expect(tick1.entities.get("transport1")?.val).toBe(1);
+    expect((tick1.entities.get("transport1") as any).goods).toHaveLength(1);
 
     const tick2 = gameReducer(tick1, { type: "game tick" });
-    expect(tick2.entities.get("transport1")?.val).toBe(1);
+    expect((tick2.entities.get("transport1") as any).goods).toHaveLength(1);
 
     const tick3 = gameReducer(tick2, { type: "game tick" });
-    expect(tick3.entities.get("transport1")?.val).toBe(1);
-    expect(tick3.entities.get("stock1")?.val).toBe(2);
+    expect((tick3.entities.get("transport1") as any).goods).toHaveLength(1);
+    expect(
+      (tick3.entities.get("stock1") as EntityStockType).goods,
+    ).toHaveLength(2);
     expect((tick3.entities.get("stock1") as EntityStockType).closed).toBe(true);
   });
 });

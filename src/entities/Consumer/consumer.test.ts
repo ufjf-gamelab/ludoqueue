@@ -20,6 +20,7 @@ describe("Consumer", () => {
       rate: 1,
       x: 0,
       y: 0,
+      entryDirection: "left",
     };
 
     const result = gameReducer(stateTest as GameType, actionTest);
@@ -38,13 +39,13 @@ describe("Consumer", () => {
             id: "consumer1",
             type: "consumer",
             name: "Consumer A",
-            val: 0,
             max: 5,
             rate: 1,
             cooldown: 1.25,
             x: 0,
             y: 0,
             entryDirection: "left",
+            goods: [],
           },
         ],
       ]),
@@ -57,6 +58,7 @@ describe("Consumer", () => {
       rate: 1,
       x: 1,
       y: 0,
+      entryDirection: "left",
     };
     expect(stateTest.consumers).toHaveLength(1);
     const result = gameReducer(stateTest as GameType, actionTest);
@@ -75,13 +77,13 @@ describe("Consumer", () => {
             id: "consumer1",
             type: "consumer",
             name: "Consumer A",
-            val: 0,
             max: 5,
             rate: 1,
             cooldown: 1.25,
             x: 0,
             y: 0,
             entryDirection: "left",
+            goods: [],
           },
         ],
       ]),
@@ -94,12 +96,13 @@ describe("Consumer", () => {
       rate: 1,
       x: 1,
       y: 0,
+      entryDirection: "left",
     };
 
     const result = gameReducer(stateTest as GameType, actionTest);
     expect(result.consumers).toHaveLength(2);
     expect((result.entities.get("consumer2") as EntityConsumerType).max).toBe(
-      15
+      15,
     );
   });
 
@@ -112,13 +115,13 @@ describe("Consumer", () => {
             id: "consumer1",
             type: "consumer",
             name: "Consumer A",
-            val: 0,
             max: 5,
             rate: 1,
             cooldown: 1.25,
             x: 0,
             y: 0,
             entryDirection: "left",
+            goods: [],
           },
         ],
       ]),
@@ -131,12 +134,13 @@ describe("Consumer", () => {
       rate: 1,
       x: 1,
       y: 0,
+      entryDirection: "left",
     };
 
     const result = gameReducer(stateTest as GameType, actionTest);
     expect(result.consumers).toHaveLength(2);
     expect((result.entities.get("consumer2") as EntityConsumerType).rate).toBe(
-      1
+      1,
     );
   });
 
@@ -149,13 +153,13 @@ describe("Consumer", () => {
             id: "consumer1",
             type: "consumer",
             name: "Consumer A",
-            val: 0,
             max: 5,
             rate: 1,
             cooldown: 1.25,
             x: 0,
             y: 0,
             entryDirection: "left",
+            goods: [],
           },
         ],
       ]),
@@ -168,6 +172,7 @@ describe("Consumer", () => {
       rate: 1,
       x: 0,
       y: 0,
+      entryDirection: "left",
     };
     expect(stateTest.consumers).toHaveLength(1);
     const result = gameReducer(stateTest as GameType, actionTest);
@@ -183,13 +188,13 @@ describe("Consumer", () => {
             id: "consumer1",
             type: "consumer",
             name: "Consumer A",
-            val: 0,
             max: 5,
             rate: 1,
             cooldown: 1.25,
             x: 0,
             y: 0,
             entryDirection: "left",
+            goods: [],
           },
         ],
       ]),
@@ -215,13 +220,13 @@ describe("Consumer", () => {
             id: "consumer1",
             type: "consumer",
             name: "Consumer A",
-            val: 5,
             max: 5,
             rate: 1,
             cooldown: 1.25,
             x: 0,
             y: 0,
             entryDirection: "left",
+            goods: [],
           },
         ],
       ]),
@@ -238,21 +243,29 @@ describe("Consumer", () => {
     expect(result.entities.get("consumer1")).toBeDefined();
   });
 
-  it("should decrease value by rate", () => {
-    const fakeCosumer: EntityConsumerType = {
+  it("should decrease goods by rate", () => {
+    const fakeConsumer: EntityConsumerType = {
       id: "consumer1",
       type: "consumer",
       name: "Consumer A",
-      val: 1,
       max: 2,
       rate: 1,
       cooldown: 0,
       x: 0,
       y: 0,
       entryDirection: "left",
+      goods: [
+        {
+          source: null,
+          target: null,
+          size: 1,
+          time: 0,
+          goodType: "red",
+        },
+      ],
     };
-    gameConsumerTick(fakeCosumer);
-    expect(fakeCosumer.val).toBe(0);
+    gameConsumerTick(fakeConsumer);
+    expect(fakeConsumer.goods).toHaveLength(0);
   });
 
   it("should not decrease below zero", () => {
@@ -260,16 +273,16 @@ describe("Consumer", () => {
       id: "consumer1",
       type: "consumer",
       name: "Consumer A",
-      val: 0,
       max: 2,
       rate: 1,
       cooldown: 0,
       x: 0,
       y: 0,
       entryDirection: "left",
+      goods: [],
     };
     gameConsumerTick(fakeConsumer);
-    expect(fakeConsumer.val).toBe(0);
+    expect(fakeConsumer.goods).toHaveLength(0);
   });
 
   it("should not decrease when on cooldown", () => {
@@ -277,18 +290,26 @@ describe("Consumer", () => {
       id: "consumer1",
       type: "consumer",
       name: "Consumer A",
-      val: 1,
       max: 2,
       rate: 1,
       cooldown: 2,
       x: 0,
       y: 0,
       entryDirection: "left",
+      goods: [
+        {
+          source: null,
+          target: null,
+          size: 1,
+          time: 0,
+          goodType: "red",
+        },
+      ],
     };
     gameConsumerTick(fakeConsumer);
-    expect(fakeConsumer.val).toBe(1);
+    expect(fakeConsumer.goods).toHaveLength(1);
     gameConsumerTick(fakeConsumer);
-    expect(fakeConsumer.val).toBe(0);
+    expect(fakeConsumer.goods).toHaveLength(0);
   });
 
   it("should reset cooldown after tick", () => {
@@ -296,16 +317,22 @@ describe("Consumer", () => {
       id: "consumer1",
       type: "consumer",
       name: "Consumer A",
-      val: 1,
       max: 2,
       rate: 1,
-      cooldown: 2,
+      cooldown: 1,
       x: 0,
       y: 0,
       entryDirection: "left",
+      goods: [
+        {
+          source: null,
+          target: null,
+          size: 1,
+          time: 0,
+          goodType: "red",
+        },
+      ],
     };
-    gameConsumerTick(fakeConsumer);
-    expect(fakeConsumer.cooldown).toBe(1);
     gameConsumerTick(fakeConsumer);
     expect(fakeConsumer.cooldown).toBe(1);
   });

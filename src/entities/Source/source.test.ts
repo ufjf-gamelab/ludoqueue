@@ -1,11 +1,7 @@
 import { it, expect, describe } from "vitest";
 import type { GameType } from "../../types.ts";
 import type { EntityType, EntitySourceType } from "../EntitiesTypes.ts";
-import {
-  gameSourceTick,
-  gameReducer,
-  type GameAction,
-} from "../../Provider.tsx";
+import { gameReducer, type GameAction } from "../../Provider.tsx";
 import type {
   GameActionCreateSource,
   GameActionDeleteSource,
@@ -39,13 +35,14 @@ describe("Source", () => {
             id: "source1",
             type: "source",
             name: "Source A",
-            val: 0,
+            goodType: "red",
             max: 5,
             rate: 1,
             cooldown: 1.25,
             x: 0,
             y: 1,
             leavingDirection: "right",
+            goods: [],
           },
         ],
       ]),
@@ -75,13 +72,14 @@ describe("Source", () => {
             id: "source1",
             type: "source",
             name: "Source A",
-            val: 0,
+            goodType: "red",
             max: 5,
             rate: 1,
             cooldown: 1.25,
             x: 0,
             y: 0,
             leavingDirection: "right",
+            goods: [],
           },
         ],
       ]),
@@ -109,13 +107,14 @@ describe("Source", () => {
             id: "source1",
             type: "source",
             name: "source A",
-            val: 0,
+            goodType: "red",
             max: 5,
             rate: 1,
             cooldown: 1.25,
             x: 0,
             y: 0,
             leavingDirection: "right",
+            goods: [],
           },
         ],
       ]),
@@ -125,9 +124,10 @@ describe("Source", () => {
     const actionTest: GameActionCreateSource = {
       type: "create source",
       max: 15,
-      val: 0,
       x: 0,
       y: 0,
+      leavingDirection:"left",
+      goodType: "blue",
     };
     const result = gameReducer(stateTest as GameType, actionTest);
     expect(result.sources).toHaveLength(1);
@@ -142,13 +142,14 @@ describe("Source", () => {
             id: "source1",
             type: "source",
             name: "Source A",
-            val: 0,
+            goodType: "red",
             max: 5,
             rate: 1,
             cooldown: 1.25,
             x: 0,
             y: 0,
             leavingDirection: "right",
+            goods: [],
           },
         ],
       ]),
@@ -174,13 +175,14 @@ describe("Source", () => {
             id: "source1",
             type: "source",
             name: "Source A",
-            val: 5,
+            goodType: "red",
             max: 5,
             rate: 1,
             cooldown: 1.25,
             x: 0,
             y: 0,
             leavingDirection: "right",
+            goods: [],
           },
         ],
       ]),
@@ -197,69 +199,129 @@ describe("Source", () => {
     expect(result.entities.get("source1")).toBeDefined();
   });
 
-  it("should increment value by rate", () => {
+  it("should add a good when not on cooldown", () => {
     const fakeSource: EntitySourceType = {
       id: "source1",
       type: "source",
       name: "Source A",
-      val: 0,
+      goodType: "red",
       max: 5,
       rate: 1,
       cooldown: 0,
       x: 0,
       y: 0,
       leavingDirection: "right",
+      goods: [],
     };
-    gameSourceTick(fakeSource);
-    expect(fakeSource.val).toBe(1);
+
+    const stateTest: Partial<GameType> = {
+      entities: new Map<string, EntityType>([["source1", fakeSource]]),
+      sources: ["source1"],
+      transports: [],
+      consumers: [],
+      stocks: [],
+      splitters: [],
+      mergers: [],
+    };
+    const result = gameReducer(stateTest as GameType, { type: "game tick" });
+
+    const updatedSource = result.entities.get("source1") as EntitySourceType;
+    expect(updatedSource.goods).toHaveLength(1);
   });
 
-  it("should not increment when at max", () => {
+  it("should not add a good when at max", () => {
     const fakeSource: EntitySourceType = {
       id: "source1",
       type: "source",
       name: "Source A",
-      val: 5,
+      goodType: "red",
       max: 5,
       rate: 1,
       cooldown: 0,
       x: 0,
       y: 0,
       leavingDirection: "right",
+      goods: Array.from({ length: 5 }, () => ({
+        source: null,
+        target: null,
+        size: 1,
+        time: 0,
+        goodType: "red",
+      })),
     };
-    gameSourceTick(fakeSource);
-    expect(fakeSource.val).toBe(5);
+
+    const stateTest: Partial<GameType> = {
+      entities: new Map<string, EntityType>([["source1", fakeSource]]),
+      sources: ["source1"],
+      transports: [],
+      consumers: [],
+      stocks: [],
+      splitters: [],
+      mergers: [],
+    };
+    const result = gameReducer(stateTest as GameType, { type: "game tick" });
+
+    const updatedSource = result.entities.get("source1") as EntitySourceType;
+    expect(updatedSource.goods).toHaveLength(5);
   });
-  it("should not increment when on cooldown", () => {
+
+  it("should not add a good when on cooldown", () => {
     const fakeSource: EntitySourceType = {
       id: "source1",
       type: "source",
       name: "Source A",
-      val: 0,
+      goodType: "red",
       max: 5,
       rate: 1,
       cooldown: 1.25,
       x: 0,
       y: 0,
       leavingDirection: "right",
+      goods: [],
     };
-    gameSourceTick(fakeSource);
-    expect(fakeSource.val).toBe(0);
+
+    const stateTest: Partial<GameType> = {
+      entities: new Map<string, EntityType>([["source1", fakeSource]]),
+      sources: ["source1"],
+      transports: [],
+      consumers: [],
+      stocks: [],
+      splitters: [],
+      mergers: [],
+    };
+    const result = gameReducer(stateTest as GameType, { type: "game tick" });
+
+    const updatedSource = result.entities.get("source1") as EntitySourceType;
+    expect(updatedSource.goods).toHaveLength(0);
   });
+
   it("should reset cooldown after tick", () => {
     const fakeSource: EntitySourceType = {
       id: "source1",
       type: "source",
       name: "Source A",
-      val: 0,
+      goodType: "red",
       max: 5,
       rate: 1,
       cooldown: 1,
       x: 0,
       y: 0,
       leavingDirection: "right",
+      goods: [],
     };
-    gameSourceTick(fakeSource);
-    expect(fakeSource.cooldown).toBe(1 / fakeSource.rate);
+
+    const stateTest: Partial<GameType> = {
+      entities: new Map<string, EntityType>([["source1", fakeSource]]),
+      sources: ["source1"],
+      transports: [],
+      consumers: [],
+      stocks: [],
+      splitters: [],
+      mergers: [],
+    };
+    const result = gameReducer(stateTest as GameType, { type: "game tick" });
+
+    const updatedSource = result.entities.get("source1") as EntitySourceType;
+    expect(updatedSource.cooldown).toBe(1 / updatedSource.rate);
   });
 });
