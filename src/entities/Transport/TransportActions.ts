@@ -1,6 +1,7 @@
 import type { GameType } from "../../types";
-import type { EntityTransportType, DirectionType } from "../EntitiesTypes";
-import { clearConnectionsToEntity, getEntityAt } from "../EntityActions";
+import { type EntityTransportType, type DirectionType, getInvertedDirection, type EntitySplitterType } from "../EntitiesTypes";
+import { clearConnectionsToEntity, getEntityAt, getNeighbor } from "../EntityActions";
+import { updateMergerArray } from "../Merger/MergerActions";
 
 export type GameActionCreateTransport = {
   type: "create transport";
@@ -148,6 +149,25 @@ function updateTransportConnections(
   transport.target = null;
   clearConnectionsToEntity(state,transport);
 
+
+  const newSource = getNeighbor(state,transport,transport.entryDirection);
+  const newTarget = getNeighbor(state,transport, transport.leavingDirection);
+
+  if (newSource && newSource.type !== "consumer"){
+    if (newSource.type === "stock" && newSource.direction === getInvertedDirection(transport.entryDirection)){
+      transport.source = newSource.id;
+    }
+    if ((newSource.type === "transport" || newSource.type === "source")&& newSource.leavingDirection === getInvertedDirection(transport.entryDirection)){
+      transport.source = newSource.id;
+      if (newSource.type === "transport"){
+        newSource.target = transport.id;
+      }
+    }
+    //ver esse debaixo
+    if (newSource.type === "splitter" && newSource.entryDirection !== getInvertedDirection(transport.entryDirection)){
+      newSource.targets.push(transport.id);
+    }
+  }
   switch (transport.entryDirection) {
     case "up": {
       const upperEntity = getEntityAt(state, transport.x, transport.y - 1);

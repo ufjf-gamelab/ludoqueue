@@ -62,7 +62,7 @@ export function createSplitter(
     rate: rate,
     cooldown: 1,
     source: null,
-    target: [null, null, null],
+    target: [],
     x,
     y,
     entryDirection,
@@ -112,7 +112,7 @@ export function updateSplitterConnections(
   splitter: EntitySplitterType,
 ) {
   splitter.source = null;
-  splitter.target = [null, null, null];
+  splitter.target = [];
   clearConnectionsToEntity(state,splitter);
   switch (splitter.entryDirection) {
     case "up": {
@@ -848,5 +848,12 @@ function updateSplitterRightEntry(
     }
 
     splitter.target[2] = target2;
+  }
+}
+
+export function updateSplitterArray(state:GameType,entity:EntitySplitterType){
+  switch (entity.entryDirection){
+    case "up":
+      
   }
 }

@@ -751,3 +751,7 @@ function updateMergerDownEntry(state: GameType, merger: EntityMergerType) {
     merger.source[2] = source2Entity.id;
   }
 }
+
+export function updateMergerArray(state:GameType,entity:EntityMergerType){
+
+}

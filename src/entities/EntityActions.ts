@@ -1,3 +1,5 @@
+//actions that are common for different entities
+
 import type { GameType } from "../types";
 import type { DirectionType, EntityType } from "./EntitiesTypes";
 
@@ -6,6 +8,19 @@ export function getEntityAt(state: GameType, x: number, y: number) {
     (entity) => entity.x === x && entity.y === y,
   );
   return entity ? entity : null;
+}
+
+export function getNeighbor(state: GameType, entity: EntityType, direction: DirectionType) {
+  switch (direction){
+    case "up":
+      return getEntityAt(state,entity.x,entity.y-1);
+    case "down":
+      return getEntityAt(state,entity.x,entity.y+1);
+    case "left":
+      return getEntityAt(state,entity.x-1,entity.y);
+    case "right":
+      return getEntityAt(state,entity.x+1,entity.y);
+  }
 }
 
 export function clearConnectionsToEntity(state: GameType, entity: EntityType) {

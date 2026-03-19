@@ -57,7 +57,7 @@ export type EntitySplitterType = {
   x: number;
   y: number;
   source: string | null;
-  target: (string|null)[];
+  targets: string[];
   nextTargetIndex: number;
   movingGoods: MovingGoodType[];
   goods: MovingGoodType[];
@@ -91,7 +91,7 @@ export type EntityMergerType = {
   x: number;
   y: number;
   target: string | null;
-  source: (string|null)[];
+  sources: string[];
   nextSourceIndex: number;
   movingGoods: MovingGoodType[];
   goods: MovingGoodType[];
