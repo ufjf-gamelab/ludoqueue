@@ -5,7 +5,7 @@ import {
   getEntityAt,
   tryToConnectSource,
   tryToConnectTarget,
-} from "../EntityActions";
+} from "../EntityCreationActions";
 
 export type GameActionCreateSplitter = {
   type: "create splitter";
@@ -62,7 +62,7 @@ export function createSplitter(
     rate: rate,
     cooldown: 1,
     source: null,
-    target: [],
+    targets: [],
     x,
     y,
     entryDirection,
@@ -80,8 +80,10 @@ export function deleteSplitter(state: GameType, splitter: string) {
   const splitterIndex = state.splitters.indexOf(splitter); //pelo createSplitter ele sempre criara id a partir do ultimo, entao nao ocorre de ter dois iguais
   if (splitterIndex !== -1) {
     const newState = structuredClone(state);
-    const splitterEntity = newState.entities.get(newState.splitters[splitterIndex]);
-    clearConnectionsToEntity(newState,splitterEntity!);
+    const splitterEntity = newState.entities.get(
+      newState.splitters[splitterIndex],
+    );
+    clearConnectionsToEntity(newState, splitterEntity!);
     newState.splitters.splice(splitterIndex);
     newState.entities.delete(splitter);
     return newState;
@@ -112,8 +114,8 @@ export function updateSplitterConnections(
   splitter: EntitySplitterType,
 ) {
   splitter.source = null;
-  splitter.target = [];
-  clearConnectionsToEntity(state,splitter);
+  splitter.targets = [];
+  clearConnectionsToEntity(state, splitter);
   switch (splitter.entryDirection) {
     case "up": {
       updateSplitterUpperEntry(state, splitter);
@@ -172,13 +174,13 @@ function updateSplitterUpperEntry(
     ) {
       switch (sourceEntity.entryDirection) {
         case "up":
-          sourceEntity.target[1] = splitter.id;
+          sourceEntity.targets[1] = splitter.id;
           break;
         case "left":
-          sourceEntity.target[2] = splitter.id;
+          sourceEntity.targets[2] = splitter.id;
           break;
         case "right":
-          sourceEntity.target[0] = splitter.id;
+          sourceEntity.targets[0] = splitter.id;
           break;
       }
     }
@@ -252,17 +254,17 @@ function updateSplitterUpperEntry(
     ) {
       switch (target0Entity.leavingDirection) {
         case "up":
-          target0Entity.source[2] = splitter.id;
+          target0Entity.sources[2] = splitter.id;
           break;
         case "right":
-          target0Entity.source[1] = splitter.id;
+          target0Entity.sources[1] = splitter.id;
           break;
         case "down":
-          target0Entity.source[0] = splitter.id;
+          target0Entity.sources[0] = splitter.id;
           break;
       }
     }
-    splitter.target[0] = target0;
+    splitter.targets[0] = target0;
   }
 
   if (target1Entity) {
@@ -273,17 +275,17 @@ function updateSplitterUpperEntry(
     ) {
       switch (target1Entity.leavingDirection) {
         case "down":
-          target1Entity.source[1] = splitter.id;
+          target1Entity.sources[1] = splitter.id;
           break;
         case "left":
-          target1Entity.source[0] = splitter.id;
+          target1Entity.sources[0] = splitter.id;
           break;
         case "right":
-          target1Entity.source[2] = splitter.id;
+          target1Entity.sources[2] = splitter.id;
           break;
       }
     }
-    splitter.target[1] = target1;
+    splitter.targets[1] = target1;
   }
 
   if (target2Entity) {
@@ -294,17 +296,17 @@ function updateSplitterUpperEntry(
     ) {
       switch (target2Entity.leavingDirection) {
         case "up":
-          target2Entity.source[0] = splitter.id;
+          target2Entity.sources[0] = splitter.id;
           break;
         case "down":
-          target2Entity.source[2] = splitter.id;
+          target2Entity.sources[2] = splitter.id;
           break;
         case "left":
-          target2Entity.source[1] = splitter.id;
+          target2Entity.sources[1] = splitter.id;
           break;
       }
     }
-    splitter.target[2] = target2;
+    splitter.targets[2] = target2;
   }
 }
 
@@ -332,7 +334,7 @@ function updateSplitterDownEntry(
   }
 
   if (sourceID) {
-    splitter.source = sourceID;
+    splitter.sources = sourceID;
   }
 
   if (sourceEntity) {
@@ -344,13 +346,13 @@ function updateSplitterDownEntry(
     ) {
       switch (sourceEntity.entryDirection) {
         case "down":
-          sourceEntity.target[1] = splitter.id;
+          sourceEntity.targets[1] = splitter.id;
           break;
         case "left":
-          sourceEntity.target[0] = splitter.id;
+          sourceEntity.targets[0] = splitter.id;
           break;
         case "right":
-          sourceEntity.target[2] = splitter.id;
+          sourceEntity.targets[2] = splitter.id;
           break;
       }
     }
@@ -428,18 +430,18 @@ function updateSplitterDownEntry(
     ) {
       switch (target0Entity.leavingDirection) {
         case "up":
-          target0Entity.source[0] = splitter.id;
+          target0Entity.sources[0] = splitter.id;
           break;
         case "down":
-          target0Entity.source[2] = splitter.id;
+          target0Entity.sources[2] = splitter.id;
           break;
         case "left":
-          target0Entity.source[1] = splitter.id;
+          target0Entity.sources[1] = splitter.id;
           break;
       }
     }
 
-    splitter.target[0] = target0;
+    splitter.targets[0] = target0;
   }
 
   if (target1Entity) {
@@ -451,18 +453,18 @@ function updateSplitterDownEntry(
     ) {
       switch (target1Entity.leavingDirection) {
         case "right":
-          target1Entity.source[0] = splitter.id;
+          target1Entity.sources[0] = splitter.id;
           break;
         case "up":
-          target1Entity.source[1] = splitter.id;
+          target1Entity.sources[1] = splitter.id;
           break;
         case "left":
-          target1Entity.source[2] = splitter.id;
+          target1Entity.sources[2] = splitter.id;
           break;
       }
     }
 
-    splitter.target[1] = target1;
+    splitter.targets[1] = target1;
   }
 
   if (target2Entity) {
@@ -474,18 +476,18 @@ function updateSplitterDownEntry(
     ) {
       switch (target2Entity.leavingDirection) {
         case "up":
-          target2Entity.source[2] = splitter.id;
+          target2Entity.sources[2] = splitter.id;
           break;
         case "right":
-          target2Entity.source[1] = splitter.id;
+          target2Entity.sources[1] = splitter.id;
           break;
         case "down":
-          target2Entity.source[0] = splitter.id;
+          target2Entity.sources[0] = splitter.id;
           break;
       }
     }
 
-    splitter.target[2] = target2;
+    splitter.targets[2] = target2;
   }
 }
 
@@ -513,7 +515,7 @@ function updateSplitterLeftEntry(
   }
 
   if (sourceID) {
-    splitter.source = sourceID;
+    splitter.sources = sourceID;
   }
 
   if (sourceEntity) {
@@ -525,13 +527,13 @@ function updateSplitterLeftEntry(
     ) {
       switch (sourceEntity.entryDirection) {
         case "up":
-          sourceEntity.target[0] = splitter.id;
+          sourceEntity.targets[0] = splitter.id;
           break;
         case "down":
-          sourceEntity.target[2] = splitter.id;
+          sourceEntity.targets[2] = splitter.id;
           break;
         case "left":
-          sourceEntity.target[1] = splitter.id;
+          sourceEntity.targets[1] = splitter.id;
           break;
       }
     }
@@ -609,18 +611,18 @@ function updateSplitterLeftEntry(
     ) {
       switch (target0Entity.leavingDirection) {
         case "right":
-          target0Entity.source[0] = splitter.id;
+          target0Entity.sources[0] = splitter.id;
           break;
         case "up":
-          target0Entity.source[1] = splitter.id;
+          target0Entity.sources[1] = splitter.id;
           break;
         case "left":
-          target0Entity.source[2] = splitter.id;
+          target0Entity.sources[2] = splitter.id;
           break;
       }
     }
 
-    splitter.target[0] = target0;
+    splitter.targets[0] = target0;
   }
 
   if (target1Entity) {
@@ -632,18 +634,18 @@ function updateSplitterLeftEntry(
     ) {
       switch (target1Entity.leavingDirection) {
         case "up":
-          target1Entity.source[2] = splitter.id;
+          target1Entity.sources[2] = splitter.id;
           break;
         case "right":
-          target1Entity.source[1] = splitter.id;
+          target1Entity.sources[1] = splitter.id;
           break;
         case "down":
-          target1Entity.source[0] = splitter.id;
+          target1Entity.sources[0] = splitter.id;
           break;
       }
     }
 
-    splitter.target[1] = target1;
+    splitter.targets[1] = target1;
   }
 
   if (target2Entity) {
@@ -655,18 +657,18 @@ function updateSplitterLeftEntry(
     ) {
       switch (target2Entity.leavingDirection) {
         case "down":
-          target2Entity.source[1] = splitter.id;
+          target2Entity.sources[1] = splitter.id;
           break;
         case "left":
-          target2Entity.source[0] = splitter.id;
+          target2Entity.sources[0] = splitter.id;
           break;
         case "right":
-          target2Entity.source[2] = splitter.id;
+          target2Entity.sources[2] = splitter.id;
           break;
       }
     }
 
-    splitter.target[2] = target2;
+    splitter.targets[2] = target2;
   }
 }
 
@@ -706,13 +708,13 @@ function updateSplitterRightEntry(
     ) {
       switch (sourceEntity.entryDirection) {
         case "up":
-          sourceEntity.target[2] = splitter.id;
+          sourceEntity.targets[2] = splitter.id;
           break;
         case "down":
-          sourceEntity.target[0] = splitter.id;
+          sourceEntity.targets[0] = splitter.id;
           break;
         case "right":
-          sourceEntity.target[1] = splitter.id;
+          sourceEntity.targets[1] = splitter.id;
           break;
       }
     }
@@ -790,18 +792,18 @@ function updateSplitterRightEntry(
     ) {
       switch (target0Entity.leavingDirection) {
         case "down":
-          target0Entity.source[1] = splitter.id;
+          target0Entity.sources[1] = splitter.id;
           break;
         case "left":
-          target0Entity.source[0] = splitter.id;
+          target0Entity.sources[0] = splitter.id;
           break;
         case "right":
-          target0Entity.source[2] = splitter.id;
+          target0Entity.sources[2] = splitter.id;
           break;
       }
     }
 
-    splitter.target[0] = target0;
+    splitter.targets[0] = target0;
   }
 
   if (target1Entity) {
@@ -813,18 +815,18 @@ function updateSplitterRightEntry(
     ) {
       switch (target1Entity.leavingDirection) {
         case "up":
-          target1Entity.source[0] = splitter.id;
+          target1Entity.sources[0] = splitter.id;
           break;
         case "down":
-          target1Entity.source[2] = splitter.id;
+          target1Entity.sources[2] = splitter.id;
           break;
         case "left":
-          target1Entity.source[1] = splitter.id;
+          target1Entity.sources[1] = splitter.id;
           break;
       }
     }
 
-    splitter.target[1] = target1;
+    splitter.targets[1] = target1;
   }
 
   if (target2Entity) {
@@ -836,24 +838,26 @@ function updateSplitterRightEntry(
     ) {
       switch (target2Entity.leavingDirection) {
         case "right":
-          target2Entity.source[0] = splitter.id;
+          target2Entity.sources[0] = splitter.id;
           break;
         case "up":
-          target2Entity.source[1] = splitter.id;
+          target2Entity.sources[1] = splitter.id;
           break;
         case "left":
-          target2Entity.source[2] = splitter.id;
+          target2Entity.sources[2] = splitter.id;
           break;
       }
     }
 
-    splitter.target[2] = target2;
+    splitter.targets[2] = target2;
   }
 }
 
-export function updateSplitterArray(state:GameType,entity:EntitySplitterType){
-  switch (entity.entryDirection){
+export function updateSplitterArray(
+  state: GameType,
+  entity: EntitySplitterType,
+) {
+  switch (entity.entryDirection) {
     case "up":
-      
   }
 }

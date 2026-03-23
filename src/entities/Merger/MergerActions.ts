@@ -1,14 +1,11 @@
 import type { GameType } from "../../types";
-import type {
-  DirectionType,
-  EntityMergerType,
-} from "../EntitiesTypes";
+import type { DirectionType, EntityMergerType } from "../EntitiesTypes";
 import {
   clearConnectionsToEntity,
   getEntityAt,
   tryToConnectSource,
   tryToConnectTarget,
-} from "../EntityActions";
+} from "../EntityCreationActions";
 
 export type GameActionCreateMerger = {
   type: "create merger";
@@ -84,7 +81,7 @@ export function deleteMerger(state: GameType, merger: string) {
   if (mergerIndex !== -1) {
     const newState = structuredClone(state);
     const mergerEntity = newState.entities.get(newState.mergers[mergerIndex]);
-    clearConnectionsToEntity(newState,mergerEntity!);
+    clearConnectionsToEntity(newState, mergerEntity!);
     newState.mergers.splice(mergerIndex, 1);
     newState.entities.delete(merger);
     return newState;
@@ -111,7 +108,7 @@ export function changeMergerLeavingDirection(
 function updateMergerConnections(state: GameType, merger: EntityMergerType) {
   merger.target = null;
   merger.source = [null, null, null];
-  clearConnectionsToEntity(state,merger);
+  clearConnectionsToEntity(state, merger);
   switch (merger.leavingDirection) {
     case "up": {
       updateMergerUpperEntry(state, merger);
@@ -750,8 +747,4 @@ function updateMergerDownEntry(state: GameType, merger: EntityMergerType) {
 
     merger.source[2] = source2Entity.id;
   }
-}
-
-export function updateMergerArray(state:GameType,entity:EntityMergerType){
-
 }

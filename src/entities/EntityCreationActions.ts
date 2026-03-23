@@ -1,7 +1,10 @@
 //actions that are common for different entities
 
 import type { GameType } from "../types";
-import type { DirectionType, EntityType } from "./EntitiesTypes";
+import {
+  type DirectionType,
+  type EntityType,
+} from "./EntitiesTypes";
 
 export function getEntityAt(state: GameType, x: number, y: number) {
   const entity = Array.from(state.entities.values()).find(
@@ -10,16 +13,20 @@ export function getEntityAt(state: GameType, x: number, y: number) {
   return entity ? entity : null;
 }
 
-export function getNeighbor(state: GameType, entity: EntityType, direction: DirectionType) {
-  switch (direction){
+export function getNeighbor(
+  state: GameType,
+  entity: EntityType,
+  direction: DirectionType,
+) {
+  switch (direction) {
     case "up":
-      return getEntityAt(state,entity.x,entity.y-1);
+      return getEntityAt(state, entity.x, entity.y - 1);
     case "down":
-      return getEntityAt(state,entity.x,entity.y+1);
+      return getEntityAt(state, entity.x, entity.y + 1);
     case "left":
-      return getEntityAt(state,entity.x-1,entity.y);
+      return getEntityAt(state, entity.x - 1, entity.y);
     case "right":
-      return getEntityAt(state,entity.x+1,entity.y);
+      return getEntityAt(state, entity.x + 1, entity.y);
   }
 }
 
@@ -42,9 +49,9 @@ function clearEntitySource(state: GameType, sourceId: string) {
     }
 
     if (entity.type === "merger") {
-      const index = entity.source.indexOf(sourceId);
+      const index = entity.sources.indexOf(sourceId);
       if (index !== -1) {
-        entity.source[index] = null;
+        entity.sources.splice(index);
       }
     }
   });
@@ -57,9 +64,9 @@ function clearEntityTarget(state: GameType, targetId: string) {
     }
 
     if (entity.type === "splitter") {
-      const index = entity.target.indexOf(targetId);
+      const index = entity.targets.indexOf(targetId);
       if (index !== -1) {
-        entity.target[index] = null;
+        entity.targets.splice(index);
       }
     }
 

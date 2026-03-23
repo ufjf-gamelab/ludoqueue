@@ -1,7 +1,9 @@
 import type { GameType } from "../../types";
+import { updatePassiveEntitiesConnections } from "../EntitiesConnections";
 import type { DirectionType, EntityConsumerType } from "../EntitiesTypes";
-import { clearConnectionsToEntity, getEntityAt, tryToConnectTarget } from "../EntityActions";
-
+import {
+  clearConnectionsToEntity,
+} from "../EntityCreationActions";
 
 export type GameActionCreateConsumer = {
   type: "create consumer";
@@ -63,7 +65,7 @@ export function createConsumer(
   };
   newState.entities.set(newConsumerID, newConsumerEntity);
   newState.consumers.push(newConsumerID);
-  updateConsumerConnections(newState, newConsumerEntity);
+  updatePassiveEntitiesConnections(newState, newConsumerEntity);
   return newState;
 }
 
@@ -98,124 +100,6 @@ export function changeConsumerEntryDirection(
     consumerID,
   ) as EntityConsumerType;
   newConsumerEntity.entryDirection = direction;
-  updateConsumerConnections(newState, newConsumerEntity);
+  updatePassiveEntitiesConnections(newState, newConsumerEntity);
   return newState;
-}
-
-function updateConsumerConnections(
-  state: GameType,
-  consumer: EntityConsumerType,
-) {
-  // limpar conexões antigas
-  clearConnectionsToEntity(state, consumer);
-
-  switch (consumer.entryDirection) {
-    case "up": {
-      const upperEntity = getEntityAt(state, consumer.x, consumer.y - 1);
-
-      if (upperEntity) {
-        tryToConnectTarget(upperEntity, "down", consumer.id);
-
-        if (
-          upperEntity.type === "splitter" &&
-          upperEntity.entryDirection !== "down"
-        ) {
-          switch (upperEntity.entryDirection) {
-            case "right":
-              upperEntity.target[0] = consumer.id;
-              break;
-            case "up":
-              upperEntity.target[1] = consumer.id;
-              break;
-            case "left":
-              upperEntity.target[2] = consumer.id;
-              break;
-          }
-        }
-      }
-
-      break;
-    }
-
-    case "down": {
-      const lowerEntity = getEntityAt(state, consumer.x, consumer.y + 1);
-
-      if (lowerEntity) {
-        tryToConnectTarget(lowerEntity, "up", consumer.id);
-
-        if (
-          lowerEntity.type === "splitter" &&
-          lowerEntity.entryDirection !== "up"
-        ) {
-          switch (lowerEntity.entryDirection) {
-            case "left":
-              lowerEntity.target[0] = consumer.id;
-              break;
-            case "down":
-              lowerEntity.target[1] = consumer.id;
-              break;
-            case "right":
-              lowerEntity.target[2] = consumer.id;
-              break;
-          }
-        }
-      }
-
-      break;
-    }
-
-    case "left": {
-      const leftEntity = getEntityAt(state, consumer.x - 1, consumer.y);
-
-      if (leftEntity) {
-        tryToConnectTarget(leftEntity, "right", consumer.id);
-
-        if (
-          leftEntity.type === "splitter" &&
-          leftEntity.entryDirection !== "right"
-        ) {
-          switch (leftEntity.entryDirection) {
-            case "up":
-              leftEntity.target[0] = consumer.id;
-              break;
-            case "left":
-              leftEntity.target[1] = consumer.id;
-              break;
-            case "down":
-              leftEntity.target[2] = consumer.id;
-              break;
-          }
-        }
-      }
-
-      break;
-    }
-
-    case "right": {
-      const rightEntity = getEntityAt(state, consumer.x + 1, consumer.y);
-
-      if (rightEntity) {
-        tryToConnectTarget(rightEntity, "left", consumer.id);
-
-        if (
-          rightEntity.type === "splitter" &&
-          rightEntity.entryDirection !== "left"
-        ) {
-          switch (rightEntity.entryDirection) {
-            case "down":
-              rightEntity.target[0] = consumer.id;
-              break;
-            case "right":
-              rightEntity.target[1] = consumer.id;
-              break;
-            case "up":
-              rightEntity.target[2] = consumer.id;
-              break;
-          }
-        }
-      }
-
-      break;
-    }
-  }
 }
