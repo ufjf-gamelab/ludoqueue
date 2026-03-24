@@ -121,9 +121,8 @@ function updateSplitterConnections(state: GameType, splitter: EntitySplitterType
   }
 
   const otherDirs = getOtherDirections(splitter.entryDirection);
-
-  for (const dir in otherDirs) {
-    const direction = dir as DirectionType;
+  for (const i in otherDirs) {
+    const direction = otherDirs[i] as DirectionType;
     const targetEntity = getNeighbor(state, splitter, direction);
     const invDirection = getInvertedDirection(direction);
 
@@ -131,26 +130,29 @@ function updateSplitterConnections(state: GameType, splitter: EntitySplitterType
 
     const isPointingToSplitter =
       (targetEntity.type === "consumer" &&
-        targetEntity.entryDirection === direction) ||
-      (targetEntity.type === "merger" &&
-        targetEntity.leavingDirection !== splitter.entryDirection) ||
+        targetEntity.entryDirection === invDirection) ||
+      (targetEntity.type === "splitter" &&
+        targetEntity.entryDirection !== invDirection) ||
       (targetEntity.type === "stock" &&
         targetEntity.direction === direction) ||
       (targetEntity.type === "transport" &&
-        targetEntity.entryDirection === direction);
+        targetEntity.entryDirection === invDirection);
 
     if (isPointingToSplitter) {
-      if (targetEntity.type ==="transport" || targetEntity.type === "merger"){
-        targetEntity.target=splitter.id;
+      if (targetEntity.type ==="transport" || targetEntity.type === "splitter"){
+        targetEntity.source=splitter.id;
       }
       splitter.targets.push(targetEntity.id);
     } else if (
       targetEntity.type === "merger" &&
-      targetEntity.leavingDirection !== splitter.entryDirection
+      targetEntity.leavingDirection !== invDirection
     ) {
       if (!targetEntity.sources.includes(splitter.id)) {
         targetEntity.sources.push(splitter.id);
       }
+      splitter.targets.push(targetEntity.id);
+    } else if (targetEntity.type === "splitter" && targetEntity.entryDirection === invDirection){
+      targetEntity.source = splitter.id;
       splitter.targets.push(targetEntity.id);
     }
   }

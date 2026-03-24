@@ -120,23 +120,23 @@ function updateMergerConnections(state: GameType, merger: EntityMergerType) {
   }
 
   const otherDirs = getOtherDirections(merger.leavingDirection);
-
-  for (const dir in otherDirs) {
-    const direction = dir as DirectionType;
+  for (const i in otherDirs) {
+    const direction = otherDirs[i] as DirectionType;
     const sourceEntity = getNeighbor(state, merger, direction);
     const invDirection = getInvertedDirection(direction);
-
+    
     if (!sourceEntity) continue;
+    console.log(direction,invDirection,sourceEntity)
 
     const isPointingToMerger =
       (sourceEntity.type === "source" &&
-        sourceEntity.leavingDirection !== invDirection) ||
+        sourceEntity.leavingDirection === invDirection) ||
       (sourceEntity.type === "merger" &&
-        sourceEntity.leavingDirection !== invDirection) ||
+        sourceEntity.leavingDirection === invDirection) ||
       (sourceEntity.type === "stock" &&
-        sourceEntity.direction !== invDirection) ||
+        sourceEntity.direction === invDirection) ||
       (sourceEntity.type === "transport" &&
-        sourceEntity.leavingDirection !== invDirection);
+        sourceEntity.leavingDirection === invDirection);
 
     if (isPointingToMerger) {
       if (sourceEntity.type ==="transport" || sourceEntity.type === "merger"){
