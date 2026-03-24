@@ -1,13 +1,10 @@
 import type { GameType } from "../../types";
-import { functionsToConnectSource, functionsToConnectTarget } from "../EntitiesConnections";
 import {
-  type EntityTransportType,
-  type DirectionType,
-} from "../EntitiesTypes";
-import {
-  clearConnectionsToEntity,
-  getNeighbor,
-} from "../EntityCreationActions";
+  functionsToConnectSource,
+  functionsToConnectTarget,
+} from "../EntitiesConnections";
+import { type EntityTransportType, type DirectionType } from "../EntitiesTypes";
+import { clearConnectionsToEntity, getNeighbor } from "../EntityCommonActions";
 
 export type GameActionCreateTransport = {
   type: "create transport";
@@ -163,8 +160,8 @@ function updateTransportConnections(
   if (newSource && newSource.type !== "consumer") {
     functionsToConnectSource[newSource.type](newSource, transport);
 
-  if (newTarget && newTarget.type !== "source"){
-    functionsToConnectTarget[newTarget.type](newTarget, transport);
-  }
+    if (newTarget && newTarget.type !== "source") {
+      functionsToConnectTarget[newTarget.type](newTarget, transport);
+    }
   }
 }

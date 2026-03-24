@@ -5,9 +5,7 @@ import {
   type EntityStockType,
   type EntityTransportType,
 } from "../EntitiesTypes";
-import {
-  clearConnectionsToEntity,
-} from "../EntityCreationActions";
+import { clearConnectionsToEntity } from "../EntityCommonActions";
 
 export type GameActionCreateStock = {
   type: "create stock";

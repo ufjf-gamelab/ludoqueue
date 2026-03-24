@@ -5,9 +5,7 @@ import type {
   EntitySourceType,
   GoodType,
 } from "../EntitiesTypes";
-import {
-  clearConnectionsToEntity,
-} from "../EntityCreationActions";
+import { clearConnectionsToEntity } from "../EntityCommonActions";
 
 export type GameActionCreateSource = {
   type: "create source";

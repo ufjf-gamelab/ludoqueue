@@ -1,4 +1,4 @@
-//actions that are common for different entities
+//actions that are common for creating/deleting different entities
 
 import type { GameType } from "../types";
 import {
@@ -27,6 +27,15 @@ export function getNeighbor(
       return getEntityAt(state, entity.x - 1, entity.y);
     case "right":
       return getEntityAt(state, entity.x + 1, entity.y);
+  }
+}
+
+export function getOtherDirections(dir: DirectionType): DirectionType[] {
+  switch (dir) {
+    case "up": return ["down", "left", "right"];
+    case "down": return ["up", "left", "right"];
+    case "left": return ["up", "down", "right"];
+    case "right": return ["up", "down", "left"];
   }
 }
 
@@ -74,34 +83,4 @@ function clearEntityTarget(state: GameType, targetId: string) {
       entity.target = null;
     }
   });
-}
-
-export function tryToConnectSource(
-  entity: EntityType | null,
-  expectedEntry: DirectionType,
-  sourceID: string,
-) {
-  if (!entity) return;
-
-  if (
-    (entity.type === "transport" || entity.type === "splitter") &&
-    entity.entryDirection === expectedEntry
-  ) {
-    entity.source = sourceID;
-  }
-}
-
-export function tryToConnectTarget(
-  entity: EntityType | null,
-  expectedLeaving: DirectionType,
-  targetID: string,
-) {
-  if (!entity) return;
-
-  if (
-    (entity.type === "transport" || entity.type === "merger") &&
-    entity.leavingDirection === expectedLeaving
-  ) {
-    entity.target = targetID;
-  }
 }

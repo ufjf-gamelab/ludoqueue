@@ -10,7 +10,6 @@ import type { GameStatus, GameType } from "./types";
 import type {
   EntityConsumerType,
   EntitySourceType,
-  EntityStockType,
   EntityTransportType,
   EntityType,
   DirectionType,
@@ -438,15 +437,15 @@ export function calculatePendingMergerMovingGoods(
     pushMovingGood(merger,target);
   }
   if (merger.goods.length === 0){
-  for (let step = 0; step < merger.source.length; step++) {
-    const index = (merger.nextSourceIndex + step) % merger.source.length;
-    const sourceId = merger.source[index];
+  for (let step = 0; step < merger.sources.length; step++) {
+    const index = (merger.nextSourceIndex + step) % merger.sources.length;
+    const sourceId = merger.sources[index];
     const source = sourceId ? all.get(sourceId) : null;
     if (!source || (source && !canIPull(source,merger))){
       continue;
     }
     pullMovingGood(source,merger);
-    merger.nextSourceIndex = (index + 1) % merger.source.length;
+    merger.nextSourceIndex = (index + 1) % merger.sources.length;
     return merger.movingGoods;
     }
   }
@@ -470,16 +469,16 @@ export function calculatePendingSplitterMovingGoods(
     return splitter.movingGoods;
   } 
   if (splitter.goods.length>0) {
-    for (let step = 0; step < splitter.target.length; step++) {
-      const index = (splitter.nextTargetIndex + step) % splitter.target.length;
-      const targetId = splitter.target[index];
+    for (let step = 0; step < splitter.targets.length; step++) {
+      const index = (splitter.nextTargetIndex + step) % splitter.targets.length;
+      const targetId = splitter.targets[index];
       const target = targetId ? all.get(targetId) : null;
       if (!target || (target && !canIPush(splitter,target))) 
        {
         continue;
       }
       pushMovingGood(splitter,target);
-      splitter.nextTargetIndex = (index + 1) % splitter.target.length;
+      splitter.nextTargetIndex = (index + 1) % splitter.targets.length;
       return splitter.movingGoods;
     }
   }

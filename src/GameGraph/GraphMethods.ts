@@ -32,7 +32,15 @@ export function convertGameToGraph(game: GameType): GraphType {
       }
     }
 
-    if (node.type === "merger")
+    if (node.type === "merger" && node.sources.length>0){
+      for (const sourceIndice in node.sources){
+        const linktoMerger: LinkType = {
+          source: node.sources[sourceIndice],
+          target: node.id,
+        }
+        graph.links.push(linktoMerger)
+      }
+    }
   });
 
   return graph;

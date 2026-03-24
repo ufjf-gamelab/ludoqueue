@@ -9,7 +9,9 @@ import {
   type EntityTransportType,
   type EntityType,
 } from "./EntitiesTypes";
-import { clearConnectionsToEntity, getNeighbor } from "./EntityCreationActions";
+import { clearConnectionsToEntity, getNeighbor } from "./EntityCommonActions";
+
+//functions that are common for connections between different entities
 
 export const functionsToConnectSource: Record<
   "stock" | "transport" | "source" | "splitter" | "merger",
@@ -167,8 +169,8 @@ export function updatePassiveEntitiesConnections(
   }
   if (
     entryNeighbor &&
-    (entryNeighbor.type === "transport" || entryNeighbor.type === "merger")
-    && entity.type!=="source"
+    (entryNeighbor.type === "transport" || entryNeighbor.type === "merger") &&
+    entity.type !== "source"
   ) {
     functionsToConnectTarget[entity.type]?.(
       entity,
@@ -178,9 +180,9 @@ export function updatePassiveEntitiesConnections(
   if (
     leavingNeighbor &&
     (leavingNeighbor.type === "transport" ||
-      leavingNeighbor.type === "splitter")
-      && entity.type!=="consumer"
-  ) { 
+      leavingNeighbor.type === "splitter") &&
+    entity.type !== "consumer"
+  ) {
     functionsToConnectSource[entity.type]?.(
       entity,
       leavingNeighbor as EntityTransportType | EntitySplitterType,

@@ -1,9 +1,7 @@
 import type { GameType } from "../../types";
 import { updatePassiveEntitiesConnections } from "../EntitiesConnections";
 import type { DirectionType, EntityConsumerType } from "../EntitiesTypes";
-import {
-  clearConnectionsToEntity,
-} from "../EntityCreationActions";
+import { clearConnectionsToEntity } from "../EntityCommonActions";
 
 export type GameActionCreateConsumer = {
   type: "create consumer";
