@@ -8,7 +8,7 @@ export function convertGameToGraph(game: GameType): GraphType {
 
   game.entities.forEach((node) => {
     graph.nodes.push({ id: node.id, name: node.name, val: 0 });
-    if (node.type === "transport" && node.source) {
+    if ((node.type === "transport" || node.type ==="splitter") && node.source) {
       const linkToTransport: LinkType = {
         source: node.source,
         target: node.id,
@@ -22,6 +22,17 @@ export function convertGameToGraph(game: GameType): GraphType {
       };
       graph.links.push(linkFromTransport);
     }
+    if (node.type === "splitter" && node.targets.length>0){
+      for (const targetIndice in node.targets){
+        const linkFromSplitter: LinkType = {
+          source: node.id,
+          target: node.targets[targetIndice],
+        }
+        graph.links.push(linkFromSplitter);
+      }
+    }
+
+    if (node.type === "merger")
   });
 
   return graph;

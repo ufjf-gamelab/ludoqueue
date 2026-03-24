@@ -30,6 +30,12 @@ function GraphInner({ graphData }: { graphData: GraphType }) {
     <R3fForceGraph
       ref={fgRef}
       graphData={clonedData}
+      // Ativa a seta e define o tamanho (em unidades 3D)
+      linkDirectionalArrowLength={3.5}
+      // Coloca a seta no final do link (0 = início, 1 = fim)
+      linkDirectionalArrowRelPos={1}
+      // (Opcional) Cor da seta
+      linkDirectionalArrowColor={() => "white"}
       nodeThreeObject={(node) => {
         const sprite = new SpriteText(String(node.id));
         sprite.color = "white";
