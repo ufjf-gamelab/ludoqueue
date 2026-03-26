@@ -402,4 +402,251 @@ describe("Stock", () => {
     ).toHaveLength(2);
     expect((tick3.entities.get("stock1") as EntityStockType).closed).toBe(true);
   });
+
+  it("should connect to transport on the left of the transport", () => {
+    const fakeTransport: EntityTransportType = {
+      id: "transport1",
+      type: "transport",
+      name: "Transport 1",
+      max: 5,
+      rate: 1,
+      cooldown: 1.25,
+      x: 1,
+      y: 0,
+      entryDirection: "left",
+      leavingDirection: "right",
+      goods: [],
+      movingGoods: [],
+      source: null,
+      target: null,
+    };
+    const stateTest: Partial<GameType> = {
+      entities: new Map<string, EntityType>([["transport1", fakeTransport]]),
+      sources: [],
+      transports: ["transport1"],
+      consumers: [],
+      stocks: [],
+      splitters: [],
+      mergers: [],
+    };
+    const actionTest: GameActionCreateSource = {
+      type: "create source",
+      max: 15,
+      x: 0,
+      y: 0,
+      leavingDirection: "right",
+      goodType: "blue",
+    };
+    const result = gameReducer(stateTest as GameType, actionTest);
+    expect(result.sources).toHaveLength(1);
+    const transportResult = result.entities.get(
+      "transport1",
+    ) as EntityTransportType;
+    expect(transportResult.source).toBe("source1");
+  });
+
+  it("should connect to splitter on the left of the transport", () => {
+    const fakeSplitter: EntitySplitterType = {
+      id: "splitter1",
+      type: "splitter",
+      name: "Splitter 1",
+      max: 5,
+      rate: 1,
+      cooldown: 1.25,
+      x: 1,
+      y: 0,
+      entryDirection: "left",
+      goods: [],
+      movingGoods: [],
+      source: null,
+      targets: [],
+      nextTargetIndex: 0,
+    };
+    const stateTest: Partial<GameType> = {
+      entities: new Map<string, EntityType>([["splitter1", fakeSplitter]]),
+      sources: [],
+      transports: [],
+      consumers: [],
+      stocks: [],
+      splitters: ["splitter1"],
+      mergers: [],
+    };
+    const actionTest: GameActionCreateSource = {
+      type: "create source",
+      max: 15,
+      x: 0,
+      y: 0,
+      leavingDirection: "right",
+      goodType: "blue",
+    };
+    const result = gameReducer(stateTest as GameType, actionTest);
+    expect(result.sources).toHaveLength(1);
+    const splitterResult = result.entities.get(
+      "splitter1",
+    ) as EntitySplitterType;
+    expect(splitterResult.source).toBe("source1");
+  });
+
+  it("should connect as target on the left of the merger entity", () => {
+    const fakeMerger: EntityMergerType = {
+      id: "merger1",
+      name: "Merger 1",
+      type: "merger",
+      max: 1,
+      rate: 1,
+      cooldown: 0,
+      leavingDirection: "right",
+      x: 1,
+      y: 0,
+      target: "",
+      sources: [""],
+      nextSourceIndex: 0,
+      movingGoods: [],
+      goods: [],
+    };
+    const stateTest: Partial<GameType> = {
+      entities: new Map<string, EntityType>([["merger1", fakeMerger]]),
+      sources: [],
+      transports: [],
+      consumers: [],
+      stocks: [],
+      splitters: ["merger1"],
+      mergers: [],
+    };
+    const actionTest: GameActionCreateSource = {
+      type: "create source",
+      max: 15,
+      x: 0,
+      y: 0,
+      leavingDirection: "right",
+      goodType: "blue",
+    };
+    const result = gameReducer(stateTest as GameType, actionTest);
+    expect(result.sources).toHaveLength(1);
+    const mergerResult = result.entities.get("merger1") as EntityMergerType;
+    expect(mergerResult.sources).toBe(["source1"]);
+  });
+  it("should connect to transport on the right of the transport", () => {
+    const fakeTransport: EntityTransportType = {
+      id: "transport1",
+      type: "transport",
+      name: "Transport 1",
+      max: 5,
+      rate: 1,
+      cooldown: 1.25,
+      x: 1,
+      y: 0,
+      entryDirection: "left",
+      leavingDirection: "right",
+      goods: [],
+      movingGoods: [],
+      source: null,
+      target: null,
+    };
+    const stateTest: Partial<GameType> = {
+      entities: new Map<string, EntityType>([["transport1", fakeTransport]]),
+      sources: [],
+      transports: ["transport1"],
+      consumers: [],
+      stocks: [],
+      splitters: [],
+      mergers: [],
+    };
+    const actionTest: GameActionCreateConsumer = {
+      type: "create consumer",
+      max: 15,
+      rate: 1,
+      x: 2,
+      y: 0,
+      entryDirection: "left",
+    };
+    const result = gameReducer(stateTest as GameType, actionTest);
+    expect(result.consumers).toHaveLength(1);
+    const transportResult = result.entities.get(
+      "transport1",
+    ) as EntityTransportType;
+    expect(transportResult.target).toBe("consumer1");
+  });
+
+  it("should connect as target on the left of the splitter entity", () => {
+    const fakeSplitter: EntitySplitterType = {
+      id: "splitter1",
+      type: "splitter",
+      name: "Splitter 1",
+      max: 5,
+      rate: 1,
+      cooldown: 1.25,
+      x: 1,
+      y: 0,
+      entryDirection: "right",
+      goods: [],
+      movingGoods: [],
+      source: null,
+      targets: [],
+      nextTargetIndex: 0,
+    };
+    const stateTest: Partial<GameType> = {
+      entities: new Map<string, EntityType>([["splitter1", fakeSplitter]]),
+      sources: [],
+      transports: [],
+      consumers: [],
+      stocks: [],
+      splitters: ["splitter1"],
+      mergers: [],
+    };
+    const actionTest: GameActionCreateConsumer = {
+      type: "create consumer",
+      max: 15,
+      rate: 1,
+      x: 0,
+      y: 0,
+      entryDirection: "right",
+    };
+    const result = gameReducer(stateTest as GameType, actionTest);
+    expect(result.consumers).toHaveLength(1);
+    const splitterResult = result.entities.get(
+      "splitter1",
+    ) as EntitySplitterType;
+    expect(splitterResult.targets).toBe(["consumer1"]);
+  });
+
+  it("should connect as source on the left of the merger entity", () => {
+    const fakeMerger: EntityMergerType = {
+      id: "merger1",
+      name: "Merger 1",
+      type: "merger",
+      max: 1,
+      rate: 1,
+      cooldown: 0,
+      leavingDirection: "left",
+      x: 1,
+      y: 0,
+      target: "",
+      sources: [""],
+      nextSourceIndex: 0,
+      movingGoods: [],
+      goods: [],
+    };
+    const stateTest: Partial<GameType> = {
+      entities: new Map<string, EntityType>([["merger1", fakeMerger]]),
+      sources: [],
+      transports: [],
+      consumers: [],
+      stocks: [],
+      splitters: ["merger1"],
+      mergers: [],
+    };
+    const actionTest: GameActionCreateConsumer = {
+      type: "create consumer",
+      max: 15,
+      rate: 1,
+      x: 0,
+      y: 0,
+      entryDirection: "right",
+    };
+    const result = gameReducer(stateTest as GameType, actionTest);
+    expect(result.consumers).toHaveLength(1);
+    const mergerResult = result.entities.get("merger1") as EntityMergerType;
+    expect(mergerResult.target).toBe("consumer1");
+  });
 });
