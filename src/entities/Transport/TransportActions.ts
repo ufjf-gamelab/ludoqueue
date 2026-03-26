@@ -159,9 +159,8 @@ function updateTransportConnections(
 
   if (newSource && newSource.type !== "consumer") {
     functionsToConnectSource[newSource.type](newSource, transport);
-
-    if (newTarget && newTarget.type !== "source") {
-      functionsToConnectTarget[newTarget.type](newTarget, transport);
-    }
+  }
+  if (newTarget && newTarget.type !== "source") {
+    functionsToConnectTarget[newTarget.type](newTarget, transport);
   }
 }

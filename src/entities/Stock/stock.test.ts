@@ -9,6 +9,9 @@ import type {
   EntityType,
   EntityStockType,
   MovingGoodType,
+  EntitySplitterType,
+  EntityTransportType,
+  EntityMergerType,
 } from "../EntitiesTypes.ts";
 
 function makeGood(overrides?: Partial<MovingGoodType>): MovingGoodType {
@@ -34,7 +37,7 @@ function makeBaseState(): Partial<GameType> {
     time: 0,
     selected: null,
     status: "waiting",
-    editor: null as any,
+    editor: null,
   };
 }
 
@@ -390,13 +393,13 @@ describe("Stock", () => {
     };
 
     const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
-    expect((tick1.entities.get("transport1") as any).goods).toHaveLength(1);
+    expect((tick1.entities.get("transport1") as EntityTransportType).goods).toHaveLength(1);
 
     const tick2 = gameReducer(tick1, { type: "game tick" });
-    expect((tick2.entities.get("transport1") as any).goods).toHaveLength(1);
+    expect((tick2.entities.get("transport1") as EntityTransportType).goods).toHaveLength(1);
 
     const tick3 = gameReducer(tick2, { type: "game tick" });
-    expect((tick3.entities.get("transport1") as any).goods).toHaveLength(1);
+    expect((tick3.entities.get("transport1") as EntityTransportType).goods).toHaveLength(1);
     expect(
       (tick3.entities.get("stock1") as EntityStockType).goods,
     ).toHaveLength(2);
@@ -429,20 +432,20 @@ describe("Stock", () => {
       splitters: [],
       mergers: [],
     };
-    const actionTest: GameActionCreateSource = {
-      type: "create source",
+    const actionTest: GameActionCreateStock = {
+      type: "create stock",
       max: 15,
+      val: 0,
       x: 0,
       y: 0,
-      leavingDirection: "right",
-      goodType: "blue",
+      direction: "right",
     };
     const result = gameReducer(stateTest as GameType, actionTest);
-    expect(result.sources).toHaveLength(1);
+    expect(result.stocks).toHaveLength(1);
     const transportResult = result.entities.get(
       "transport1",
     ) as EntityTransportType;
-    expect(transportResult.source).toBe("source1");
+    expect(transportResult.source).toBe("stock1");
   });
 
   it("should connect to splitter on the left of the transport", () => {
@@ -471,20 +474,20 @@ describe("Stock", () => {
       splitters: ["splitter1"],
       mergers: [],
     };
-    const actionTest: GameActionCreateSource = {
-      type: "create source",
+    const actionTest: GameActionCreateStock = {
+      type: "create stock",
       max: 15,
+      val: 0,
       x: 0,
       y: 0,
-      leavingDirection: "right",
-      goodType: "blue",
+      direction: "right",
     };
     const result = gameReducer(stateTest as GameType, actionTest);
-    expect(result.sources).toHaveLength(1);
+    expect(result.stocks).toHaveLength(1);
     const splitterResult = result.entities.get(
       "splitter1",
     ) as EntitySplitterType;
-    expect(splitterResult.source).toBe("source1");
+    expect(splitterResult.source).toBe("stock1");
   });
 
   it("should connect as target on the left of the merger entity", () => {
@@ -513,16 +516,16 @@ describe("Stock", () => {
       splitters: ["merger1"],
       mergers: [],
     };
-    const actionTest: GameActionCreateSource = {
-      type: "create source",
+    const actionTest: GameActionCreateStock = {
+      type: "create stock",
       max: 15,
+      val: 0,
       x: 0,
       y: 0,
-      leavingDirection: "right",
-      goodType: "blue",
+      direction: "right",
     };
     const result = gameReducer(stateTest as GameType, actionTest);
-    expect(result.sources).toHaveLength(1);
+    expect(result.stocks).toHaveLength(1);
     const mergerResult = result.entities.get("merger1") as EntityMergerType;
     expect(mergerResult.sources).toBe(["source1"]);
   });
@@ -552,20 +555,20 @@ describe("Stock", () => {
       splitters: [],
       mergers: [],
     };
-    const actionTest: GameActionCreateConsumer = {
-      type: "create consumer",
+    const actionTest: GameActionCreateStock = {
+      type: "create stock",
       max: 15,
-      rate: 1,
+      val: 0,
       x: 2,
       y: 0,
-      entryDirection: "left",
+      direction: "right",
     };
     const result = gameReducer(stateTest as GameType, actionTest);
-    expect(result.consumers).toHaveLength(1);
+    expect(result.stocks).toHaveLength(1);
     const transportResult = result.entities.get(
       "transport1",
     ) as EntityTransportType;
-    expect(transportResult.target).toBe("consumer1");
+    expect(transportResult.target).toBe("stock1");
   });
 
   it("should connect as target on the left of the splitter entity", () => {
@@ -594,20 +597,20 @@ describe("Stock", () => {
       splitters: ["splitter1"],
       mergers: [],
     };
-    const actionTest: GameActionCreateConsumer = {
-      type: "create consumer",
+    const actionTest: GameActionCreateStock = {
+      type: "create stock",
       max: 15,
-      rate: 1,
+      val: 0,
       x: 0,
       y: 0,
-      entryDirection: "right",
+      direction: "left",
     };
     const result = gameReducer(stateTest as GameType, actionTest);
-    expect(result.consumers).toHaveLength(1);
+    expect(result.stocks).toHaveLength(1);
     const splitterResult = result.entities.get(
       "splitter1",
     ) as EntitySplitterType;
-    expect(splitterResult.targets).toBe(["consumer1"]);
+    expect(splitterResult.targets).toBe(["stock1"]);
   });
 
   it("should connect as source on the left of the merger entity", () => {
@@ -618,11 +621,11 @@ describe("Stock", () => {
       max: 1,
       rate: 1,
       cooldown: 0,
-      leavingDirection: "left",
+      leavingDirection: "right",
       x: 1,
       y: 0,
       target: "",
-      sources: [""],
+      sources: [],
       nextSourceIndex: 0,
       movingGoods: [],
       goods: [],
@@ -636,17 +639,17 @@ describe("Stock", () => {
       splitters: ["merger1"],
       mergers: [],
     };
-    const actionTest: GameActionCreateConsumer = {
-      type: "create consumer",
+    const actionTest: GameActionCreateStock = {
+      type: "create stock",
       max: 15,
-      rate: 1,
+      val: 0,
       x: 0,
       y: 0,
-      entryDirection: "right",
+      direction: "right",
     };
     const result = gameReducer(stateTest as GameType, actionTest);
-    expect(result.consumers).toHaveLength(1);
+    expect(result.stocks).toHaveLength(1);
     const mergerResult = result.entities.get("merger1") as EntityMergerType;
-    expect(mergerResult.target).toBe("consumer1");
+    expect(mergerResult.target).toBe("stock1");
   });
 });

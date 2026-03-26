@@ -167,25 +167,37 @@ export function updatePassiveEntitiesConnections(
   if (entity.type === "source") {
     leavingNeighbor = getNeighbor(state, entity, entity.leavingDirection);
   }
+
+
   if (
     entryNeighbor &&
-    (entryNeighbor.type === "transport" || entryNeighbor.type === "merger") &&
+
     entity.type !== "source"
   ) {
+    if (entryNeighbor.type === "transport" || entryNeighbor.type === "merger"){
+
+
     functionsToConnectTarget[entity.type]?.(
       entity,
       entryNeighbor as EntityTransportType | EntityMergerType,
     );
   }
-  if (
-    leavingNeighbor &&
-    (leavingNeighbor.type === "transport" ||
-      leavingNeighbor.type === "splitter") &&
-    entity.type !== "consumer"
-  ) {
-    functionsToConnectSource[entity.type]?.(
-      entity,
-      leavingNeighbor as EntityTransportType | EntitySplitterType,
-    );
+  if (entryNeighbor.type === "splitter"){
+    entryNeighbor.targets.push(entity.id);
+  }
+  }
+  if (leavingNeighbor && entity.type !== "consumer") {
+    if (
+      leavingNeighbor.type === "transport" ||
+      leavingNeighbor.type === "splitter"
+    ) {
+      functionsToConnectSource[entity.type]?.(
+        entity,
+        leavingNeighbor as EntityTransportType | EntitySplitterType,
+      );
+    }
+    if (leavingNeighbor.type === "merger"){ //a logica deconnect source connect target quebrou aqui. rever
+      leavingNeighbor.sources.push(entity.id);
+    }
   }
 }
