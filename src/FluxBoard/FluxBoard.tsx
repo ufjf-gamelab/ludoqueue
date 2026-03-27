@@ -1,7 +1,6 @@
 import { useRef, useState } from "react";
 import "./FluxBoard.css";
 import { useGame } from "../Provider";
-import type { EntityType } from "../entities/EntitiesTypes";
 import Tile from "../entities/Tile";
 import ToolBar from "./ToolBar";
 import EditorMenu from "../Editor/EditorMenu";
@@ -14,8 +13,7 @@ export default function FluxBoard() {
   const NUM_ROWS = 9;
   const NUM_COLS = 9;
   const { game, dispatch } = useGame()!;
-
-  useState<EntityType | null>(null);
+  const [selectedData, setSelectedData] = useState("data1");
 
   const ref = useRef(null);
 
@@ -53,29 +51,35 @@ export default function FluxBoard() {
         )}
       </div>
       <div>
-        <div style={{marginTop:"5px", fontSize: "12px", display: "flex", justifyContent:"space-between"}}>
-          <p>Select Data:</p>
-          <button
-            onClick={() => {
-              dispatch({ type: "change game data", data: initialState });
-            }}
-          >
-            Data1
-          </button>{" "}
-          <button
-            onClick={() => {
-              dispatch({ type: "change game data", data: initialState2 });
-            }}
-          >
-            Data2
-          </button>
-          <button
-            onClick={() => {
-              dispatch({ type: "change game data", data: initialState3 });
-            }}
-          >
-            Data3
-          </button>
+        <div
+          style={{
+            marginTop: "5px",
+            fontSize: "12px",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <label style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <span>Select Data:</span>
+            <select
+              value={selectedData}
+              onChange={(e) => {
+                setSelectedData(e.target.value);
+                if (e.target.value === "data1") {
+                  dispatch({ type: "change game data", data: initialState });
+                } else if (e.target.value === "data2") {
+                  dispatch({ type: "change game data", data: initialState2 });
+                } else {
+                  dispatch({ type: "change game data", data: initialState3 });
+                }
+              }}
+            >
+              <option value="data1">Data1</option>
+              <option value="data2">Data2</option>
+              <option value="data3">Data3</option>
+            </select>
+          </label>
         </div>
         <ToolBar />
         <EditorMenu editor={game.editor}></EditorMenu>
