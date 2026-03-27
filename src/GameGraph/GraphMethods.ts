@@ -15,7 +15,7 @@ export function convertGameToGraph(game: GameType): GraphType {
       };
       graph.links.push(linkToTransport);
     }
-    if (node.type === "transport" && node.target){
+    if ((node.type === "transport" || node.type ==="merger")&& node.target){
       const linkFromTransport: LinkType = {
         source: node.id,
         target: node.target,

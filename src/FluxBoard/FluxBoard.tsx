@@ -4,9 +4,11 @@ import { useGame } from "../Provider";
 import Tile from "../entities/Tile";
 import ToolBar from "./ToolBar";
 import EditorMenu from "../Editor/EditorMenu";
-import { initialState } from "../data";
-import { initialState2 } from "../data2";
-import { initialState3 } from "../data3";
+import { initialState } from "../datas/initialState";
+import { splitterComplexoData } from "../datas/splitterComplexo";
+import { mergerComplexoData } from "../datas/mergerComplexo";
+import { mergerSimplesData } from "../datas/mergerSimples";
+import { splitterSimplesData } from "../datas/splitterSimples";
 
 export default function FluxBoard() {
   const CELL_WIDTH = 55;
@@ -66,18 +68,35 @@ export default function FluxBoard() {
               value={selectedData}
               onChange={(e) => {
                 setSelectedData(e.target.value);
-                if (e.target.value === "data1") {
-                  dispatch({ type: "change game data", data: initialState });
-                } else if (e.target.value === "data2") {
-                  dispatch({ type: "change game data", data: initialState2 });
-                } else {
-                  dispatch({ type: "change game data", data: initialState3 });
+                switch(e.target.value){
+                  case("initialState"):{
+                    dispatch({ type: "change game data", data: initialState });
+                    break;
+                  }
+                  case("splitter simples"):{
+                    dispatch({ type: "change game data", data: splitterSimplesData });
+                    break;
+                  }
+                  case("splitter complexo"):{
+                    dispatch({ type: "change game data", data: splitterComplexoData });
+                    break;
+                  }
+                  case("merger simples"):{
+                    dispatch({ type: "change game data", data: mergerSimplesData });
+                    break;
+                  }
+                  case("merger complexo"):{
+                    dispatch({ type: "change game data", data: mergerComplexoData });
+                    break;
+                  }
                 }
               }}
             >
-              <option value="data1">Data1</option>
-              <option value="data2">Data2</option>
-              <option value="data3">Data3</option>
+              <option value="initialState">InitialData</option>
+              <option value="splitter simples">Splitter Simples</option>
+              <option value="splitter complexo">Splitter Complexo</option>
+              <option value="merger simples">Merger Simples</option>
+              <option value="merger complexo">Merger Complexo</option>
             </select>
           </label>
         </div>

@@ -18,7 +18,7 @@ import type {
   MovingGoodType,
   GoodType,
 } from "./entities/EntitiesTypes";
-import { initialState } from "./data";
+import { initialState } from "./datas/initialState";
 import {
   changeSourceGoodType,
   changeSourceLeavingDirection,

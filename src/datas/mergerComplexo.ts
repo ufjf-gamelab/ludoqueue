@@ -1,64 +1,12 @@
-import type { GameType } from "./types";
-import type { EntityType } from "./entities/EntitiesTypes";
+import type { GameType } from "../types";
+import type { EntityType } from "../entities/EntitiesTypes";
 
-export const initialState3: GameType = {
+export const mergerComplexoData: GameType = {
   entities: new Map<string, EntityType>([
     [
       "source1",
       {
         id: "source1",
-        name: "Source 1",
-        type: "source",
-        goodType: "red",
-        max: 5,
-        rate: 1,
-        cooldown: 0,
-        x: 0,
-        y: 0,
-        leavingDirection: "right",
-        goods: [],
-      },
-    ],
-    [
-      "consumer1",
-      {
-        id: "consumer1",
-        name: "Consumer 1",
-        type: "consumer",
-        max: 2,
-        rate: 1,
-        cooldown: 0,
-        x: 2,
-        y: 0,
-        entryDirection: "left",
-        goods: [],
-      },
-    ],
-    [
-      "transport1",
-      {
-        id: "transport1",
-        name: "Transport 1",
-        type: "transport",
-        max: 1,
-        rate: 1,
-        cooldown: 1,
-        source: "source1",
-        target: "consumer1",
-        x: 1,
-        y: 0,
-        entryDirection: "left",
-        leavingDirection: "right",
-        movingGoods: [],
-        goods: [],
-      },
-    ],
-
-    
-    [
-      "source2",
-      {
-        id: "source2",
         name: "Source 2",
         type: "source",
         goodType: "blue",
@@ -71,7 +19,6 @@ export const initialState3: GameType = {
         goods: [],
       },
     ],
-
     [
       "merger1",
       {
@@ -85,7 +32,7 @@ export const initialState3: GameType = {
         x: 3,
         y: 3,
         target: "merger2",
-        sources: ["source3", "source2"],
+        sources: ["source3","source2", "source1"],
         nextSourceIndex: 0,
         movingGoods: [],
         goods: [],
@@ -103,17 +50,17 @@ export const initialState3: GameType = {
         leavingDirection: "down",
         x: 4,
         y: 3,
-        target: "transport2",
-        sources: ["merger1", "transport3", "source6"],
+        target: "transport1",
+        sources: ["merger1", "transport2", "source5"],
         nextSourceIndex: 0,
         movingGoods: [],
         goods: [],
       },
     ],
     [
-      "source3",
+      "source2",
       {
-        id: "source3",
+        id: "source2",
         name: "Source 3",
         type: "source",
         goodType: "red",
@@ -127,9 +74,9 @@ export const initialState3: GameType = {
       },
     ],
     [
-      "source4",
+      "source3",
       {
-        id: "source4",
+        id: "source3",
         name: "Source 4",
         type: "source",
         goodType: "red",
@@ -143,9 +90,9 @@ export const initialState3: GameType = {
       },
     ],
     [
-      "source5",
+      "source4",
       {
-        id: "source5",
+        id: "source4",
         name: "Source 5",
         type: "source",
         goodType: "red",
@@ -159,16 +106,16 @@ export const initialState3: GameType = {
       },
     ],
     [
-      "transport2",
+      "transport1",
       {
-        id: "transport2",
+        id: "transport1",
         name: "Transport 2",
         type: "transport",
         max: 1,
         rate: 1,
         cooldown: 1,
         source: "merger2",
-        target: "consumer2",
+        target: "consumer1",
         x: 4,
         y: 4,
         entryDirection: "up",
@@ -178,15 +125,15 @@ export const initialState3: GameType = {
       },
     ],
     [
-      "transport3",
+      "transport2",
       {
-        id: "transport3",
+        id: "transport2",
         name: "Transport 3",
         type: "transport",
         max: 1,
         rate: 1,
         cooldown: 1,
-        source: "source5",
+        source: "source4",
         target: "merger2",
         x: 4,
         y: 2,
@@ -197,9 +144,9 @@ export const initialState3: GameType = {
       },
     ],
     [
-      "consumer2",
+      "consumer1",
       {
-        id: "consumer2",
+        id: "consumer1",
         name: "Consumer 2",
         type: "consumer",
         max: 2,
@@ -212,9 +159,9 @@ export const initialState3: GameType = {
       },
     ],
     [
-      "source6",
+      "source5",
       {
-        id: "source6",
+        id: "source5",
         name: "Source 6",
         type: "source",
         goodType: "red",
@@ -227,14 +174,13 @@ export const initialState3: GameType = {
         goods: [],
       },
     ],
-    
   ]),
   selected: null,
   status: "waiting",
   stocks: [],
-  sources: ["source1", "source2","source3","source4","source5","source6"],
-  consumers: ["consumer1", "consumer2"],
-  transports: ["transport1", "transport2","transport3"],
+  sources: ["source1", "source2", "source3", "source4", "source5"],
+  consumers: ["consumer1"],
+  transports: ["transport1", "transport2"],
   splitters: [],
   mergers: ["merger1", "merger2"],
   editor: null,

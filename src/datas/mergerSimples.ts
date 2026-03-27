@@ -1,0 +1,102 @@
+import type { GameType } from "../types";
+import type { EntityType } from "../entities/EntitiesTypes";
+
+export const mergerSimplesData: GameType = {
+  entities: new Map<string, EntityType>([
+    [
+      "source1",
+      {
+        id: "source1",
+        name: "Source 1",
+        type: "source",
+        goodType: "blue",
+        max: 5,
+        rate: 1,
+        cooldown: 0,
+        x: 3,
+        y: 2,
+        leavingDirection: "down",
+        goods: [],
+      },
+    ],
+    [
+      "consumer1",
+      {
+        id: "consumer1",
+        name: "Consumer 1",
+        type: "consumer",
+        max: 2,
+        rate: 1,
+        cooldown: 0,
+        x: 4,
+        y: 3,
+        entryDirection: "left",
+        goods: [],
+      },
+    ],
+  
+    [
+      "merger1",
+      {
+        id: "merger1",
+        name: "Merger 1",
+        type: "merger",
+        max: 1,
+        rate: 1,
+        cooldown: 0,
+        leavingDirection: "right",
+        x: 3,
+        y: 3,
+        target: "consumer1",
+        sources: ["source3","source2", "source1"],
+        nextSourceIndex: 0,
+        movingGoods: [],
+        goods: [],
+      },
+    ],
+    [
+      "source2",
+      {
+        id: "source2",
+        name: "Source 2",
+        type: "source",
+        goodType: "red",
+        max: 5,
+        rate: 1,
+        cooldown: 0,
+        x: 2,
+        y: 3,
+        leavingDirection: "right",
+        goods: [],
+      },
+    ],
+    [
+      "source3",
+      {
+        id: "source3",
+        name: "Source 3",
+        type: "source",
+        goodType: "red",
+        max: 5,
+        rate: 1,
+        cooldown: 0,
+        x: 3,
+        y: 4,
+        leavingDirection: "up",
+        goods: [],
+      },
+    ],
+    
+    
+  ]),
+  selected: null,
+  status: "waiting",
+  stocks: [],
+  sources: ["source1", "source2", "source3"],
+  consumers: ["consumer1"],
+  transports: [],
+  splitters: [],
+  mergers: ["merger1"],
+  editor: null,
+  time: 0,
+};
