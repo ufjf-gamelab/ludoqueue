@@ -1,11 +1,27 @@
 import { it, expect, describe } from "vitest";
 import type { GameType } from "../../types";
 import type {
+  EntityStockType,
   EntityTransportType,
   EntityType,
   MovingGoodType,
 } from "../EntitiesTypes";
 import { gameReducer } from "../../Provider";
+
+const good: MovingGoodType = {
+  source: null,
+  target: null,
+  size: 1,
+  time: 0,
+  goodType: "red",
+};
+
+const defaultStateExtras = {
+  stocks: [],
+  splitters: [],
+  sources: ["source1"],
+  mergers: [],
+};
 
 describe("In a single transport connection between", () => {
   describe("source → consumer", () => {
@@ -280,15 +296,7 @@ describe("In a single transport connection between", () => {
               x: 0,
               y: 0,
               leavingDirection: "right",
-              goods: [
-                {
-                  source: null,
-                  target: null,
-                  size: 1,
-                  time: 0,
-                  goodType: "red",
-                },
-              ],
+              goods: [{ ...good }],
             },
           ],
           [
@@ -303,22 +311,7 @@ describe("In a single transport connection between", () => {
               x: 2,
               y: 0,
               entryDirection: "left",
-              goods: [
-                {
-                  source: null,
-                  target: null,
-                  size: 1,
-                  time: 0,
-                  goodType: "red",
-                },
-                {
-                  source: null,
-                  target: null,
-                  size: 1,
-                  time: 0,
-                  goodType: "red",
-                },
-              ],
+              goods: [{ ...good }, { ...good }],
             },
           ],
           [
@@ -334,7 +327,7 @@ describe("In a single transport connection between", () => {
               target: "consumer1",
               x: 1,
               y: 0,
-              entryDirection: "right",
+              entryDirection: "left",
               leavingDirection: "right",
               movingGoods: [],
               goods: [],
@@ -344,336 +337,333 @@ describe("In a single transport connection between", () => {
         sources: ["source1"],
         consumers: ["consumer1"],
         transports: ["transport1"],
+        stocks: [],
+        splitters: [],
+        mergers: [],
       };
+
       const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
       const transportTick1 = tick1.entities.get(
         "transport1",
       ) as EntityTransportType;
+
       expect(transportTick1?.goods).toHaveLength(1);
       expect(transportTick1?.cooldown).toBe(1);
     });
   });
 
   describe("source → stock", () => {
-    const good: MovingGoodType = {
-    source: null,
-    target: null,
-    size: 1,
-    time: 0,
-    goodType: "blue",
-  };
-  it("it should get from source", () => {
-    const stateTest: Partial<GameType> = {
-      entities: new Map<string, EntityType>([
-        [
-          "source1",
-          {
-            id: "source1",
-            type: "source",
-            name: "Source 1",
-            goodType: "red",
-            max: 10,
-            rate: 1,
-            cooldown: 0,
-            leavingDirection: "right",
-            x: 0,
-            y: 0,
-            goods: [good],
-          },
-        ],
-        [
-          "stock2",
-          {
-            id: "stock2",
-            type: "stock",
-            name: "Stock 2",
-            max: 5,
-            closed: false,
-            direction: "left",
-            x: 2,
-            y: 0,
-            goods: [],
-          },
-        ],
-        [
-          "transport1",
-          {
-            id: "transport1",
-            type: "transport",
-            name: "Transport 1",
-            max: 1,
-            rate: 1,
-            cooldown: 1,
-            source: "source1",
-            target: "stock2",
-            x: 1,
-            y: 0,
-            entryDirection: "left",
-            leavingDirection: "right",
-            movingGoods: [],
-            goods: [],
-          },
-        ],
-      ]),
-      sources: ["source1"],
-      stocks: ["stock2"],
-      transports: ["transport1"],
-      splitters:[],
-      consumers: [],
-      mergers: [],
-    };
+    it("it should get from source", () => {
+      const stateTest: Partial<GameType> = {
+        entities: new Map<string, EntityType>([
+          [
+            "source1",
+            {
+              id: "source1",
+              type: "source",
+              name: "Source 1",
+              goodType: "red",
+              max: 10,
+              rate: 1,
+              cooldown: 0,
+              leavingDirection: "right",
+              x: 0,
+              y: 0,
+              goods: [good],
+            },
+          ],
+          [
+            "stock2",
+            {
+              id: "stock2",
+              type: "stock",
+              name: "Stock 2",
+              max: 5,
+              closed: false,
+              direction: "left",
+              x: 2,
+              y: 0,
+              goods: [],
+            },
+          ],
+          [
+            "transport1",
+            {
+              id: "transport1",
+              type: "transport",
+              name: "Transport 1",
+              max: 1,
+              rate: 1,
+              cooldown: 1,
+              source: "source1",
+              target: "stock2",
+              x: 1,
+              y: 0,
+              entryDirection: "left",
+              leavingDirection: "right",
+              movingGoods: [],
+              goods: [],
+            },
+          ],
+        ]),
+        sources: ["source1"],
+        stocks: ["stock2"],
+        transports: ["transport1"],
+        splitters: [],
+        consumers: [],
+        mergers: [],
+      };
 
-    const result = gameReducer(stateTest as GameType, { type: "game tick" });
-    const transport = result.entities.get(
-      "transport1",
-    ) as EntityTransportType;
+      const result = gameReducer(stateTest as GameType, { type: "game tick" });
+      const transport = result.entities.get(
+        "transport1",
+      ) as EntityTransportType;
 
-    expect(transport.goods.length).toBe(1);
-    expect(transport.cooldown).toBe(1);
+      expect(transport.goods.length).toBe(1);
+      expect(transport.cooldown).toBe(1);
+    });
+
+    it("it shouldn't get from a source on cooldown", () => {
+      const stateTest: Partial<GameType> = {
+        entities: new Map<string, EntityType>([
+          [
+            "source1",
+            {
+              id: "source1",
+              type: "source",
+              name: "Source 1",
+              goodType: "red",
+              max: 10,
+              rate: 1,
+              cooldown: 0,
+              leavingDirection: "right",
+              x: 0,
+              y: 0,
+              goods: [],
+            },
+          ],
+          [
+            "stock2",
+            {
+              id: "stock2",
+              type: "stock",
+              name: "Stock 2",
+              max: 5,
+              closed: false,
+              direction: "left",
+              x: 2,
+              y: 0,
+              goods: [],
+            },
+          ],
+          [
+            "transport1",
+            {
+              id: "transport1",
+              type: "transport",
+              name: "Transport 1",
+              max: 1,
+              rate: 1,
+              cooldown: 2,
+              source: "source1",
+              target: "stock2",
+              x: 1,
+              y: 0,
+              entryDirection: "left",
+              leavingDirection: "right",
+              movingGoods: [],
+              goods: [],
+            },
+          ],
+        ]),
+        sources: ["source1"],
+        stocks: ["stock2"],
+        transports: ["transport1"],
+        splitters: [],
+        consumers: [],
+        mergers: [],
+      };
+
+      const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
+      const transportTick1 = tick1.entities.get(
+        "transport1",
+      ) as EntityTransportType;
+
+      expect(transportTick1?.cooldown).toBe(1);
+      expect(transportTick1?.goods.length).toBe(0);
+
+      const tick2 = gameReducer(tick1, { type: "game tick" });
+      const transportTick2 = tick2.entities.get(
+        "transport1",
+      ) as EntityTransportType;
+
+      expect(transportTick2?.cooldown).toBe(1);
+      expect(transportTick2?.goods.length).toBe(1);
+
+      const tick3 = gameReducer(tick2, { type: "game tick" });
+      const transportTick3 = tick3.entities.get(
+        "transport1",
+      ) as EntityTransportType;
+
+      expect(transportTick3?.cooldown).toBe(1);
+      expect(transportTick3?.goods.length).toBe(0);
+    });
+
+    it("it should deliver respecting cooldowns", () => {
+      const stateTest: Partial<GameType> = {
+        entities: new Map<string, EntityType>([
+          [
+            "source1",
+            {
+              id: "source1",
+              type: "source",
+              name: "Source 1",
+              goodType: "red",
+              max: 10,
+              rate: 1,
+              cooldown: 0,
+              leavingDirection: "right",
+              x: 0,
+              y: 0,
+              goods: [],
+            },
+          ],
+          [
+            "stock2",
+            {
+              id: "stock2",
+              type: "stock",
+              name: "Stock 2",
+              max: 5,
+              closed: false,
+              direction: "left",
+              x: 2,
+              y: 0,
+              goods: [],
+            },
+          ],
+          [
+            "transport1",
+            {
+              id: "transport1",
+              type: "transport",
+              name: "Transport 1",
+              max: 1,
+              rate: 1,
+              cooldown: 1,
+              source: "source1",
+              target: "stock2",
+              x: 1,
+              y: 0,
+              entryDirection: "left",
+              leavingDirection: "right",
+              movingGoods: [],
+              goods: [],
+            },
+          ],
+        ]),
+        sources: ["source1"],
+        stocks: ["stock2"],
+        transports: ["transport1"],
+        splitters: [],
+        consumers: [],
+        mergers: [],
+      };
+
+      const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
+      const transportTick1 = tick1.entities.get(
+        "transport1",
+      ) as EntityTransportType;
+
+      expect(transportTick1?.cooldown).toBe(0);
+      expect(transportTick1?.goods.length).toBe(0);
+
+      const tick2 = gameReducer(tick1, { type: "game tick" });
+      const transportTick2 = tick2.entities.get(
+        "transport1",
+      ) as EntityTransportType;
+
+      expect(transportTick2?.cooldown).toBe(1);
+      expect(transportTick2?.goods.length).toBe(1);
+      const tick3 = gameReducer(tick2, { type: "game tick" });
+      const transportTick3 = tick3.entities.get(
+        "transport1",
+      ) as EntityTransportType;
+
+      expect(transportTick3?.cooldown).toBe(1);
+      expect(transportTick3?.goods.length).toBe(0);
+    });
+
+    it("shouldn't deliver if stock is full", () => {
+      const stateTest: Partial<GameType> = {
+        entities: new Map<string, EntityType>([
+          [
+            "source1",
+            {
+              id: "source1",
+              type: "source",
+              name: "Source 1",
+              goodType: "red",
+              max: 10,
+              rate: 1,
+              cooldown: 0,
+              leavingDirection: "right",
+              x: 0,
+              y: 0,
+              goods: [],
+            },
+          ],
+          [
+            "stock2",
+            {
+              id: "stock2",
+              type: "stock",
+              name: "Stock 2",
+              max: 5,
+              closed: false,
+              direction: "left",
+              x: 2,
+              y: 0,
+              goods: [good, good, good, good, good],
+            },
+          ],
+          [
+            "transport1",
+            {
+              id: "transport1",
+              type: "transport",
+              name: "Transport 1",
+              max: 1,
+              rate: 1,
+              cooldown: 1,
+              source: "source1",
+              target: "stock2",
+              x: 1,
+              y: 0,
+              entryDirection: "left",
+              leavingDirection: "right",
+              movingGoods: [],
+              goods: [good],
+            },
+          ],
+        ]),
+        sources: ["source1"],
+        stocks: ["stock2"],
+        transports: ["transport1"],
+        splitters: [],
+        consumers: [],
+        mergers: [],
+      };
+
+      const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
+      const transportTick1 = tick1.entities.get(
+        "transport1",
+      ) as EntityTransportType;
+
+      expect(transportTick1?.goods.length).toBe(1);
+      expect(transportTick1?.cooldown).toBe(0);
+    });
   });
-
-  it("it shouldn't get from a source on cooldown", () => {
-    const stateTest: Partial<GameType> = {
-      entities: new Map<string, EntityType>([
-        [
-          "source1",
-          {
-            id: "source1",
-            type: "source",
-            name: "Source 1",
-            goodType: "red",
-            max: 10,
-            rate: 1,
-            cooldown: 0,
-            leavingDirection: "right",
-            x: 0,
-            y: 0,
-            goods: [],
-          },
-        ],
-        [
-          "stock2",
-          {
-            id: "stock2",
-            type: "stock",
-            name: "Stock 2",
-            max: 5,
-            closed: false,
-            direction: "left",
-            x: 2,
-            y: 0,
-            goods: [],
-          },
-        ],
-        [
-          "transport1",
-          {
-            id: "transport1",
-            type: "transport",
-            name: "Transport 1",
-            max: 1,
-            rate: 1,
-            cooldown: 2,
-            source: "source1",
-            target: "stock2",
-            x: 1,
-            y: 0,
-            entryDirection: "left",
-            leavingDirection: "right",
-            movingGoods: [],
-            goods: [],
-          },
-        ],
-      ]),
-      sources: ["source1"],
-      stocks: ["stock2"],
-      transports: ["transport1"],
-      splitters:[],
-      consumers: [],
-      mergers: [],
-    };
-
-    const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
-    const transportTick1 = tick1.entities.get(
-      "transport1",
-    ) as EntityTransportType;
-
-    expect(transportTick1?.cooldown).toBe(1);
-    expect(transportTick1?.goods.length).toBe(0);
-
-    const tick2 = gameReducer(tick1, { type: "game tick" });
-    const transportTick2 = tick2.entities.get(
-      "transport1",
-    ) as EntityTransportType;
-
-    expect(transportTick2?.cooldown).toBe(1);
-    expect(transportTick2?.goods.length).toBe(1);
-
-    const tick3 = gameReducer(tick2, { type: "game tick" });
-    const transportTick3 = tick3.entities.get(
-      "transport1",
-    ) as EntityTransportType;
-
-    expect(transportTick3?.cooldown).toBe(1);
-    expect(transportTick3?.goods.length).toBe(0);
-  });
-
-  it("it should deliver respecting cooldowns", () => {
-    const stateTest: Partial<GameType> = {
-      entities: new Map<string, EntityType>([
-        [
-          "source1",
-          {
-            id: "source1",
-            type: "source",
-            name: "Source 1",
-            goodType: "red",
-            max: 10,
-            rate: 1,
-            cooldown: 0,
-            leavingDirection: "right",
-            x: 0,
-            y: 0,
-            goods: [],
-          },
-        ],
-        [
-          "stock2",
-          {
-            id: "stock2",
-            type: "stock",
-            name: "Stock 2",
-            max: 5,
-            closed: false,
-            direction: "left",
-            x: 2,
-            y: 0,
-            goods: [],
-          },
-        ],
-        [
-          "transport1",
-          {
-            id: "transport1",
-            type: "transport",
-            name: "Transport 1",
-            max: 1,
-            rate: 1,
-            cooldown: 1,
-            source: "source1",
-            target: "stock2",
-            x: 1,
-            y: 0,
-            entryDirection: "left",
-            leavingDirection: "right",
-            movingGoods: [],
-            goods: [],
-          },
-        ],
-      ]),
-      sources: ["source1"],
-      stocks: ["stock2"],
-      transports: ["transport1"],
-      splitters:[],
-      consumers: [],
-      mergers: [],
-    };
-
-    const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
-    const transportTick1 = tick1.entities.get(
-      "transport1",
-    ) as EntityTransportType;
-
-    expect(transportTick1?.cooldown).toBe(0);
-    expect(transportTick1?.goods.length).toBe(0);
-
-    const tick2 = gameReducer(tick1, { type: "game tick" });
-    const transportTick2 = tick2.entities.get(
-      "transport1",
-    ) as EntityTransportType;
-
-    expect(transportTick2?.cooldown).toBe(1);
-    expect(transportTick2?.goods.length).toBe(1);
-    const tick3 = gameReducer(tick2, { type: "game tick" });
-    const transportTick3 = tick3.entities.get(
-      "transport1",
-    ) as EntityTransportType;
-
-    expect(transportTick3?.cooldown).toBe(1);
-    expect(transportTick3?.goods.length).toBe(0);
-    
-  });
-
-  it("shouldn't deliver if stock is full", () => {
-    const stateTest: Partial<GameType> = {
-      entities: new Map<string, EntityType>([
-        [
-          "source1",
-          {
-            id: "source1",
-            type: "source",
-            name: "Source 1",
-            goodType: "red",
-            max: 10,
-            rate: 1,
-            cooldown: 0,
-            leavingDirection: "right",
-            x: 0,
-            y: 0,
-            goods: [],
-          },
-        ],
-        [
-          "stock2",
-          {
-            id: "stock2",
-            type: "stock",
-            name: "Stock 2",
-            max: 5,
-            closed: false,
-            direction: "left",
-            x: 2,
-            y: 0,
-            goods: [good,good,good,good,good],
-          },
-        ],
-        [
-          "transport1",
-          {
-            id: "transport1",
-            type: "transport",
-            name: "Transport 1",
-            max: 1,
-            rate: 1,
-            cooldown: 1,
-            source: "source1",
-            target: "stock2",
-            x: 1,
-            y: 0,
-            entryDirection: "left",
-            leavingDirection: "right",
-            movingGoods: [],
-            goods: [good],
-          },
-        ],
-      ]),
-      sources: ["source1"],
-      stocks: ["stock2"],
-      transports: ["transport1"],
-      splitters:[],
-      consumers: [],
-      mergers: [],
-    };
-
-    const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
-    const transportTick1 = tick1.entities.get(
-      "transport1",
-    ) as EntityTransportType;
-
-    expect(transportTick1?.goods.length).toBe(1);
-    expect(transportTick1?.cooldown).toBe(0);
-  });
-});
 
   describe("stock → consumer", () => {
     it("it should get from stock", () => {
@@ -685,11 +675,12 @@ describe("In a single transport connection between", () => {
               id: "stock1",
               type: "stock",
               name: "Stock 1",
-              val: 2,
               max: 10,
               closed: false,
               x: 0,
               y: 0,
+              direction: "right",
+              goods: [{ ...good }, { ...good }],
             },
           ],
           [
@@ -698,12 +689,13 @@ describe("In a single transport connection between", () => {
               id: "consumer1",
               type: "consumer",
               name: "Consumer 1",
-              val: 0,
               max: 2,
               rate: 1,
               cooldown: 0,
               x: 2,
               y: 0,
+              entryDirection: "left",
+              goods: [],
             },
           ],
           [
@@ -712,7 +704,6 @@ describe("In a single transport connection between", () => {
               id: "transport1",
               type: "transport",
               name: "Transport 1",
-              val: 0,
               max: 1,
               rate: 1,
               cooldown: 1,
@@ -720,26 +711,36 @@ describe("In a single transport connection between", () => {
               target: "consumer1",
               x: 1,
               y: 0,
-              direction: "right",
+              entryDirection: "left", // Substitui 'direction'
+              leavingDirection: "right", // Substitui 'direction'
               movingGoods: [],
+              goods: [], // Substitui 'val: 0'
             },
           ],
         ]),
         stocks: ["stock1"],
         consumers: ["consumer1"],
         transports: ["transport1"],
+        splitters: [],
+        sources: [],
+        mergers: [],
       };
 
       const result = gameReducer(stateTest as GameType, { type: "game tick" });
-      expect(result.entities.get("stock1")?.goods.length).toBe(1);
+
+      const stock = result.entities.get("stock1") as EntityStockType;
+      expect(stock.goods).toHaveLength(1);
+
       const transport = result.entities.get(
         "transport1",
       ) as EntityTransportType;
-      expect(transport.goods.length).toBe(1);
+      expect(transport.goods).toHaveLength(1);
       expect(transport.cooldown).toBe(1);
     });
 
     it("it shouldn't get from a stock on cooldown", () => {
+      // Item base para simular o conteúdo no Stock
+
       const stateTest: Partial<GameType> = {
         entities: new Map<string, EntityType>([
           [
@@ -748,11 +749,12 @@ describe("In a single transport connection between", () => {
               id: "stock1",
               type: "stock",
               name: "Stock 1",
-              val: 2,
               max: 10,
               closed: false,
               x: 0,
               y: 0,
+              direction: "right",
+              goods: [{ ...good }, { ...good }],
             },
           ],
           [
@@ -761,12 +763,13 @@ describe("In a single transport connection between", () => {
               id: "consumer1",
               type: "consumer",
               name: "Consumer 1",
-              val: 0,
               max: 2,
               rate: 1,
               cooldown: 0,
               x: 2,
               y: 0,
+              entryDirection: "left",
+              goods: [],
             },
           ],
           [
@@ -775,7 +778,6 @@ describe("In a single transport connection between", () => {
               id: "transport1",
               type: "transport",
               name: "Transport 1",
-              val: 0,
               max: 1,
               rate: 1,
               cooldown: 2,
@@ -783,84 +785,10 @@ describe("In a single transport connection between", () => {
               target: "consumer1",
               x: 1,
               y: 0,
-              direction: "right",
+              entryDirection: "left",
+              leavingDirection: "right",
               movingGoods: [],
-            },
-          ],
-        ]),
-        stocks: ["stock1"],
-        consumers: ["consumer1"],
-        transports: ["transport1"],
-      };
-
-      const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
-      const transportTick1 = tick1.entities.get(
-        "transport1",
-      ) as EntityTransportType;
-      expect(transportTick1?.cooldown).toBe(1);
-      expect(transportTick1?.goods.length).toBe(0);
-
-      const tick2 = gameReducer(tick1, { type: "game tick" });
-      const transportTick2 = tick2.entities.get(
-        "transport1",
-      ) as EntityTransportType;
-      expect(transportTick2?.cooldown).toBe(1);
-      expect(transportTick2?.goods.length).toBe(1);
-
-      const tick3 = gameReducer(tick2, { type: "game tick" });
-      const transportTick3 = tick3.entities.get(
-        "transport1",
-      ) as EntityTransportType;
-      expect(transportTick3?.cooldown).toBe(1);
-      expect(transportTick3?.goods.length).toBe(0);
-    });
-
-    it("it should deliver respecting cooldowns", () => {
-      const stateTest: Partial<GameType> = {
-        entities: new Map<string, EntityType>([
-          [
-            "stock1",
-            {
-              id: "stock1",
-              type: "stock",
-              name: "Stock 1",
-              val: 2,
-              max: 10,
-              closed: false,
-              x: 0,
-              y: 0,
-            },
-          ],
-          [
-            "consumer1",
-            {
-              id: "consumer1",
-              type: "consumer",
-              name: "Consumer 1",
-              val: 0,
-              max: 2,
-              rate: 1,
-              cooldown: 0,
-              x: 2,
-              y: 0,
-            },
-          ],
-          [
-            "transport1",
-            {
-              id: "transport1",
-              type: "transport",
-              name: "Transport 1",
-              val: 0,
-              max: 1,
-              rate: 1,
-              cooldown: 1,
-              source: "stock1",
-              target: "consumer1",
-              x: 1,
-              y: 0,
-              direction: "right",
-              movingGoods: [],
+              goods: [],
             },
           ],
         ]),
@@ -877,14 +805,96 @@ describe("In a single transport connection between", () => {
         "transport1",
       ) as EntityTransportType;
       expect(transportTick1?.cooldown).toBe(1);
-      expect(transportTick1?.goods.length).toBe(1);
+      expect(transportTick1?.goods).toHaveLength(0);
 
       const tick2 = gameReducer(tick1, { type: "game tick" });
       const transportTick2 = tick2.entities.get(
         "transport1",
       ) as EntityTransportType;
       expect(transportTick2?.cooldown).toBe(1);
-      expect(transportTick2?.goods.length).toBe(0);
+      expect(transportTick2?.goods).toHaveLength(1);
+
+      const tick3 = gameReducer(tick2, { type: "game tick" });
+      const transportTick3 = tick3.entities.get(
+        "transport1",
+      ) as EntityTransportType;
+      expect(transportTick3?.cooldown).toBe(1);
+      expect(transportTick3?.goods).toHaveLength(0);
+    });
+
+    it("it should deliver respecting cooldowns", () => {
+      const stateTest: Partial<GameType> = {
+        entities: new Map<string, EntityType>([
+          [
+            "stock1",
+            {
+              id: "stock1",
+              type: "stock",
+              name: "Stock 1",
+              max: 10,
+              closed: false,
+              x: 0,
+              y: 0,
+              direction: "right",
+              goods: [{ ...good }, { ...good }],
+            },
+          ],
+          [
+            "consumer1",
+            {
+              id: "consumer1",
+              type: "consumer",
+              name: "Consumer 1",
+              max: 2,
+              rate: 1,
+              cooldown: 0,
+              x: 2,
+              y: 0,
+              entryDirection: "left",
+              goods: [],
+            },
+          ],
+          [
+            "transport1",
+            {
+              id: "transport1",
+              type: "transport",
+              name: "Transport 1",
+              max: 1,
+              rate: 1,
+              cooldown: 1,
+              source: "stock1",
+              target: "consumer1",
+              x: 1,
+              y: 0,
+              entryDirection: "left",
+              leavingDirection: "right",
+              movingGoods: [],
+              goods: [],
+            },
+          ],
+        ]),
+        stocks: ["stock1"],
+        consumers: ["consumer1"],
+        transports: ["transport1"],
+        splitters: [],
+        sources: [],
+        mergers: [],
+      };
+
+      const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
+      const transportTick1 = tick1.entities.get(
+        "transport1",
+      ) as EntityTransportType;
+      expect(transportTick1?.cooldown).toBe(1);
+      expect(transportTick1?.goods).toHaveLength(1);
+
+      const tick2 = gameReducer(tick1, { type: "game tick" });
+      const transportTick2 = tick2.entities.get(
+        "transport1",
+      ) as EntityTransportType;
+      expect(transportTick2?.cooldown).toBe(1);
+      expect(transportTick2?.goods).toHaveLength(0);
     });
 
     it("shouldn't deliver if consumer is full", () => {
@@ -963,43 +973,308 @@ describe("In a single transport connection between", () => {
   });
 
   describe("stock → stock", () => {
-  const good: MovingGoodType = {
-    source: null,
-    target: null,
-    size: 1,
-    time: 0,
-    goodType: "blue",
-  };
+    it("it should get from source stock", () => {
+      const stateTest: Partial<GameType> = {
+        entities: new Map<string, EntityType>([
+          [
+            "stock1",
+            {
+              id: "stock1",
+              type: "stock",
+              name: "Stock 1",
+              max: 10,
+              closed: false,
+              direction: "right",
+              x: 0,
+              y: 0,
+              goods: [good, good, good],
+            },
+          ],
+          [
+            "stock2",
+            {
+              id: "stock2",
+              type: "stock",
+              name: "Stock 2",
+              max: 5,
+              closed: false,
+              direction: "left",
+              x: 2,
+              y: 0,
+              goods: [good],
+            },
+          ],
+          [
+            "transport1",
+            {
+              id: "transport1",
+              type: "transport",
+              name: "Transport 1",
+              max: 1,
+              rate: 1,
+              cooldown: 1,
+              source: "stock1",
+              target: "stock2",
+              x: 1,
+              y: 0,
+              entryDirection: "left",
+              leavingDirection: "right",
+              movingGoods: [],
+              goods: [],
+            },
+          ],
+        ]),
+        stocks: ["stock1", "stock2"],
+        consumers: [],
+        splitters: [],
+        mergers: [],
+        sources: [],
+        transports: ["transport1"],
+      };
 
-  it("it should get from source stock", () => {
+      const result = gameReducer(stateTest as GameType, { type: "game tick" });
+      expect(result.entities.get("stock1")?.goods.length).toBe(2);
+      const transport = result.entities.get(
+        "transport1",
+      ) as EntityTransportType;
+      expect(transport.goods.length).toBe(1);
+      expect(transport.cooldown).toBe(1);
+    });
+
+    it("it shouldn't get from stock on cooldown", () => {
+      const stateTest: Partial<GameType> = {
+        entities: new Map<string, EntityType>([
+          [
+            "stock1",
+            {
+              id: "stock1",
+              type: "stock",
+              name: "Stock 1",
+              max: 10,
+              closed: false,
+              direction: "right",
+              x: 0,
+              y: 0,
+              goods: [good, good, good],
+            },
+          ],
+          [
+            "stock2",
+            {
+              id: "stock2",
+              type: "stock",
+              name: "Stock 2",
+              max: 5,
+              closed: false,
+              direction: "left",
+              x: 2,
+              y: 0,
+              goods: [good],
+            },
+          ],
+          [
+            "transport1",
+            {
+              id: "transport1",
+              type: "transport",
+              name: "Transport 1",
+              max: 1,
+              rate: 1,
+              cooldown: 2,
+              source: "stock1",
+              target: "stock2",
+              x: 1,
+              y: 0,
+              entryDirection: "left",
+              leavingDirection: "right",
+              movingGoods: [],
+              goods: [],
+            },
+          ],
+        ]),
+        stocks: ["stock1", "stock2"],
+        consumers: [],
+        splitters: [],
+        mergers: [],
+        sources: [],
+        transports: ["transport1"],
+      };
+
+      const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
+      const transportTick1 = tick1.entities.get(
+        "transport1",
+      ) as EntityTransportType;
+      expect(transportTick1?.cooldown).toBe(1);
+      expect(transportTick1?.goods.length).toBe(0);
+    });
+
+    it("it should deliver respecting cooldowns", () => {
+      const stateTest: Partial<GameType> = {
+        entities: new Map<string, EntityType>([
+          [
+            "stock1",
+            {
+              id: "stock1",
+              type: "stock",
+              name: "Stock 1",
+              max: 10,
+              closed: false,
+              direction: "right",
+              x: 0,
+              y: 0,
+              goods: [good, good, good],
+            },
+          ],
+          [
+            "stock2",
+            {
+              id: "stock2",
+              type: "stock",
+              name: "Stock 2",
+              max: 5,
+              closed: false,
+              direction: "left",
+              x: 2,
+              y: 0,
+              goods: [good],
+            },
+          ],
+          [
+            "transport1",
+            {
+              id: "transport1",
+              type: "transport",
+              name: "Transport 1",
+              max: 1,
+              rate: 1,
+              cooldown: 1,
+              source: "stock1",
+              target: "stock2",
+              x: 1,
+              y: 0,
+              entryDirection: "left",
+              leavingDirection: "right",
+              movingGoods: [],
+              goods: [],
+            },
+          ],
+        ]),
+        stocks: ["stock1", "stock2"],
+        consumers: [],
+        splitters: [],
+        mergers: [],
+        sources: [],
+        transports: ["transport1"],
+      };
+
+      const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
+      const transportTick1 = tick1.entities.get(
+        "transport1",
+      ) as EntityTransportType;
+      expect(transportTick1?.goods.length).toBe(1);
+    });
+
+    it("shouldn't deliver if target stock is full", () => {
+      const stateTest: Partial<GameType> = {
+        entities: new Map<string, EntityType>([
+          [
+            "stock1",
+            {
+              id: "stock1",
+              type: "stock",
+              name: "Stock 1",
+              max: 10,
+              closed: false,
+              direction: "right",
+              x: 0,
+              y: 0,
+              goods: [good, good, good],
+            },
+          ],
+          [
+            "stock2",
+            {
+              id: "stock2",
+              type: "stock",
+              name: "Stock 2",
+              max: 5,
+              closed: false,
+              direction: "left",
+              x: 2,
+              y: 0,
+              goods: [good, good, good, good, good],
+            },
+          ],
+          [
+            "transport1",
+            {
+              id: "transport1",
+              type: "transport",
+              name: "Transport 1",
+              max: 1,
+              rate: 1,
+              cooldown: 1,
+              source: "stock1",
+              target: "stock2",
+              x: 1,
+              y: 0,
+              entryDirection: "left",
+              leavingDirection: "right",
+              movingGoods: [],
+              goods: [],
+            },
+          ],
+        ]),
+        stocks: ["stock1", "stock2"],
+        consumers: [],
+        splitters: [],
+        mergers: [],
+        sources: [],
+        transports: ["transport1"],
+      };
+
+      const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
+      const transportTick1 = tick1.entities.get(
+        "transport1",
+      ) as EntityTransportType;
+      expect(transportTick1?.goods.length).toBe(1);
+    });
+  });
+});
+describe("In a double transport connection between", () => {
+  describe("source → transport1 → transport2 → consumer",() => {
+  it("transport1 should get from source", () => {
     const stateTest: Partial<GameType> = {
       entities: new Map<string, EntityType>([
         [
-          "stock1",
+          "source1",
           {
-            id: "stock1",
-            type: "stock",
-            name: "Stock 1",
+            id: "source1",
+            type: "source",
+            name: "Source 1",
+            goodType: "red",
             max: 10,
-            closed: false,
-            direction: "right",
+            rate: 1,
+            cooldown: 0,
             x: 0,
             y: 0,
-            goods: [good, good, good],
+            leavingDirection: "right",
+            goods: [{ ...good }, { ...good }],
           },
         ],
         [
-          "stock2",
+          "consumer1",
           {
-            id: "stock2",
-            type: "stock",
-            name: "Stock 2",
-            max: 5,
-            closed: false,
-            direction: "left",
-            x: 2,
+            id: "consumer1",
+            type: "consumer",
+            name: "Consumer 1",
+            max: 2,
+            rate: 1,
+            cooldown: 0,
+            x: 4,
             y: 0,
-            goods: [good],
+            entryDirection: "left",
+            goods: [],
           },
         ],
         [
@@ -1011,8 +1286,8 @@ describe("In a single transport connection between", () => {
             max: 1,
             rate: 1,
             cooldown: 1,
-            source: "stock1",
-            target: "stock2",
+            source: "source1",
+            target: "transport2",
             x: 1,
             y: 0,
             entryDirection: "left",
@@ -1021,51 +1296,77 @@ describe("In a single transport connection between", () => {
             goods: [],
           },
         ],
+        [
+          "transport2",
+          {
+            id: "transport2",
+            type: "transport",
+            name: "Transport 2",
+            max: 1,
+            rate: 1,
+            cooldown: 1,
+            source: "transport1",
+            target: "consumer1",
+            x: 3,
+            y: 0,
+            entryDirection: "left",
+            leavingDirection: "right",
+            movingGoods: [],
+            goods: [],
+          },
+        ],
       ]),
-      stocks: ["stock1", "stock2"],
-      consumers: [],
-      splitters: [],
-      mergers: [],
-      sources: [],
-      transports: ["transport1"],
+      ...defaultStateExtras,
+      consumers: ["consumer1"],
+      transports: ["transport1", "transport2"],
     };
 
-    const result = gameReducer(stateTest as GameType, { type: "game tick" });
-    expect(result.entities.get("stock1")?.goods.length).toBe(2);
-    const transport = result.entities.get("transport1") as EntityTransportType;
-    expect(transport.goods.length).toBe(1);
-    expect(transport.cooldown).toBe(1);
+    const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
+    const transport1Tick1 = tick1.entities.get(
+      "transport1",
+    ) as EntityTransportType;
+    const transport2Tick1 = tick1.entities.get(
+      "transport2",
+    ) as EntityTransportType;
+
+    expect(transport1Tick1.goods).toHaveLength(1);
+    expect(transport1Tick1.cooldown).toBe(1);
+    expect(transport2Tick1?.goods).toHaveLength(0);
+    expect(transport2Tick1?.cooldown).toBe(1);
   });
 
-  it("it shouldn't get from stock on cooldown", () => {
+  it("transport1 shouldn't get from source while on cooldown", () => {
     const stateTest: Partial<GameType> = {
       entities: new Map<string, EntityType>([
         [
-          "stock1",
+          "source1",
           {
-            id: "stock1",
-            type: "stock",
-            name: "Stock 1",
+            id: "source1",
+            type: "source",
+            name: "Source 1",
+            goodType: "red",
             max: 10,
-            closed: false,
-            direction: "right",
+            rate: 1,
+            cooldown: 0,
             x: 0,
             y: 0,
-            goods: [good, good, good],
+            leavingDirection: "right",
+            goods: [{ ...good }, { ...good }],
           },
         ],
         [
-          "stock2",
+          "consumer1",
           {
-            id: "stock2",
-            type: "stock",
-            name: "Stock 2",
-            max: 5,
-            closed: false,
-            direction: "left",
-            x: 2,
+            id: "consumer1",
+            type: "consumer",
+            name: "Consumer 1",
+            max: 2,
+            rate: 1,
+            cooldown: 0,
+            x: 4,
             y: 0,
-            goods: [good],
+            entryDirection: "left",
+            goods: [],
           },
         ],
         [
@@ -1077,8 +1378,8 @@ describe("In a single transport connection between", () => {
             max: 1,
             rate: 1,
             cooldown: 2,
-            source: "stock1",
-            target: "stock2",
+            source: "source1",
+            target: "transport2",
             x: 1,
             y: 0,
             entryDirection: "left",
@@ -1087,50 +1388,182 @@ describe("In a single transport connection between", () => {
             goods: [],
           },
         ],
+        [
+          "transport2",
+          {
+            id: "transport2",
+            type: "transport",
+            name: "Transport 2",
+            max: 1,
+            rate: 1,
+            cooldown: 1,
+            source: "transport1",
+            target: "consumer1",
+            x: 3,
+            y: 0,
+            entryDirection: "left",
+            leavingDirection: "right",
+            movingGoods: [],
+            goods: [],
+          },
+        ],
       ]),
-      stocks: ["stock1", "stock2"],
-      consumers: [],
-      splitters: [],
-      mergers: [],
-      sources: [],
-      transports: ["transport1"],
+      ...defaultStateExtras,
+      consumers: ["consumer1"],
+      transports: ["transport1", "transport2"],
     };
 
     const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
-    const transportTick1 = tick1.entities.get("transport1") as EntityTransportType;
-    expect(transportTick1?.cooldown).toBe(1);
-    expect(transportTick1?.goods.length).toBe(0);
+    const transport1Tick1 = tick1.entities.get(
+      "transport1",
+    ) as EntityTransportType;
+    const transport2Tick1 = tick1.entities.get(
+      "transport2",
+    ) as EntityTransportType;
+
+    expect(transport1Tick1?.cooldown).toBe(1);
+    expect(transport1Tick1?.goods).toHaveLength(0);
+    expect(transport2Tick1?.cooldown).toBe(1);
+    expect(transport2Tick1?.goods).toHaveLength(0);
   });
 
-  it("it should deliver respecting cooldowns", () => {
+  it("transport1 shouldn't deliver to transport2 if on cooldown", () => {
     const stateTest: Partial<GameType> = {
       entities: new Map<string, EntityType>([
         [
-          "stock1",
+          "source1",
           {
-            id: "stock1",
-            type: "stock",
-            name: "Stock 1",
+            id: "source1",
+            type: "source",
+            name: "Source 1",
+            goodType: "red",
             max: 10,
-            closed: false,
-            direction: "right",
+            rate: 1,
+            cooldown: 0,
             x: 0,
             y: 0,
-            goods: [good, good, good],
+            leavingDirection: "right",
+            goods: [{ ...good }, { ...good }],
           },
         ],
         [
-          "stock2",
+          "consumer1",
           {
-            id: "stock2",
-            type: "stock",
-            name: "Stock 2",
-            max: 5,
-            closed: false,
-            direction: "left",
-            x: 2,
+            id: "consumer1",
+            type: "consumer",
+            name: "Consumer 1",
+            max: 2,
+            rate: 1,
+            cooldown: 0,
+            x: 4,
             y: 0,
-            goods: [good],
+            entryDirection: "left",
+            goods: [],
+          },
+        ],
+        [
+          "transport1",
+          {
+            id: "transport1",
+            type: "transport",
+            name: "Transport 1",
+            max: 1,
+            rate: 1,
+            cooldown: 2,
+            source: "source1",
+            target: "transport2",
+            x: 1,
+            y: 0,
+            entryDirection: "left",
+            leavingDirection: "right",
+            movingGoods: [],
+            goods: [{ ...good }],
+          },
+        ],
+        [
+          "transport2",
+          {
+            id: "transport2",
+            type: "transport",
+            name: "Transport 2",
+            max: 1,
+            rate: 1,
+            cooldown: 2,
+            source: "transport1",
+            target: "consumer1",
+            x: 3,
+            y: 0,
+            entryDirection: "left",
+            leavingDirection: "right",
+            movingGoods: [],
+            goods: [],
+          },
+        ],
+      ]),
+      ...defaultStateExtras,
+      consumers: ["consumer1"],
+      transports: ["transport1", "transport2"],
+    };
+
+    const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
+    const transport1Tick1 = tick1.entities.get(
+      "transport1",
+    ) as EntityTransportType;
+    const transport2Tick1 = tick1.entities.get(
+      "transport2",
+    ) as EntityTransportType;
+
+    expect(transport1Tick1?.cooldown).toBe(1);
+    expect(transport1Tick1?.goods).toHaveLength(1);
+    expect(transport2Tick1?.cooldown).toBe(1);
+    expect(transport2Tick1?.goods).toHaveLength(0);
+
+    const tick2 = gameReducer(tick1, { type: "game tick" });
+    const transport1Tick2 = tick2.entities.get(
+      "transport1",
+    ) as EntityTransportType;
+    const transport2Tick2 = tick2.entities.get(
+      "transport2",
+    ) as EntityTransportType;
+
+    expect(transport1Tick2?.cooldown).toBe(1);
+    expect(transport1Tick2?.goods).toHaveLength(0);
+    expect(transport2Tick2?.cooldown).toBe(1);
+    expect(transport2Tick2?.goods).toHaveLength(1);
+  });
+
+  it("transport1 shouldn't deliver to transport2 if its full", () => {
+    const stateTest: Partial<GameType> = {
+      entities: new Map<string, EntityType>([
+        [
+          "source1",
+          {
+            id: "source1",
+            type: "source",
+            name: "Source 1",
+            goodType: "red",
+            max: 10,
+            rate: 1,
+            cooldown: 0,
+            x: 0,
+            y: 0,
+            leavingDirection: "right",
+            goods: [{ ...good }, { ...good }],
+          },
+        ],
+        [
+          "consumer1",
+          {
+            id: "consumer1",
+            type: "consumer",
+            name: "Consumer 1",
+            max: 2,
+            rate: 1,
+            cooldown: 0,
+            x: 4,
+            y: 0,
+            entryDirection: "left",
+            goods: [],
           },
         ],
         [
@@ -1142,59 +1575,110 @@ describe("In a single transport connection between", () => {
             max: 1,
             rate: 1,
             cooldown: 1,
-            source: "stock1",
-            target: "stock2",
+            source: "source1",
+            target: "transport2",
             x: 1,
             y: 0,
             entryDirection: "left",
             leavingDirection: "right",
             movingGoods: [],
-            goods: [],
+            goods: [{ ...good }],
+          },
+        ],
+        [
+          "transport2",
+          {
+            id: "transport2",
+            type: "transport",
+            name: "Transport 2",
+            max: 1,
+            rate: 1,
+            cooldown: 2,
+            source: "transport1",
+            target: "consumer1",
+            x: 3,
+            y: 0,
+            entryDirection: "left",
+            leavingDirection: "right",
+            movingGoods: [],
+            goods: [{ ...good }], // Transport 2 cheio
           },
         ],
       ]),
-      stocks: ["stock1", "stock2"],
-      consumers: [],
-      splitters: [],
-      mergers: [],
-      sources: [],
-      transports: ["transport1"],
+      ...defaultStateExtras,
+      consumers: ["consumer1"],
+      transports: ["transport1", "transport2"],
     };
 
     const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
-    const transportTick1 = tick1.entities.get("transport1") as EntityTransportType;
-    expect(transportTick1?.goods.length).toBe(1);
+    const transport1Tick1 = tick1.entities.get(
+      "transport1",
+    ) as EntityTransportType;
+    const transport2Tick1 = tick1.entities.get(
+      "transport2",
+    ) as EntityTransportType;
+    expect(transport1Tick1?.cooldown).toBe(1);
+    expect(transport1Tick1?.goods).toHaveLength(1);
+    expect(transport2Tick1?.cooldown).toBe(1);
+    expect(transport2Tick1?.goods).toHaveLength(1);
+
+    const tick2 = gameReducer(tick1, { type: "game tick" });
+    const transport1Tick2 = tick2.entities.get(
+      "transport1",
+    ) as EntityTransportType;
+    const transport2Tick2 = tick2.entities.get(
+      "transport2",
+    ) as EntityTransportType;
+    expect(transport1Tick2?.cooldown).toBe(1);
+    expect(transport1Tick2?.goods).toHaveLength(1);
+    expect(transport2Tick2?.cooldown).toBe(1);
+    expect(transport2Tick2?.goods).toHaveLength(0);
+
+    const tick3 = gameReducer(tick2, { type: "game tick" });
+    const transport1Tick3 = tick3.entities.get(
+      "transport1",
+    ) as EntityTransportType;
+    const transport2Tick3 = tick3.entities.get(
+      "transport2",
+    ) as EntityTransportType;
+    expect(transport1Tick3?.cooldown).toBe(1);
+    expect(transport1Tick3?.goods).toHaveLength(0);
+    expect(transport2Tick3?.cooldown).toBe(1);
+    expect(transport2Tick3?.goods).toHaveLength(1);
   });
 
-  it("shouldn't deliver if target stock is full", () => {
+  it("transport1 should deliver to transport2 respecting cooldowns", () => {
     const stateTest: Partial<GameType> = {
       entities: new Map<string, EntityType>([
         [
-          "stock1",
+          "source1",
           {
-            id: "stock1",
-            type: "stock",
-            name: "Stock 1",
+            id: "source1",
+            type: "source",
+            name: "Source 1",
+            goodType: "red",
             max: 10,
-            closed: false,
-            direction: "right",
+            rate: 1,
+            cooldown: 0,
             x: 0,
             y: 0,
-            goods: [good, good, good],
+            leavingDirection: "right",
+            goods: [{ ...good }, { ...good }],
           },
         ],
         [
-          "stock2",
+          "consumer1",
           {
-            id: "stock2",
-            type: "stock",
-            name: "Stock 2",
-            max: 5,
-            closed: false,
-            direction: "left",
-            x: 2,
+            id: "consumer1",
+            type: "consumer",
+            name: "Consumer 1",
+            max: 2,
+            rate: 1,
+            cooldown: 0,
+            x: 4,
             y: 0,
-            goods: [good, good, good, good, good],
+            entryDirection: "left",
+            goods: [],
           },
         ],
         [
@@ -1205,9 +1689,9 @@ describe("In a single transport connection between", () => {
             name: "Transport 1",
             max: 1,
             rate: 1,
-            cooldown: 1,
-            source: "stock1",
-            target: "stock2",
+            cooldown: 2,
+            source: "source1",
+            target: "transport2",
             x: 1,
             y: 0,
             entryDirection: "left",
@@ -1216,847 +1700,305 @@ describe("In a single transport connection between", () => {
             goods: [],
           },
         ],
+        [
+          "transport2",
+          {
+            id: "transport2",
+            type: "transport",
+            name: "Transport 2",
+            max: 1,
+            rate: 1,
+            cooldown: 1,
+            source: "transport1",
+            target: "consumer1",
+            x: 3,
+            y: 0,
+            entryDirection: "left",
+            leavingDirection: "right",
+            movingGoods: [],
+            goods: [],
+          },
+        ],
       ]),
-      stocks: ["stock1", "stock2"],
-      consumers: [],
-      splitters: [],
-      mergers: [],
-      sources: [],
-      transports: ["transport1"],
+      ...defaultStateExtras,
+      consumers: ["consumer1"],
+      transports: ["transport1", "transport2"],
     };
 
     const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
-    const transportTick1 = tick1.entities.get("transport1") as EntityTransportType;
-    expect(transportTick1?.goods.length).toBe(1);
+    const transport1Tick1 = tick1.entities.get(
+      "transport1",
+    ) as EntityTransportType;
+    const transport2Tick1 = tick1.entities.get(
+      "transport2",
+    ) as EntityTransportType;
+    expect(transport1Tick1?.cooldown).toBe(1);
+    expect(transport1Tick1?.goods).toHaveLength(0);
+    expect(transport2Tick1?.cooldown).toBe(1);
+    expect(transport2Tick1?.goods).toHaveLength(0);
+
+    const tick2 = gameReducer(tick1, { type: "game tick" });
+    const transport1Tick2 = tick2.entities.get(
+      "transport1",
+    ) as EntityTransportType;
+    const transport2Tick2 = tick2.entities.get(
+      "transport2",
+    ) as EntityTransportType;
+    expect(transport1Tick2?.cooldown).toBe(1);
+    expect(transport1Tick2?.goods).toHaveLength(1);
+    expect(transport2Tick2?.cooldown).toBe(1);
+    expect(transport2Tick2?.goods).toHaveLength(0);
+
+    const tick3 = gameReducer(tick2, { type: "game tick" });
+    const transport1Tick3 = tick3.entities.get(
+      "transport1",
+    ) as EntityTransportType;
+    const transport2Tick3 = tick3.entities.get(
+      "transport2",
+    ) as EntityTransportType;
+    expect(transport1Tick3?.cooldown).toBe(1);
+    expect(transport1Tick3?.goods).toHaveLength(0);
+    expect(transport2Tick3?.cooldown).toBe(1);
+    expect(transport2Tick3?.goods).toHaveLength(1);
   });
+
+  it("transport2 should deliver to consumer respecting cooldowns", () => {
+    const stateTest: Partial<GameType> = {
+      entities: new Map<string, EntityType>([
+        [
+          "source1",
+          {
+            id: "source1",
+            type: "source",
+            name: "Source 1",
+            goodType: "red",
+            max: 10,
+            rate: 1,
+            cooldown: 0,
+            x: 0,
+            y: 0,
+            leavingDirection: "right",
+            goods: [],
+          },
+        ],
+        [
+          "consumer1",
+          {
+            id: "consumer1",
+            type: "consumer",
+            name: "Consumer 1",
+            max: 2,
+            rate: 1,
+            cooldown: 0,
+            x: 4,
+            y: 0,
+            entryDirection: "left",
+            goods: [],
+          },
+        ],
+        [
+          "transport1",
+          {
+            id: "transport1",
+            type: "transport",
+            name: "Transport 1",
+            max: 1,
+            rate: 1,
+            cooldown: 2,
+            source: "source1",
+            target: "transport2",
+            x: 1,
+            y: 0,
+            entryDirection: "left",
+            leavingDirection: "right",
+            movingGoods: [],
+            goods: [],
+          },
+        ],
+        [
+          "transport2",
+          {
+            id: "transport2",
+            type: "transport",
+            name: "Transport 2",
+            max: 1,
+            rate: 1,
+            cooldown: 1,
+            source: "transport1",
+            target: "consumer1",
+            x: 3,
+            y: 0,
+            entryDirection: "left",
+            leavingDirection: "right",
+            movingGoods: [],
+            goods: [],
+          },
+        ],
+      ]),
+      sources: ["source1"],
+      consumers: ["consumer1"],
+      transports: ["transport1", "transport2"],
+      stocks:[],
+      mergers:[],
+      splitters: [],
+    };
+
+    const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
+    const transport1Tick1 = tick1.entities.get(
+      "transport1",
+    ) as EntityTransportType;
+    const transport2Tick1 = tick1.entities.get(
+      "transport2",
+    ) as EntityTransportType;
+    expect(transport1Tick1?.cooldown).toBe(1);
+    expect(transport1Tick1?.goods.length).toBe(0);
+    expect(transport2Tick1?.cooldown).toBe(1);
+    expect(transport2Tick1?.goods.length).toBe(0);
+
+    const tick2 = gameReducer(tick1, { type: "game tick" });
+    const transport1Tick2 = tick2.entities.get(
+      "transport1",
+    ) as EntityTransportType;
+    const transport2Tick2 = tick2.entities.get(
+      "transport2",
+    ) as EntityTransportType;
+    expect(transport1Tick2?.cooldown).toBe(1);
+    expect(transport1Tick2?.goods.length).toBe(1);
+    expect(transport2Tick2?.cooldown).toBe(1);
+    expect(transport2Tick2?.goods.length).toBe(0);
+
+    const tick3 = gameReducer(tick2, { type: "game tick" });
+    const transport1Tick3 = tick3.entities.get(
+      "transport1",
+    ) as EntityTransportType;
+    const transport2Tick3 = tick3.entities.get(
+      "transport2",
+    ) as EntityTransportType;
+    expect(transport1Tick3?.cooldown).toBe(1);
+    expect(transport1Tick3?.goods.length).toBe(0);
+    expect(transport2Tick3?.cooldown).toBe(1);
+    expect(transport2Tick3?.goods.length).toBe(1);
+
+    const tick4 = gameReducer(tick3, { type: "game tick" });
+    const transport1Tick4 = tick4.entities.get(
+      "transport1",
+    ) as EntityTransportType;
+    const transport2Tick4 = tick4.entities.get(
+      "transport2",
+    ) as EntityTransportType;
+    expect(transport1Tick4?.cooldown).toBe(1);
+    expect(transport1Tick4?.goods.length).toBe(1);
+    expect(transport2Tick4?.cooldown).toBe(1);
+    expect(transport2Tick4?.goods.length).toBe(0);
+
+    const tick5 = gameReducer(tick4, { type: "game tick" });
+    const transport1Tick5 = tick5.entities.get(
+      "transport1",
+    ) as EntityTransportType;
+    const transport2Tick5 = tick5.entities.get(
+      "transport2",
+    ) as EntityTransportType;
+    expect(transport1Tick5?.cooldown).toBe(1);
+    expect(transport1Tick5?.goods.length).toBe(0);
+    expect(transport2Tick5?.cooldown).toBe(1);
+    expect(transport2Tick5?.goods.length).toBe(1);
+  });
+
+  it("transport2 shouldn't deliver to consumer if its full", () => {
+    const stateTest: Partial<GameType> = {
+      entities: new Map<string, EntityType>([
+        [
+          "source1",
+          {
+            id: "source1",
+            type: "source",
+            name: "Source 1",
+            goodType: "red",
+            max: 10,
+            rate: 1,
+            cooldown: 0,
+            x: 0,
+            y: 0,
+            leavingDirection: "right",
+            goods: [{ ...good }, { ...good }],
+          },
+        ],
+        [
+          "consumer1",
+          {
+            id: "consumer1",
+            type: "consumer",
+            name: "Consumer 1",
+            max: 2,
+            rate: 1,
+            cooldown: 1,
+            x: 4,
+            y: 0,
+            entryDirection: "left",
+            goods: [{ ...good }, { ...good }], // Consumer lotado
+          },
+        ],
+        [
+          "transport1",
+          {
+            id: "transport1",
+            type: "transport",
+            name: "Transport 1",
+            max: 1,
+            rate: 1,
+            cooldown: 2,
+            source: "source1",
+            target: "transport2",
+            x: 1,
+            y: 0,
+            entryDirection: "left",
+            leavingDirection: "right",
+            movingGoods: [],
+            goods: [],
+          },
+        ],
+        [
+          "transport2",
+          {
+            id: "transport2",
+            type: "transport",
+            name: "Transport 2",
+            max: 1,
+            rate: 1,
+            cooldown: 1,
+            source: "transport1",
+            target: "consumer1",
+            x: 3,
+            y: 0,
+            entryDirection: "left",
+            leavingDirection: "right",
+            movingGoods: [],
+            goods: [{ ...good }],
+          },
+        ],
+      ]),
+      ...defaultStateExtras,
+      consumers: ["consumer1"],
+      transports: ["transport1", "transport2"],
+    };
+
+    const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
+    const transport2Tick1 = tick1.entities.get(
+      "transport2",
+    ) as EntityTransportType;
+    expect(transport2Tick1?.cooldown).toBe(1);
+    expect(transport2Tick1?.goods).toHaveLength(1);
+    expect(tick1.entities.get("consumer1")?.goods).toHaveLength(2); // Era 1 no seu, ajustei pra 2 pois está full
+
+    const tick2 = gameReducer(tick1, { type: "game tick" });
+    const transport2Tick2 = tick2.entities.get(
+      "transport2",
+    ) as EntityTransportType;
+    expect(transport2Tick2?.cooldown).toBe(1);
+    expect(transport2Tick2?.goods).toHaveLength(0); // Consumer processou 1, então recebeu.
+    expect(tick2.entities.get("consumer1")?.goods).toHaveLength(2);
   });
 });
-describe("In a double transport connection between", () => {
-  describe("source → transport1 → transport2 → consumer", () => {
-    it("transport1 should get from source", () => {
-      const stateTest: Partial<GameType> = {
-        entities: new Map<string, EntityType>([
-          [
-            "source1",
-            {
-              id: "source1",
-              type: "source",
-              name: "Source 1",
-              val: 2,
-              max: 10,
-              rate: 1,
-              cooldown: 0,
-              x: 0,
-              y: 0,
-            },
-          ],
-          [
-            "consumer1",
-            {
-              id: "consumer1",
-              type: "consumer",
-              name: "Consumer 1",
-              val: 0,
-              max: 2,
-              rate: 1,
-              cooldown: 0,
-              x: 4,
-              y: 0,
-            },
-          ],
-          [
-            "transport1",
-            {
-              id: "transport1",
-              type: "transport",
-              name: "Transport 1",
-              val: 0,
-              max: 1,
-              rate: 1,
-              cooldown: 1,
-              source: "source1",
-              target: "transport2",
-              x: 1,
-              y: 0,
-              direction: "right",
-              movingGoods: [],
-            },
-          ],
-          [
-            "transport2",
-            {
-              id: "transport2",
-              type: "transport",
-              name: "Transport 2",
-              val: 0,
-              max: 1,
-              rate: 1,
-              cooldown: 1,
-              source: "transport1",
-              target: "consumer1",
-              x: 3,
-              y: 0,
-              direction: "right",
-              movingGoods: [],
-            },
-          ],
-        ]),
-        sources: ["source1"],
-        consumers: ["consumer1"],
-        transports: ["transport1", "transport2"],
-      };
-
-      const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
-      const transport1Tick1 = tick1.entities.get(
-        "transport1",
-      ) as EntityTransportType;
-      const transport2Tick1 = tick1.entities.get(
-        "transport2",
-      ) as EntityTransportType;
-      expect(transport1Tick1.goods.length).toBe(1);
-      expect(transport1Tick1.cooldown).toBe(1);
-      expect(transport2Tick1?.goods.length).toBe(0);
-      expect(transport2Tick1?.cooldown).toBe(1);
-    });
-
-    it("transport1 shouldn't get from source while on cooldown", () => {
-      const stateTest: Partial<GameType> = {
-        entities: new Map<string, EntityType>([
-          [
-            "source1",
-            {
-              id: "source1",
-              type: "source",
-              name: "Source 1",
-              val: 2,
-              max: 10,
-              rate: 1,
-              cooldown: 0,
-              x: 0,
-              y: 0,
-            },
-          ],
-          [
-            "consumer1",
-            {
-              id: "consumer1",
-              type: "consumer",
-              name: "Consumer 1",
-              val: 0,
-              max: 2,
-              rate: 1,
-              cooldown: 0,
-              x: 4,
-              y: 0,
-            },
-          ],
-          [
-            "transport1",
-            {
-              id: "transport1",
-              type: "transport",
-              name: "Transport 1",
-              val: 0,
-              max: 1,
-              rate: 1,
-              cooldown: 2,
-              source: "source1",
-              target: "transport2",
-              x: 1,
-              y: 0,
-              direction: "right",
-              movingGoods: [],
-            },
-          ],
-          [
-            "transport2",
-            {
-              id: "transport2",
-              type: "transport",
-              name: "Transport 2",
-              val: 0,
-              max: 1,
-              rate: 1,
-              cooldown: 1,
-              source: "transport1",
-              target: "consumer1",
-              x: 3,
-              y: 0,
-              direction: "right",
-              movingGoods: [],
-            },
-          ],
-        ]),
-        sources: ["source1"],
-        consumers: ["consumer1"],
-        transports: ["transport1", "transport2"],
-      };
-
-      const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
-      const transport1Tick1 = tick1.entities.get(
-        "transport1",
-      ) as EntityTransportType;
-      const transport2Tick1 = tick1.entities.get(
-        "transport2",
-      ) as EntityTransportType;
-      expect(transport1Tick1?.cooldown).toBe(1);
-      expect(transport1Tick1?.goods.length).toBe(0);
-      expect(transport2Tick1?.cooldown).toBe(1);
-      expect(transport2Tick1?.goods.length).toBe(0);
-    });
-
-    it("transport1 shouldn't deliver to transport2 if on cooldown", () => {
-      const stateTest: Partial<GameType> = {
-        entities: new Map<string, EntityType>([
-          [
-            "source1",
-            {
-              id: "source1",
-              type: "source",
-              name: "Source 1",
-              val: 2,
-              max: 10,
-              rate: 1,
-              cooldown: 0,
-              x: 0,
-              y: 0,
-            },
-          ],
-          [
-            "consumer1",
-            {
-              id: "consumer1",
-              type: "consumer",
-              name: "Consumer 1",
-              val: 0,
-              max: 2,
-              rate: 1,
-              cooldown: 0,
-              x: 4,
-              y: 0,
-            },
-          ],
-          [
-            "transport1",
-            {
-              id: "transport1",
-              type: "transport",
-              name: "Transport 1",
-              val: 1,
-              max: 1,
-              rate: 1,
-              cooldown: 2,
-              source: "source1",
-              target: "transport2",
-              x: 1,
-              y: 0,
-              direction: "right",
-              movingGoods: [],
-            },
-          ],
-          [
-            "transport2",
-            {
-              id: "transport2",
-              type: "transport",
-              name: "Transport 2",
-              val: 0,
-              max: 1,
-              rate: 1,
-              cooldown: 2,
-              source: "transport1",
-              target: "consumer1",
-              x: 3,
-              y: 0,
-              direction: "right",
-              movingGoods: [],
-            },
-          ],
-        ]),
-        sources: ["source1"],
-        consumers: ["consumer1"],
-        transports: ["transport1", "transport2"],
-      };
-
-      const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
-      const transport1Tick1 = tick1.entities.get(
-        "transport1",
-      ) as EntityTransportType;
-      const transport2Tick1 = tick1.entities.get(
-        "transport2",
-      ) as EntityTransportType;
-      expect(transport1Tick1?.cooldown).toBe(1);
-      expect(transport1Tick1?.goods.length).toBe(1);
-      expect(transport2Tick1?.cooldown).toBe(1);
-      expect(transport2Tick1?.goods.length).toBe(0);
-
-      const tick2 = gameReducer(tick1, { type: "game tick" });
-      const transport1Tick2 = tick2.entities.get(
-        "transport1",
-      ) as EntityTransportType;
-      const transport2Tick2 = tick2.entities.get(
-        "transport2",
-      ) as EntityTransportType;
-      expect(transport1Tick2?.cooldown).toBe(1);
-      expect(transport1Tick2?.goods.length).toBe(0);
-      expect(transport2Tick2?.cooldown).toBe(1);
-      expect(transport2Tick2?.goods.length).toBe(1);
-    });
-
-    it("transport1 shouldn't deliver to transport2 if its full", () => {
-      const stateTest: Partial<GameType> = {
-        entities: new Map<string, EntityType>([
-          [
-            "source1",
-            {
-              id: "source1",
-              type: "source",
-              name: "Source 1",
-              val: 2,
-              max: 10,
-              rate: 1,
-              cooldown: 0,
-              x: 0,
-              y: 0,
-            },
-          ],
-          [
-            "consumer1",
-            {
-              id: "consumer1",
-              type: "consumer",
-              name: "Consumer 1",
-              val: 0,
-              max: 2,
-              rate: 1,
-              cooldown: 0,
-              x: 4,
-              y: 0,
-            },
-          ],
-          [
-            "transport1",
-            {
-              id: "transport1",
-              type: "transport",
-              name: "Transport 1",
-              val: 1,
-              max: 1,
-              rate: 1,
-              cooldown: 1,
-              source: "source1",
-              target: "transport2",
-              x: 1,
-              y: 0,
-              direction: "right",
-              movingGoods: [],
-            },
-          ],
-          [
-            "transport2",
-            {
-              id: "transport2",
-              type: "transport",
-              name: "Transport 2",
-              val: 1,
-              max: 1,
-              rate: 1,
-              cooldown: 2, //should be on cooldown to simulate being full after one tick
-              source: "transport1",
-              target: "consumer1",
-              x: 3,
-              y: 0,
-              direction: "right",
-              movingGoods: [],
-            },
-          ],
-        ]),
-        sources: ["source1"],
-        consumers: ["consumer1"],
-        transports: ["transport1", "transport2"],
-      };
-
-      const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
-      const transport1Tick1 = tick1.entities.get(
-        "transport1",
-      ) as EntityTransportType;
-      const transport2Tick1 = tick1.entities.get(
-        "transport2",
-      ) as EntityTransportType;
-      expect(transport1Tick1?.cooldown).toBe(1);
-      expect(transport1Tick1?.goods.length).toBe(1);
-      expect(transport2Tick1?.cooldown).toBe(1);
-      expect(transport2Tick1?.goods.length).toBe(1);
-
-      const tick2 = gameReducer(tick1, { type: "game tick" });
-      const transport1Tick2 = tick2.entities.get(
-        "transport1",
-      ) as EntityTransportType;
-      const transport2Tick2 = tick2.entities.get(
-        "transport2",
-      ) as EntityTransportType;
-      expect(transport1Tick2?.cooldown).toBe(1);
-      expect(transport1Tick2?.goods.length).toBe(1);
-      expect(transport2Tick2?.cooldown).toBe(1);
-      expect(transport2Tick2?.goods.length).toBe(0);
-
-      const tick3 = gameReducer(tick2, { type: "game tick" });
-      const transport1Tick3 = tick3.entities.get(
-        "transport1",
-      ) as EntityTransportType;
-      const transport2Tick3 = tick3.entities.get(
-        "transport2",
-      ) as EntityTransportType;
-      expect(transport1Tick3?.cooldown).toBe(1);
-      expect(transport1Tick3?.goods.length).toBe(0);
-      expect(transport2Tick3?.cooldown).toBe(1);
-      expect(transport2Tick3?.goods.length).toBe(1);
-    });
-
-    it("transport1 should deliver to transport2 respecting cooldowns", () => {
-      const stateTest: Partial<GameType> = {
-        entities: new Map<string, EntityType>([
-          [
-            "source1",
-            {
-              id: "source1",
-              type: "source",
-              name: "Source 1",
-              val: 2,
-              max: 10,
-              rate: 1,
-              cooldown: 0,
-              x: 0,
-              y: 0,
-            },
-          ],
-          [
-            "consumer1",
-            {
-              id: "consumer1",
-              type: "consumer",
-              name: "Consumer 1",
-              val: 0,
-              max: 2,
-              rate: 1,
-              cooldown: 0,
-              x: 4,
-              y: 0,
-            },
-          ],
-          [
-            "transport1",
-            {
-              id: "transport1",
-              type: "transport",
-              name: "Transport 1",
-              val: 0,
-              max: 1,
-              rate: 1,
-              cooldown: 2,
-              source: "source1",
-              target: "transport2",
-              x: 1,
-              y: 0,
-              direction: "right",
-              movingGoods: [],
-            },
-          ],
-          [
-            "transport2",
-            {
-              id: "transport2",
-              type: "transport",
-              name: "Transport 2",
-              val: 0,
-              max: 1,
-              rate: 1,
-              cooldown: 1,
-              source: "transport1",
-              target: "consumer1",
-              x: 3,
-              y: 0,
-              movingGoods: [],
-
-              direction: "right",
-            },
-          ],
-        ]),
-        sources: ["source1"],
-        consumers: ["consumer1"],
-        transports: ["transport1", "transport2"],
-      };
-
-      const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
-      const transport1Tick1 = tick1.entities.get(
-        "transport1",
-      ) as EntityTransportType;
-      const transport2Tick1 = tick1.entities.get(
-        "transport2",
-      ) as EntityTransportType;
-      expect(transport1Tick1?.cooldown).toBe(1);
-      expect(transport1Tick1?.goods.length).toBe(0);
-      expect(transport2Tick1?.cooldown).toBe(1);
-      expect(transport2Tick1?.goods.length).toBe(0);
-
-      const tick2 = gameReducer(tick1, { type: "game tick" });
-      const transport1Tick2 = tick2.entities.get(
-        "transport1",
-      ) as EntityTransportType;
-      const transport2Tick2 = tick2.entities.get(
-        "transport2",
-      ) as EntityTransportType;
-      expect(transport1Tick2?.cooldown).toBe(1);
-      expect(transport1Tick2?.goods.length).toBe(1);
-      expect(transport2Tick2?.cooldown).toBe(1);
-      expect(transport2Tick2?.goods.length).toBe(0);
-
-      const tick3 = gameReducer(tick2, { type: "game tick" });
-      const transport1Tick3 = tick3.entities.get(
-        "transport1",
-      ) as EntityTransportType;
-      const transport2Tick3 = tick3.entities.get(
-        "transport2",
-      ) as EntityTransportType;
-      expect(transport1Tick3?.cooldown).toBe(1);
-      expect(transport1Tick3?.goods.length).toBe(0);
-      expect(transport2Tick3?.cooldown).toBe(1);
-      expect(transport2Tick3?.goods.length).toBe(1);
-    });
-
-    /* it("transport2 should wait for transport1 to deliver", () => { // comportamento de esteira
-      const stateTest: Partial<GameType> = {
-        entities: new Map<string, EntityType>([
-          [
-            "source1",
-            {
-              id: "source1",
-              type: "source",
-              name: "Source 1",
-              val: 2,
-              max: 10,
-              rate: 1,
-              cooldown: 0,
-              x: 0,
-              y: 0,
-            },
-          ],
-          [
-            "consumer1",
-            {
-              id: "consumer1",
-              type: "consumer",
-              name: "Consumer 1",
-              val: 0,
-              max: 2,
-              rate: 1,
-              cooldown: 0,
-              x: 4,
-              y: 0,
-            },
-          ],
-          [
-            "transport1",
-            {
-              id: "transport1",
-              type: "transport",
-              name: "Transport 1",
-              val: 1,
-              max: 1,
-              rate: 1,
-              cooldown: 2,
-              source: "source1",
-              target: "transport2",
-              x: 1,
-              y: 0,
-              direction: "right",
-              movingGoods: [],
-            },
-          ],
-          [
-            "transport2",
-            {
-              id: "transport2",
-              type: "transport",
-              name: "Transport 2",
-              val: 0,
-              max: 1,
-              rate: 1,
-              cooldown: 1,
-              source: "transport1",
-              target: "consumer1",
-              x: 3,
-              y: 0,
-              direction: "right",
-              movingGoods: [],
-            },
-          ],
-        ]),
-        sources: ["source1"],
-        consumers: ["consumer1"],
-        transports: ["transport1", "transport2"],
-      };
-      const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
-      const transport1Tick1 = tick1.entities.get(
-        "transport1"
-      ) as EntityTransportType;
-      const transport2Tick1 = tick1.entities.get(
-        "transport2"
-      ) as EntityTransportType;
-      expect(transport1Tick1?.cooldown).toBe(1);
-      expect(transport1Tick1?.goods.length).toBe(1);
-      expect(transport2Tick1?.cooldown).toBe(1);
-      expect(transport2Tick1?.goods.length).toBe(0);
-
-      const tick2 = gameReducer(tick1, { type: "game tick" });
-      const transport1Tick2 = tick2.entities.get(
-        "transport1"
-      ) as EntityTransportType;
-      const transport2Tick2 = tick2.entities.get(
-        "transport2"
-      ) as EntityTransportType;
-      expect(transport1Tick2?.cooldown).toBe(1);
-      expect(transport1Tick2?.goods.length).toBe(0);
-      expect(transport2Tick2?.cooldown).toBe(1);
-      expect(transport2Tick2?.goods.length).toBe(1);
-
-      const tick3 = gameReducer(tick2, { type: "game tick" });
-      const transport1Tick3 = tick3.entities.get(
-        "transport1"
-      ) as EntityTransportType;
-      const transport2Tick3 = tick3.entities.get(
-        "transport2"
-      ) as EntityTransportType;
-      expect(transport1Tick3?.cooldown).toBe(1);
-      expect(transport1Tick3?.goods.length).toBe(1);
-      expect(transport2Tick3?.cooldown).toBe(1);
-      expect(transport2Tick3?.goods.length).toBe(0);
-    });*/
-
-    it("transport2 should deliver to consumer respecting cooldowns", () => {
-      const stateTest: Partial<GameType> = {
-        entities: new Map<string, EntityType>([
-          [
-            "source1",
-            {
-              id: "source1",
-              type: "source",
-              name: "Source 1",
-              val: 2,
-              max: 10,
-              rate: 1,
-              cooldown: 0,
-              x: 0,
-              y: 0,
-            },
-          ],
-          [
-            "consumer1",
-            {
-              id: "consumer1",
-              type: "consumer",
-              name: "Consumer 1",
-              val: 0,
-              max: 2,
-              rate: 1,
-              cooldown: 0,
-              x: 4,
-              y: 0,
-            },
-          ],
-          [
-            "transport1",
-            {
-              id: "transport1",
-              type: "transport",
-              name: "Transport 1",
-              val: 0,
-              max: 1,
-              rate: 1,
-              cooldown: 2,
-              source: "source1",
-              target: "transport2",
-              x: 1,
-              y: 0,
-              direction: "right",
-              movingGoods: [],
-            },
-          ],
-          [
-            "transport2",
-            {
-              id: "transport2",
-              type: "transport",
-              name: "Transport 2",
-              val: 0,
-              max: 1,
-              rate: 1,
-              cooldown: 1,
-              source: "transport1",
-              target: "consumer1",
-              x: 3,
-              y: 0,
-              direction: "right",
-              movingGoods: [],
-            },
-          ],
-        ]),
-        sources: ["source1"],
-        consumers: ["consumer1"],
-        transports: ["transport1", "transport2"],
-      };
-
-      const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
-      const transport1Tick1 = tick1.entities.get(
-        "transport1",
-      ) as EntityTransportType;
-      const transport2Tick1 = tick1.entities.get(
-        "transport2",
-      ) as EntityTransportType;
-      expect(transport1Tick1?.cooldown).toBe(1);
-      expect(transport1Tick1?.goods.length).toBe(0);
-      expect(transport2Tick1?.cooldown).toBe(1);
-      expect(transport2Tick1?.goods.length).toBe(0);
-
-      const tick2 = gameReducer(tick1, { type: "game tick" });
-      const transport1Tick2 = tick2.entities.get(
-        "transport1",
-      ) as EntityTransportType;
-      const transport2Tick2 = tick2.entities.get(
-        "transport2",
-      ) as EntityTransportType;
-      expect(transport1Tick2?.cooldown).toBe(1);
-      expect(transport1Tick2?.goods.length).toBe(1);
-      expect(transport2Tick2?.cooldown).toBe(1);
-      expect(transport2Tick2?.goods.length).toBe(0);
-
-      const tick3 = gameReducer(tick2, { type: "game tick" });
-      const transport1Tick3 = tick3.entities.get(
-        "transport1",
-      ) as EntityTransportType;
-      const transport2Tick3 = tick3.entities.get(
-        "transport2",
-      ) as EntityTransportType;
-      expect(transport1Tick3?.cooldown).toBe(1);
-      expect(transport1Tick3?.goods.length).toBe(0);
-      expect(transport2Tick3?.cooldown).toBe(1);
-      expect(transport2Tick3?.goods.length).toBe(1);
-
-      const tick4 = gameReducer(tick3, { type: "game tick" });
-      const transport1Tick4 = tick4.entities.get(
-        "transport1",
-      ) as EntityTransportType;
-      const transport2Tick4 = tick4.entities.get(
-        "transport2",
-      ) as EntityTransportType;
-      expect(transport1Tick4?.cooldown).toBe(1);
-      expect(transport1Tick4?.goods.length).toBe(1);
-      expect(transport2Tick4?.cooldown).toBe(1);
-      expect(transport2Tick4?.goods.length).toBe(0);
-
-      const tick5 = gameReducer(tick4, { type: "game tick" });
-      const transport1Tick5 = tick5.entities.get(
-        "transport1",
-      ) as EntityTransportType;
-      const transport2Tick5 = tick5.entities.get(
-        "transport2",
-      ) as EntityTransportType;
-      expect(transport1Tick5?.cooldown).toBe(1);
-      expect(transport1Tick5?.goods.length).toBe(0);
-      expect(transport2Tick5?.cooldown).toBe(1);
-      expect(transport2Tick5?.goods.length).toBe(1);
-    });
-
-    it("transport2 shouldn't deliver to consumer if its full", () => {
-      const stateTest: Partial<GameType> = {
-        entities: new Map<string, EntityType>([
-          [
-            "source1",
-            {
-              id: "source1",
-              type: "source",
-              name: "Source 1",
-              val: 2,
-              max: 10,
-              rate: 1,
-              cooldown: 0,
-              x: 0,
-              y: 0,
-            },
-          ],
-          [
-            "consumer1",
-            {
-              id: "consumer1",
-              type: "consumer",
-              name: "Consumer 1",
-              val: 2,
-              max: 2,
-              rate: 1,
-              cooldown: 1,
-              x: 4,
-              y: 0,
-            },
-          ],
-          [
-            "transport1",
-            {
-              id: "transport1",
-              type: "transport",
-              name: "Transport 1",
-              val: 0,
-              max: 1,
-              rate: 1,
-              cooldown: 2,
-              source: "source1",
-              target: "transport2",
-              x: 1,
-              y: 0,
-              direction: "right",
-              movingGoods: [],
-            },
-          ],
-          [
-            "transport2",
-            {
-              id: "transport2",
-              type: "transport",
-              name: "Transport 2",
-              val: 1,
-              max: 1,
-              rate: 1,
-              cooldown: 1,
-              source: "transport1",
-              target: "consumer1",
-              x: 3,
-              y: 0,
-              direction: "right",
-              movingGoods: [],
-            },
-          ],
-        ]),
-        sources: ["source1"],
-        consumers: ["consumer1"],
-        transports: ["transport1", "transport2"],
-      };
-
-      const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
-      const transport2Tick1 = tick1.entities.get(
-        "transport2",
-      ) as EntityTransportType;
-      expect(transport2Tick1?.cooldown).toBe(1);
-      expect(transport2Tick1?.goods.length).toBe(1);
-      expect(tick1.entities.get("consumer1")?.goods.length).toBe(1);
-
-      const tick2 = gameReducer(tick1, { type: "game tick" });
-      const transport2Tick2 = tick2.entities.get(
-        "transport2",
-      ) as EntityTransportType;
-      expect(transport2Tick2?.cooldown).toBe(1);
-      expect(transport2Tick2?.goods.length).toBe(0);
-      expect(tick2.entities.get("consumer1")?.goods.length).toBe(1);
-    });
-  });
   describe("source → transport2 → transport1 → consumer", () => {
     it("transport2 should get from source", () => {
       const stateTest: Partial<GameType> = {
@@ -2067,12 +2009,14 @@ describe("In a double transport connection between", () => {
               id: "source1",
               type: "source",
               name: "Source 1",
-              val: 2,
+              goodType: "red",
               max: 10,
               rate: 1,
               cooldown: 0,
               x: 0,
               y: 0,
+              leavingDirection: "right",
+              goods: [{ ...good }, { ...good }],
             },
           ],
           [
@@ -2081,30 +2025,13 @@ describe("In a double transport connection between", () => {
               id: "consumer1",
               type: "consumer",
               name: "Consumer 1",
-              val: 0,
               max: 2,
               rate: 1,
               cooldown: 0,
               x: 4,
               y: 0,
-            },
-          ],
-          [
-            "transport2",
-            {
-              id: "transport2",
-              type: "transport",
-              name: "Transport 2",
-              val: 0,
-              max: 1,
-              rate: 1,
-              cooldown: 1,
-              source: "source1",
-              target: "transport1",
-              x: 1,
-              y: 0,
-              direction: "right",
-              movingGoods: [],
+              entryDirection: "left",
+              goods: [],
             },
           ],
           [
@@ -2113,24 +2040,43 @@ describe("In a double transport connection between", () => {
               id: "transport1",
               type: "transport",
               name: "Transport 1",
-              val: 0,
+              max: 1,
+              rate: 1,
+              cooldown: 2,
+              source: "source1",
+              target: "transport2",
+              x: 1,
+              y: 0,
+              entryDirection: "left",
+              leavingDirection: "right",
+              movingGoods: [],
+              goods: [],
+            },
+          ],
+          [
+            "transport2",
+            {
+              id: "transport2",
+              type: "transport",
+              name: "Transport 2",
               max: 1,
               rate: 1,
               cooldown: 1,
-              source: "transport2",
+              source: "transport1",
               target: "consumer1",
               x: 3,
               y: 0,
-              direction: "right",
+              entryDirection: "left",
+              leavingDirection: "right",
               movingGoods: [],
+              goods: [],
             },
           ],
         ]),
-        sources: ["source1"],
+        ...defaultStateExtras,
         consumers: ["consumer1"],
         transports: ["transport1", "transport2"],
       };
-
       const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
       const transport2Tick1 = tick1.entities.get(
         "transport2",
@@ -2154,12 +2100,14 @@ describe("In a double transport connection between", () => {
               id: "source1",
               type: "source",
               name: "Source 1",
-              val: 2,
+              goodType: "red",
               max: 10,
               rate: 1,
               cooldown: 0,
               x: 0,
               y: 0,
+              leavingDirection: "right",
+              goods: [],
             },
           ],
           [
@@ -2168,12 +2116,13 @@ describe("In a double transport connection between", () => {
               id: "consumer1",
               type: "consumer",
               name: "Consumer 1",
-              val: 0,
               max: 2,
               rate: 1,
               cooldown: 0,
               x: 4,
               y: 0,
+              entryDirection: "left",
+              goods: [],
             },
           ],
           [
@@ -2182,7 +2131,6 @@ describe("In a double transport connection between", () => {
               id: "transport2",
               type: "transport",
               name: "Transport 2",
-              val: 0,
               max: 1,
               rate: 1,
               cooldown: 2,
@@ -2190,8 +2138,10 @@ describe("In a double transport connection between", () => {
               target: "transport1",
               x: 1,
               y: 0,
-              direction: "right",
+              entryDirection: "left",
+              leavingDirection: "right",
               movingGoods: [],
+              goods: [],
             },
           ],
           [
@@ -2200,7 +2150,6 @@ describe("In a double transport connection between", () => {
               id: "transport1",
               type: "transport",
               name: "Transport 1",
-              val: 0,
               max: 1,
               rate: 1,
               cooldown: 1,
@@ -2208,14 +2157,19 @@ describe("In a double transport connection between", () => {
               target: "consumer1",
               x: 3,
               y: 0,
-              direction: "right",
+              entryDirection: "left",
+              leavingDirection: "right",
               movingGoods: [],
+              goods: [],
             },
           ],
         ]),
         sources: ["source1"],
         consumers: ["consumer1"],
         transports: ["transport1", "transport2"],
+        stocks:[],
+      mergers:[],
+      splitters: [],
       };
 
       const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
@@ -2241,12 +2195,14 @@ describe("In a double transport connection between", () => {
               id: "source1",
               type: "source",
               name: "Source 1",
-              val: 2,
+              goodType: "red",
               max: 10,
               rate: 1,
               cooldown: 0,
               x: 0,
               y: 0,
+              leavingDirection: "right",
+              goods: [],
             },
           ],
           [
@@ -2255,12 +2211,13 @@ describe("In a double transport connection between", () => {
               id: "consumer1",
               type: "consumer",
               name: "Consumer 1",
-              val: 0,
               max: 2,
               rate: 1,
               cooldown: 0,
               x: 4,
               y: 0,
+              entryDirection: "left",
+              goods: [],
             },
           ],
           [
@@ -2269,7 +2226,6 @@ describe("In a double transport connection between", () => {
               id: "transport2",
               type: "transport",
               name: "Transport 2",
-              val: 1,
               max: 1,
               rate: 1,
               cooldown: 2,
@@ -2277,8 +2233,10 @@ describe("In a double transport connection between", () => {
               target: "transport1",
               x: 1,
               y: 0,
-              direction: "right",
+              entryDirection: "left",
+              leavingDirection: "right",
               movingGoods: [],
+              goods: [],
             },
           ],
           [
@@ -2287,7 +2245,6 @@ describe("In a double transport connection between", () => {
               id: "transport1",
               type: "transport",
               name: "Transport 1",
-              val: 0,
               max: 1,
               rate: 1,
               cooldown: 2,
@@ -2295,14 +2252,19 @@ describe("In a double transport connection between", () => {
               target: "consumer1",
               x: 3,
               y: 0,
-              direction: "right",
+              entryDirection: "left",
+              leavingDirection: "right",
               movingGoods: [],
+              goods: [],
             },
           ],
         ]),
         sources: ["source1"],
         consumers: ["consumer1"],
         transports: ["transport1", "transport2"],
+        stocks:[],
+      mergers:[],
+      splitters: [],
       };
 
       const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
@@ -2341,12 +2303,14 @@ describe("In a double transport connection between", () => {
               id: "source1",
               type: "source",
               name: "Source 1",
-              val: 2,
+              goodType: "red",
               max: 10,
               rate: 1,
               cooldown: 0,
               x: 0,
               y: 0,
+              leavingDirection: "right",
+              goods: [],
             },
           ],
           [
@@ -2355,12 +2319,13 @@ describe("In a double transport connection between", () => {
               id: "consumer1",
               type: "consumer",
               name: "Consumer 1",
-              val: 0,
               max: 2,
               rate: 1,
               cooldown: 0,
               x: 4,
               y: 0,
+              entryDirection: "left",
+              goods: [],
             },
           ],
           [
@@ -2369,7 +2334,6 @@ describe("In a double transport connection between", () => {
               id: "transport2",
               type: "transport",
               name: "Transport 2",
-              val: 1,
               max: 1,
               rate: 1,
               cooldown: 1,
@@ -2377,8 +2341,10 @@ describe("In a double transport connection between", () => {
               target: "transport1",
               x: 1,
               y: 0,
-              direction: "right",
+              entryDirection: "left",
+              leavingDirection: "right",
               movingGoods: [],
+              goods: [],
             },
           ],
           [
@@ -2387,7 +2353,6 @@ describe("In a double transport connection between", () => {
               id: "transport1",
               type: "transport",
               name: "Transport 1",
-              val: 1,
               max: 1,
               rate: 1,
               cooldown: 2,
@@ -2395,14 +2360,19 @@ describe("In a double transport connection between", () => {
               target: "consumer1",
               x: 3,
               y: 0,
-              direction: "right",
+              entryDirection: "left",
+              leavingDirection: "right",
               movingGoods: [],
+              goods: [],
             },
           ],
         ]),
         sources: ["source1"],
         consumers: ["consumer1"],
         transports: ["transport1", "transport2"],
+        stocks:[],
+      mergers:[],
+      splitters: [],
       };
 
       const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
@@ -2454,12 +2424,14 @@ describe("In a double transport connection between", () => {
               id: "source1",
               type: "source",
               name: "Source 1",
-              val: 2,
+              goodType: "red",
               max: 10,
               rate: 1,
               cooldown: 0,
               x: 0,
               y: 0,
+              leavingDirection: "right",
+              goods: [],
             },
           ],
           [
@@ -2468,12 +2440,13 @@ describe("In a double transport connection between", () => {
               id: "consumer1",
               type: "consumer",
               name: "Consumer 1",
-              val: 0,
               max: 2,
               rate: 1,
               cooldown: 0,
               x: 4,
               y: 0,
+              entryDirection: "left",
+              goods: [],
             },
           ],
           [
@@ -2482,7 +2455,6 @@ describe("In a double transport connection between", () => {
               id: "transport2",
               type: "transport",
               name: "Transport 2",
-              val: 0,
               max: 1,
               rate: 1,
               cooldown: 2,
@@ -2490,8 +2462,10 @@ describe("In a double transport connection between", () => {
               target: "transport1",
               x: 1,
               y: 0,
-              direction: "right",
+              entryDirection: "left",
+              leavingDirection: "right",
               movingGoods: [],
+              goods: [],
             },
           ],
           [
@@ -2500,7 +2474,6 @@ describe("In a double transport connection between", () => {
               id: "transport1",
               type: "transport",
               name: "Transport 1",
-              val: 0,
               max: 1,
               rate: 1,
               cooldown: 1,
@@ -2508,14 +2481,19 @@ describe("In a double transport connection between", () => {
               target: "consumer1",
               x: 3,
               y: 0,
-              direction: "right",
+              entryDirection: "left",
+              leavingDirection: "right",
               movingGoods: [],
+              goods: [],
             },
           ],
         ]),
         sources: ["source1"],
         consumers: ["consumer1"],
         transports: ["transport1", "transport2"],
+        stocks:[],
+      mergers:[],
+      splitters: [],
       };
 
       const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
@@ -2558,119 +2536,6 @@ describe("In a double transport connection between", () => {
       expect(transport1Tick3.goods.length).toBe(1);
     });
 
-    /*it("transport1 should wait for transport2 to deliver", () => { //comportamento de esteira
-      const stateTest: Partial<GameType> = {
-        entities: new Map([
-          [
-            "source1",
-            {
-              id: "source1",
-              type: "source",
-              name: "Source 1",
-              val: 2,
-              max: 10,
-              rate: 1,
-              cooldown: 0,
-              x: 0,
-              y: 0,
-            },
-          ],
-          [
-            "consumer1",
-            {
-              id: "consumer1",
-              type: "consumer",
-              name: "Consumer 1",
-              val: 0,
-              max: 2,
-              rate: 1,
-              cooldown: 0,
-              x: 4,
-              y: 0,
-            },
-          ],
-          [
-            "transport2",
-            {
-              id: "transport2",
-              type: "transport",
-              name: "Transport 2",
-              val: 1,
-              max: 1,
-              rate: 1,
-              cooldown: 2,
-              source: "source1",
-              target: "transport1",
-              x: 1,
-              y: 0,
-              direction: "right",
-              movingGoods: [],
-            },
-          ],
-          [
-            "transport1",
-            {
-              id: "transport1",
-              type: "transport",
-              name: "Transport 1",
-              val: 0,
-              max: 1,
-              rate: 1,
-              cooldown: 1,
-              source: "transport2",
-              target: "consumer1",
-              x: 3,
-              y: 0,
-              direction: "right",
-              movingGoods: [],
-            },
-          ],
-        ]),
-        sources: ["source1"],
-        consumers: ["consumer1"],
-        transports: ["transport1", "transport2"],
-      };
-
-      const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
-      const transport2Tick1 = tick1.entities.get(
-        "transport2"
-      ) as EntityTransportType;
-      const transport1Tick1 = tick1.entities.get(
-        "transport1"
-      ) as EntityTransportType;
-
-      expect(transport2Tick1.cooldown).toBe(1);
-      expect(transport2Tick1.goods.length).toBe(1);
-      expect(transport1Tick1.cooldown).toBe(1);
-      expect(transport1Tick1.goods.length).toBe(0);
-
-      const tick2 = gameReducer(tick1, { type: "game tick" });
-      const transport2Tick2 = tick2.entities.get(
-        "transport2"
-      ) as EntityTransportType;
-      const transport1Tick2 = tick2.entities.get(
-        "transport1"
-      ) as EntityTransportType;
-
-      expect(transport2Tick2.cooldown).toBe(1);
-      expect(transport2Tick2.goods.length).toBe(0);
-      expect(transport1Tick2.cooldown).toBe(1);
-      expect(transport1Tick2.goods.length).toBe(1);
-
-      const tick3 = gameReducer(tick2, { type: "game tick" });
-      const transport2Tick3 = tick3.entities.get(
-        "transport2"
-      ) as EntityTransportType;
-      const transport1Tick3 = tick3.entities.get(
-        "transport1"
-      ) as EntityTransportType;
-
-      expect(transport2Tick3.cooldown).toBe(1);
-      expect(transport2Tick3.goods.length).toBe(1);
-      expect(transport1Tick3.cooldown).toBe(1);
-      expect(transport1Tick3.goods.length).toBe(0);
-    });*/
-
     it("transport1 should deliver to consumer respecting cooldowns", () => {
       const stateTest: Partial<GameType> = {
         entities: new Map([
@@ -2680,12 +2545,14 @@ describe("In a double transport connection between", () => {
               id: "source1",
               type: "source",
               name: "Source 1",
-              val: 2,
+              goodType: "red",
               max: 10,
               rate: 1,
               cooldown: 0,
               x: 0,
               y: 0,
+              leavingDirection: "right",
+              goods: [],
             },
           ],
           [
@@ -2694,12 +2561,13 @@ describe("In a double transport connection between", () => {
               id: "consumer1",
               type: "consumer",
               name: "Consumer 1",
-              val: 0,
               max: 2,
               rate: 1,
               cooldown: 0,
               x: 4,
               y: 0,
+              entryDirection: "left",
+              goods: [],
             },
           ],
           [
@@ -2708,7 +2576,6 @@ describe("In a double transport connection between", () => {
               id: "transport2",
               type: "transport",
               name: "Transport 2",
-              val: 0,
               max: 1,
               rate: 0.5,
               cooldown: 2,
@@ -2716,8 +2583,10 @@ describe("In a double transport connection between", () => {
               target: "transport1",
               x: 1,
               y: 0,
-              direction: "right",
+              entryDirection: "left",
+              leavingDirection: "right",
               movingGoods: [],
+              goods: [],
             },
           ],
           [
@@ -2726,7 +2595,6 @@ describe("In a double transport connection between", () => {
               id: "transport1",
               type: "transport",
               name: "Transport 1",
-              val: 0,
               max: 1,
               rate: 1,
               cooldown: 1,
@@ -2734,14 +2602,19 @@ describe("In a double transport connection between", () => {
               target: "consumer1",
               x: 3,
               y: 0,
-              direction: "right",
+              entryDirection: "left",
+              leavingDirection: "right",
               movingGoods: [],
+              goods: [],
             },
           ],
         ]),
         sources: ["source1"],
         consumers: ["consumer1"],
         transports: ["transport1", "transport2"],
+        stocks:[],
+      mergers:[],
+      splitters: [],
       };
 
       const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
@@ -2783,12 +2656,14 @@ describe("In a double transport connection between", () => {
               id: "source1",
               type: "source",
               name: "Source 1",
-              val: 2,
+              goodType: "red",
               max: 10,
               rate: 1,
               cooldown: 0,
               x: 0,
               y: 0,
+              leavingDirection: "right",
+              goods: [],
             },
           ],
           [
@@ -2797,12 +2672,13 @@ describe("In a double transport connection between", () => {
               id: "consumer1",
               type: "consumer",
               name: "Consumer 1",
-              val: 2,
               max: 2,
               rate: 1,
               cooldown: 2,
               x: 4,
               y: 0,
+              entryDirection: "left",
+              goods: [],
             },
           ],
           [
@@ -2811,7 +2687,6 @@ describe("In a double transport connection between", () => {
               id: "transport2",
               type: "transport",
               name: "Transport 2",
-              val: 0,
               max: 1,
               rate: 0.5,
               cooldown: 2,
@@ -2819,8 +2694,10 @@ describe("In a double transport connection between", () => {
               target: "transport1",
               x: 1,
               y: 0,
-              direction: "right",
+              entryDirection: "left",
+              leavingDirection: "right",
               movingGoods: [],
+              goods: [],
             },
           ],
           [
@@ -2829,7 +2706,6 @@ describe("In a double transport connection between", () => {
               id: "transport1",
               type: "transport",
               name: "Transport 1",
-              val: 1,
               max: 1,
               rate: 1,
               cooldown: 1,
@@ -2837,14 +2713,19 @@ describe("In a double transport connection between", () => {
               target: "consumer1",
               x: 3,
               y: 0,
-              direction: "right",
+              entryDirection: "left",
+              leavingDirection: "right",
               movingGoods: [],
+              goods: [],
             },
           ],
         ]),
         sources: ["source1"],
         consumers: ["consumer1"],
         transports: ["transport1", "transport2"],
+        stocks:[],
+      mergers:[],
+      splitters: [],
       };
 
       const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
