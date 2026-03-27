@@ -1332,7 +1332,7 @@ describe("In a double transport connection between", () => {
     expect(transport1Tick1.goods).toHaveLength(1);
     expect(transport1Tick1.cooldown).toBe(1);
     expect(transport2Tick1?.goods).toHaveLength(0);
-    expect(transport2Tick1?.cooldown).toBe(1);
+    expect(transport2Tick1?.cooldown).toBe(0);
   });
 
   it("transport1 shouldn't get from source while on cooldown", () => {
@@ -1423,7 +1423,7 @@ describe("In a double transport connection between", () => {
 
     expect(transport1Tick1?.cooldown).toBe(1);
     expect(transport1Tick1?.goods).toHaveLength(0);
-    expect(transport2Tick1?.cooldown).toBe(1);
+    expect(transport2Tick1?.cooldown).toBe(0);
     expect(transport2Tick1?.goods).toHaveLength(0);
   });
 
@@ -1528,7 +1528,7 @@ describe("In a double transport connection between", () => {
 
     expect(transport1Tick2?.cooldown).toBe(1);
     expect(transport1Tick2?.goods).toHaveLength(0);
-    expect(transport2Tick2?.cooldown).toBe(1);
+    expect(transport2Tick2?.cooldown).toBe(0);
     expect(transport2Tick2?.goods).toHaveLength(1);
   });
 
@@ -1617,7 +1617,7 @@ describe("In a double transport connection between", () => {
     const transport2Tick1 = tick1.entities.get(
       "transport2",
     ) as EntityTransportType;
-    expect(transport1Tick1?.cooldown).toBe(1);
+    expect(transport1Tick1?.cooldown).toBe(0);
     expect(transport1Tick1?.goods).toHaveLength(1);
     expect(transport2Tick1?.cooldown).toBe(1);
     expect(transport2Tick1?.goods).toHaveLength(1);
@@ -1629,7 +1629,7 @@ describe("In a double transport connection between", () => {
     const transport2Tick2 = tick2.entities.get(
       "transport2",
     ) as EntityTransportType;
-    expect(transport1Tick2?.cooldown).toBe(1);
+    expect(transport1Tick2?.cooldown).toBe(0);
     expect(transport1Tick2?.goods).toHaveLength(1);
     expect(transport2Tick2?.cooldown).toBe(1);
     expect(transport2Tick2?.goods).toHaveLength(0);
@@ -1643,7 +1643,7 @@ describe("In a double transport connection between", () => {
     ) as EntityTransportType;
     expect(transport1Tick3?.cooldown).toBe(1);
     expect(transport1Tick3?.goods).toHaveLength(0);
-    expect(transport2Tick3?.cooldown).toBe(1);
+    expect(transport2Tick3?.cooldown).toBe(0);
     expect(transport2Tick3?.goods).toHaveLength(1);
   });
 
@@ -1734,7 +1734,7 @@ describe("In a double transport connection between", () => {
     ) as EntityTransportType;
     expect(transport1Tick1?.cooldown).toBe(1);
     expect(transport1Tick1?.goods).toHaveLength(0);
-    expect(transport2Tick1?.cooldown).toBe(1);
+    expect(transport2Tick1?.cooldown).toBe(0);
     expect(transport2Tick1?.goods).toHaveLength(0);
 
     const tick2 = gameReducer(tick1, { type: "game tick" });
@@ -1746,7 +1746,7 @@ describe("In a double transport connection between", () => {
     ) as EntityTransportType;
     expect(transport1Tick2?.cooldown).toBe(1);
     expect(transport1Tick2?.goods).toHaveLength(1);
-    expect(transport2Tick2?.cooldown).toBe(1);
+    expect(transport2Tick2?.cooldown).toBe(0);
     expect(transport2Tick2?.goods).toHaveLength(0);
 
     const tick3 = gameReducer(tick2, { type: "game tick" });
@@ -1758,7 +1758,7 @@ describe("In a double transport connection between", () => {
     ) as EntityTransportType;
     expect(transport1Tick3?.cooldown).toBe(1);
     expect(transport1Tick3?.goods).toHaveLength(0);
-    expect(transport2Tick3?.cooldown).toBe(1);
+    expect(transport2Tick3?.cooldown).toBe(0);
     expect(transport2Tick3?.goods).toHaveLength(1);
   });
 
@@ -1852,7 +1852,7 @@ describe("In a double transport connection between", () => {
     ) as EntityTransportType;
     expect(transport1Tick1?.cooldown).toBe(1);
     expect(transport1Tick1?.goods.length).toBe(0);
-    expect(transport2Tick1?.cooldown).toBe(1);
+    expect(transport2Tick1?.cooldown).toBe(0);
     expect(transport2Tick1?.goods.length).toBe(0);
 
     const tick2 = gameReducer(tick1, { type: "game tick" });
@@ -1864,7 +1864,7 @@ describe("In a double transport connection between", () => {
     ) as EntityTransportType;
     expect(transport1Tick2?.cooldown).toBe(1);
     expect(transport1Tick2?.goods.length).toBe(1);
-    expect(transport2Tick2?.cooldown).toBe(1);
+    expect(transport2Tick2?.cooldown).toBe(0);
     expect(transport2Tick2?.goods.length).toBe(0);
 
     const tick3 = gameReducer(tick2, { type: "game tick" });
@@ -1876,7 +1876,7 @@ describe("In a double transport connection between", () => {
     ) as EntityTransportType;
     expect(transport1Tick3?.cooldown).toBe(1);
     expect(transport1Tick3?.goods.length).toBe(0);
-    expect(transport2Tick3?.cooldown).toBe(1);
+    expect(transport2Tick3?.cooldown).toBe(0);
     expect(transport2Tick3?.goods.length).toBe(1);
 
     const tick4 = gameReducer(tick3, { type: "game tick" });
@@ -1900,7 +1900,7 @@ describe("In a double transport connection between", () => {
     ) as EntityTransportType;
     expect(transport1Tick5?.cooldown).toBe(1);
     expect(transport1Tick5?.goods.length).toBe(0);
-    expect(transport2Tick5?.cooldown).toBe(1);
+    expect(transport2Tick5?.cooldown).toBe(0);
     expect(transport2Tick5?.goods.length).toBe(1);
   });
 
@@ -1930,12 +1930,12 @@ describe("In a double transport connection between", () => {
             type: "consumer",
             name: "Consumer 1",
             max: 2,
-            rate: 1,
+            rate: 0.5,
             cooldown: 1,
             x: 4,
             y: 0,
             entryDirection: "left",
-            goods: [{ ...good }, { ...good }], // Consumer lotado
+            goods: [{ ...good }, { ...good }],
           },
         ],
         [
@@ -1986,16 +1986,15 @@ describe("In a double transport connection between", () => {
     const transport2Tick1 = tick1.entities.get(
       "transport2",
     ) as EntityTransportType;
-    expect(transport2Tick1?.cooldown).toBe(1);
+    expect(transport2Tick1?.cooldown).toBe(0);
     expect(transport2Tick1?.goods).toHaveLength(1);
-    expect(tick1.entities.get("consumer1")?.goods).toHaveLength(2); // Era 1 no seu, ajustei pra 2 pois está full
-
+    expect(tick1.entities.get("consumer1")?.goods).toHaveLength(1); 
     const tick2 = gameReducer(tick1, { type: "game tick" });
     const transport2Tick2 = tick2.entities.get(
       "transport2",
     ) as EntityTransportType;
     expect(transport2Tick2?.cooldown).toBe(1);
-    expect(transport2Tick2?.goods).toHaveLength(0); // Consumer processou 1, então recebeu.
+    expect(transport2Tick2?.goods).toHaveLength(0); 
     expect(tick2.entities.get("consumer1")?.goods).toHaveLength(2);
   });
 });
@@ -2028,7 +2027,7 @@ describe("In a double transport connection between", () => {
               max: 2,
               rate: 1,
               cooldown: 0,
-              x: 4,
+              x: 3,
               y: 0,
               entryDirection: "left",
               goods: [],
@@ -2042,10 +2041,10 @@ describe("In a double transport connection between", () => {
               name: "Transport 1",
               max: 1,
               rate: 1,
-              cooldown: 2,
-              source: "source1",
-              target: "transport2",
-              x: 1,
+              cooldown: 1,
+              source: "transport2",
+              target: "consumer1",
+              x: 2,
               y: 0,
               entryDirection: "left",
               leavingDirection: "right",
@@ -2062,9 +2061,9 @@ describe("In a double transport connection between", () => {
               max: 1,
               rate: 1,
               cooldown: 1,
-              source: "transport1",
-              target: "consumer1",
-              x: 3,
+              source: "source1",
+              target: "transport1",
+              x: 1,
               y: 0,
               entryDirection: "left",
               leavingDirection: "right",
@@ -2088,7 +2087,7 @@ describe("In a double transport connection between", () => {
       expect(transport2Tick1.goods.length).toBe(1);
       expect(transport2Tick1.cooldown).toBe(1);
       expect(transport1Tick1.goods.length).toBe(0);
-      expect(transport1Tick1.cooldown).toBe(1);
+      expect(transport1Tick1.cooldown).toBe(0);
     });
 
     it("transport2 shouldn't get from source while on cooldown", () => {
@@ -2119,9 +2118,28 @@ describe("In a double transport connection between", () => {
               max: 2,
               rate: 1,
               cooldown: 0,
-              x: 4,
+              x: 3,
               y: 0,
               entryDirection: "left",
+              goods: [],
+            },
+          ],
+          [
+            "transport1",
+            {
+              id: "transport1",
+              type: "transport",
+              name: "Transport 1",
+              max: 1,
+              rate: 1,
+              cooldown: 1,
+              source: "transport2",
+              target: "consumer1",
+              x: 2,
+              y: 0,
+              entryDirection: "left",
+              leavingDirection: "right",
+              movingGoods: [],
               goods: [],
             },
           ],
@@ -2137,25 +2155,6 @@ describe("In a double transport connection between", () => {
               source: "source1",
               target: "transport1",
               x: 1,
-              y: 0,
-              entryDirection: "left",
-              leavingDirection: "right",
-              movingGoods: [],
-              goods: [],
-            },
-          ],
-          [
-            "transport1",
-            {
-              id: "transport1",
-              type: "transport",
-              name: "Transport 1",
-              max: 1,
-              rate: 1,
-              cooldown: 1,
-              source: "transport2",
-              target: "consumer1",
-              x: 3,
               y: 0,
               entryDirection: "left",
               leavingDirection: "right",
@@ -2182,7 +2181,7 @@ describe("In a double transport connection between", () => {
 
       expect(transport2Tick1.cooldown).toBe(1);
       expect(transport2Tick1.goods.length).toBe(0);
-      expect(transport1Tick1.cooldown).toBe(1);
+      expect(transport1Tick1.cooldown).toBe(0);
       expect(transport1Tick1.goods.length).toBe(0);
     });
 
@@ -2214,28 +2213,9 @@ describe("In a double transport connection between", () => {
               max: 2,
               rate: 1,
               cooldown: 0,
-              x: 4,
+              x: 3,
               y: 0,
               entryDirection: "left",
-              goods: [],
-            },
-          ],
-          [
-            "transport2",
-            {
-              id: "transport2",
-              type: "transport",
-              name: "Transport 2",
-              max: 1,
-              rate: 1,
-              cooldown: 2,
-              source: "source1",
-              target: "transport1",
-              x: 1,
-              y: 0,
-              entryDirection: "left",
-              leavingDirection: "right",
-              movingGoods: [],
               goods: [],
             },
           ],
@@ -2247,15 +2227,34 @@ describe("In a double transport connection between", () => {
               name: "Transport 1",
               max: 1,
               rate: 1,
-              cooldown: 2,
+              cooldown: 1,
               source: "transport2",
               target: "consumer1",
-              x: 3,
+              x: 2,
               y: 0,
               entryDirection: "left",
               leavingDirection: "right",
               movingGoods: [],
               goods: [],
+            },
+          ],
+          [
+            "transport2",
+            {
+              id: "transport2",
+              type: "transport",
+              name: "Transport 2",
+              max: 1,
+              rate: 0.5,
+              cooldown: 2,
+              source: "source1",
+              target: "transport1",
+              x: 1,
+              y: 0,
+              entryDirection: "left",
+              leavingDirection: "right",
+              movingGoods: [],
+              goods: [good],
             },
           ],
         ]),
@@ -2277,7 +2276,7 @@ describe("In a double transport connection between", () => {
 
       expect(transport2Tick1.cooldown).toBe(1);
       expect(transport2Tick1.goods.length).toBe(1);
-      expect(transport1Tick1.cooldown).toBe(1);
+      expect(transport1Tick1.cooldown).toBe(0);
       expect(transport1Tick1.goods.length).toBe(0);
 
       const tick2 = gameReducer(tick1, { type: "game tick" });
@@ -2288,9 +2287,9 @@ describe("In a double transport connection between", () => {
         "transport1",
       ) as EntityTransportType;
 
-      expect(transport2Tick2.cooldown).toBe(1);
+      expect(transport2Tick2.cooldown).toBe(2);
       expect(transport2Tick2.goods.length).toBe(0);
-      expect(transport1Tick2.cooldown).toBe(1);
+      expect(transport1Tick2.cooldown).toBe(0);
       expect(transport1Tick2.goods.length).toBe(1);
     });
 
@@ -2322,10 +2321,29 @@ describe("In a double transport connection between", () => {
               max: 2,
               rate: 1,
               cooldown: 0,
-              x: 4,
+              x: 3,
               y: 0,
               entryDirection: "left",
               goods: [],
+            },
+          ],
+          [
+            "transport1",
+            {
+              id: "transport1",
+              type: "transport",
+              name: "Transport 1",
+              max: 1,
+              rate: 0.5,
+              cooldown: 2,
+              source: "transport2",
+              target: "consumer1",
+              x: 2,
+              y: 0,
+              entryDirection: "left",
+              leavingDirection: "right",
+              movingGoods: [],
+              goods: [good],
             },
           ],
           [
@@ -2344,26 +2362,7 @@ describe("In a double transport connection between", () => {
               entryDirection: "left",
               leavingDirection: "right",
               movingGoods: [],
-              goods: [],
-            },
-          ],
-          [
-            "transport1",
-            {
-              id: "transport1",
-              type: "transport",
-              name: "Transport 1",
-              max: 1,
-              rate: 1,
-              cooldown: 2,
-              source: "transport2",
-              target: "consumer1",
-              x: 3,
-              y: 0,
-              entryDirection: "left",
-              leavingDirection: "right",
-              movingGoods: [],
-              goods: [],
+              goods: [good],
             },
           ],
         ]),
@@ -2383,7 +2382,7 @@ describe("In a double transport connection between", () => {
         "transport1",
       ) as EntityTransportType;
 
-      expect(transport2Tick1.cooldown).toBe(1);
+      expect(transport2Tick1.cooldown).toBe(0);
       expect(transport2Tick1.goods.length).toBe(1);
       expect(transport1Tick1.cooldown).toBe(1);
       expect(transport1Tick1.goods.length).toBe(1);
@@ -2396,9 +2395,9 @@ describe("In a double transport connection between", () => {
         "transport1",
       ) as EntityTransportType;
 
-      expect(transport2Tick2.cooldown).toBe(1);
+      expect(transport2Tick2.cooldown).toBe(0);
       expect(transport2Tick2.goods.length).toBe(1);
-      expect(transport1Tick2.cooldown).toBe(1);
+      expect(transport1Tick2.cooldown).toBe(2);
       expect(transport1Tick2.goods.length).toBe(0);
 
       const tick3 = gameReducer(tick2, { type: "game tick" });
@@ -2443,28 +2442,9 @@ describe("In a double transport connection between", () => {
               max: 2,
               rate: 1,
               cooldown: 0,
-              x: 4,
+              x: 3,
               y: 0,
               entryDirection: "left",
-              goods: [],
-            },
-          ],
-          [
-            "transport2",
-            {
-              id: "transport2",
-              type: "transport",
-              name: "Transport 2",
-              max: 1,
-              rate: 1,
-              cooldown: 2,
-              source: "source1",
-              target: "transport1",
-              x: 1,
-              y: 0,
-              entryDirection: "left",
-              leavingDirection: "right",
-              movingGoods: [],
               goods: [],
             },
           ],
@@ -2475,16 +2455,35 @@ describe("In a double transport connection between", () => {
               type: "transport",
               name: "Transport 1",
               max: 1,
-              rate: 1,
-              cooldown: 1,
+              rate: 0.5,
+              cooldown: 2,
               source: "transport2",
               target: "consumer1",
-              x: 3,
+              x: 2,
               y: 0,
               entryDirection: "left",
               leavingDirection: "right",
               movingGoods: [],
-              goods: [],
+              goods: [good],
+            },
+          ],
+          [
+            "transport2",
+            {
+              id: "transport2",
+              type: "transport",
+              name: "Transport 2",
+              max: 1,
+              rate: 1,
+              cooldown: 1,
+              source: "source1",
+              target: "transport1",
+              x: 1,
+              y: 0,
+              entryDirection: "left",
+              leavingDirection: "right",
+              movingGoods: [],
+              goods: [good],
             },
           ],
         ]),
@@ -2504,10 +2503,10 @@ describe("In a double transport connection between", () => {
         "transport1",
       ) as EntityTransportType;
 
-      expect(transport2Tick1.cooldown).toBe(1);
-      expect(transport2Tick1.goods.length).toBe(0);
+      expect(transport2Tick1.cooldown).toBe(0);
+      expect(transport2Tick1.goods.length).toBe(1);
       expect(transport1Tick1.cooldown).toBe(1);
-      expect(transport1Tick1.goods.length).toBe(0);
+      expect(transport1Tick1.goods.length).toBe(1);
 
       const tick2 = gameReducer(tick1, { type: "game tick" });
       const transport2Tick2 = tick2.entities.get(
@@ -2517,9 +2516,9 @@ describe("In a double transport connection between", () => {
         "transport1",
       ) as EntityTransportType;
 
-      expect(transport2Tick2.cooldown).toBe(1);
+      expect(transport2Tick2.cooldown).toBe(0);
       expect(transport2Tick2.goods.length).toBe(1);
-      expect(transport1Tick2.cooldown).toBe(1);
+      expect(transport1Tick2.cooldown).toBe(2);
       expect(transport1Tick2.goods.length).toBe(0);
 
       const tick3 = gameReducer(tick2, { type: "game tick" });
@@ -2534,6 +2533,19 @@ describe("In a double transport connection between", () => {
       expect(transport2Tick3.goods.length).toBe(0);
       expect(transport1Tick3.cooldown).toBe(1);
       expect(transport1Tick3.goods.length).toBe(1);
+
+      const tick4 = gameReducer(tick3, { type: "game tick" });
+      const transport2Tick4 = tick4.entities.get(
+        "transport2",
+      ) as EntityTransportType;
+      const transport1Tick4 = tick4.entities.get(
+        "transport1",
+      ) as EntityTransportType;
+
+      expect(transport2Tick4.cooldown).toBe(1);
+      expect(transport2Tick4.goods.length).toBe(1);
+      expect(transport1Tick4.cooldown).toBe(2);
+      expect(transport1Tick4.goods.length).toBe(0);
     });
 
     it("transport1 should deliver to consumer respecting cooldowns", () => {
@@ -2564,28 +2576,9 @@ describe("In a double transport connection between", () => {
               max: 2,
               rate: 1,
               cooldown: 0,
-              x: 4,
+              x: 3,
               y: 0,
               entryDirection: "left",
-              goods: [],
-            },
-          ],
-          [
-            "transport2",
-            {
-              id: "transport2",
-              type: "transport",
-              name: "Transport 2",
-              max: 1,
-              rate: 0.5,
-              cooldown: 2,
-              source: "source1",
-              target: "transport1",
-              x: 1,
-              y: 0,
-              entryDirection: "left",
-              leavingDirection: "right",
-              movingGoods: [],
               goods: [],
             },
           ],
@@ -2600,7 +2593,26 @@ describe("In a double transport connection between", () => {
               cooldown: 1,
               source: "transport2",
               target: "consumer1",
-              x: 3,
+              x: 2,
+              y: 0,
+              entryDirection: "left",
+              leavingDirection: "right",
+              movingGoods: [],
+              goods: [],
+            },
+          ],
+          [
+            "transport2",
+            {
+              id: "transport2",
+              type: "transport",
+              name: "Transport 2",
+              max: 1,
+              rate: 1,
+              cooldown: 1,
+              source: "source1",
+              target: "transport1",
+              x: 1,
               y: 0,
               entryDirection: "left",
               leavingDirection: "right",
@@ -2625,9 +2637,9 @@ describe("In a double transport connection between", () => {
         "transport1",
       ) as EntityTransportType;
 
-      expect(transport2Tick1.cooldown).toBe(1);
+      expect(transport2Tick1.cooldown).toBe(0);
       expect(transport2Tick1.goods.length).toBe(0);
-      expect(transport1Tick1.cooldown).toBe(1);
+      expect(transport1Tick1.cooldown).toBe(0);
       expect(transport1Tick1.goods.length).toBe(0);
 
       const tick2 = gameReducer(tick1, { type: "game tick" });
@@ -2638,13 +2650,39 @@ describe("In a double transport connection between", () => {
         "transport1",
       ) as EntityTransportType;
 
-      expect(transport2Tick2.cooldown).toBe(2);
+      expect(transport2Tick2.cooldown).toBe(1);
       expect(transport2Tick2.goods.length).toBe(1);
-      expect(transport1Tick2.cooldown).toBe(1);
+      expect(transport1Tick2.cooldown).toBe(0);
       expect(transport1Tick2.goods.length).toBe(0);
 
       const tick3 = gameReducer(tick2, { type: "game tick" });
       expect(tick3.entities.get("consumer1")?.goods.length).toBe(0);
+      const transport2Tick3 = tick3.entities.get(
+        "transport2",
+      ) as EntityTransportType;
+      const transport1Tick3 = tick3.entities.get(
+        "transport1",
+      ) as EntityTransportType;
+
+      expect(transport2Tick3.cooldown).toBe(1);
+      expect(transport2Tick3.goods.length).toBe(0);
+      expect(transport1Tick3.cooldown).toBe(0);
+      expect(transport1Tick3.goods.length).toBe(1);
+
+       const tick4 = gameReducer(tick3, { type: "game tick" });
+      expect(tick4.entities.get("consumer1")?.goods.length).toBe(0);
+      const transport2Tick4 = tick4.entities.get(
+        "transport2",
+      ) as EntityTransportType;
+      const transport1Tick4 = tick4.entities.get(
+        "transport1",
+      ) as EntityTransportType;
+
+      expect(transport2Tick4.cooldown).toBe(1);
+      expect(transport2Tick4.goods.length).toBe(1);
+      expect(transport1Tick4.cooldown).toBe(1);
+      expect(transport1Tick4.goods.length).toBe(0);
+
     });
 
     it("transport1 shouldn't deliver to consumer if its full", () => {
@@ -2673,31 +2711,12 @@ describe("In a double transport connection between", () => {
               type: "consumer",
               name: "Consumer 1",
               max: 2,
-              rate: 1,
-              cooldown: 2,
-              x: 4,
-              y: 0,
-              entryDirection: "left",
-              goods: [],
-            },
-          ],
-          [
-            "transport2",
-            {
-              id: "transport2",
-              type: "transport",
-              name: "Transport 2",
-              max: 1,
               rate: 0.5,
               cooldown: 2,
-              source: "source1",
-              target: "transport1",
-              x: 1,
+              x: 3,
               y: 0,
               entryDirection: "left",
-              leavingDirection: "right",
-              movingGoods: [],
-              goods: [],
+              goods: [good,good],
             },
           ],
           [
@@ -2711,7 +2730,26 @@ describe("In a double transport connection between", () => {
               cooldown: 1,
               source: "transport2",
               target: "consumer1",
-              x: 3,
+              x: 2,
+              y: 0,
+              entryDirection: "left",
+              leavingDirection: "right",
+              movingGoods: [],
+              goods: [good],
+            },
+          ],
+          [
+            "transport2",
+            {
+              id: "transport2",
+              type: "transport",
+              name: "Transport 2",
+              max: 1,
+              rate: 1,
+              cooldown: 1,
+              source: "source1",
+              target: "transport1",
+              x: 1,
               y: 0,
               entryDirection: "left",
               leavingDirection: "right",
@@ -2732,7 +2770,7 @@ describe("In a double transport connection between", () => {
       const transport1Tick1 = tick1.entities.get(
         "transport1",
       ) as EntityTransportType;
-      expect(transport1Tick1?.cooldown).toBe(1);
+      expect(transport1Tick1?.cooldown).toBe(0);
       expect(transport1Tick1?.goods.length).toBe(1);
       expect(tick1.entities.get("consumer1")?.goods.length).toBe(2);
 
@@ -2740,7 +2778,7 @@ describe("In a double transport connection between", () => {
       const transport1Tick2 = tick2.entities.get(
         "transport1",
       ) as EntityTransportType;
-      expect(transport1Tick2?.cooldown).toBe(1);
+      expect(transport1Tick2?.cooldown).toBe(0);
       expect(transport1Tick2?.goods.length).toBe(1);
       expect(tick2.entities.get("consumer1")?.goods.length).toBe(1);
 
@@ -2750,7 +2788,7 @@ describe("In a double transport connection between", () => {
       ) as EntityTransportType;
       expect(transport1Tick3?.cooldown).toBe(1);
       expect(transport1Tick3?.goods.length).toBe(0);
-      expect(tick3.entities.get("consumer1")?.goods.length).toBe(1);
+      expect(tick3.entities.get("consumer1")?.goods.length).toBe(2);
     });
   });
 });
