@@ -427,7 +427,7 @@ describe("Source", () => {
         x: 1,
         y: 0,
         target: "",
-        sources: [""],
+        sources: [],
         nextSourceIndex: 0,
         movingGoods: [],
         goods: [],
@@ -454,6 +454,6 @@ describe("Source", () => {
     const mergerResult = result.entities.get(
       "merger1",
     ) as EntityMergerType;
-    expect(mergerResult.sources).toBe(["source1"]);
+    expect(mergerResult.sources).toContain("source1");
   });
 });

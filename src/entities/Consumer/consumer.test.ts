@@ -417,7 +417,7 @@ describe("Consumer", () => {
     const splitterResult = result.entities.get(
       "splitter1",
     ) as EntitySplitterType;
-    expect(splitterResult.targets).toBe(["consumer1"]);
+    expect(splitterResult.targets).toContain("consumer1");
   });
 
   it("should connect as source on the left of the merger entity", () => {

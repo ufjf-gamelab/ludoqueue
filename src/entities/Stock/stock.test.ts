@@ -502,7 +502,7 @@ describe("Stock", () => {
       x: 1,
       y: 0,
       target: "",
-      sources: [""],
+      sources: [],
       nextSourceIndex: 0,
       movingGoods: [],
       goods: [],
@@ -527,7 +527,7 @@ describe("Stock", () => {
     const result = gameReducer(stateTest as GameType, actionTest);
     expect(result.stocks).toHaveLength(1);
     const mergerResult = result.entities.get("merger1") as EntityMergerType;
-    expect(mergerResult.sources).toBe(["source1"]);
+    expect(mergerResult.sources).toContain("stock1");
   });
   it("should connect to transport on the right of the transport", () => {
     const fakeTransport: EntityTransportType = {
@@ -610,7 +610,7 @@ describe("Stock", () => {
     const splitterResult = result.entities.get(
       "splitter1",
     ) as EntitySplitterType;
-    expect(splitterResult.targets).toBe(["stock1"]);
+    expect(splitterResult.targets).toContain("stock1");
   });
 
   it("should connect as source on the left of the merger entity", () => {
@@ -643,7 +643,7 @@ describe("Stock", () => {
       type: "create stock",
       max: 15,
       val: 0,
-      x: 0,
+      x: 2,
       y: 0,
       direction: "right",
     };
