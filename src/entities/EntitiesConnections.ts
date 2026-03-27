@@ -1,203 +1,104 @@
 import type { GameType } from "../types";
 import {
   getInvertedDirection,
+  type DirectionType,
   type EntityConsumerType,
-  type EntityMergerType,
   type EntitySourceType,
-  type EntitySplitterType,
   type EntityStockType,
-  type EntityTransportType,
   type EntityType,
 } from "./EntitiesTypes";
 import { clearConnectionsToEntity, getNeighbor } from "./EntityCommonActions";
 
 //functions that are common for connections between different entities
 
-export const functionsToConnectSource: Record<
-  "stock" | "transport" | "source" | "splitter" | "merger",
-  (
-    entity: EntityType,
-    connectingEntity: EntityTransportType | EntitySplitterType,
-  ) => void
-> = {
-  stock: (entity, connectingEntity) => {
-    if (entity.type !== "stock") return;
+export function linkEntities(source: EntityType, target: EntityType) {
+  if (source.type === "transport" || source.type === "merger") {
+    source.target = target.id;
+  } else if (source.type === "splitter") {
+    if (!source.targets.includes(target.id)) source.targets.push(target.id);
+  }
 
-    if (
-      entity.direction === getInvertedDirection(connectingEntity.entryDirection)
-    ) {
-      connectingEntity.source = entity.id;
-    }
-  },
+  if (target.type === "transport" || target.type === "splitter") {
+    target.source = source.id;
+  } else if (target.type === "merger") {
+    if (!target.sources.includes(source.id)) target.sources.push(source.id);
+  }
+}
 
-  transport: (entity, connectingEntity) => {
-    if (entity.type !== "transport") return;
+//usada com novos sources, verifica se entity pode enviar item na output
+export function canOutputTo(
+  entity: EntityType,
+  outputDirection: DirectionType,
+) {
+  if (
+    entity.type === "source" ||
+    entity.type === "transport" ||
+    entity.type === "merger"
+  ) {
+    return entity.leavingDirection === outputDirection;
+  } else if (entity.type === "stock") {
+    return entity.direction === outputDirection;
+  } else if (entity.type === "splitter") {
+    return entity.entryDirection !== outputDirection;
+  } else {
+    return false;
+  }
+}
 
-    if (
-      entity.leavingDirection ===
-      getInvertedDirection(connectingEntity.entryDirection)
-    ) {
-      connectingEntity.source = entity.id;
-      entity.target = connectingEntity.id;
-    }
-  },
-
-  source: (entity, connectingEntity) => {
-    if (entity.type !== "source") return;
-
-    if (
-      entity.leavingDirection ===
-      getInvertedDirection(connectingEntity.entryDirection)
-    ) {
-      connectingEntity.source = entity.id;
-    }
-  },
-
-  splitter: (entity, connectingEntity) => {
-    if (entity.type !== "splitter") return;
-
-    if (
-      entity.entryDirection !==
-      getInvertedDirection(connectingEntity.entryDirection)
-    ) {
-      entity.targets.push(connectingEntity.id);
-      connectingEntity.source = entity.id;
-    }
-  },
-
-  merger: (entity, connectingEntity) => {
-    if (entity.type !== "merger") return;
-
-    if (
-      entity.leavingDirection ===
-      getInvertedDirection(connectingEntity.entryDirection)
-    ) {
-      entity.target = connectingEntity.id;
-      connectingEntity.source = entity.id;
-    }
-  },
-};
-
-export const functionsToConnectTarget: Record<
-  "stock" | "transport" | "consumer" | "splitter" | "merger",
-  (
-    entity: EntityType,
-    connectingEntity: EntityTransportType | EntityMergerType,
-  ) => void
-> = {
-  stock: (entity, connectingEntity) => {
-    if (entity.type !== "stock") return;
-
-    if (entity.direction === connectingEntity.leavingDirection) {
-      connectingEntity.target = entity.id;
-    }
-  },
-
-  transport: (entity, connectingEntity) => {
-    if (entity.type !== "transport") return;
-
-    if (
-      entity.entryDirection ===
-      getInvertedDirection(connectingEntity.leavingDirection)
-    ) {
-      entity.source = connectingEntity.id;
-      connectingEntity.target = entity.id;
-    }
-  },
-
-  consumer: (entity, connectingEntity) => {
-    if (entity.type !== "consumer") return;
-
-    if (
-      entity.entryDirection ===
-      getInvertedDirection(connectingEntity.leavingDirection)
-    ) {
-      connectingEntity.target = entity.id;
-    }
-  },
-
-  splitter: (entity, connectingEntity) => {
-    if (entity.type !== "splitter") return;
-
-    if (
-      entity.entryDirection ===
-      getInvertedDirection(connectingEntity.leavingDirection)
-    ) {
-      entity.source = connectingEntity.id;
-      connectingEntity.target = entity.id;
-    }
-  },
-
-  merger: (entity, connectingEntity) => {
-    if (entity.type !== "merger") return;
-
-    if (
-      entity.leavingDirection !==
-      getInvertedDirection(connectingEntity.leavingDirection)
-    ) {
-      entity.sources.push(connectingEntity.id);
-      connectingEntity.target = entity.id;
-    }
-  },
-};
+//usada com novos targets, verifica se entity pode receber item na direcao de input
+export function canReceiveFrom(
+  entity: EntityType,
+  inputDirection: DirectionType,
+) {
+  const invDirection = getInvertedDirection(inputDirection);
+  if (
+    entity.type === "consumer" ||
+    entity.type === "transport" ||
+    entity.type === "splitter"
+  ) {
+    return entity.entryDirection === invDirection;
+  } else if (entity.type === "stock") {
+    return entity.direction === invDirection;
+  } else if (entity.type === "merger") {
+    return entity.leavingDirection !== invDirection;
+  } else {
+    return false;
+  }
+}
 
 export function updatePassiveEntitiesConnections(
   state: GameType,
   entity: EntityStockType | EntitySourceType | EntityConsumerType,
 ) {
-  //faz um so pra passivo? fiz so pq da pra agrupar, so muda o jeito de pegar direcoes. verificar se mantem esse
-  clearConnectionsToEntity(state, entity);
   clearConnectionsToEntity(state, entity);
 
-  let entryNeighbor: EntityType | null = null;
-  let leavingNeighbor: EntityType | null = null;
-  if (entity.type === "stock") {
-    entryNeighbor = getNeighbor(
-      state,
-      entity,
-      getInvertedDirection(entity.direction),
-    );
-    leavingNeighbor = getNeighbor(state, entity, entity.direction);
-  }
+  const entryDir =
+    entity.type === "stock"
+      ? getInvertedDirection(entity.direction)
+      : entity.type === "consumer"
+        ? entity.entryDirection
+        : null;
 
-  if (entity.type === "consumer") {
-    entryNeighbor = getNeighbor(state, entity, entity.entryDirection);
-  }
+  const leavingDir =
+    entity.type === "stock"
+      ? entity.direction
+      : entity.type === "source"
+        ? entity.leavingDirection
+        : null;
 
-  if (entity.type === "source") {
-    leavingNeighbor = getNeighbor(state, entity, entity.leavingDirection);
-  }
-
-
-  if (
-    entryNeighbor &&
-
-    entity.type !== "source"
-  ) {
-    if (entryNeighbor.type === "transport" || entryNeighbor.type === "merger"){
-
-
-    functionsToConnectTarget[entity.type]?.(
-      entity,
-      entryNeighbor as EntityTransportType | EntityMergerType,
-    );
-  }
-  if (entryNeighbor.type === "splitter"){
-    entryNeighbor.targets.push(entity.id);
-  }
-  }
-  if (leavingNeighbor && entity.type !== "consumer") {
+  if (entryDir) {
+    const entryNeighbor = getNeighbor(state, entity, entryDir);
     if (
-      leavingNeighbor.type === "transport" ||
-      leavingNeighbor.type === "splitter"
+      entryNeighbor &&
+      canOutputTo(entryNeighbor, getInvertedDirection(entryDir))
     ) {
-      functionsToConnectSource[entity.type]?.(
-        entity,
-        leavingNeighbor as EntityTransportType | EntitySplitterType,
-      );
+      linkEntities(entryNeighbor, entity);
     }
-    if (leavingNeighbor.type === "merger"){ //a logica deconnect source connect target quebrou aqui. rever
-      leavingNeighbor.sources.push(entity.id);
+  }
+  if (leavingDir) {
+    const leavingNeighbor = getNeighbor(state, entity, leavingDir);
+    if (leavingNeighbor && canReceiveFrom(leavingNeighbor, leavingDir)) {
+      linkEntities(entity, leavingNeighbor);
     }
   }
 }

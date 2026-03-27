@@ -1,5 +1,5 @@
 import type { GameType } from "../../types";
-import { functionsToConnectTarget } from "../EntitiesConnections";
+import { canOutputTo, canReceiveFrom, linkEntities } from "../EntitiesConnections";
 import {
   getInvertedDirection,
   type DirectionType,
@@ -109,48 +109,22 @@ export function changeMergerLeavingDirection(
   return newState;
 }
 
-function updateMergerConnections(state: GameType, merger: EntityMergerType) {
+export function updateMergerConnections(state: GameType, merger: EntityMergerType) {
   merger.target = null;
   merger.sources = [];
   clearConnectionsToEntity(state, merger);
 
   const targetEntity = getNeighbor(state, merger, merger.leavingDirection);
-  if (targetEntity && targetEntity.type !== "source") {
-    functionsToConnectTarget[targetEntity.type]?.(targetEntity, merger);
+  if (targetEntity && canReceiveFrom(targetEntity, merger.leavingDirection)) {
+    linkEntities(merger, targetEntity);
   }
 
-  const otherDirs = getOtherDirections(merger.leavingDirection);
-  for (const i in otherDirs) {
-    const direction = otherDirs[i] as DirectionType;
+  const otherDirs = getOtherDirections(merger.leavingDirection) as DirectionType[];
+  for (const direction of otherDirs) {
     const sourceEntity = getNeighbor(state, merger, direction);
     const invDirection = getInvertedDirection(direction);
-    
-    if (!sourceEntity) continue;
-    console.log(direction,invDirection,sourceEntity)
-
-    const isPointingToMerger =
-      (sourceEntity.type === "source" &&
-        sourceEntity.leavingDirection === invDirection) ||
-      (sourceEntity.type === "merger" &&
-        sourceEntity.leavingDirection === invDirection) ||
-      (sourceEntity.type === "stock" &&
-        sourceEntity.direction === invDirection) ||
-      (sourceEntity.type === "transport" &&
-        sourceEntity.leavingDirection === invDirection);
-
-    if (isPointingToMerger) {
-      if (sourceEntity.type ==="transport" || sourceEntity.type === "merger"){
-        sourceEntity.target=merger.id;
-      }
-      merger.sources.push(sourceEntity.id);
-    } else if (
-      sourceEntity.type === "splitter" &&
-      sourceEntity.entryDirection !== invDirection
-    ) {
-      if (!sourceEntity.targets.includes(merger.id)) {
-        sourceEntity.targets.push(merger.id);
-      }
-      merger.sources.push(sourceEntity.id);
+    if (sourceEntity && canOutputTo(sourceEntity, invDirection)) {
+      linkEntities(sourceEntity, merger);
     }
   }
 }
