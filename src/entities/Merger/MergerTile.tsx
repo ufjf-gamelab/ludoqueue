@@ -1,18 +1,19 @@
 import "./MergerTile.css";
 import {
-  getInvertedDirection,
-  type DirectionType,
   type EntityMergerType,
   type MovingGoodType,
 } from "../EntitiesTypes";
 import "../Toolset.css";
 import { DirectionIcons, EntityIcons } from "../Icons";
+import { findEntity, useGame } from "../../Provider";
 
 export default function MergerTile({ entity }: { entity: EntityMergerType }) {
   const spanKey = String(Math.random());
   let isStarting: boolean = false;
   let isEnding: boolean = false;
   let shouldHaveItem: boolean = false;
+  const { game } = useGame()!;
+
   const movingGoods: MovingGoodType[] = entity.movingGoods;
   if (movingGoods.length > 0) {
     shouldHaveItem = true;
@@ -20,48 +21,35 @@ export default function MergerTile({ entity }: { entity: EntityMergerType }) {
   if (entity.goods.length > 0) {
     shouldHaveItem = true;
   }
-  const entryDirection = calculateEntryDirection(entity);
+  const entryDirection = calculateEntryDirection(
+    movingGoods[0]?.source,
+    entity,
+  );
 
-  function calculateEntryDirection(entity: EntityMergerType): string {
-    switch (entity.nextSourceIndex) {
-      case 1: { //ta 1 2 e 0 pq next e o ultimo somado com 1
-        if (entity.leavingDirection === "up") {
-          return "right";
-        } else if (entity.leavingDirection === "down") {
-          return "left";
-        } else if (entity.leavingDirection === "left") {
-          return "up";
-        } else if (entity.leavingDirection === "right") {
-          return "down";
-        }
-        return "";
-      }
-      case 2: {
-        if (entity.leavingDirection === "up") {
-          return "down";
-        } else if (entity.leavingDirection === "down") {
-          return "up";
-        } else if (entity.leavingDirection === "left") {
-          return "right";
-        } else if (entity.leavingDirection === "right") {
-          return "left";
-        }
-        return "";
-      }
-      case 0: {
-        if (entity.leavingDirection === "up") {
-          return "left";
-        } else if (entity.leavingDirection === "down") {
-          return "right";
-        } else if (entity.leavingDirection === "left") {
-          return "down";
-        } else if (entity.leavingDirection === "right") {
+  function calculateEntryDirection(
+    entityID: string | null,
+    merger: EntityMergerType,
+  ) {
+    if (entityID) {
+      const entity = findEntity(entityID, game);
+      if (!entity || entity.type === "consumer") return;
+      const xOffset = entity.x - merger.x;
+      const yOffset = entity.y - merger.y;
+      if (xOffset == 0) {
+        if (yOffset == 1) {
           return "up";
         }
-        return "";
+        if (yOffset == -1) {
+          return "down";
+        }
       }
-      default: {
-        return "";
+      if (yOffset == 0) {
+        if (xOffset == 1) {
+          return "left";
+        }
+        if (xOffset == -1) {
+          return "right";
+        }
       }
     }
   }
@@ -113,9 +101,9 @@ export default function MergerTile({ entity }: { entity: EntityMergerType }) {
             key={spanKey}
             className={[
               "transported-good",
-              `${isStarting ? "starting " + getInvertedDirection(entryDirection as DirectionType) : ""}`,
+              `${isStarting ? "starting " + entryDirection : ""}`,
               `${isEnding ? "ending " + entity.leavingDirection : ""}`,
-              `${entity.movingGoods[0].goodType}`
+              `${entity.movingGoods[0].goodType}`,
             ].join(" ")}
             style={{ display: shouldHaveItem ? undefined : "none" }}
             aria-hidden="true"

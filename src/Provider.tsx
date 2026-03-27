@@ -298,7 +298,7 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
   return state;
 }
 
-function findEntity (id: string, state:GameType): EntityType|null{
+export function findEntity (id: string, state:GameType): EntityType|null{
   const entity = state.entities.get(id);
   return entity?entity:null
 }
