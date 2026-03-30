@@ -40,11 +40,11 @@ export function createExchanger(
     return state;
   }
   let numberID: number = 1;
-  if (state.stocks.length > 0) {
-    const lastStockNumber = state.stocks
-      .map((stockId) => parseInt(stockId.replace("stock", "")))
+  if (state.exchangers.length > 0) {
+    const lastExchangerNumber = state.exchangers
+      .map((exchangerId) => parseInt(exchangerId.replace("exchanger", "")))
       .reduce((max, current) => Math.max(max, current), 0);
-    numberID = lastStockNumber + 1;
+    numberID = lastExchangerNumber + 1;
   }
 
   const newState = structuredClone(state);
