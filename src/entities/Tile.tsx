@@ -8,6 +8,7 @@ import Stock from "./Stock/StockTile.tsx";
 import ConsumerTile from "./Consumer/ConsumerTile.tsx";
 import SplitterTile from "./Splitter/SplitterTile.tsx";
 import MergerTile from "./Merger/MergerTile.tsx";
+import Exchanger from "./Exchanger/ExchangerTile.tsx";
 
 export interface AnchorStyle extends React.CSSProperties {
   anchorName?: string;
@@ -44,6 +45,8 @@ export default function Tile({
         return <SplitterTile key={entity.id} entity={entity} />;
       case "merger":
         return <MergerTile key={entity.id} entity={entity} />;
+      case "exchanger":
+        return <Exchanger key={entity.id} entity={entity} />;
     }
   };
 

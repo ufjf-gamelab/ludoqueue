@@ -27,14 +27,14 @@
   .leavingMovingDirection-horizontal {
     position: absolute;
     right: -2px;
-    top: 40%;
+    top: 50%;
     transform: translateY(-50%);
   }
 
   .entryMovingDirection-horizontal {
     position: absolute;
     left: -2px;
-    top: 40%;
+    top: 50%;
     transform: translateY(-50%);
   }
 

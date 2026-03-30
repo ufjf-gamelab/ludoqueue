@@ -10,7 +10,7 @@ export default function ExchangerCard({ entity }: { entity: EntityExchangerType 
 
   return (
     <div
-      className="stockCard"
+      className="exchangerCard"
       onClick={() => setIsHovering(!isHovering)}
       style={
         {
@@ -21,7 +21,7 @@ export default function ExchangerCard({ entity }: { entity: EntityExchangerType 
       }
     >
       {isHovering && <Exchanger entity={entity} />}
-      <div className="stockMinimized">
+      <div className="exchangerMinimized">
         <div>
           {EntityIcons[entity.type]}
         </div>
