@@ -27,19 +27,23 @@ export function linkEntities(source: EntityType, target: EntityType) {
 
 //usada com novos sources, verifica se entity pode enviar item na output
 export function canOutputTo(
-  entity: EntityType,
+  entryNeighbor: EntityType,
   outputDirection: DirectionType,
+  entityThatCalled: EntityType,
 ) {
-  if (
-    entity.type === "source" ||
-    entity.type === "transport" ||
-    entity.type === "merger"
+  if (entryNeighbor.type === "exchanger" && entityThatCalled.type === "stock") {
+    return entryNeighbor.direction === outputDirection;
+   }
+  else if (
+    entryNeighbor.type === "source" ||
+    entryNeighbor.type === "transport" ||
+    entryNeighbor.type === "merger"
   ) {
-    return entity.leavingDirection === outputDirection;
-  } else if (entity.type === "stock") {
-    return entity.direction === outputDirection;
-  } else if (entity.type === "splitter") {
-    return entity.entryDirection !== outputDirection;
+    return entryNeighbor.leavingDirection === outputDirection;
+  } else if (entryNeighbor.type === "stock") {
+    return entryNeighbor.direction === outputDirection;
+  } else if (entryNeighbor.type === "splitter") {
+    return entryNeighbor.entryDirection !== outputDirection;
   } else {
     return false;
   }
@@ -47,20 +51,25 @@ export function canOutputTo(
 
 //usada com novos targets, verifica se entity pode receber item na direcao de input
 export function canReceiveFrom(
-  entity: EntityType,
+  leavingNeighbor: EntityType,
   inputDirection: DirectionType,
+  entityThatCalled: EntityType,
 ) {
   const invDirection = getInvertedDirection(inputDirection);
-  if (
-    entity.type === "consumer" ||
-    entity.type === "transport" ||
-    entity.type === "splitter"
+
+  if (leavingNeighbor.type === "exchanger" && entityThatCalled.type === "stock") {
+    return leavingNeighbor.direction === inputDirection;
+   }
+  else if (
+    leavingNeighbor.type === "consumer" ||
+    leavingNeighbor.type === "transport" ||
+    leavingNeighbor.type === "splitter"
   ) {
-    return entity.entryDirection === invDirection;
-  } else if (entity.type === "stock") {
-    return entity.direction === invDirection;
-  } else if (entity.type === "merger") {
-    return entity.leavingDirection !== invDirection;
+    return leavingNeighbor.entryDirection === invDirection;
+  } else if (leavingNeighbor.type === "stock") {
+    return leavingNeighbor.direction === invDirection;
+  } else if (leavingNeighbor.type === "merger") {
+    return leavingNeighbor.leavingDirection !== invDirection;
   } else {
     return false;
   }
@@ -71,7 +80,6 @@ export function updatePassiveEntitiesConnections(
   entity: EntityStockType | EntitySourceType | EntityConsumerType,
 ) {
   clearConnectionsToEntity(state, entity);
-
   const entryDir =
     entity.type === "stock"
       ? getInvertedDirection(entity.direction)
@@ -90,14 +98,14 @@ export function updatePassiveEntitiesConnections(
     const entryNeighbor = getNeighbor(state, entity, entryDir);
     if (
       entryNeighbor &&
-      canOutputTo(entryNeighbor, getInvertedDirection(entryDir))
+      canOutputTo(entryNeighbor, getInvertedDirection(entryDir), entity)
     ) {
       linkEntities(entryNeighbor, entity);
     }
   }
   if (leavingDir) {
     const leavingNeighbor = getNeighbor(state, entity, leavingDir);
-    if (leavingNeighbor && canReceiveFrom(leavingNeighbor, leavingDir)) {
+    if (leavingNeighbor && canReceiveFrom(leavingNeighbor, leavingDir, entity)) {
       linkEntities(entity, leavingNeighbor);
     }
   }

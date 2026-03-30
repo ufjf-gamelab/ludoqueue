@@ -106,10 +106,10 @@ function updateExchangerConnections(
   exchangerEntity.target = null;
   const sourceEntity = getNeighbor(state, exchangerEntity, getInvertedDirection(exchangerEntity.direction));
   const targetEntity = getNeighbor(state, exchangerEntity, exchangerEntity.direction);
-  if (sourceEntity && sourceEntity.type === "stock") {
+  if (sourceEntity && sourceEntity.type === "stock" && sourceEntity.direction === exchangerEntity.direction) {
     exchangerEntity.source = sourceEntity.id;
   }
-  if (targetEntity && targetEntity.type === "stock") {
+  if (targetEntity && targetEntity.type === "stock" && targetEntity.direction === exchangerEntity.direction) {
     exchangerEntity.target = targetEntity.id;
   }
 }
