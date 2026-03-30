@@ -60,6 +60,13 @@ export default function ToolBar() {
           {EntityIcons["merger"]}
         </button>
         <button
+          className={game.status === "exchanger" ? "selected" : ""}
+          onClick={() => dispatch({ type: "set status", newStatus: "exchanger" })}
+          title="Create a new Exchanger"
+        >
+          {EntityIcons["exchanger"]}
+        </button>
+        <button
           onClick={() => dispatch({ type: "set status", newStatus: "delete" })}
           title="Delete mode - click on an entity to delete it"
         >

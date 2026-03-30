@@ -12,13 +12,13 @@ import { clearConnectionsToEntity, getNeighbor } from "./EntityCommonActions";
 //functions that are common for connections between different entities
 
 export function linkEntities(source: EntityType, target: EntityType) {
-  if (source.type === "transport" || source.type === "merger") {
+  if (source.type === "transport" || source.type === "merger" || (source.type === "exchanger" && target.type === "stock")) {
     source.target = target.id;
   } else if (source.type === "splitter") {
     if (!source.targets.includes(target.id)) source.targets.push(target.id);
   }
 
-  if (target.type === "transport" || target.type === "splitter") {
+  if (target.type === "transport" || target.type === "splitter"|| (target.type === "exchanger" && source.type === "stock")) {
     target.source = source.id;
   } else if (target.type === "merger") {
     if (!target.sources.includes(source.id)) target.sources.push(source.id);

@@ -3,6 +3,7 @@ import type { EntityExchangerType } from "../EntitiesTypes";
 import "./ExchangerCard.css";
 import type { AnchorStyle } from "../Tile";
 import { EntityIcons } from "../Icons";
+import Exchanger from "./ExchangerTile";
 
 export default function ExchangerCard({ entity }: { entity: EntityExchangerType }) {
   const [isHovering, setIsHovering] = useState(false);
@@ -19,7 +20,7 @@ export default function ExchangerCard({ entity }: { entity: EntityExchangerType 
         } as AnchorStyle
       }
     >
-      {isHovering && <Stock entity={entity} />}
+      {isHovering && <Exchanger entity={entity} />}
       <div className="stockMinimized">
         <div>
           {EntityIcons[entity.type]}

@@ -754,6 +754,37 @@ export default function EditorMenu({ editor }: { editor: GameEditor }) {
           </div>
         </div>
       )}
+      {editor.type === "exchanger" && (
+          <div className={"EditorProp"}>
+            Direction: {DirectionIcons[editor.direction]}
+            <div>
+              <button
+                onClick={() => {
+                  dispatch({
+                    type: "editor change direction",
+                    direction: rotateCounterClockwiseDirection(
+                      editor.direction,
+                    ),
+                  });
+                }}
+              >
+                {RotationIcons["counterclockwise"]}
+              </button>
+              <button
+                onClick={() => {
+                  dispatch({
+                    type: "editor change direction",
+                    direction: rotateClockwiseDirection(
+                      editor.direction,
+                    ),
+                  });
+                }}
+              >
+                {RotationIcons["clockwise"]}
+              </button>
+            </div>
+          </div>
+      )}
     </div>
   );
 }

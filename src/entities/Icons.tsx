@@ -1,5 +1,5 @@
 import { FaRightLong, FaLeftLong, FaUpLong, FaDownLong, FaSink } from "react-icons/fa6";
-import { GiMiner } from "react-icons/gi";
+import { GiMiner, GiCardExchange } from "react-icons/gi";
 import { BsMinecartLoaded } from "react-icons/bs";
 import { BsSafe2 } from "react-icons/bs";
 import { TiArrowMove, TiCancel, TiDelete } from "react-icons/ti";
@@ -19,6 +19,7 @@ export const EntityIcons = {
   transport: <BsMinecartLoaded />,
   splitter: <FiScissors />,
   merger: <IoIosGitMerge />,
+  exchanger:<GiCardExchange /> ,
   "transport right": <FaRightLong />,
   "transport left": <FaLeftLong />,
   "transport up": <FaUpLong />,

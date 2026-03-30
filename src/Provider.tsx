@@ -63,6 +63,7 @@ import type {
   GameTransporterEditor,
   GameSplitterEditor,
   GameMergerEditor,
+  GameExchangerEditor,
 } from "./Editor/EditorTypes";
 import {
   type GameActionCreateSplitter,
@@ -89,6 +90,7 @@ import type {
   GameActionEditorChangeRate,
   GameActionEditorChangeVal,
 } from "./Editor/EditorActions";
+import { changeExchangerDirection, createExchanger, deleteExchanger, type GameActionChangeExchangerDirection, type GameActionCreateExchanger, type GameActionDeleteExchanger } from "./entities/Exchanger/ExchangerActions";
 type GameProviderProps = {
   children: ReactNode;
 };
@@ -192,6 +194,12 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
       return deleteMerger(state, action.id);
     case "change merger leaving direction":
       return changeMergerLeavingDirection(state, action.id, action.direction);
+    case "create exchanger":
+      return createExchanger(state, action.x, action.y, action.direction);
+    case "delete exchanger":
+      return deleteExchanger(state, action.id);
+    case "change exchanger direction":
+      return changeExchangerDirection(state, action.id, action.direction);
     case "game tick":
       return gameTick(state);
     case "select entity":
@@ -211,7 +219,7 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
     }
 
     case "editor change max": {
-      if (!state.editor) return state;
+      if (!state.editor || state.editor.type === "exchanger") return state;
       return { ...state, editor: { ...state.editor, max: action.max } };
     }
     case "editor change rate": {
@@ -234,7 +242,7 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
       };
     }
     case "editor change direction": {
-      if (!state.editor || state.editor.type !== "stock") return state;
+      if (!state.editor || (state.editor.type !== "stock" && state.editor.type !== "exchanger")) return state;
       return {
         ...state,
         editor: {
@@ -343,7 +351,7 @@ export function gameTick(state: GameType) {
 }
 
 function countCooldown(entity:EntityType){
-  if (entity.type ==="stock"){
+  if (entity.type ==="stock" || entity.type ==="exchanger"){
     return;
   }
   const dt=1.0;
@@ -351,6 +359,9 @@ function countCooldown(entity:EntityType){
 }
 
 function canIPull(source: EntityType, entity: EntityType): boolean {
+  if (source.type === "exchanger" || entity.type === "exchanger"){
+    return false;
+  }
   if (entity.type !== "merger" && (source.type === "transport" || source.type === "splitter")){ //nao puxar dos que ja fazem entrega
     return false;
   }
@@ -364,6 +375,9 @@ function canIPull(source: EntityType, entity: EntityType): boolean {
 }
 
 function pullMovingGood(source:EntityType, entity: EntityTransportType|EntityMergerType|EntitySplitterType){
+  if (source.type === "exchanger"){
+    return false;
+  }
   const good = source.goods[0]
   if (!good){
     return;
@@ -372,7 +386,7 @@ function pullMovingGood(source:EntityType, entity: EntityTransportType|EntityMer
 }
 
 function canIPush(entity: EntityType, target: EntityType): boolean {
-  if (target.type === "merger" || (target.type == "stock" && target.closed)){
+  if (target.type === "merger" || (target.type == "stock" && target.closed) || (target.type === "exchanger") || (entity.type === "exchanger")){
     return false;
   }
 
@@ -384,6 +398,9 @@ function canIPush(entity: EntityType, target: EntityType): boolean {
 }
 
 function pushMovingGood(entity: EntityTransportType|EntityMergerType|EntitySplitterType, target: EntityType){
+  if (target.type === "exchanger"){
+    return false;
+  }
   const good = entity.goods[0];
   if (!good){
     return;
@@ -518,7 +535,7 @@ export function transportMovingGoods(
     const source = state.entities.get(movingGood.source);
     const target = state.entities.get(movingGood.target);
 
-    if (!source || !target) return;
+    if (!source || !target || (source.type === "exchanger" || target.type === "exchanger")) return;
     if (!source.goods.length) return;
     if (target.goods.length >= target.max) return;
 
@@ -583,6 +600,9 @@ export type GameAction =
   | GameActionCreateMerger
   | GameActionDeleteMerger
   | GameActionChangeMergerLeavingDirection
+  | GameActionCreateExchanger
+  | GameActionDeleteExchanger
+  | GameActionChangeExchangerDirection
   | GameActionTick
   | GameActionSelectEntity
   | GameActionSetStatus
@@ -697,6 +717,19 @@ export function pointingAction(
       newState.editor = null;
       return gameReducer(newState, action);
     }
+    case "exchanger": {
+      if (entity || !state.editor || state.editor.type !== "exchanger")
+        return state;
+      const action: GameActionCreateExchanger = {
+        type: "create exchanger",
+        x: x,
+        y: y,
+        direction: state.editor.direction,
+      };
+      newState.status = "waiting";
+      newState.editor = null;
+      return gameReducer(newState, action);
+    }
     case "delete": {
       if (!entity) return state;
       switch (entity.type) {
@@ -753,6 +786,15 @@ export function pointingAction(
           newState.status = "waiting";
           newState.editor = null;
           return gameReducer(newState, deleteMergerAction);
+        }
+        case "exchanger": {
+          const deleteExchangerAction: GameActionDeleteExchanger = {
+            type: "delete exchanger",
+            id: entity.id,
+          };
+          newState.status = "waiting";
+          newState.editor = null;
+          return gameReducer(newState, deleteExchangerAction);
         }
         default:
           return state;
@@ -820,6 +862,13 @@ function chooseNewEditor(status: GameStatus): GameEditor {
         max: 1,
         rate: 1,
         leavingDirection: "left",
+      };
+      return newEditor;
+    }
+    case "exchanger": {
+      const newEditor: GameExchangerEditor = {
+        type: "exchanger",
+        direction: "right",
       };
       return newEditor;
     }

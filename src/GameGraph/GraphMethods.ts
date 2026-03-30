@@ -8,14 +8,14 @@ export function convertGameToGraph(game: GameType): GraphType {
 
   game.entities.forEach((node) => {
     graph.nodes.push({ id: node.id, name: node.name, val: 0 });
-    if ((node.type === "transport" || node.type ==="splitter") && node.source) {
+    if ((node.type === "transport" || node.type ==="splitter" || node.type ==="exchanger") && node.source) {
       const linkToTransport: LinkType = {
         source: node.source,
         target: node.id,
       };
       graph.links.push(linkToTransport);
     }
-    if ((node.type === "transport" || node.type ==="merger")&& node.target){
+    if ((node.type === "transport" || node.type ==="merger"|| node.type ==="exchanger")&& node.target){
       const linkFromTransport: LinkType = {
         source: node.id,
         target: node.target,

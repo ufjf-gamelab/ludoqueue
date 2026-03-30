@@ -20,11 +20,19 @@ export default function Toolset({ entity }: { entity: EntityType }) {
         } as AnchorStyle
       }
     >
-      <div className="ToolsetTitle">{entity.id}</div>
-      <progress value={entity.val} max={entity.max} style={{ width: "100%" }} />
-      <div className="ToolsetSubtitle">
-        {entity.val} / {entity.max}
-      </div>
+      {entity.type !== "exchanger" && (
+        <div>
+          <div className="ToolsetTitle">{entity.id}</div>
+          <progress
+            value={entity.goods.length}
+            max={entity.max}
+            style={{ width: "100%" }}
+          />
+          <div className="ToolsetSubtitle">
+            {entity.goods.length} / {entity.max}
+          </div>
+        </div>
+      )}
 
       {entity.type === "stock" ? (
         <div className="ToolsetWarning">Doesnt have cooldown</div>
@@ -479,7 +487,9 @@ export default function Toolset({ entity }: { entity: EntityType }) {
       )}
       {entity.type === "merger" && (
         <div style={{ display: "flex", gap: "4px", marginTop: "8px" }}>
-          <p style={{ margin: 0, fontSize: "12px" }}>Change Leaving Direction</p>
+          <p style={{ margin: 0, fontSize: "12px" }}>
+            Change Leaving Direction
+          </p>
           <button
             onClick={() => {
               switch (entity.leavingDirection) {
@@ -548,61 +558,70 @@ export default function Toolset({ entity }: { entity: EntityType }) {
           </button>
         </div>
       )}
-      {entity.type === "source" && (<div style={{ display: "flex", gap: "4px", marginTop: "8px" }}>
+      {entity.type === "source" && (
+        <div style={{ display: "flex", gap: "4px", marginTop: "8px" }}>
           <p style={{ margin: 0, fontSize: "12px" }}>Change Good Type</p>
           <button
-            onClick={() => {dispatch({
-              type: "change source good type",
-              id: entity.id,
-              goodType: "red",
-            })}}
+            onClick={() => {
+              dispatch({
+                type: "change source good type",
+                id: entity.id,
+                goodType: "red",
+              });
+            }}
             style={{ padding: "4px 6px", fontSize: "12px" }}
           >
-            <span
-                      className={"good red"}
-                    aria-hidden="true"
-                  />
+            <span className={"good red"} aria-hidden="true" />
           </button>
           <button
-            onClick={() => {dispatch({
-              type: "change source good type",
-              id: entity.id,
-              goodType: "blue",
-            })}}
+            onClick={() => {
+              dispatch({
+                type: "change source good type",
+                id: entity.id,
+                goodType: "blue",
+              });
+            }}
             style={{ padding: "4px 6px", fontSize: "12px" }}
           >
-            <span
-                      className={"good blue"}
-                    aria-hidden="true"
-                  />
+            <span className={"good blue"} aria-hidden="true" />
           </button>
           <button
-            onClick={() => {dispatch({
-              type: "change source good type",
-              id: entity.id,
-              goodType: "green",
-            })}}
+            onClick={() => {
+              dispatch({
+                type: "change source good type",
+                id: entity.id,
+                goodType: "green",
+              });
+            }}
             style={{ padding: "4px 6px", fontSize: "12px" }}
           >
-            <span
-                      className={"good green"}
-                    aria-hidden="true"
-                  />
+            <span className={"good green"} aria-hidden="true" />
           </button>
-        </div>)}
-      {(entity.type ==="source" || entity.type === "stock" || entity.type === "consumer") && (
-      <div style={{ display: "flex", alignItems: "center", gap: "4px", marginTop: "8px", flexWrap: "wrap" }}>
+        </div>
+      )}
+      {(entity.type === "source" ||
+        entity.type === "stock" ||
+        entity.type === "consumer") && (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "4px",
+            marginTop: "8px",
+            flexWrap: "wrap",
+          }}
+        >
           <p style={{ margin: 0, fontSize: "12px" }}>Queue:</p>
           {Array.from(entity.goods).map((good, index) => (
             <span
-                      key={index}
-                      className={`good ${good.goodType}`}
-                      title={`Good Type: ${good.goodType}, Size: ${good.size}, Creation Time: ${good.time}`}
-                    aria-hidden="true"
-                  />
-                  
-                ))}</div>)}
-                
+              key={index}
+              className={`good ${good.goodType}`}
+              title={`Good Type: ${good.goodType}, Size: ${good.size}, Creation Time: ${good.time}`}
+              aria-hidden="true"
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
