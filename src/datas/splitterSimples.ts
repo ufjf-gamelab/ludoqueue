@@ -114,6 +114,7 @@ export const splitterSimplesData: GameType = {
   transports: ["transport1"],
   splitters: ["splitter1"],
   mergers: [],
+  exchangers: [],
   editor: null,
   time: 0,
 };

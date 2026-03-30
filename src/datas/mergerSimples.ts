@@ -96,6 +96,7 @@ export const mergerSimplesData: GameType = {
   consumers: ["consumer1"],
   transports: [],
   splitters: [],
+  exchangers: [],
   mergers: ["merger1"],
   editor: null,
   time: 0,

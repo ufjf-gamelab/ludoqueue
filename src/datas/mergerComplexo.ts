@@ -182,6 +182,7 @@ export const mergerComplexoData: GameType = {
   consumers: ["consumer1"],
   transports: ["transport1", "transport2"],
   splitters: [],
+  exchangers: [],
   mergers: ["merger1", "merger2"],
   editor: null,
   time: 0,

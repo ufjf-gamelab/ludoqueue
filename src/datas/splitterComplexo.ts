@@ -161,6 +161,7 @@ export const splitterComplexoData: GameType = {
   transports: ["transport1"],
   splitters: ["splitter1", "splitter2"],
   mergers: [],
+  exchangers: [],
   editor: null,
   time: 0,
 };

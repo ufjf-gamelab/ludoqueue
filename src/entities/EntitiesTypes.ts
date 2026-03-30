@@ -5,7 +5,8 @@ export type EntityType =
   | EntityConsumerType
   | EntityTransportType
   | EntitySplitterType
-  | EntityMergerType;
+  | EntityMergerType
+  | EntityExchangerType;
 
 export type EntitySourceType = {
   id: string;
@@ -95,6 +96,23 @@ export type EntityMergerType = {
   nextSourceIndex: number;
   movingGoods: MovingGoodType[];
   goods: MovingGoodType[];
+}
+
+export type EntityExchangerType = {
+  id: string;
+  name: string;
+  type: "exchanger";
+  recipe: RecipeType;
+  direction: DirectionType;
+  source: string | null;
+  target: string | null;
+  x: number;
+  y: number;
+}
+
+export type RecipeType = {
+  input: [GoodType, number][];
+  output: [GoodType, number][];
 }
 
 export type MovingGoodType = {

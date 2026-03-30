@@ -1,11 +1,10 @@
 import { useState } from "react";
-import type { EntityStockType } from "../EntitiesTypes";
-import Stock from "./StockTile";
-import "./StockCard.css";
+import type { EntityExchangerType } from "../EntitiesTypes";
+import "./ExchangerCard.css";
 import type { AnchorStyle } from "../Tile";
 import { EntityIcons } from "../Icons";
 
-export default function StockCard({ entity }: { entity: EntityStockType }) {
+export default function ExchangerCard({ entity }: { entity: EntityExchangerType }) {
   const [isHovering, setIsHovering] = useState(false);
 
   return (
@@ -24,13 +23,7 @@ export default function StockCard({ entity }: { entity: EntityStockType }) {
       <div className="stockMinimized">
         <div>
           {EntityIcons[entity.type]}
-          {entity.goods.length === entity.max ? (
-            <p> Stock full! </p>
-          ) : (
-            <p> {entity.goods.length} items on stock. </p>
-          )}
         </div>
-        <progress value={entity.goods.length} max={entity.max}></progress>
       </div>
     </div>
   );

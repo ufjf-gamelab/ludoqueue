@@ -1,7 +1,6 @@
-import type { GameType } from "./types";
-import type {
-  EntityType,
-} from "./entities/EntitiesTypes"
+import type { EntityType } from "../entities/EntitiesTypes";
+import type { GameType } from "../types";
+
 
 export const initialState: GameType = {
   entities: new Map<string, EntityType>([
@@ -96,6 +95,7 @@ export const initialState: GameType = {
   consumers: ["consumer1"],
   transports: ["transport1", "transport2"],
   splitters: [],
+  exchangers: [],
   mergers: [],
   editor: null,
   time: 0,
