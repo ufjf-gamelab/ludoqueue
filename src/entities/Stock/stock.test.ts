@@ -257,6 +257,7 @@ describe("Stock", () => {
       ...makeBaseState(),
       entities: new Map<string, EntityType>([["stock1", fakeStock]]),
       stocks: ["stock1"],
+      exchangers: [],
     };
 
     const result = gameReducer(stateTest as GameType, { type: "game tick" });
@@ -325,6 +326,7 @@ describe("Stock", () => {
       stocks: ["stock1"],
       sources: ["source1"],
       transports: ["transport1"],
+      exchangers: [],
     };
 
     const result = gameReducer(stateTest as GameType, { type: "game tick" });
@@ -390,6 +392,7 @@ describe("Stock", () => {
       stocks: ["stock1"],
       sources: ["source1"],
       transports: ["transport1"],
+      exchangers: [],
     };
 
     const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });

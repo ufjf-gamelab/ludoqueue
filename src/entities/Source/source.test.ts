@@ -228,6 +228,7 @@ describe("Source", () => {
       stocks: [],
       splitters: [],
       mergers: [],
+      exchangers: [],
     };
     const result = gameReducer(stateTest as GameType, { type: "game tick" });
 
@@ -264,6 +265,8 @@ describe("Source", () => {
       stocks: [],
       splitters: [],
       mergers: [],
+      exchangers: [],
+
     };
     const result = gameReducer(stateTest as GameType, { type: "game tick" });
 
@@ -294,6 +297,7 @@ describe("Source", () => {
       stocks: [],
       splitters: [],
       mergers: [],
+      exchangers: [],
     };
     const result = gameReducer(stateTest as GameType, { type: "game tick" });
 
@@ -324,6 +328,7 @@ describe("Source", () => {
       stocks: [],
       splitters: [],
       mergers: [],
+      exchangers: [],
     };
     const result = gameReducer(stateTest as GameType, { type: "game tick" });
 

@@ -21,6 +21,7 @@ const defaultStateExtras = {
   splitters: [],
   sources: ["source1"],
   mergers: [],
+  exchangers: [],
 };
 
 describe("In a single transport connection between", () => {
@@ -93,6 +94,7 @@ describe("In a single transport connection between", () => {
         sources: ["source1"],
         consumers: ["consumer1"],
         transports: ["transport1"],
+        exchangers: [],
       };
 
       const result = gameReducer(stateTest as GameType, { type: "game tick" });
@@ -171,6 +173,7 @@ describe("In a single transport connection between", () => {
         sources: ["source1"],
         consumers: ["consumer1"],
         transports: ["transport1"],
+        exchangers: [],
       };
 
       const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
@@ -263,6 +266,7 @@ describe("In a single transport connection between", () => {
         sources: ["source1"],
         consumers: ["consumer1"],
         transports: ["transport1"],
+        exchangers: [],
       };
 
       const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
@@ -340,6 +344,7 @@ describe("In a single transport connection between", () => {
         stocks: [],
         splitters: [],
         mergers: [],
+        exchangers: [],
       };
 
       const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
@@ -412,6 +417,7 @@ describe("In a single transport connection between", () => {
         splitters: [],
         consumers: [],
         mergers: [],
+        exchangers: [],
       };
 
       const result = gameReducer(stateTest as GameType, { type: "game tick" });
@@ -481,6 +487,7 @@ describe("In a single transport connection between", () => {
         transports: ["transport1"],
         splitters: [],
         consumers: [],
+        exchangers: [],
         mergers: [],
       };
 
@@ -568,6 +575,7 @@ describe("In a single transport connection between", () => {
         splitters: [],
         consumers: [],
         mergers: [],
+        exchangers: [],
       };
 
       const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
@@ -653,6 +661,8 @@ describe("In a single transport connection between", () => {
         splitters: [],
         consumers: [],
         mergers: [],
+        exchangers: [],
+
       };
 
       const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
@@ -724,6 +734,7 @@ describe("In a single transport connection between", () => {
         splitters: [],
         sources: [],
         mergers: [],
+        exchangers: [],
       };
 
       const result = gameReducer(stateTest as GameType, { type: "game tick" });
@@ -798,6 +809,7 @@ describe("In a single transport connection between", () => {
         splitters: [],
         sources: [],
         mergers: [],
+        exchangers: [],
       };
 
       const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
@@ -880,6 +892,7 @@ describe("In a single transport connection between", () => {
         splitters: [],
         sources: [],
         mergers: [],
+        exchangers: [],
       };
 
       const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
@@ -962,6 +975,8 @@ describe("In a single transport connection between", () => {
         splitters: [],
         mergers: [],
         sources: [],
+        exchangers: [],
+
       };
       const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
       const transportTick1 = tick1.entities.get(
@@ -1030,6 +1045,7 @@ describe("In a single transport connection between", () => {
         mergers: [],
         sources: [],
         transports: ["transport1"],
+        exchangers: [],
       };
 
       const result = gameReducer(stateTest as GameType, { type: "game tick" });
@@ -1097,6 +1113,8 @@ describe("In a single transport connection between", () => {
         splitters: [],
         mergers: [],
         sources: [],
+        exchangers: [],
+
         transports: ["transport1"],
       };
 
@@ -1165,6 +1183,7 @@ describe("In a single transport connection between", () => {
         mergers: [],
         sources: [],
         transports: ["transport1"],
+        exchangers: [],
       };
 
       const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
@@ -1231,6 +1250,7 @@ describe("In a single transport connection between", () => {
         mergers: [],
         sources: [],
         transports: ["transport1"],
+        exchangers: [],
       };
 
       const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
@@ -1319,6 +1339,7 @@ describe("In a double transport connection between", () => {
       ...defaultStateExtras,
       consumers: ["consumer1"],
       transports: ["transport1", "transport2"],
+      exchangers: [],
     };
 
     const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
@@ -1411,6 +1432,7 @@ describe("In a double transport connection between", () => {
       ...defaultStateExtras,
       consumers: ["consumer1"],
       transports: ["transport1", "transport2"],
+      
     };
 
     const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
@@ -1503,6 +1525,7 @@ describe("In a double transport connection between", () => {
       ...defaultStateExtras,
       consumers: ["consumer1"],
       transports: ["transport1", "transport2"],
+      exchangers: [],
     };
 
     const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
@@ -1841,6 +1864,7 @@ describe("In a double transport connection between", () => {
       stocks:[],
       mergers:[],
       splitters: [],
+      exchangers: [],
     };
 
     const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
@@ -2169,6 +2193,7 @@ describe("In a double transport connection between", () => {
         stocks:[],
       mergers:[],
       splitters: [],
+      exchangers: [],
       };
 
       const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
@@ -2264,6 +2289,8 @@ describe("In a double transport connection between", () => {
         stocks:[],
       mergers:[],
       splitters: [],
+      exchangers: [],
+
       };
 
       const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
@@ -2372,6 +2399,7 @@ describe("In a double transport connection between", () => {
         stocks:[],
       mergers:[],
       splitters: [],
+        exchangers: [],
       };
 
       const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
@@ -2492,6 +2520,7 @@ describe("In a double transport connection between", () => {
         transports: ["transport1", "transport2"],
         stocks:[],
       mergers:[],
+      exchangers: [],
       splitters: [],
       };
 
@@ -2626,6 +2655,7 @@ describe("In a double transport connection between", () => {
         transports: ["transport1", "transport2"],
         stocks:[],
       mergers:[],
+      exchangers: [],
       splitters: [],
       };
 
@@ -2764,6 +2794,7 @@ describe("In a double transport connection between", () => {
         stocks:[],
       mergers:[],
       splitters: [],
+      exchangers: [],
       };
 
       const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
