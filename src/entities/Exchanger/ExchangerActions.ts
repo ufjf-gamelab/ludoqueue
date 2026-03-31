@@ -59,6 +59,7 @@ export function createExchanger(
     target: null,
     x,
     y,
+    movingGoods: [],
   };
   newState.entities.set(newExchangerID, newExchangerEntity);
   newState.exchangers.push(newExchangerID);

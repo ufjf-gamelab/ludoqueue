@@ -108,6 +108,7 @@ export type EntityExchangerType = {
   target: string | null;
   x: number;
   y: number;
+  movingGoods: MovingGoodType[];
 }
 
 export type RecipeType = {
