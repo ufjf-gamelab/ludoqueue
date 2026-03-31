@@ -346,7 +346,7 @@ export function gameTick(state: GameType) {
       exchanger,
       newState,
     ) as EntityExchangerType;
-    calculatePendingExchangerMovingGoods(exchangerEntity,newState);
+    calculatePendingExchangerMovingGoods(exchangerEntity, newState);
   });
   newState.transports.forEach((transport) => {
     const transportEntity = findEntity(
@@ -368,7 +368,7 @@ export function gameTick(state: GameType) {
       exchanger,
       newState,
     ) as EntityExchangerType;
-    transportExchangerMovingGoods(exchangerEntity,newState);
+    transportExchangerMovingGoods(exchangerEntity, newState);
   });
   newState.consumers.forEach((consumer) => {
     const consumerEntity = findEntity(consumer, newState) as EntityConsumerType;
@@ -615,67 +615,66 @@ function processExchangeItems(
   target: EntityType,
   time: number,
 ) {
-  for (const [requiredGoodType, ] of exchanger.recipe.input) {
+  for (const [requiredGoodType] of exchanger.recipe.input) {
     const movingGood: MovingGoodType = {
       source: source.id,
       target: exchanger.id,
       size: 1,
       time,
       goodType: requiredGoodType,
-    }
+    };
     exchanger.movingGoods.push(movingGood);
   }
 
-  for (const [resultGoodType, ] of exchanger.recipe.output) {
+  for (const [resultGoodType] of exchanger.recipe.output) {
     const movingGood: MovingGoodType = {
       source: exchanger.id,
       target: target.id,
       size: 1,
       time,
       goodType: resultGoodType,
-    }
+    };
     exchanger.movingGoods.push(movingGood);
   }
 }
 
-function transportExchangerMovingGoods(exchanger: EntityExchangerType, state:GameType){
-  exchanger.movingGoods.forEach((movingGood) => {
-    if (!movingGood.source || !movingGood.target) return;
-    const source = findEntity(movingGood.source,state);
-    const target = findEntity(movingGood.target,state);
-    if (!source || !target) {
-    return;
-  }
-  if (source.type === "stock"){ // nesse caso target e exchanger
-  for (const [requiredGoodType, requiredAmount] of exchanger.recipe.input) {
-    let itemsLeftToRemove = requiredAmount;
-
-    source.goods = source.goods.filter((good) => {
-      if (good.goodType === requiredGoodType && itemsLeftToRemove > 0) {
-        itemsLeftToRemove--;
-        return false;
-      }
-      return true;
+function transportExchangerMovingGoods(exchanger: EntityExchangerType, state: GameType) {
+  const source = findEntity(exchanger.source!, state);
+  if (source && source.type === "stock" && exchanger.movingGoods.length > 0) {
+    exchanger.recipe.input.forEach(([requiredGoodType, requiredAmount]) => {
+      let itemsLeftToRemove = requiredAmount;
+      
+      source.goods = source.goods.filter((good) => {
+        if (good.goodType === requiredGoodType && itemsLeftToRemove > 0) {
+          itemsLeftToRemove--;
+          return false; // Remove do array
+        }
+        return true; // Mantém no array
+      });
     });
-  }}
-  if (target.type == "stock"){ // nesse caso source e exchanger
-  for (const [producedGoodType, producedAmount] of exchanger.recipe.output) {
-    for (let i = 0; i < producedAmount; i++) {
-      const newGood: MovingGoodType = {
-        source: exchanger.id,
-        target: target.id,
-        size: 1,
-        time: state.time,
-        goodType: producedGoodType,
-      };
-      target.goods.push(newGood);
-    }
-}}})
+  }
+
+  const target = findEntity(exchanger.target!, state);
+  if (target && target.type === "stock" && exchanger.movingGoods.length > 0) {
+    exchanger.recipe.output.forEach(([producedGoodType, producedAmount]) => {
+      for (let i = 0; i < producedAmount; i++) {
+        const newGood = {
+          source: exchanger.id,
+          target: target.id,
+          size: 1,
+          time: state.time,
+          goodType: producedGoodType,
+        };
+        target.goods.push(newGood);
+      }
+    });
+  }
+  exchanger.movingGoods = [];
 }
 
 function calculatePendingExchangerMovingGoods(
   exchanger: EntityExchangerType,
-  state: GameType
+  state: GameType,
 ) {
   exchanger.movingGoods = [];
   const source = state.entities.get(exchanger.source!);
