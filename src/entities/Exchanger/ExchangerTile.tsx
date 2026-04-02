@@ -1,4 +1,7 @@
-import type { EntityExchangerType } from "../EntitiesTypes";
+import {
+  getInvertedDirection,
+  type EntityExchangerType,
+} from "../EntitiesTypes";
 import "./ExchangerTile.css";
 import { DirectionIcons, EntityIcons } from "../Icons";
 
@@ -26,6 +29,50 @@ export default function Exchanger({ entity }: { entity: EntityExchangerType }) {
       >
         {DirectionIcons[entity.direction]}
       </div>
+      {entity.movingGoods.length > 0 && (
+        <div
+          className={[
+            "box-of-goods",
+            `${"starting " + getInvertedDirection(entity.direction)}`,
+          ].join(" ")}
+        >
+          {entity.recipe.input.map(([goodType, amount]) =>
+            Array.from({ length: amount }).map((_, index) => (
+              <span
+                key={`${goodType}-${index}`}
+                className={[
+                  "transported-good",
+                  goodType,
+                  "starting",
+                  getInvertedDirection(entity.direction),
+                ].join(" ")}
+              ></span>
+            )),
+          )}
+        </div>
+      )}
+      {entity.movingGoods.length > 0 && (
+        <div
+          className={[
+            "box-of-goods",
+            `${"ending " + entity.direction}`,
+          ].join(" ")}
+        >
+          {entity.recipe.output.map(([goodType, amount]) =>
+            Array.from({ length: amount }).map((_, index) => (
+              <span
+                key={`${goodType}-${index}`}
+                className={[
+                  "transported-good",
+                  goodType,
+                  "ending",
+                  entity.direction,
+                ].join(" ")}
+              ></span>
+            )),
+          )}
+        </div>
+      )}
     </div>
   );
 }

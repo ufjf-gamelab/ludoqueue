@@ -669,7 +669,6 @@ function transportExchangerMovingGoods(exchanger: EntityExchangerType, state: Ga
       }
     });
   }
-  exchanger.movingGoods = [];
 }
 
 function calculatePendingExchangerMovingGoods(
