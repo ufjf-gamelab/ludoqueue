@@ -9,6 +9,7 @@ import { splitterComplexoData } from "../datas/splitterComplexo";
 import { mergerComplexoData } from "../datas/mergerComplexo";
 import { mergerSimplesData } from "../datas/mergerSimples";
 import { splitterSimplesData } from "../datas/splitterSimples";
+import { exchangerConsumerData } from "../datas/exchangerConsumer";
 
 export default function FluxBoard() {
   const CELL_WIDTH = 55;
@@ -89,6 +90,10 @@ export default function FluxBoard() {
                     dispatch({ type: "change game data", data: mergerComplexoData });
                     break;
                   }
+                  case("exchanger Consumer"):{
+                    dispatch({ type: "change game data", data: exchangerConsumerData });
+                    break;
+                  }
                 }
               }}
             >
@@ -97,6 +102,7 @@ export default function FluxBoard() {
               <option value="splitter complexo">Splitter Complexo</option>
               <option value="merger simples">Merger Simples</option>
               <option value="merger complexo">Merger Complexo</option>
+              <option value="exchanger Consumer">Exchanger Consumer</option>
             </select>
           </label>
         </div>
