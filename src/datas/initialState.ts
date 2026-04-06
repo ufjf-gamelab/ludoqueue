@@ -99,4 +99,5 @@ export const initialState: GameType = {
   mergers: [],
   editor: null,
   time: 0,
+  data:"initial state",
 };

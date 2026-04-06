@@ -99,6 +99,7 @@ import {
   type GameActionCreateExchanger,
   type GameActionDeleteExchanger,
 } from "./entities/Exchanger/ExchangerActions";
+import { GameDatas } from "./datas/DatasRecord";
 type GameProviderProps = {
   children: ReactNode;
 };
@@ -224,6 +225,17 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
       return pointingAction(state, action);
     case "change game data": {
       return action.data;
+    }
+    case "reset game": {
+      const selectedData = GameDatas[state.data];
+      console.log(state.data);
+      if (!selectedData) {
+        return state;
+      }
+      return gameReducer(state, {
+        type: "change game data",
+        data: selectedData,
+      });
     }
 
     case "editor change max": {
@@ -638,12 +650,15 @@ function processExchangeItems(
   }
 }
 
-function transportExchangerMovingGoods(exchanger: EntityExchangerType, state: GameType) {
+function transportExchangerMovingGoods(
+  exchanger: EntityExchangerType,
+  state: GameType,
+) {
   const source = findEntity(exchanger.source!, state);
   if (source && source.type === "stock" && exchanger.movingGoods.length > 0) {
     exchanger.recipe.input.forEach(([requiredGoodType, requiredAmount]) => {
       let itemsLeftToRemove = requiredAmount;
-      
+
       source.goods = source.goods.filter((good) => {
         if (good.goodType === requiredGoodType && itemsLeftToRemove > 0) {
           itemsLeftToRemove--;
@@ -741,6 +756,11 @@ type GameActionChangeData = {
   type: "change game data";
   data: GameType;
 };
+
+type GameActionResetGame = {
+  type: "reset game";
+};
+
 export type GameAction =
   | GameActionCreateSource
   | GameActionDeleteSource
@@ -776,7 +796,8 @@ export type GameAction =
   | GameActionEditorChangeEntryDirection
   | GameActionEditorChangeLeavingDirection
   | GameActionEditorChangeVal
-  | GameActionEditorChangeGoodType;
+  | GameActionEditorChangeGoodType
+  | GameActionResetGame;
 
 export function pointingAction(
   state: GameType,

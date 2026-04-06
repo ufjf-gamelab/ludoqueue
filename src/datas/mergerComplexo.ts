@@ -186,4 +186,5 @@ export const mergerComplexoData: GameType = {
   mergers: ["merger1", "merger2"],
   editor: null,
   time: 0,
+  data: "merger complexo",
 };

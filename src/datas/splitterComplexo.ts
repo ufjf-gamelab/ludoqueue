@@ -164,4 +164,5 @@ export const splitterComplexoData: GameType = {
   exchangers: [],
   editor: null,
   time: 0,
+  data: "splitter complexo",
 };

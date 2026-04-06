@@ -100,4 +100,5 @@ export const mergerSimplesData: GameType = {
   mergers: ["merger1"],
   editor: null,
   time: 0,
+  data: "merger simples",
 };

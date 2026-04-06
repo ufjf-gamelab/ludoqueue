@@ -14,6 +14,7 @@ export type GameType = {
   mergers: string[];
   exchangers: string[];
   time: number;
+  data: string;
 };
 
 export type LinkType = {

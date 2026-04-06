@@ -43,7 +43,7 @@ export default function Counter() {
       <button
         onClick={() => {
           setCounter(0);
-          dispatch({ type: "set node value", id: "apple", value: 0 });
+          dispatch({ type: "reset game" });
         }}
       >
         Reset
