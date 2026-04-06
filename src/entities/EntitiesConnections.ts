@@ -60,7 +60,7 @@ export function canReceiveFrom(
   ) {
     return leavingNeighbor.entryDirection === invDirection;
   } else if (leavingNeighbor.type === "stock" || leavingNeighbor.type === "exchanger") {
-    return leavingNeighbor.direction === invDirection;
+    return leavingNeighbor.direction === inputDirection;
   } else if (leavingNeighbor.type === "merger") {
     return leavingNeighbor.leavingDirection !== invDirection;
   } else {
