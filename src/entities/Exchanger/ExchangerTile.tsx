@@ -1,5 +1,4 @@
 import {
-  getInvertedDirection,
   type EntityExchangerType,
 } from "../EntitiesTypes";
 import "./ExchangerTile.css";
@@ -29,7 +28,7 @@ export default function Exchanger({ entity }: { entity: EntityExchangerType }) {
       >
         {DirectionIcons[entity.direction]}
       </div>
-      {entity.movingGoods.length > 0 && (
+      {/*{entity.movingGoods.length > 0 && (
         <div
           className={[
             "box-of-goods",
@@ -50,7 +49,7 @@ export default function Exchanger({ entity }: { entity: EntityExchangerType }) {
             )),
           )}
         </div>
-      )}
+      )}*/}
       {entity.movingGoods.length > 0 && (
         <div
           className={[

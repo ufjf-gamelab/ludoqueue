@@ -166,6 +166,7 @@ export const exchangerConsumerData: GameType = {
         x: 5,
         y: 3,
         movingGoods: [],
+        goods: [],
       },
     ]
   ]),

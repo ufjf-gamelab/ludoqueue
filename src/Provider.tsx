@@ -445,14 +445,12 @@ function pullMovingGood(
 function canIPush(entity: EntityType, target: EntityType): boolean {
   if (
     target.type === "merger" ||
-    (target.type == "stock" && target.closed) ||
-    target.type === "exchanger" ||
-    entity.type === "exchanger"
+    (target.type == "stock" && target.closed)
   ) {
     return false;
   }
 
-  if (entity.goods.length > 0 && target.goods.length < target.max) {
+  if (entity.goods.length > 0 && (target.type ==="exchanger" || (target.goods.length < target.max))) {
     return true;
   }
 
@@ -463,9 +461,6 @@ function pushMovingGood(
   entity: EntityTransportType | EntityMergerType | EntitySplitterType,
   target: EntityType,
 ) {
-  if (target.type === "exchanger") {
-    return false;
-  }
   const good = entity.goods[0];
   if (!good) {
     return;
@@ -595,15 +590,11 @@ export function calculatePendingTransportMovingGoods(
 
 function canIProcess(
   exchanger: EntityExchangerType,
-  source: EntityType,
   target: EntityType,
 ): boolean {
-  if (source.type !== "stock" || target.type !== "stock") {
-    return false;
-  }
   for (const [requiredGoodType, requiredAmount] of exchanger.recipe.input) {
     //verifica se pra cada item do input tem a quantidade requerida
-    const avaiableAmount = source.goods.filter(
+    const avaiableAmount = exchanger.goods.filter(
       (good) => good.goodType === requiredGoodType,
     ).length;
     if (avaiableAmount < requiredAmount) {
@@ -615,7 +606,7 @@ function canIProcess(
     //faz a soma dos itens do output
     totalItems += quantity;
   }
-  if (target.goods.length + totalItems > target.max) {
+  if (target.type !=="exchanger" && target.goods.length + totalItems > target.max) {
     return false;
   }
   return true;
@@ -623,21 +614,9 @@ function canIProcess(
 
 function processExchangeItems(
   exchanger: EntityExchangerType,
-  source: EntityType,
   target: EntityType,
   time: number,
 ) {
-  for (const [requiredGoodType] of exchanger.recipe.input) {
-    const movingGood: MovingGoodType = {
-      source: source.id,
-      target: exchanger.id,
-      size: 1,
-      time,
-      goodType: requiredGoodType,
-    };
-    exchanger.movingGoods.push(movingGood);
-  }
-
   for (const [resultGoodType] of exchanger.recipe.output) {
     const movingGood: MovingGoodType = {
       source: exchanger.id,
@@ -654,12 +633,11 @@ function transportExchangerMovingGoods(
   exchanger: EntityExchangerType,
   state: GameType,
 ) {
-  const source = findEntity(exchanger.source!, state);
-  if (source && source.type === "stock" && exchanger.movingGoods.length > 0) {
+  if (exchanger.movingGoods.length > 0) {
     exchanger.recipe.input.forEach(([requiredGoodType, requiredAmount]) => {
       let itemsLeftToRemove = requiredAmount;
 
-      source.goods = source.goods.filter((good) => {
+      exchanger.goods = exchanger.goods.filter((good) => {
         if (good.goodType === requiredGoodType && itemsLeftToRemove > 0) {
           itemsLeftToRemove--;
           return false; // Remove do array
@@ -691,10 +669,9 @@ function calculatePendingExchangerMovingGoods(
   state: GameType,
 ) {
   exchanger.movingGoods = [];
-  const source = state.entities.get(exchanger.source!);
   const target = state.entities.get(exchanger.target!);
-  if (source && target && canIProcess(exchanger, source, target)) {
-    processExchangeItems(exchanger, source, target, state.time);
+  if (target && canIProcess(exchanger, target)) {
+    processExchangeItems(exchanger, target, state.time);
   }
 }
 
@@ -709,13 +686,11 @@ export function transportMovingGoods(
 
     if (
       !source ||
-      !target ||
-      source.type === "exchanger" ||
-      target.type === "exchanger"
+      !target
     )
       return;
     if (!source.goods.length) return;
-    if (target.goods.length >= target.max) return;
+    if (target.type !== "exchanger" && target.goods.length >= target.max) return;
 
     const good = source.goods.shift();
     if (!good) return;
