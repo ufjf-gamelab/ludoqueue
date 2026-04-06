@@ -1,10 +1,10 @@
 import type { GameType } from "../../types";
+import { updatePassiveEntitiesConnections } from "../EntitiesConnections";
 import {
-  getInvertedDirection,
   type DirectionType,
   type EntityExchangerType,
 } from "../EntitiesTypes";
-import { clearConnectionsToEntity, getNeighbor } from "../EntityCommonActions";
+import { clearConnectionsToEntity } from "../EntityCommonActions";
 import { recipe1 } from "./recipes";
 
 export type GameActionCreateExchanger = {
@@ -63,7 +63,7 @@ export function createExchanger(
   };
   newState.entities.set(newExchangerID, newExchangerEntity);
   newState.exchangers.push(newExchangerID);
-  updateExchangerConnections(newState, newExchangerEntity);
+  updatePassiveEntitiesConnections(newState, newExchangerEntity);
   return newState;
 }
 
@@ -95,22 +95,6 @@ export function changeExchangerDirection(
   const newEntity = newState.entities.get(exchangerID) as EntityExchangerType;
   newEntity.direction = direction;
   clearConnectionsToEntity(newState, newEntity);
-  updateExchangerConnections(newState, newEntity);
+  updatePassiveEntitiesConnections(newState, newEntity);
   return newState;
-}
-
-function updateExchangerConnections(
-  state: GameType,
-  exchangerEntity: EntityExchangerType,
-) {
-  exchangerEntity.source = null;
-  exchangerEntity.target = null;
-  const sourceEntity = getNeighbor(state, exchangerEntity, getInvertedDirection(exchangerEntity.direction));
-  const targetEntity = getNeighbor(state, exchangerEntity, exchangerEntity.direction);
-  if (sourceEntity && sourceEntity.type === "stock" && sourceEntity.direction === exchangerEntity.direction) {
-    exchangerEntity.source = sourceEntity.id;
-  }
-  if (targetEntity && targetEntity.type === "stock" && targetEntity.direction === exchangerEntity.direction) {
-    exchangerEntity.target = targetEntity.id;
-  }
 }
