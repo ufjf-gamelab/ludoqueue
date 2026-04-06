@@ -12,7 +12,7 @@ function App() {
   const { game } = useGame()!;
   const classicGraph = useMemo(
     () => convertGameToGraph(game),
-    [game.entities.size],
+    [game.entities.size,game.data],
   );
   const [selectedTab, setSelectedTab] = useState<"game" | "graph">("game");
   return (

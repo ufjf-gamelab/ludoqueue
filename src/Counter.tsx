@@ -4,10 +4,16 @@ import { useGame } from "./Provider";
 export default function Counter() {
   const [counter, setCounter] = useState(0);
   const [playing, setPlaying] = useState(false);
-  const { dispatch } = useGame()!;
+  const { dispatch, game } = useGame()!;
+
   useEffect(() => {
     setPlaying(true);
   }, []);
+  // reset counter quando trocar de data
+  useEffect(() => {
+    setCounter(0);
+  }, [game.data]);
+
   useEffect(() => {
     let timerID: number;
     if (playing) {
@@ -22,8 +28,23 @@ export default function Counter() {
   }, [counter, playing, dispatch]);
 
   return (
-    <div style={{ display: "flex", flexDirection: "row", gap: "15px" , alignItems: "center", justifyContent: "center"}}>
-      <div style={{display: "flex", alignItems: "center", justifyContent: "center", height: "38px"}}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "row",
+        gap: "15px",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "38px",
+        }}
+      >
         {playing ? "playing" : "stopped"}: {counter}
       </div>
       <button
