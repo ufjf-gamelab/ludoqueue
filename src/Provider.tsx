@@ -119,9 +119,14 @@ function getInitialState(): GameType { //carrega jogo inicial da memoria se acha
   const data = localStorage.getItem("game");
   if (data) {
     const parsed = JSON.parse(data);
+    const entityMap: Map<string, EntityType> = new Map(parsed.entities);
+    for (const [, entity] of parsed.entities) { //garante que a key tenha o id certo
+      const newKey = entity.id;
+      entityMap.set(newKey, entity);
+    }
     return {
       ...parsed,
-      entities: new Map(parsed.entities) // Reconstroi o Map, verificar keys (pode estar errado)
+      entities: entityMap
     };
   }
   return initialState;
