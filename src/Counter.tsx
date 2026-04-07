@@ -2,17 +2,17 @@ import { useEffect, useState } from "react";
 import { useGame } from "./Provider";
 
 export default function Counter() {
-  const [counter, setCounter] = useState(0);
-  const [playing, setPlaying] = useState(false);
   const { dispatch, game } = useGame()!;
+  const [counter, setCounter] = useState(game.time);
+  const [playing, setPlaying] = useState(false);
 
   useEffect(() => {
     setPlaying(true);
   }, []);
   // reset counter quando trocar de data
   useEffect(() => {
-    setCounter(0);
-  }, [game.data]);
+    setCounter(game.time);
+  }, [game.data, game.time]);
 
   useEffect(() => {
     let timerID: number;

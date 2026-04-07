@@ -108,12 +108,25 @@ const GameContext = createContext<{
   dispatch: Dispatch<GameAction>;
 } | null>(null);
 export default function GameProvider({ children }: GameProviderProps) {
-  const [game, dispatch] = useReducer(gameReducer, initialState);
+  const [game, dispatch] = useReducer(gameReducer, getInitialState());
   return <GameContext value={{ game, dispatch }}>{children}</GameContext>;
 }
 export function useGame() {
   return useContext(GameContext);
 }
+
+function getInitialState(): GameType { //carrega jogo inicial da memoria se achar
+  const data = localStorage.getItem("game");
+  if (data) {
+    const parsed = JSON.parse(data);
+    return {
+      ...parsed,
+      entities: new Map(parsed.entities) // Reconstroi o Map, verificar keys (pode estar errado)
+    };
+  }
+  return initialState;
+};
+
 
 export function gameReducer(state: GameType, action: GameAction): GameType {
   switch (action.type) {

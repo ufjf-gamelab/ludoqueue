@@ -3,8 +3,8 @@ import { useGame } from "../Provider";
 import { GameDatas } from "./DatasRecord";
 
 export function DataChanger() {
-  const { dispatch } = useGame()!;
-  const [selectedData, setSelectedData] = useState("data1");
+  const { game, dispatch } = useGame()!;
+  const [selectedData, setSelectedData] = useState(game.data);
   return (
     <div
       style={{
