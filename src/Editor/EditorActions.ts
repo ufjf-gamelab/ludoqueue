@@ -39,3 +39,8 @@ export type GameActionEditorChangeRecipeInput = {
   type: "editor change recipe input";
   entry: [GoodType, number];
 }
+
+export type GameActionEditorChangeRecipeOutput = {
+  type: "editor change recipe output";
+  entry: [GoodType, number];
+}

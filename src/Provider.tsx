@@ -90,6 +90,7 @@ import type {
   GameActionEditorChangeMax,
   GameActionEditorChangeRate,
   GameActionEditorChangeRecipeInput,
+  GameActionEditorChangeRecipeOutput,
   GameActionEditorChangeVal,
 } from "./Editor/EditorActions";
 import {
@@ -367,6 +368,24 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
       return {
         ...state,
         editor: { ...editor, input: newInput },
+      };
+    }
+    case "editor change recipe output": {
+      if (!state.editor || state.editor.type !== "exchanger") return state;
+      const editor = state.editor as GameExchangerEditor;
+      let newOutput = editor.output;
+      for (const i in editor.output) {
+        if (editor.output[i][0] === action.entry[0]) {
+          if (action.entry[1] <= 0) {
+            newOutput[i][1] = 0;
+          } else {
+            newOutput[i][1] = action.entry[1];
+          }
+        }
+      }
+      return {
+        ...state,
+        editor: { ...editor, output: newOutput },
       };
     }
 
@@ -819,6 +838,7 @@ export type GameAction =
   | GameActionEditorChangeVal
   | GameActionEditorChangeGoodType
   | GameActionEditorChangeRecipeInput
+  | GameActionEditorChangeRecipeOutput
   | GameActionResetGame;
 
 export function pointingAction(

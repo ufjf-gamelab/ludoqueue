@@ -787,9 +787,11 @@ export default function EditorMenu({ editor }: { editor: GameEditor }) {
       )}
       {editor.type === "exchanger" && (
           <div className={"EditorProp"}>
-            Red:  {editor.input[0][1]}
-            <div>
+            <p>Input:</p>
+            <p>Red:  {editor.input[0][1]}
+            
               <button
+                style={{ marginLeft: "10px", fontSize: "12px"  }}
                 onClick={() => {
                   dispatch({
                     type: "editor change recipe input",
@@ -800,18 +802,147 @@ export default function EditorMenu({ editor }: { editor: GameEditor }) {
                 +
               </button>
               <button
+                style={{  marginLeft: "10px", fontSize: "12px"  }}
                 onClick={() => {
                   dispatch({
-                    type: "editor change direction",
-                    direction: rotateClockwiseDirection(
-                      editor.direction,
-                    ),
+                    type: "editor change recipe input",
+                    entry: ["red", editor.input[0][1] - 1],
                   });
                 }}
               >
-                {RotationIcons["clockwise"]}
+                -
               </button>
-            </div>
+            </p>
+            <p>Blue:  {editor.input[1][1]}
+            
+              <button
+                style={{ marginLeft: "10px", fontSize: "12px"  }}
+                onClick={() => {
+                  dispatch({
+                    type: "editor change recipe input",
+                    entry: ["blue", editor.input[1][1] + 1],
+                  });
+                }}
+              >
+                +
+              </button>
+              <button
+                style={{  marginLeft: "10px", fontSize: "12px"  }}
+                onClick={() => {
+                  dispatch({
+                    type: "editor change recipe input",
+                    entry: ["blue", editor.input[1][1] - 1],
+                  });
+                }}
+              >
+                -
+              </button>
+            </p>
+            <p>Green:  {editor.input[2][1]}
+            
+              <button
+                style={{ marginLeft: "10px", fontSize: "12px"  }}
+                onClick={() => {
+                  dispatch({
+                    type: "editor change recipe input",
+                    entry: ["green", editor.input[2][1] + 1],
+                  });
+                }}
+              >
+                +
+              </button>
+              <button
+                style={{  marginLeft: "10px", fontSize: "12px"  }}
+                onClick={() => {
+                  dispatch({
+                    type: "editor change recipe input",
+                    entry: ["green", editor.input[2][1] - 1],
+                  });
+                }}
+              >
+                -
+              </button> 
+            </p>
+          </div>
+      )}
+      {editor.type === "exchanger" && (
+          <div className={"EditorProp"}>
+            <p>Output:</p>
+            <p>Red:  {editor.output[0][1]}
+            
+              <button
+                style={{ marginLeft: "10px", fontSize: "12px"  }}
+                onClick={() => {
+                  dispatch({
+                    type: "editor change recipe output",
+                    entry: ["red", editor.output[0][1] + 1],
+                  });
+                }}
+              >
+                +
+              </button>
+              <button
+                style={{  marginLeft: "10px", fontSize: "12px"  }}
+                onClick={() => {
+                  dispatch({
+                    type: "editor change recipe output",
+                    entry: ["red", editor.output[0][1] - 1],
+                  });
+                }}
+              >
+                -
+              </button>
+            </p>
+            <p>Blue:  {editor.output[1][1]}
+            
+              <button
+                style={{ marginLeft: "10px", fontSize: "12px"  }}
+                onClick={() => {
+                  dispatch({
+                    type: "editor change recipe output",
+                    entry: ["blue", editor.output[1][1] + 1],
+                  });
+                }}
+              >
+                +
+              </button>
+              <button
+                style={{  marginLeft: "10px", fontSize: "12px"  }}
+                onClick={() => {
+                  dispatch({
+                    type: "editor change recipe output",
+                    entry: ["blue", editor.output[1][1] - 1],
+                  });
+                }}
+              >
+                -
+              </button>
+            </p>
+            <p>Green:  {editor.output[2][1]}
+            
+              <button
+                style={{ marginLeft: "10px", fontSize: "12px"  }}
+                onClick={() => {
+                  dispatch({
+                    type: "editor change recipe output",
+                    entry: ["green", editor.output[2][1] + 1],
+                  });
+                }}
+              >
+                +
+              </button>
+              <button
+                style={{  marginLeft: "10px", fontSize: "12px"  }}
+                onClick={() => {
+                  dispatch({
+                    type: "editor change recipe output",
+                    entry: ["green", editor.output[2][1] - 1],
+                  });
+                }}
+              >
+                -
+              </button>
+            </p>
           </div>
       )}
       
