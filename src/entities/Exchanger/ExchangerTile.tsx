@@ -1,8 +1,12 @@
 import { type EntityExchangerType } from "../EntitiesTypes";
 import "./ExchangerTile.css";
 import { DirectionIcons, EntityIcons } from "../Icons";
+import { useState } from "react";
 
 export default function Exchanger({ entity }: { entity: EntityExchangerType }) {
+  const [lastTimeInputAdded,] = useState(0);
+
+
   return (
     <div className="exchanger-tile">
       {EntityIcons[entity.type]}
@@ -25,6 +29,19 @@ export default function Exchanger({ entity }: { entity: EntityExchangerType }) {
         }
       >
         {DirectionIcons[entity.direction]}
+      </div>
+      <div className="stored-input-goods">
+      {entity.goods.map((good) => {
+          const goodKey =  `${good.goodType}-${good.time}`;
+          const isNew = lastTimeInputAdded < good.time;
+
+          return (
+            <div
+              key={goodKey}
+              className={`stored-good ${good.goodType} ${isNew ? "new-good" : ""}`}
+            />
+          );
+        })}
       </div>
       {/*{entity.movingGoods.length > 0 && (
         <div
