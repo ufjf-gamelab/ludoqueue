@@ -957,12 +957,14 @@ export default function EditorMenu({ editor }: { editor: GameEditor }) {
                   dispatch({
                     type: "editor change recipe",
                   recipe: recipe1,
+                  name: "recipe1",
                 });
                 break;
               case "recipe2":
                 dispatch({
                   type: "editor change recipe",
                   recipe: recipe2,
+                  name: "recipe2",
                 });
                 break;
               default:

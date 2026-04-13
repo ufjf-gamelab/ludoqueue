@@ -48,4 +48,5 @@ export type GameActionEditorChangeRecipeOutput = {
 export type GameActionEditorChangeRecipe = {
   type: "editor change recipe";
   recipe: RecipeType;
+  name: string;
 }

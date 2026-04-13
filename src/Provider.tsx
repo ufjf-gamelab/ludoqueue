@@ -400,7 +400,7 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
     case "editor change recipe": {
       if (!state.editor || state.editor.type !== "exchanger") return state;
       const editor = state.editor as GameExchangerEditor;
-      return { ...state, editor: { ...editor, input: action.recipe.input, output: action.recipe.output } };
+      return { ...state, editor: { ...editor, input: action.recipe.input, output: action.recipe.output, baseRecipe: action.name } };
     }
     default:
       break;
