@@ -5,7 +5,11 @@ import type { AnchorStyle } from "../Tile";
 import { EntityIcons } from "../Icons";
 import Exchanger from "./ExchangerTile";
 
-export default function ExchangerCard({ entity }: { entity: EntityExchangerType }) {
+export default function ExchangerCard({
+  entity,
+}: {
+  entity: EntityExchangerType;
+}) {
   const [isHovering, setIsHovering] = useState(false);
 
   return (
@@ -22,9 +26,7 @@ export default function ExchangerCard({ entity }: { entity: EntityExchangerType 
     >
       {isHovering && <Exchanger entity={entity} />}
       <div className="exchangerMinimized">
-        <div>
-          {EntityIcons[entity.type]}
-        </div>
+        <div>{EntityIcons[entity.type]}</div>
       </div>
     </div>
   );

@@ -89,6 +89,7 @@ import type {
   GameActionEditorChangeLeavingDirection,
   GameActionEditorChangeMax,
   GameActionEditorChangeRate,
+  GameActionEditorChangeRecipeInput,
   GameActionEditorChangeVal,
 } from "./Editor/EditorActions";
 import {
@@ -100,6 +101,7 @@ import {
   type GameActionDeleteExchanger,
 } from "./entities/Exchanger/ExchangerActions";
 import { GameDatas } from "./datas/DatasRecord";
+import { recipe1 } from "./entities/Exchanger/recipes";
 type GameProviderProps = {
   children: ReactNode;
 };
@@ -115,23 +117,24 @@ export function useGame() {
   return useContext(GameContext);
 }
 
-function getInitialState(): GameType { //carrega jogo inicial da memoria se achar
+function getInitialState(): GameType {
+  //carrega jogo inicial da memoria se achar
   const data = localStorage.getItem("game");
   if (data) {
     const parsed = JSON.parse(data);
     const entityMap: Map<string, EntityType> = new Map(parsed.entities);
-    for (const [, entity] of parsed.entities) { //garante que a key tenha o id certo
+    for (const [, entity] of parsed.entities) {
+      //garante que a key tenha o id certo
       const newKey = entity.id;
       entityMap.set(newKey, entity);
     }
     return {
       ...parsed,
-      entities: entityMap
+      entities: entityMap,
     };
   }
   return initialState;
-};
-
+}
 
 export function gameReducer(state: GameType, action: GameAction): GameType {
   switch (action.type) {
@@ -222,7 +225,14 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
     case "change merger leaving direction":
       return changeMergerLeavingDirection(state, action.id, action.direction);
     case "create exchanger":
-      return createExchanger(state, action.x, action.y, action.direction);
+      return createExchanger(
+        state,
+        action.x,
+        action.y,
+        action.direction,
+        action.input,
+        action.output,
+      );
     case "delete exchanger":
       return deleteExchanger(state, action.id);
     case "change exchanger direction":
@@ -339,6 +349,24 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
       return {
         ...state,
         editor: { ...editor, goodType: action.goodType as GoodType },
+      };
+    }
+    case "editor change recipe input": {
+      if (!state.editor || state.editor.type !== "exchanger") return state;
+      const editor = state.editor as GameExchangerEditor;
+      let newInput = editor.input;
+      for (const i in editor.input) {
+        if (editor.input[i][0] === action.entry[0]) {
+          if (action.entry[1] <= 0) {
+            newInput[i][1] = 0;
+          } else {
+            newInput[i][1] = action.entry[1];
+          }
+        }
+      }
+      return {
+        ...state,
+        editor: { ...editor, input: newInput },
       };
     }
 
@@ -461,14 +489,14 @@ function pullMovingGood(
 }
 
 function canIPush(entity: EntityType, target: EntityType): boolean {
-  if (
-    target.type === "merger" ||
-    (target.type == "stock" && target.closed)
-  ) {
+  if (target.type === "merger" || (target.type == "stock" && target.closed)) {
     return false;
   }
 
-  if (entity.goods.length > 0 && (target.type ==="exchanger" || (target.goods.length < target.max))) {
+  if (
+    entity.goods.length > 0 &&
+    (target.type === "exchanger" || target.goods.length < target.max)
+  ) {
     return true;
   }
 
@@ -624,7 +652,10 @@ function canIProcess(
     //faz a soma dos itens do output
     totalItems += quantity;
   }
-  if (target.type !=="exchanger" && target.goods.length + totalItems > target.max) {
+  if (
+    target.type !== "exchanger" &&
+    target.goods.length + totalItems > target.max
+  ) {
     return false;
   }
   return true;
@@ -702,13 +733,10 @@ export function transportMovingGoods(
     const source = state.entities.get(movingGood.source);
     const target = state.entities.get(movingGood.target);
 
-    if (
-      !source ||
-      !target
-    )
-      return;
+    if (!source || !target) return;
     if (!source.goods.length) return;
-    if (target.type !== "exchanger" && target.goods.length >= target.max) return;
+    if (target.type !== "exchanger" && target.goods.length >= target.max)
+      return;
 
     const good = source.goods.shift();
     if (!good) return;
@@ -790,6 +818,7 @@ export type GameAction =
   | GameActionEditorChangeLeavingDirection
   | GameActionEditorChangeVal
   | GameActionEditorChangeGoodType
+  | GameActionEditorChangeRecipeInput
   | GameActionResetGame;
 
 export function pointingAction(
@@ -1044,6 +1073,8 @@ function chooseNewEditor(status: GameStatus): GameEditor {
     case "exchanger": {
       const newEditor: GameExchangerEditor = {
         type: "exchanger",
+        input: recipe1.input,
+        output: recipe1.output,
         direction: "right",
       };
       return newEditor;

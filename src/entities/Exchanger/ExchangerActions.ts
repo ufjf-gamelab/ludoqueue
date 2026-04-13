@@ -1,9 +1,6 @@
 import type { GameType } from "../../types";
 import { updatePassiveEntitiesConnections } from "../EntitiesConnections";
-import {
-  type DirectionType,
-  type EntityExchangerType,
-} from "../EntitiesTypes";
+import { type DirectionType, type EntityExchangerType, type GoodType, type RecipeType } from "../EntitiesTypes";
 import { clearConnectionsToEntity } from "../EntityCommonActions";
 import { recipe1 } from "./recipes";
 
@@ -12,6 +9,8 @@ export type GameActionCreateExchanger = {
   x: number;
   y: number;
   direction: DirectionType;
+  input: [GoodType, number][];
+  output: [GoodType, number][];
 };
 
 export type GameActionDeleteExchanger = {
@@ -30,6 +29,8 @@ export function createExchanger(
   x: number,
   y: number,
   direction: DirectionType,
+  input: [GoodType, number][],
+  output: [GoodType, number][],
 ) {
   if (
     Array.from(state.entities.values()).find(
@@ -49,11 +50,15 @@ export function createExchanger(
 
   const newState = structuredClone(state);
   const newExchangerID: string = "exchanger" + numberID;
+  const newRecipe = {
+    input,
+    output,
+  } as RecipeType;
   const newExchangerEntity: EntityExchangerType = {
     id: newExchangerID,
     name: "Exchanger " + numberID,
     type: "exchanger",
-    recipe: recipe1,
+    recipe: newRecipe,
     direction,
     source: null,
     target: null,
@@ -69,10 +74,12 @@ export function createExchanger(
 }
 
 export function deleteExchanger(state: GameType, exchanger: string) {
-  const exchangerIndex = state.exchangers.indexOf(exchanger); 
+  const exchangerIndex = state.exchangers.indexOf(exchanger);
   if (exchangerIndex !== -1) {
     const newState = structuredClone(state);
-    const exchangerEntity = newState.entities.get(newState.exchangers[exchangerIndex]);
+    const exchangerEntity = newState.entities.get(
+      newState.exchangers[exchangerIndex],
+    );
     clearConnectionsToEntity(newState, exchangerEntity!);
     newState.exchangers.splice(exchangerIndex);
     newState.entities.delete(exchanger);

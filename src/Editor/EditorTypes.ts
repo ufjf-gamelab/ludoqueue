@@ -1,4 +1,4 @@
-import type { DirectionType } from "../entities/EntitiesTypes";
+import type { DirectionType, GoodType } from "../entities/EntitiesTypes";
 
 export type GameEditor = GameStockEditor | GameConsumerEditor | GameSourceEditor | GameTransporterEditor | GameSplitterEditor | GameMergerEditor | GameExchangerEditor | null;
 
@@ -48,6 +48,7 @@ export type GameMergerEditor = {
 
 export type GameExchangerEditor = {
   type: "exchanger";
-  
+  input: [GoodType, number][];
+  output: [GoodType, number][];
   direction: DirectionType;
 }

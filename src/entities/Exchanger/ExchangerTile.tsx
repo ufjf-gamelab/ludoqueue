@@ -1,6 +1,4 @@
-import {
-  type EntityExchangerType,
-} from "../EntitiesTypes";
+import { type EntityExchangerType } from "../EntitiesTypes";
 import "./ExchangerTile.css";
 import { DirectionIcons, EntityIcons } from "../Icons";
 
@@ -52,10 +50,9 @@ export default function Exchanger({ entity }: { entity: EntityExchangerType }) {
       )}*/}
       {entity.movingGoods.length > 0 && (
         <div
-          className={[
-            "box-of-goods",
-            `${"ending " + entity.direction}`,
-          ].join(" ")}
+          className={["box-of-goods", `${"ending " + entity.direction}`].join(
+            " ",
+          )}
         >
           {entity.recipe.output.map(([goodType, amount]) =>
             Array.from({ length: amount }).map((_, index) => (

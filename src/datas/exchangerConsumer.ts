@@ -35,7 +35,7 @@ export const exchangerConsumerData: GameType = {
         goods: [],
       },
     ],
-  
+
     [
       "merger1",
       {
@@ -49,7 +49,7 @@ export const exchangerConsumerData: GameType = {
         x: 2,
         y: 3,
         target: "transport1",
-        sources: ["source3","source2", "source1"],
+        sources: ["source3", "source2", "source1"],
         nextSourceIndex: 0,
         movingGoods: [],
         goods: [],
@@ -173,14 +173,14 @@ export const exchangerConsumerData: GameType = {
         movingGoods: [],
         goods: [],
       },
-    ]
+    ],
   ]),
   selected: null,
   status: "waiting",
   stocks: ["stock1"],
   sources: ["source1", "source2", "source3"],
   consumers: ["consumer1"],
-  transports: ["transport1", "transport2","transport3"],
+  transports: ["transport1", "transport2", "transport3"],
   splitters: [],
   exchangers: ["exchanger1"],
   mergers: ["merger1"],

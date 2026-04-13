@@ -6,7 +6,11 @@ import type {
   GameActionDeleteExchanger,
   GameActionChangeExchangerDirection,
 } from "./ExchangerActions";
-import type { EntityType, EntityExchangerType, EntityStockType } from "../EntitiesTypes";
+import type {
+  EntityType,
+  EntityExchangerType,
+  EntityStockType,
+} from "../EntitiesTypes";
 import { recipe1 } from "./recipes";
 
 describe("Exchanger", () => {
@@ -247,18 +251,27 @@ describe("Exchanger", () => {
             x: 0,
             y: 1,
             movingGoods: [],
-            goods: [{ source: null, target: null, size: 1, time: 0, goodType: "red" },{ source: null, target: null, size: 1, time: 2, goodType: "red" },{ source: null, target: null, size: 1, time: 4, goodType: "blue" }],
+            goods: [
+              { source: null, target: null, size: 1, time: 0, goodType: "red" },
+              { source: null, target: null, size: 1, time: 2, goodType: "red" },
+              {
+                source: null,
+                target: null,
+                size: 1,
+                time: 4,
+                goodType: "blue",
+              },
+            ],
           },
         ],
       ]),
-      
 
-        sources: [],
-        mergers: [],
-        splitters: [],
-        transports:[],
-        consumers: [],
-        stocks: ["stock1", "stock2"],
+      sources: [],
+      mergers: [],
+      splitters: [],
+      transports: [],
+      consumers: [],
+      stocks: ["stock1", "stock2"],
       exchangers: ["exchanger1"],
     };
     const result = gameReducer(stateTest as GameType, { type: "game tick" });

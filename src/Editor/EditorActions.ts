@@ -1,4 +1,4 @@
-import type { DirectionType } from "../entities/EntitiesTypes";
+import type { DirectionType, GoodType } from "../entities/EntitiesTypes";
 
 export type GameActionEditorChangeMax = {
   type: "editor change max";
@@ -34,3 +34,8 @@ export type GameActionEditorChangeGoodType = {
   type: "editor change good type";
   goodType: string;
 };
+
+export type GameActionEditorChangeRecipeInput = {
+  type: "editor change recipe input";
+  entry: [GoodType, number];
+}
