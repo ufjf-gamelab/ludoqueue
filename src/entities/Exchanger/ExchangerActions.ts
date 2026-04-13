@@ -38,6 +38,12 @@ export type GameActionChangeRecipeOutput={
   quantity: number;
 }
 
+export type GameActionChangeRecipe ={
+  type: "change entire recipe";
+  id: string;
+  recipe: RecipeType;
+}
+
 export function createExchanger(
   state: GameType,
   x: number,
@@ -171,4 +177,20 @@ export function changeRecipeOutput(
     }
   }
   return state;
+}
+
+export function changeRecipeEntirely(
+  state: GameType,
+  exchangerID: string,
+  recipe: RecipeType,
+) {
+  const newState = structuredClone(state);
+  const exchangerEntity = newState.entities.get(exchangerID) as
+    | EntityExchangerType
+    | undefined;
+  if (!exchangerEntity) {
+    return state;
+  }
+  exchangerEntity.recipe = recipe;
+  return newState;
 }

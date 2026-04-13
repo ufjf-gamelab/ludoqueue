@@ -96,11 +96,13 @@ import type {
 } from "./Editor/EditorActions";
 import {
   changeExchangerDirection,
+  changeRecipeEntirely,
   changeRecipeInput,
   changeRecipeOutput,
   createExchanger,
   deleteExchanger,
   type GameActionChangeExchangerDirection,
+  type GameActionChangeRecipe,
   type GameActionChangeRecipeInput,
   type GameActionChangeRecipeOutput,
   type GameActionCreateExchanger,
@@ -247,6 +249,8 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
       return changeRecipeInput(state, action.id, action.goodType, action.quantity);
     case "change recipe output":
       return changeRecipeOutput(state, action.id, action.goodType, action.quantity);
+    case "change entire recipe":
+      return changeRecipeEntirely(state, action.id, action.recipe);
     case "game tick":
       return gameTick(state);
     case "select entity":
@@ -840,6 +844,7 @@ export type GameAction =
   | GameActionChangeExchangerDirection
   | GameActionChangeRecipeInput
   | GameActionChangeRecipeOutput
+  | GameActionChangeRecipe
   | GameActionTick
   | GameActionSelectEntity
   | GameActionSetStatus

@@ -3,6 +3,7 @@ import type { AnchorStyle } from "./Tile";
 import { RotationIcons, DirectionIcons } from "./Icons";
 import "./Toolset.css";
 import { useGame } from "../Provider";
+import { recipe1, recipe2 } from "./Exchanger/recipes";
 
 export default function Toolset({ entity }: { entity: EntityType }) {
   const { dispatch } = useGame()!;
@@ -19,6 +20,8 @@ export default function Toolset({ entity }: { entity: EntityType }) {
           positionTry: "end start, start start, start end",
         } as AnchorStyle
       }
+      onPointerDown={(event) => event.stopPropagation()}
+      onPointerUp={(event) => event.stopPropagation()}
     >
       {entity.type !== "exchanger" && (
         <div>
@@ -736,6 +739,28 @@ export default function Toolset({ entity }: { entity: EntityType }) {
             </p>
             </div>
             
+          </div>
+        )}
+        {entity.type === "exchanger" && (
+          <div style={{ display: "flex", gap: "4px", marginTop: "8px" }}>
+            <div>Select ready-made recipe:
+              <select
+              onPointerDownCapture={(event) => event.stopPropagation()}
+              onPointerDown={(event) => event.stopPropagation()}
+              onClick={(event) => event.stopPropagation()}
+                onChange={(e) => { switch(e.target.value) {
+                  case "recipe1":
+                    dispatch({ type: "change entire recipe", id: entity.id, recipe:recipe1 });
+                    break;
+                  case "recipe2":
+                    dispatch({ type: "change entire recipe", id: entity.id, recipe:recipe2 });
+                    break;
+                }
+                }}>
+                <option value="recipe1">Recipe 1</option>
+                <option value="recipe2">Recipe 2</option> 
+                </select>
+            </div>
           </div>
         )}
       </div>
