@@ -50,5 +50,6 @@ export type GameExchangerEditor = {
   type: "exchanger";
   input: [GoodType, number][];
   output: [GoodType, number][];
+  baseRecipe: string;
   direction: DirectionType;
 }

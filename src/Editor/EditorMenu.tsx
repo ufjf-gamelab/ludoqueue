@@ -3,6 +3,7 @@ import "./EditorMenu.css";
 import type { GameEditor } from "./EditorTypes";
 import { useGame } from "../Provider";
 import type { DirectionType } from "../entities/EntitiesTypes";
+import { recipe1, recipe2 } from "../entities/Exchanger/recipes";
 
 export default function EditorMenu({ editor }: { editor: GameEditor }) {
   const { dispatch } = useGame() || { dispatch: undefined };
@@ -943,6 +944,33 @@ export default function EditorMenu({ editor }: { editor: GameEditor }) {
                 -
               </button>
             </p>
+          </div>
+      )}
+      {editor.type === "exchanger" && (
+        <div className={"EditorProp"}>
+          <select
+            value={editor.baseRecipe}
+            onChange={(e) => {
+              const recipeName = e.target.value;
+              switch (recipeName) {
+                case "recipe1":
+                  dispatch({
+                    type: "editor change recipe",
+                  recipe: recipe1,
+                });
+                break;
+              case "recipe2":
+                dispatch({
+                  type: "editor change recipe",
+                  recipe: recipe2,
+                });
+                break;
+              default:
+                break;
+            }}}>
+            <option value="recipe1">Recipe 1</option>
+            <option value="recipe2">Recipe 2</option>
+          </select>
           </div>
       )}
       

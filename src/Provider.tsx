@@ -89,6 +89,7 @@ import type {
   GameActionEditorChangeLeavingDirection,
   GameActionEditorChangeMax,
   GameActionEditorChangeRate,
+  GameActionEditorChangeRecipe,
   GameActionEditorChangeRecipeInput,
   GameActionEditorChangeRecipeOutput,
   GameActionEditorChangeVal,
@@ -388,7 +389,11 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
         editor: { ...editor, output: newOutput },
       };
     }
-
+    case "editor change recipe": {
+      if (!state.editor || state.editor.type !== "exchanger") return state;
+      const editor = state.editor as GameExchangerEditor;
+      return { ...state, editor: { ...editor, input: action.recipe.input, output: action.recipe.output } };
+    }
     default:
       break;
   }
@@ -839,6 +844,7 @@ export type GameAction =
   | GameActionEditorChangeGoodType
   | GameActionEditorChangeRecipeInput
   | GameActionEditorChangeRecipeOutput
+  | GameActionEditorChangeRecipe
   | GameActionResetGame;
 
 export function pointingAction(
@@ -1097,6 +1103,7 @@ function chooseNewEditor(status: GameStatus): GameEditor {
         type: "exchanger",
         input: recipe1.input,
         output: recipe1.output,
+        baseRecipe: "recipe1",
         direction: "right",
       };
       return newEditor;
