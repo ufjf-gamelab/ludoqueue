@@ -929,6 +929,8 @@ export function pointingAction(
         type: "create exchanger",
         x: x,
         y: y,
+        input: state.editor.input,
+        output: state.editor.output,
         direction: state.editor.direction,
       };
       newState.status = "waiting";
