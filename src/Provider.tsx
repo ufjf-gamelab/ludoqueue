@@ -96,9 +96,13 @@ import type {
 } from "./Editor/EditorActions";
 import {
   changeExchangerDirection,
+  changeRecipeInput,
+  changeRecipeOutput,
   createExchanger,
   deleteExchanger,
   type GameActionChangeExchangerDirection,
+  type GameActionChangeRecipeInput,
+  type GameActionChangeRecipeOutput,
   type GameActionCreateExchanger,
   type GameActionDeleteExchanger,
 } from "./entities/Exchanger/ExchangerActions";
@@ -239,6 +243,10 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
       return deleteExchanger(state, action.id);
     case "change exchanger direction":
       return changeExchangerDirection(state, action.id, action.direction);
+    case "change recipe input":
+      return changeRecipeInput(state, action.id, action.goodType, action.quantity);
+    case "change recipe output":
+      return changeRecipeOutput(state, action.id, action.goodType, action.quantity);
     case "game tick":
       return gameTick(state);
     case "select entity":
@@ -356,7 +364,7 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
     case "editor change recipe input": {
       if (!state.editor || state.editor.type !== "exchanger") return state;
       const editor = state.editor as GameExchangerEditor;
-      let newInput = editor.input;
+      const newInput = editor.input;
       for (const i in editor.input) {
         if (editor.input[i][0] === action.entry[0]) {
           if (action.entry[1] <= 0) {
@@ -374,7 +382,7 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
     case "editor change recipe output": {
       if (!state.editor || state.editor.type !== "exchanger") return state;
       const editor = state.editor as GameExchangerEditor;
-      let newOutput = editor.output;
+      const newOutput = editor.output;
       for (const i in editor.output) {
         if (editor.output[i][0] === action.entry[0]) {
           if (action.entry[1] <= 0) {
@@ -830,6 +838,8 @@ export type GameAction =
   | GameActionCreateExchanger
   | GameActionDeleteExchanger
   | GameActionChangeExchangerDirection
+  | GameActionChangeRecipeInput
+  | GameActionChangeRecipeOutput
   | GameActionTick
   | GameActionSelectEntity
   | GameActionSetStatus

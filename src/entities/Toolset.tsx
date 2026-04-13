@@ -694,6 +694,50 @@ export default function Toolset({ entity }: { entity: EntityType }) {
         </div>
         )
         }
-    </div>
-  );
-}
+        {entity.type === "exchanger" && (
+          <div style={{ display: "flex", gap: "4px", marginTop: "8px" }}>
+            <div><p>Input:</p>
+            <p>
+              Red: {entity.recipe.input[0][1]}
+              <button style={{ padding: "4px 8px", marginLeft: "4px" }} onClick={() => {dispatch({ type: "change recipe input", id: entity.id, goodType: "red", quantity: entity.recipe.input[0][1]+1 })}}>+</button>  
+              <button style={{ padding: "4px 8px", marginLeft: "4px" }} onClick={() => {dispatch({ type: "change recipe input", id: entity.id, goodType: "red", quantity: entity.recipe.input[0][1]-1 })}}>-</button>  
+            </p>
+            <p>
+              Blue: {entity.recipe.input[1][1]}
+              <button style={{ padding: "4px 8px", marginLeft: "4px" }} onClick={() => {dispatch({ type: "change recipe input", id: entity.id, goodType: "blue", quantity: entity.recipe.input[1][1]+1 })}}>+</button>  
+              <button style={{ padding: "4px 8px", marginLeft: "4px" }} onClick={() => {dispatch({ type: "change recipe input", id: entity.id, goodType: "blue", quantity: entity.recipe.input[1][1]-1 })}}>-</button>  
+            </p>
+            <p>
+              Green: {entity.recipe.input[2][1]}
+              <button style={{ padding: "4px 8px", marginLeft: "4px" }} onClick={() => {dispatch({ type: "change recipe input", id: entity.id, goodType: "green", quantity: entity.recipe.input[2][1]+1 })}}>+</button>  
+              <button style={{ padding: "4px 8px", marginLeft: "4px" }} onClick={() => {dispatch({ type: "change recipe input", id: entity.id, goodType: "green", quantity: entity.recipe.input[2][1]-1 })}}>-</button>  
+            </p>
+            </div>
+            
+          </div>
+        )}
+        {entity.type === "exchanger" && (
+          <div style={{ display: "flex", gap: "4px", marginTop: "8px" }}>
+            <div><p>Output:</p>
+            <p>
+              Red: {entity.recipe.output[0][1]}
+              <button style={{ padding: "4px 8px", marginLeft: "4px" }} onClick={() => {dispatch({ type: "change recipe output", id: entity.id, goodType: "red", quantity: entity.recipe.output[0][1]+1 })}}>+</button>  
+              <button style={{ padding: "4px 8px", marginLeft: "4px" }} onClick={() => {dispatch({ type: "change recipe output", id: entity.id, goodType: "red", quantity: entity.recipe.output[0][1]-1 })}}>-</button>  
+            </p>
+            <p>
+              Blue: {entity.recipe.output[1][1]}
+              <button style={{ padding: "4px 8px", marginLeft: "4px" }} onClick={() => {dispatch({ type: "change recipe output", id: entity.id, goodType: "blue", quantity: entity.recipe.output[1][1]+1 })}}>+</button>  
+              <button style={{ padding: "4px 8px", marginLeft: "4px" }} onClick={() => {dispatch({ type: "change recipe output", id: entity.id, goodType: "blue", quantity: entity.recipe.output[1][1]-1 })}}>-</button>  
+            </p>
+            <p>
+              Green: {entity.recipe.output[2][1]}
+              <button style={{ padding: "4px 8px", marginLeft: "4px" }} onClick={() => {dispatch({ type: "change recipe output", id: entity.id, goodType: "green", quantity: entity.recipe.output[2][1]+1 })}}>+</button>  
+              <button style={{ padding: "4px 8px", marginLeft: "4px" }} onClick={() => {dispatch({ type: "change recipe output", id: entity.id, goodType: "green", quantity: entity.recipe.output[2][1]-1 })}}>-</button>  
+            </p>
+            </div>
+            
+          </div>
+        )}
+      </div>
+    );
+  }

@@ -2,7 +2,6 @@ import type { GameType } from "../../types";
 import { updatePassiveEntitiesConnections } from "../EntitiesConnections";
 import { type DirectionType, type EntityExchangerType, type GoodType, type RecipeType } from "../EntitiesTypes";
 import { clearConnectionsToEntity } from "../EntityCommonActions";
-import { recipe1 } from "./recipes";
 
 export type GameActionCreateExchanger = {
   type: "create exchanger";
@@ -23,6 +22,21 @@ export type GameActionChangeExchangerDirection = {
   id: string;
   direction: DirectionType;
 };
+
+export type GameActionChangeRecipeInput={
+  type: "change recipe input";
+  id: string;
+  goodType: GoodType;
+  quantity: number;
+}
+
+
+export type GameActionChangeRecipeOutput={
+  type: "change recipe output";
+  id: string;
+  goodType: GoodType;
+  quantity: number;
+}
 
 export function createExchanger(
   state: GameType,
@@ -105,4 +119,56 @@ export function changeExchangerDirection(
   clearConnectionsToEntity(newState, newEntity);
   updatePassiveEntitiesConnections(newState, newEntity);
   return newState;
+}
+
+export function changeRecipeInput(
+  state: GameType,
+  exchangerID: string,
+  goodType: GoodType,
+  quantity: number,
+) {
+  const newState = structuredClone(state);
+  const exchangerEntity = newState.entities.get(exchangerID) as
+    | EntityExchangerType
+    | undefined;
+  if (!exchangerEntity) {
+    return state;
+  }
+  for (const i in exchangerEntity.recipe.input) {
+    if (exchangerEntity.recipe.input[i][0] === goodType) {
+      if (quantity <= 0) {
+          exchangerEntity.recipe.input[i][1] = 0;
+          return newState;
+        }
+      exchangerEntity.recipe.input[i][1] = quantity;
+      return newState;
+    }
+  }
+  return state;
+}
+
+export function changeRecipeOutput(
+  state: GameType,
+  exchangerID: string,
+  goodType: GoodType,
+  quantity: number,
+) {
+  const newState = structuredClone(state);
+  const exchangerEntity = newState.entities.get(exchangerID) as
+    | EntityExchangerType
+    | undefined;
+  if (!exchangerEntity) {
+    return state;
+  }
+  for (const i in exchangerEntity.recipe.output) {
+    if (exchangerEntity.recipe.output[i][0] === goodType) {
+      if (quantity <= 0) {
+          exchangerEntity.recipe.output[i][1] = 0;
+          return newState;
+        }
+      exchangerEntity.recipe.output[i][1] = quantity;
+      return newState;
+    }
+  }
+  return state;
 }
