@@ -5,16 +5,28 @@ import { convertGameToGraph } from "./GameGraph/GraphMethods";
 import Graph from "./GameGraph/Graph";
 import FluxBoard from "./FluxBoard/FluxBoard";
 import GraphElementsList from "./GameGraph/GraphElementsList";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { DataChanger } from "./datas/DataChanger";
 
 function App() {
   const { game } = useGame()!;
+
+  useEffect(() => {
+    if (game.entities.size > 0 || game.time > 0) {
+      const gameToSave = {
+        ...game,
+        entities: Array.from(game.entities.entries()), //tem que converter pra array se nao quebra
+      };
+      localStorage.setItem("game", JSON.stringify(gameToSave));
+    }
+  }, [game]);
+
   const classicGraph = useMemo(
     () => convertGameToGraph(game),
-    [game.entities.size,game.data],
+    [game.entities.size, game.data],
   );
   const [selectedTab, setSelectedTab] = useState<"game" | "graph">("game");
+
   return (
     <>
       <div className="NavBar">
