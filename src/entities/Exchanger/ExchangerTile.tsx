@@ -81,7 +81,7 @@ export default function Exchanger({ entity }: { entity: EntityExchangerType }) {
       )}*/}
       {entity.movingGoods.length > 0 && (
         <div
-          className={["box-of-goods", `${"ending " + entity.direction}`].join(
+          className={["box-of-goods", "ending", `${entity.direction === "up" || entity.direction === "down" ? "vertical" : "horizontal"}`].join(
             " ",
           )}
         >
@@ -93,7 +93,7 @@ export default function Exchanger({ entity }: { entity: EntityExchangerType }) {
                   "transported-good",
                   goodType,
                   "ending",
-                  entity.direction,
+                  `${entity.direction === "up" || entity.direction === "down" ? "vertical" : "horizontal"}`
                 ].join(" ")}
               ></span>
             )),
