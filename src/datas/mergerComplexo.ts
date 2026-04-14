@@ -7,7 +7,7 @@ export const mergerComplexoData: GameType = {
       "source1",
       {
         id: "source1",
-        name: "Source 2",
+        name: "Source 1",
         type: "source",
         goodType: "blue",
         max: 5,
@@ -61,7 +61,7 @@ export const mergerComplexoData: GameType = {
       "source2",
       {
         id: "source2",
-        name: "Source 3",
+        name: "Source 2",
         type: "source",
         goodType: "red",
         max: 5,
@@ -77,7 +77,7 @@ export const mergerComplexoData: GameType = {
       "source3",
       {
         id: "source3",
-        name: "Source 4",
+        name: "Source 3",
         type: "source",
         goodType: "red",
         max: 5,
@@ -93,7 +93,7 @@ export const mergerComplexoData: GameType = {
       "source4",
       {
         id: "source4",
-        name: "Source 5",
+        name: "Source 4",
         type: "source",
         goodType: "red",
         max: 5,
@@ -128,7 +128,7 @@ export const mergerComplexoData: GameType = {
       "transport2",
       {
         id: "transport2",
-        name: "Transport 3",
+        name: "Transport 2",
         type: "transport",
         max: 1,
         rate: 1,
@@ -147,7 +147,7 @@ export const mergerComplexoData: GameType = {
       "consumer1",
       {
         id: "consumer1",
-        name: "Consumer 2",
+        name: "Consumer 1",
         type: "consumer",
         max: 2,
         rate: 1,
@@ -162,7 +162,7 @@ export const mergerComplexoData: GameType = {
       "source5",
       {
         id: "source5",
-        name: "Source 6",
+        name: "Source 5",
         type: "source",
         goodType: "red",
         max: 5,

@@ -7,6 +7,7 @@ import FluxBoard from "./FluxBoard/FluxBoard";
 import GraphElementsList from "./GameGraph/GraphElementsList";
 import { useEffect, useMemo, useState } from "react";
 import { DataChanger } from "./datas/DataChanger";
+import GraphReactFlow from "./ReactFlow/Graph";
 
 function App() {
   const { game } = useGame()!;
@@ -56,7 +57,7 @@ function App() {
         <>
           <h1> Grafo de Conexoes: </h1>
           <div className="Graph">
-            <Graph graph={classicGraph}></Graph>
+            <GraphReactFlow></GraphReactFlow>
             <GraphElementsList graph={classicGraph} />
           </div>
         </>
