@@ -1,4 +1,3 @@
-
 export type EntityType =
   | EntitySourceType
   | EntityStockType
@@ -108,7 +107,8 @@ export type EntityExchangerType = {
   target: string | null;
   x: number;
   y: number;
-  goods: MovingGoodType[];
+  inputGoods: MovingGoodType[];
+  outputGoods: MovingGoodType[];
   movingGoods: MovingGoodType[];
 }
 

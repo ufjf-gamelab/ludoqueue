@@ -53,6 +53,21 @@
     overflow-x: hidden;
   }
 
+  .stored-output-goods {
+    position: absolute;
+    top: 5%;
+    bottom: auto;
+    left: 0;
+    max-width: 100%;
+    max-height: 100%;
+    background: transparent;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 2px;
+    overflow-x: hidden;
+  }
+
   .box-of-goods {
     position: absolute;
     top: 0;

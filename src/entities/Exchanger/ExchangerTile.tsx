@@ -31,7 +31,21 @@ export default function Exchanger({ entity }: { entity: EntityExchangerType }) {
         {DirectionIcons[entity.direction]}
       </div>
       <div className="stored-input-goods">
-      {entity.goods.map((good) => {
+      {entity.inputGoods.map((good) => {
+          const goodKey =  `${good.goodType}-${good.time}`;
+          const isNew = lastTimeInputAdded < good.time;
+
+          return (
+            <div
+              key={goodKey}
+              className={`stored-good ${good.goodType} ${isNew ? "new-good" : ""}`}
+            />
+          );
+        })}
+      </div>
+
+       <div className="stored-output-goods">
+      {entity.outputGoods.map((good) => {
           const goodKey =  `${good.goodType}-${good.time}`;
           const isNew = lastTimeInputAdded < good.time;
 
