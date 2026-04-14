@@ -50,7 +50,7 @@
     justify-content: flex-start;
     align-items: flex-end;
     gap: 2px;
-    overflow-x: hidden;
+    overflow: hidden;
   }
 
   .stored-output-goods {
@@ -65,7 +65,7 @@
     justify-content: flex-start;
     align-items: flex-start;
     gap: 2px;
-    overflow-x: hidden;
+    overflow: hidden;
   }
 
   .stored-input-goods.horizontal {
@@ -123,6 +123,7 @@
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
+    gap:2px;
   }
 
   .box-of-goods.horizontal {
