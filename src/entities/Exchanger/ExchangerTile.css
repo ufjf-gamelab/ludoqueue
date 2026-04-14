@@ -68,6 +68,50 @@
     overflow-x: hidden;
   }
 
+  .stored-input-goods.horizontal {
+    bottom: 0;
+    top: auto;
+    left: 5%;
+    right: 5%;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-end;
+  }
+
+  .stored-output-goods.horizontal {
+    bottom: auto;
+    top: 0;
+    left: 5%;
+    right: 5%;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+
+  .stored-input-goods.vertical {
+    bottom: auto;
+    top: auto;
+    left: 0 !important;
+    right: auto;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+  }
+
+  .stored-output-goods.vertical {
+    bottom: auto;
+    top: auto;
+    right: 0 !important;
+    left: auto;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+  }
+
+  .new-good {
+    animation: fade-in 1500ms ease-out forwards;
+  }
+
   .box-of-goods {
     position: absolute;
     top: 0;
@@ -81,31 +125,16 @@
     align-items: center;
   }
 
-  .box-of-goods.ending.vertical {
+  .box-of-goods.horizontal {
     animation: box-move-bottom-top 1000ms linear forwards;
-    animation-fill-mode: both;
   }
 
-  .box-of-goods.ending.horizontal {
-    animation: box-move-bottom-top 1000ms linear forwards;
-    animation-fill-mode: both;
+  .box-of-goods.vertical {
+    animation: box-move-left-right 1000ms linear forwards;
   }
 
-  .box-of-goods.starting.up,
-  .box-of-goods.starting.down,
-  .box-of-goods.ending.up,
-  .box-of-goods.ending.down {
-    flex-direction: row;
-  }
-
-  .box-of-goods.starting.left,
-  .box-of-goods.starting.right,
-  .box-of-goods.ending.left,
-  .box-of-goods.ending.right {
-    flex-direction: column;
-  }
-
-  .transported-good, .stored-good {
+  .transported-good,
+  .stored-good {
     width: 5px;
     height: 5px;
     background: white;
@@ -114,7 +143,6 @@
     pointer-events: none;
     box-shadow: 0 0 6px rgba(255, 255, 255, 0.9);
     opacity: 0.8;
-    animation: 1000ms linear forwards;
   }
 
   .stored-good {
@@ -126,10 +154,6 @@
     max-width: 5px;
     width: 5px;
     height: 5px;
-  }
-
-  .new-good {
-    animation: fade-in 1500ms ease-out forwards;
   }
 
   .stored-good.red {
@@ -162,7 +186,6 @@
   .transported-good.starting {
     animation-name: fade-out;
   }
-
 }
 @keyframes fade-out {
   0% {

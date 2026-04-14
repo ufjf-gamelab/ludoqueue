@@ -8,7 +8,7 @@ export default function Exchanger({ entity }: { entity: EntityExchangerType }) {
 
 
   return (
-    <div className="exchanger-tile">
+    <div className={"exchanger-tile"}>
       {EntityIcons[entity.type]}
       <div
         className={
@@ -30,7 +30,7 @@ export default function Exchanger({ entity }: { entity: EntityExchangerType }) {
       >
         {DirectionIcons[entity.direction]}
       </div>
-      <div className="stored-input-goods">
+      <div className={`stored-input-goods ${entity.direction === "up" || entity.direction === "down" ? "vertical" : "horizontal"}`}>
       {entity.inputGoods.map((good) => {
           const goodKey =  `${good.goodType}-${good.time}`;
           const isNew = lastTimeInputAdded < good.time;
@@ -44,7 +44,7 @@ export default function Exchanger({ entity }: { entity: EntityExchangerType }) {
         })}
       </div>
 
-       <div className="stored-output-goods">
+      <div className={`stored-output-goods ${entity.direction === "up" || entity.direction === "down" ? "vertical" : "horizontal"}`}>
       {entity.outputGoods.map((good) => {
           const goodKey =  `${good.goodType}-${good.time}`;
           const isNew = lastTimeInputAdded < good.time;
@@ -92,7 +92,6 @@ export default function Exchanger({ entity }: { entity: EntityExchangerType }) {
                 className={[
                   "transported-good",
                   goodType,
-                  "ending",
                   `${entity.direction === "up" || entity.direction === "down" ? "vertical" : "horizontal"}`
                 ].join(" ")}
               ></span>
