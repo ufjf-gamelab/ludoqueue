@@ -34,4 +34,4 @@ export type GraphType = {
   links: LinkType[];
 };
 
-export type GameStatus = "waiting" | "stock" | "source" | "consumer" | "transport" | "splitter" | "merger" | "exchanger" |"select entity" | "delete";
+export type GameStatus = "waiting" | "stock" | "source" | "consumer" | "transport" | "splitter" | "merger" | "exchanger" |"select entity" | "delete" | "recipe";

@@ -2,12 +2,30 @@ import { DirectionIcons, RotationIcons } from "../entities/Icons";
 import "./EditorMenu.css";
 import type { GameEditor } from "./EditorTypes";
 import { useGame } from "../Provider";
-import type { DirectionType } from "../entities/EntitiesTypes";
-import { recipe1, recipe2 } from "../entities/Exchanger/recipes";
+import type { DirectionType, RecipeType } from "../entities/EntitiesTypes";
+import { useState } from "react";
 
 export default function EditorMenu({ editor }: { editor: GameEditor }) {
   const { dispatch } = useGame() || { dispatch: undefined };
-
+  const [recipeName, setRecipeName] = useState<string>("");
+  const saveRecipeToJson = () => {
+    if (!editor || editor.type !== "recipe") {
+      return;
+    }
+    const recipe: RecipeType = { input: [], output: [] };
+    recipe.input = editor.input;
+    recipe.output = editor.output;
+    const jsonString = JSON.stringify(recipe);
+    const blob = new Blob([jsonString], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${recipeName}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
   const rotateCounterClockwiseDirection = (
     direction: DirectionType,
   ): DirectionType => {
@@ -780,8 +798,11 @@ export default function EditorMenu({ editor }: { editor: GameEditor }) {
           </div>
         </div>
       )}
-      {editor.type === "exchanger" && (
-        <div className={"EditorProp"} style={{ display: "flex", flexDirection: "row", gap: "10px" }}>
+      {editor.type === "recipe" && (
+        <div
+          className={"EditorProp"}
+          style={{ display: "flex", flexDirection: "row", gap: "10px" }}
+        >
           <div>
             <p>Input:</p>
             <p>
@@ -941,45 +962,29 @@ export default function EditorMenu({ editor }: { editor: GameEditor }) {
               </p>
             </div>
           </div>
-        </div>
-      )}
-      {editor.type === "exchanger" && (
-        <div
-          className={"EditorProp"}
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <p style={{ fontSize: "12px" }}>Select ready recipe:</p>
-          <select
-            value={editor.baseRecipe}
-            onChange={(e) => {
-              const recipeName = e.target.value;
-              switch (recipeName) {
-                case "recipe1":
-                  dispatch({
-                    type: "editor change recipe",
-                    recipe: recipe1,
-                    name: "recipe1",
-                  });
-                  break;
-                case "recipe2":
-                  dispatch({
-                    type: "editor change recipe",
-                    recipe: recipe2,
-                    name: "recipe2",
-                  });
-                  break;
-                default:
-                  break;
-              }
+          <div
+            style={{
+              marginTop: 12,
+              borderTop: "1px solid #ddd",
+              paddingTop: 12,
             }}
           >
-            <option value="recipe1">Recipe 1</option>
-            <option value="recipe2">Recipe 2</option>
-          </select>
+            <p style={{ margin: "6px 0" }}>Exportar JSON</p>
+            <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
+              <input
+                value={recipeName}
+                onChange={(e) => setRecipeName(e.target.value)}
+                style={{ flex: 1 }}
+                aria-label="Nome do arquivo"
+              />
+              <button
+                onClick={saveRecipeToJson}
+                style={{ padding: "6px 10px" }}
+              >
+                Salvar JSON
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

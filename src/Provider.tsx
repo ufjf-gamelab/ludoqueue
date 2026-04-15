@@ -65,6 +65,7 @@ import type {
   GameSplitterEditor,
   GameMergerEditor,
   GameExchangerEditor,
+  GameRecipeEditor,
 } from "./Editor/EditorTypes";
 import {
   type GameActionCreateSplitter,
@@ -376,8 +377,8 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
       };
     }
     case "editor change recipe input": {
-      if (!state.editor || state.editor.type !== "exchanger") return state;
-      const editor = state.editor as GameExchangerEditor;
+      if (!state.editor || state.editor.type !== "recipe") return state;
+      const editor = state.editor as GameRecipeEditor;
       const newInput = editor.input;
       for (const i in editor.input) {
         if (editor.input[i][0] === action.entry[0]) {
@@ -1165,11 +1166,17 @@ function chooseNewEditor(status: GameStatus): GameEditor {
     case "exchanger": {
       const newEditor: GameExchangerEditor = {
         type: "exchanger",
-        input: recipe1.input,
-        output: recipe1.output,
         baseRecipe: "recipe1",
         direction: "right",
       };
+      return newEditor;
+    }
+    case "recipe": {
+      const newEditor: GameRecipeEditor ={
+        type: "recipe",
+        input: [["red",0],["blue",0],["green",0]],
+        output: [["red",0],["blue",0],["green",0]],
+      }
       return newEditor;
     }
     default: {
