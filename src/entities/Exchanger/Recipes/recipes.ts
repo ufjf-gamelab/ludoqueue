@@ -1,6 +1,7 @@
-import type { RecipeType } from "../EntitiesTypes";
+import type { RecipeType } from "../../EntitiesTypes";
 
 export const recipe1: RecipeType = {
+  name: "Recipe 1",
   input: [
     ["red", 2],
     ["blue", 1],
@@ -14,6 +15,7 @@ export const recipe1: RecipeType = {
 };
 
 export const recipe2: RecipeType = {
+  name: "Recipe 2",
   input: [
     ["red", 1],
     ["blue", 1],

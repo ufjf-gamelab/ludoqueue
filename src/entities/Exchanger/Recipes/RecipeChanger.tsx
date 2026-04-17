@@ -1,59 +1,80 @@
-export default function RecipeChanger(){
-      // recipes saved in localStorage under key 'recipes'
-  const [savedRecipes, setSavedRecipes] = useState<SavedRecipes>({});
+import { useEffect, useState, type ChangeEvent } from "react";
+import type { RecipeType } from "../../EntitiesTypes";
+
+export default function RecipeChanger() {
+  // recipes saved in localStorage under key 'recipes'
+  const [savedRecipes, setSavedRecipes] = useState<RecipeType[]>([]);
+  const [fileName, setFileName] = useState<string>("");
   const [selectedSavedRecipe, setSelectedSavedRecipe] = useState<string>("");
-  const fileRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     const raw = localStorage.getItem("recipes");
-    if (raw) {
-      try {
-        const parsed = JSON.parse(raw) as SavedRecipes;
-        setSavedRecipes(parsed);
-        const keys = Object.keys(parsed);
-        if (keys.length > 0) setSelectedSavedRecipe(keys[0]);
-      } catch (e) {
-        // ignore malformed
-        console.warn("Invalid recipes in localStorage", e);
+    if (!raw) return;
+
+    try {
+      const parsed = JSON.parse(raw);
+      const recipes = Array.isArray(parsed)
+        ? parsed
+        : isRecipe(parsed)
+          ? [parsed]
+          : null;
+
+      if (!recipes || !recipes.every(isRecipe)) {
+        alert("Receitas inválidas encontradas");
+        return;
       }
+
+      setSavedRecipes(recipes as RecipeType[]);
+      if (recipes.length > 0) {
+        setSelectedSavedRecipe(recipes[0].name);
+      }
+    } catch {
+      alert("Não foi possível carregar receitas do localStorage.");
     }
   }, []);
 
   const isRecipe = (obj: unknown): obj is RecipeType => {
     if (!obj || typeof obj !== "object") return false;
     const o = obj as Record<string, unknown>;
-    if (!Array.isArray(o.input) || !Array.isArray(o.output)) return false;
+    if (
+      typeof o.name !== "string" ||
+      !Array.isArray(o.input) ||
+      !Array.isArray(o.output)
+    )
+      return false;
     const checkArr = (arr: unknown) =>
       Array.isArray(arr) &&
       arr.every((it: unknown) => {
         if (!Array.isArray(it) || it.length !== 2) return false;
         const [k, v] = it as [unknown, unknown];
-        const okKey = k === "red" || k === "blue" || k === "green";
+        const okKey = k === "red" || k === "blue" || k === "green"; //verifica se e goodtype, ver se da pra mudar
         const okVal = typeof v === "number";
         return okKey && okVal;
       });
     return checkArr(o.input) && checkArr(o.output);
   };
 
-  const importFile = (file: File) => {
+  const importFile = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) {
+      return;
+    }
     const reader = new FileReader();
-    reader.onload = () => {
+    reader.onload = (e) => {
       try {
-        const text = String(reader.result ?? "");
+        const text = e.target?.result as string;
         const parsed = JSON.parse(text);
-        // If the JSON itself is an object with a 'recipe' property, allow that
         const candidate = parsed.recipe ?? parsed;
         if (!isRecipe(candidate)) {
           alert("O arquivo não contém um RecipeType válido.");
           return;
         }
-        // ask for a name to save under
-        const defaultName = (parsed.name as string) || file.name.replace(/\.[^.]+$/, "");
-        const name = window.prompt("Nome para salvar a recipe:", defaultName) || defaultName;
-        const current = { ...savedRecipes } as SavedRecipes;
-        current[name] = candidate;
-        localStorage.setItem("recipes", JSON.stringify(current));
-        setSavedRecipes(current);
+        const recipeToSave = candidate as RecipeType;
+        const name = recipeToSave.name;
+        const nextRecipes = [...savedRecipes, recipeToSave];
+        setFileName(name);
+        localStorage.setItem("recipes", JSON.stringify(nextRecipes));
+        setSavedRecipes(nextRecipes);
         setSelectedSavedRecipe(name);
         alert(`Recipe importada e salva como: ${name}`);
       } catch (e) {
@@ -63,38 +84,27 @@ export default function RecipeChanger(){
     reader.readAsText(file);
   };
 
-  const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const f = e.target.files?.[0];
-    if (f) importFile(f);
-    // clear input so same file can be reselected if needed
-    if (fileRef.current) fileRef.current.value = "";
-  };
-
-  const applySavedRecipe = () => {
-    if (!selectedSavedRecipe) return;
-    const recipe = savedRecipes[selectedSavedRecipe];
-    if (!recipe) return;
-    // dispatch editor change recipe - reducer checks editor type is exchanger
-    dispatch({ type: "editor change recipe", recipe: recipe, name: selectedSavedRecipe });
-  };
-
-    return (
-    
-      <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-        <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span>Saved recipes:</span>
-          <select value={selectedSavedRecipe} onChange={(e) => setSelectedSavedRecipe(e.target.value)}>
-            <option value="recipe1">Recipe 1</option>
-            {Object.keys(savedRecipes).map((k) => (
-              <option key={k} value={k}>
-                {k}
-              </option>
-            ))}
-          </select>
-        </label>
-        <button onClick={applySavedRecipe} disabled={!selectedSavedRecipe}>
-          Apply recipe to editor
-        </button>
+  return (
+    <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+      <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <span>Saved recipes:</span>
+        <select
+          value={selectedSavedRecipe}
+          onChange={(e) => setSelectedSavedRecipe(e.target.value)}
+        >
+          <option value="recipe1">Recipe 1</option>
+          <option value="recipe2">Recipe 2</option>
+          {savedRecipes.map((recipe) => (
+            <option key={recipe.name} value={recipe.name}>
+              {recipe.name}
+            </option>
+          ))}
+        </select>
+      </label>
+      <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+        <input type="file" accept=".json" onChange={importFile} />
+        <p>Arquivo: {fileName ? fileName : "Faça upload"}</p>
       </div>
+    </div>
   );
 }

@@ -113,6 +113,7 @@ export type EntityExchangerType = {
 }
 
 export type RecipeType = {
+  name: string;
   input: [GoodType, number][];
   output: [GoodType, number][];
 }
