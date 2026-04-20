@@ -14,8 +14,10 @@ import type {
   EntityTransportType,
 } from "../entities/EntitiesTypes";
 import "./Graph.css";
+import { nodeTypes } from "./Node";
 type NodeType = {
   id: string;
+  type: string;
   position: {
     x: number;
     y: number;
@@ -58,6 +60,7 @@ export default function GraphReactFlow() {
       <ReactFlow
         nodes={nodes}
         edges={edges}
+        nodeTypes={nodeTypes}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
@@ -72,6 +75,7 @@ function getInitialNodes(state: GameType): NodeType[] {
   Array.from(state.entities.values()).map((node) => {
     nodes.push({
       id: node.id,
+      type: node.type,
       position: { x: node.x * 200, y: node.y * 200 },
       data: { label: node.name },
     });
