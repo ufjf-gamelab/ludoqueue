@@ -2,12 +2,44 @@ import { DirectionIcons, RotationIcons } from "../entities/Icons";
 import "./EditorMenu.css";
 import type { GameEditor } from "./EditorTypes";
 import { useGame } from "../Provider";
-import type { DirectionType } from "../entities/EntitiesTypes";
-import { recipe1, recipe2 } from "../entities/Exchanger/recipes";
+import type { DirectionType, RecipeType } from "../entities/EntitiesTypes";
+import { useState } from "react";
+import RecipeChanger from "../entities/Exchanger/Recipes/RecipeChanger";
 
 export default function EditorMenu({ editor }: { editor: GameEditor }) {
   const { dispatch } = useGame() || { dispatch: undefined };
-
+  const [recipeName, setRecipeName] = useState<string>("");
+  const saveRecipeToJson = () => {
+    if (!editor || editor.type !== "recipe") {
+      return;
+    }
+    const recipe: RecipeType = { name: "", input: [], output: [] };
+    recipe.name = recipeName;
+    recipe.input = editor.input;
+    recipe.output = editor.output;
+    const jsonString = JSON.stringify(recipe);
+    const blob = new Blob([jsonString], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${recipeName}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+  const saveRecipeToLocalStorage = () => {
+    if (!editor || editor.type !== "recipe") return;
+    const raw = localStorage.getItem("recipes");
+    const recipes: RecipeType[] = raw ? JSON.parse(raw) : [];
+    const recipeToSave: RecipeType = {
+      name: recipeName,
+      input: editor.input,
+      output: editor.output,
+    };
+    recipes.push(recipeToSave);
+    localStorage.setItem("recipes", JSON.stringify(recipes));
+  };
   const rotateCounterClockwiseDirection = (
     direction: DirectionType,
   ): DirectionType => {
@@ -202,9 +234,7 @@ export default function EditorMenu({ editor }: { editor: GameEditor }) {
                 onClick={() => {
                   dispatch({
                     type: "editor change direction",
-                    direction: rotateClockwiseDirection(
-                      editor.direction,
-                    ),
+                    direction: rotateClockwiseDirection(editor.direction),
                   });
                 }}
               >
@@ -756,43 +786,48 @@ export default function EditorMenu({ editor }: { editor: GameEditor }) {
         </div>
       )}
       {editor.type === "exchanger" && (
-          <div className={"EditorProp"}>
-            Direction: {DirectionIcons[editor.direction]}
-            <div>
-              <button
-                onClick={() => {
-                  dispatch({
-                    type: "editor change direction",
-                    direction: rotateCounterClockwiseDirection(
-                      editor.direction,
-                    ),
-                  });
-                }}
-              >
-                {RotationIcons["counterclockwise"]}
-              </button>
-              <button
-                onClick={() => {
-                  dispatch({
-                    type: "editor change direction",
-                    direction: rotateClockwiseDirection(
-                      editor.direction,
-                    ),
-                  });
-                }}
-              >
-                {RotationIcons["clockwise"]}
-              </button>
-            </div>
+        <div className={"EditorProp"}>
+          Direction: {DirectionIcons[editor.direction]}
+          <div>
+            <button
+              onClick={() => {
+                dispatch({
+                  type: "editor change direction",
+                  direction: rotateCounterClockwiseDirection(editor.direction),
+                });
+              }}
+            >
+              {RotationIcons["counterclockwise"]}
+            </button>
+            <button
+              onClick={() => {
+                dispatch({
+                  type: "editor change direction",
+                  direction: rotateClockwiseDirection(editor.direction),
+                });
+              }}
+            >
+              {RotationIcons["clockwise"]}
+            </button>
           </div>
+        </div>
       )}
       {editor.type === "exchanger" && (
-          <div className={"EditorProp"}>
+        <div className={"EditorProp"}>
+          <RecipeChanger></RecipeChanger>
+        </div>
+      )}
+      {editor.type === "recipe" && (
+        <div
+          className={"EditorProp"}
+          style={{ display: "flex", flexDirection: "row", gap: "10px" }}
+        >
+          <div>
             <p>Input:</p>
-            <p>Red:  {editor.input[0][1]}
-            
+            <p>
+              Red: {editor.input[0][1]}
               <button
-                style={{ marginLeft: "10px", fontSize: "12px"  }}
+                style={{ marginLeft: "10px", fontSize: "12px" }}
                 onClick={() => {
                   dispatch({
                     type: "editor change recipe input",
@@ -803,7 +838,7 @@ export default function EditorMenu({ editor }: { editor: GameEditor }) {
                 +
               </button>
               <button
-                style={{  marginLeft: "10px", fontSize: "12px"  }}
+                style={{ marginLeft: "10px", fontSize: "12px" }}
                 onClick={() => {
                   dispatch({
                     type: "editor change recipe input",
@@ -814,10 +849,10 @@ export default function EditorMenu({ editor }: { editor: GameEditor }) {
                 -
               </button>
             </p>
-            <p>Blue:  {editor.input[1][1]}
-            
+            <p>
+              Blue: {editor.input[1][1]}
               <button
-                style={{ marginLeft: "10px", fontSize: "12px"  }}
+                style={{ marginLeft: "10px", fontSize: "12px" }}
                 onClick={() => {
                   dispatch({
                     type: "editor change recipe input",
@@ -828,7 +863,7 @@ export default function EditorMenu({ editor }: { editor: GameEditor }) {
                 +
               </button>
               <button
-                style={{  marginLeft: "10px", fontSize: "12px"  }}
+                style={{ marginLeft: "10px", fontSize: "12px" }}
                 onClick={() => {
                   dispatch({
                     type: "editor change recipe input",
@@ -839,10 +874,10 @@ export default function EditorMenu({ editor }: { editor: GameEditor }) {
                 -
               </button>
             </p>
-            <p>Green:  {editor.input[2][1]}
-            
+            <p>
+              Green: {editor.input[2][1]}
               <button
-                style={{ marginLeft: "10px", fontSize: "12px"  }}
+                style={{ marginLeft: "10px", fontSize: "12px" }}
                 onClick={() => {
                   dispatch({
                     type: "editor change recipe input",
@@ -853,7 +888,7 @@ export default function EditorMenu({ editor }: { editor: GameEditor }) {
                 +
               </button>
               <button
-                style={{  marginLeft: "10px", fontSize: "12px"  }}
+                style={{ marginLeft: "10px", fontSize: "12px" }}
                 onClick={() => {
                   dispatch({
                     type: "editor change recipe input",
@@ -862,120 +897,110 @@ export default function EditorMenu({ editor }: { editor: GameEditor }) {
                 }}
               >
                 -
-              </button> 
-            </p>
-          </div>
-      )}
-      {editor.type === "exchanger" && (
-          <div className={"EditorProp"}>
-            <p>Output:</p>
-            <p>Red:  {editor.output[0][1]}
-            
-              <button
-                style={{ marginLeft: "10px", fontSize: "12px"  }}
-                onClick={() => {
-                  dispatch({
-                    type: "editor change recipe output",
-                    entry: ["red", editor.output[0][1] + 1],
-                  });
-                }}
-              >
-                +
-              </button>
-              <button
-                style={{  marginLeft: "10px", fontSize: "12px"  }}
-                onClick={() => {
-                  dispatch({
-                    type: "editor change recipe output",
-                    entry: ["red", editor.output[0][1] - 1],
-                  });
-                }}
-              >
-                -
-              </button>
-            </p>
-            <p>Blue:  {editor.output[1][1]}
-            
-              <button
-                style={{ marginLeft: "10px", fontSize: "12px"  }}
-                onClick={() => {
-                  dispatch({
-                    type: "editor change recipe output",
-                    entry: ["blue", editor.output[1][1] + 1],
-                  });
-                }}
-              >
-                +
-              </button>
-              <button
-                style={{  marginLeft: "10px", fontSize: "12px"  }}
-                onClick={() => {
-                  dispatch({
-                    type: "editor change recipe output",
-                    entry: ["blue", editor.output[1][1] - 1],
-                  });
-                }}
-              >
-                -
-              </button>
-            </p>
-            <p>Green:  {editor.output[2][1]}
-            
-              <button
-                style={{ marginLeft: "10px", fontSize: "12px"  }}
-                onClick={() => {
-                  dispatch({
-                    type: "editor change recipe output",
-                    entry: ["green", editor.output[2][1] + 1],
-                  });
-                }}
-              >
-                +
-              </button>
-              <button
-                style={{  marginLeft: "10px", fontSize: "12px"  }}
-                onClick={() => {
-                  dispatch({
-                    type: "editor change recipe output",
-                    entry: ["green", editor.output[2][1] - 1],
-                  });
-                }}
-              >
-                -
               </button>
             </p>
           </div>
-      )}
-      {editor.type === "exchanger" && (
-        <div className={"EditorProp"}>
-          <select
-            value={editor.baseRecipe}
-            onChange={(e) => {
-              const recipeName = e.target.value;
-              switch (recipeName) {
-                case "recipe1":
-                  dispatch({
-                    type: "editor change recipe",
-                  recipe: recipe1,
-                  name: "recipe1",
-                });
-                break;
-              case "recipe2":
-                dispatch({
-                  type: "editor change recipe",
-                  recipe: recipe2,
-                  name: "recipe2",
-                });
-                break;
-              default:
-                break;
-            }}}>
-            <option value="recipe1">Recipe 1</option>
-            <option value="recipe2">Recipe 2</option>
-          </select>
+
+          <div>
+            <div>
+              <p>Output:</p>
+              <p>
+                Red: {editor.output[0][1]}
+                <button
+                  style={{ marginLeft: "10px", fontSize: "12px" }}
+                  onClick={() => {
+                    dispatch({
+                      type: "editor change recipe output",
+                      entry: ["red", editor.output[0][1] + 1],
+                    });
+                  }}
+                >
+                  +
+                </button>
+                <button
+                  style={{ marginLeft: "10px", fontSize: "12px" }}
+                  onClick={() => {
+                    dispatch({
+                      type: "editor change recipe output",
+                      entry: ["red", editor.output[0][1] - 1],
+                    });
+                  }}
+                >
+                  -
+                </button>
+              </p>
+              <p>
+                Blue: {editor.output[1][1]}
+                <button
+                  style={{ marginLeft: "10px", fontSize: "12px" }}
+                  onClick={() => {
+                    dispatch({
+                      type: "editor change recipe output",
+                      entry: ["blue", editor.output[1][1] + 1],
+                    });
+                  }}
+                >
+                  +
+                </button>
+                <button
+                  style={{ marginLeft: "10px", fontSize: "12px" }}
+                  onClick={() => {
+                    dispatch({
+                      type: "editor change recipe output",
+                      entry: ["blue", editor.output[1][1] - 1],
+                    });
+                  }}
+                >
+                  -
+                </button>
+              </p>
+              <p>
+                Green: {editor.output[2][1]}
+                <button
+                  style={{ marginLeft: "10px", fontSize: "12px" }}
+                  onClick={() => {
+                    dispatch({
+                      type: "editor change recipe output",
+                      entry: ["green", editor.output[2][1] + 1],
+                    });
+                  }}
+                >
+                  +
+                </button>
+                <button
+                  style={{ marginLeft: "10px", fontSize: "12px" }}
+                  onClick={() => {
+                    dispatch({
+                      type: "editor change recipe output",
+                      entry: ["green", editor.output[2][1] - 1],
+                    });
+                  }}
+                >
+                  -
+                </button>
+              </p>
+            </div>
           </div>
+        </div>
       )}
-      
+      {editor.type === "recipe" && (
+        <div
+          className="EditorProp"
+          style={{ display: "flex", flexDirection: "column", gap: "10px" }}
+        >
+          <div style={{ display: "flex", flexDirection: "row", gap: "10px" }}>
+            <p style={{ fontSize: "12px" }}>Nome: </p>
+            <input
+              value={recipeName}
+              onChange={(e) => setRecipeName(e.target.value)}
+            />
+          </div>
+          <div>
+            <button onClick={saveRecipeToLocalStorage}>Salvar no jogo</button>
+            <button onClick={saveRecipeToJson}>Exportar Arquivo</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

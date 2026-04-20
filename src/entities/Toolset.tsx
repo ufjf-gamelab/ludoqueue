@@ -3,7 +3,7 @@ import type { AnchorStyle } from "./Tile";
 import { RotationIcons, DirectionIcons } from "./Icons";
 import "./Toolset.css";
 import { useGame } from "../Provider";
-import { recipe1, recipe2 } from "./Exchanger/recipes";
+import { recipe1, recipe2 } from "./Exchanger/Recipes/recipes";
 
 export default function Toolset({ entity }: { entity: EntityType }) {
   const { dispatch } = useGame()!;
@@ -750,10 +750,10 @@ export default function Toolset({ entity }: { entity: EntityType }) {
               onClick={(event) => event.stopPropagation()}
                 onChange={(e) => { switch(e.target.value) {
                   case "recipe1":
-                    dispatch({ type: "change entire recipe", id: entity.id, recipe:recipe1 });
+                    dispatch({ type: "change exchanger entire recipe", id: entity.id, recipe:recipe1 });
                     break;
                   case "recipe2":
-                    dispatch({ type: "change entire recipe", id: entity.id, recipe:recipe2 });
+                    dispatch({ type: "change exchanger entire recipe", id: entity.id, recipe:recipe2 });
                     break;
                 }
                 }}>

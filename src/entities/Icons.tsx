@@ -9,6 +9,7 @@ import { HiArrowTurnDownLeft, HiArrowTurnDownRight, HiArrowTurnLeftDown, HiArrow
 import type { JSX } from "react";
 import { IoIosGitMerge, IoIosArrowBack, IoIosArrowDown, IoIosArrowForward, IoIosArrowUp } from "react-icons/io";
 import { FiScissors } from "react-icons/fi";
+import { FaBook } from "react-icons/fa";
 
 
 
@@ -20,6 +21,7 @@ export const EntityIcons = {
   splitter: <FiScissors />,
   merger: <IoIosGitMerge />,
   exchanger:<GiCardExchange /> ,
+  recipe: <FaBook />,
   "transport right": <FaRightLong />,
   "transport left": <FaLeftLong />,
   "transport up": <FaUpLong />,

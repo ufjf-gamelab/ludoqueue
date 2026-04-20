@@ -23,7 +23,7 @@ export type GameActionChangeExchangerDirection = {
   direction: DirectionType;
 };
 
-export type GameActionChangeRecipeInput={
+export type GameActionExchangerChangeRecipeInput={
   type: "change recipe input";
   id: string;
   goodType: GoodType;
@@ -31,15 +31,15 @@ export type GameActionChangeRecipeInput={
 }
 
 
-export type GameActionChangeRecipeOutput={
+export type GameActionExchangerChangeRecipeOutput={
   type: "change recipe output";
   id: string;
   goodType: GoodType;
   quantity: number;
 }
 
-export type GameActionChangeRecipe ={
-  type: "change entire recipe";
+export type GameActionExchangerChangeRecipe ={
+  type: "change exchanger entire recipe";
   id: string;
   recipe: RecipeType;
 }

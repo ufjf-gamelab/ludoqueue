@@ -67,6 +67,13 @@ export default function ToolBar() {
           {EntityIcons["exchanger"]}
         </button>
         <button
+          className={game.status === "recipe" ? "selected" : ""}
+          onClick={() => dispatch({ type: "set status", newStatus: "recipe" })}
+          title="Create a new Recipe"
+        >
+          {EntityIcons["recipe"]}
+        </button>
+        <button
           onClick={() => dispatch({ type: "set status", newStatus: "delete" })}
           title="Delete mode - click on an entity to delete it"
         >

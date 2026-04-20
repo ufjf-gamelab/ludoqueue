@@ -1,5 +1,6 @@
 import type { GameType } from "../types";
 import type { EntityType } from "../entities/EntitiesTypes";
+import { recipe1 } from "../entities/Exchanger/Recipes/recipes";
 
 export const splitterComplexoData: GameType = {
   entities: new Map<string, EntityType>([
@@ -165,4 +166,5 @@ export const splitterComplexoData: GameType = {
   editor: null,
   time: 0,
   data: "splitter complexo",
+  recipe: recipe1,
 };

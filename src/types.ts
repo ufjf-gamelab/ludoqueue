@@ -1,5 +1,5 @@
 import type { GameEditor } from "./Editor/EditorTypes";
-import type { EntityType } from "./entities/EntitiesTypes";
+import type { EntityType, RecipeType } from "./entities/EntitiesTypes";
 
 export type GameType = {
   entities: Map<string, EntityType>;
@@ -15,6 +15,7 @@ export type GameType = {
   exchangers: string[];
   time: number;
   data: string;
+  recipe: RecipeType;
 };
 
 export type LinkType = {
@@ -34,4 +35,4 @@ export type GraphType = {
   links: LinkType[];
 };
 
-export type GameStatus = "waiting" | "stock" | "source" | "consumer" | "transport" | "splitter" | "merger" | "exchanger" |"select entity" | "delete";
+export type GameStatus = "waiting" | "stock" | "source" | "consumer" | "transport" | "splitter" | "merger" | "exchanger" |"select entity" | "delete" | "recipe";
