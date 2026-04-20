@@ -1,7 +1,6 @@
 .tile {
   display: grid;
   place-content: stretch;
-  background-color: rgb(219, 207, 219);
+  
   color: black;
-  border: 1px solid lightgreen; 
 }

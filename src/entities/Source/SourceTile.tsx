@@ -1,7 +1,7 @@
 import type { EntitySourceType } from "../EntitiesTypes";
 import "./SourceTile.css";
-import "../../assets/source/spritesheet.css"
 import { DirectionIcons, EntityIcons } from "../Icons";
+import { SourceSprite } from "../../assets/source/SourceSprite";
 
 /**
  *
@@ -10,7 +10,8 @@ import { DirectionIcons, EntityIcons } from "../Icons";
  */
 export default function Source({ entity }: { entity: EntitySourceType }) {
   return (
-    <div className="source-tile sprite">
+    <div className="source-tile">
+      <SourceSprite />
       {/*{EntityIcons[entity.type]}
       <progress
         value={entity.goods.length}

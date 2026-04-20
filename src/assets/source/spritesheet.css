@@ -1,28 +1,8 @@
 .sprite {
-  top:-25%;
   width: 80px;
   height: 110px;
   background: url('spritesheet.png') no-repeat;
-  background-size: 650px 440px; 
-  overflow-y: visible;
-}
-
-@keyframes spritePlay {
-  /* linha 1 */
-  0%   { background-position:    0px    0px; }
-  29%  { background-position: -2640px   0px; }
-
-  /* linha 2 */
-  29.0001% { background-position:    0px  -500px; }
-  58%      { background-position: -2640px -500px; }
-
-  /* linha 3 */
-  58.0001% { background-position:    0px -1000px; }
-  87%      { background-position: -2640px -1000px; }
-
-  /* linha 4 (só até o frame 30) */
-  87.0001% { background-position:    0px -1500px; }
-  100%     { background-position:  -990px -1500px; }
+  background-size: 650px 440px;
 }
 
 .sprite-0 { background-position: -0px -0px; }
