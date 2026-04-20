@@ -65,6 +65,7 @@ export default function Tile({
           gridColumn: `${entity.x + 1}`,
           gridRow: `${entity.y + 1}`,
           anchorName: `${"--anchor-" + entity.id}`,
+          zIndex: `${entity.y}`,
         } as AnchorStyle
       }
     >

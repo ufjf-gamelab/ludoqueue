@@ -1,5 +1,6 @@
 import type { EntitySourceType } from "../EntitiesTypes";
 import "./SourceTile.css";
+import "../../assets/source/spritesheet.css"
 import { DirectionIcons, EntityIcons } from "../Icons";
 
 /**
@@ -9,8 +10,8 @@ import { DirectionIcons, EntityIcons } from "../Icons";
  */
 export default function Source({ entity }: { entity: EntitySourceType }) {
   return (
-    <div className="source-tile">
-      {EntityIcons[entity.type]}
+    <div className="source-tile sprite">
+      {/*{EntityIcons[entity.type]}
       <progress
         value={entity.goods.length}
         max={entity.max}
@@ -18,7 +19,7 @@ export default function Source({ entity }: { entity: EntitySourceType }) {
       />
       <div className={"movingDirection-" + entity.leavingDirection}>
         {DirectionIcons[entity.leavingDirection]}
-      </div>
+      </div>*/}
     </div>
   );
 }

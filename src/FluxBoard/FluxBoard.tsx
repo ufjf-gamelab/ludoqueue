@@ -6,7 +6,7 @@ import ToolBar from "./ToolBar";
 import EditorMenu from "../Editor/EditorMenu";
 
 export default function FluxBoard() {
-  const CELL_WIDTH = 55;
+  const CELL_WIDTH = 75;
   const NUM_ROWS = 9;
   const NUM_COLS = 9;
   const { game, dispatch } = useGame()!;
