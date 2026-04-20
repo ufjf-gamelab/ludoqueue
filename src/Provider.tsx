@@ -464,6 +464,14 @@ export function gameTick(state: GameType) {
     ) as EntityExchangerType;
     calculatePendingExchangerMovingGoods(exchangerEntity, newState);
   });
+  newState.consumers.forEach((consumer) => {
+    const consumerEntity = findEntity(consumer, newState) as EntityConsumerType;
+    gameConsumerTick(consumerEntity);
+  });
+  newState.sources.forEach((source) => {
+    const sourceEntity = findEntity(source, newState) as EntitySourceType;
+    gameSourceTick(newState, sourceEntity);
+  });
   newState.transports.forEach((transport) => {
     const transportEntity = findEntity(
       transport,
@@ -486,14 +494,7 @@ export function gameTick(state: GameType) {
     ) as EntityExchangerType;
     transportExchangerMovingGoods(exchangerEntity, newState);
   });
-  newState.consumers.forEach((consumer) => {
-    const consumerEntity = findEntity(consumer, newState) as EntityConsumerType;
-    gameConsumerTick(consumerEntity);
-  });
-  newState.sources.forEach((source) => {
-    const sourceEntity = findEntity(source, newState) as EntitySourceType;
-    gameSourceTick(newState, sourceEntity);
-  });
+  
 
   return newState;
 }
