@@ -1,6 +1,6 @@
 import type { GameType } from "../types";
 import type { EntityType } from "../entities/EntitiesTypes";
-import { recipe1 } from "../entities/Exchanger/recipes";
+import { recipe1 } from "../entities/Exchanger/Recipes/recipes";
 
 export const exchangerConsumerData: GameType = {
   entities: new Map<string, EntityType>([
@@ -188,4 +188,5 @@ export const exchangerConsumerData: GameType = {
   editor: null,
   time: 0,
   data: "exchanger consumer",
+  recipe: recipe1,
 };

@@ -4,6 +4,7 @@ import type { GameEditor } from "./EditorTypes";
 import { useGame } from "../Provider";
 import type { DirectionType, RecipeType } from "../entities/EntitiesTypes";
 import { useState } from "react";
+import RecipeChanger from "../entities/Exchanger/Recipes/RecipeChanger";
 
 export default function EditorMenu({ editor }: { editor: GameEditor }) {
   const { dispatch } = useGame() || { dispatch: undefined };
@@ -12,7 +13,8 @@ export default function EditorMenu({ editor }: { editor: GameEditor }) {
     if (!editor || editor.type !== "recipe") {
       return;
     }
-    const recipe: RecipeType = { input: [], output: [] };
+    const recipe: RecipeType = { name: "", input: [], output: [] };
+    recipe.name = recipeName;
     recipe.input = editor.input;
     recipe.output = editor.output;
     const jsonString = JSON.stringify(recipe);
@@ -25,6 +27,18 @@ export default function EditorMenu({ editor }: { editor: GameEditor }) {
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
+  };
+  const saveRecipeToLocalStorage = () => {
+    if (!editor || editor.type !== "recipe") return;
+    const raw = localStorage.getItem("recipes");
+    const recipes: RecipeType[] = raw ? JSON.parse(raw) : [];
+    const recipeToSave: RecipeType = {
+      name: recipeName,
+      input: editor.input,
+      output: editor.output,
+    };
+    recipes.push(recipeToSave);
+    localStorage.setItem("recipes", JSON.stringify(recipes));
   };
   const rotateCounterClockwiseDirection = (
     direction: DirectionType,
@@ -798,6 +812,11 @@ export default function EditorMenu({ editor }: { editor: GameEditor }) {
           </div>
         </div>
       )}
+      {editor.type === "exchanger" && (
+        <div className={"EditorProp"}>
+          <RecipeChanger></RecipeChanger>
+        </div>
+      )}
       {editor.type === "recipe" && (
         <div
           className={"EditorProp"}
@@ -962,28 +981,23 @@ export default function EditorMenu({ editor }: { editor: GameEditor }) {
               </p>
             </div>
           </div>
-          <div
-            style={{
-              marginTop: 12,
-              borderTop: "1px solid #ddd",
-              paddingTop: 12,
-            }}
-          >
-            <p style={{ margin: "6px 0" }}>Exportar JSON</p>
-            <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
-              <input
-                value={recipeName}
-                onChange={(e) => setRecipeName(e.target.value)}
-                style={{ flex: 1 }}
-                aria-label="Nome do arquivo"
-              />
-              <button
-                onClick={saveRecipeToJson}
-                style={{ padding: "6px 10px" }}
-              >
-                Salvar JSON
-              </button>
-            </div>
+        </div>
+      )}
+      {editor.type === "recipe" && (
+        <div
+          className="EditorProp"
+          style={{ display: "flex", flexDirection: "column", gap: "10px" }}
+        >
+          <div style={{ display: "flex", flexDirection: "row", gap: "10px" }}>
+            <p style={{ fontSize: "12px" }}>Nome: </p>
+            <input
+              value={recipeName}
+              onChange={(e) => setRecipeName(e.target.value)}
+            />
+          </div>
+          <div>
+            <button onClick={saveRecipeToLocalStorage}>Salvar no jogo</button>
+            <button onClick={saveRecipeToJson}>Exportar Arquivo</button>
           </div>
         </div>
       )}

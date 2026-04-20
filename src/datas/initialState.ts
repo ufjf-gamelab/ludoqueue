@@ -1,4 +1,5 @@
 import type { EntityType } from "../entities/EntitiesTypes";
+import { recipe1 } from "../entities/Exchanger/Recipes/recipes";
 import type { GameType } from "../types";
 
 
@@ -100,4 +101,5 @@ export const initialState: GameType = {
   editor: null,
   time: 0,
   data:"initial state",
+  recipe: recipe1,
 };

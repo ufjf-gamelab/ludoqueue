@@ -22,7 +22,7 @@ export default function MergerCard({ entity }: { entity: EntityMergerType }) {
       {isHovering && <Merger entity={entity} />}
       <div className="mergerMinimized">
         <div style={{gridColumn: "2/2", gridRow: "2/2", placeSelf:"center", fontSize:"200%"}}></div>
-        <div style={{gridColumn: "3/3"}}>{entity.val}</div>
+        <div style={{gridColumn: "3/3"}}>{entity.goods.length}</div>
       </div>
     </div>
   );

@@ -1,39 +1,15 @@
 import { useEffect, useState, type ChangeEvent } from "react";
 import type { RecipeType } from "../../EntitiesTypes";
+import { useGame } from "../../../Provider";
+import { recipe1, recipe2 } from "./recipes";
+import "./RecipeChanger.css";
 
-export default function RecipeChanger() {
-  // recipes saved in localStorage under key 'recipes'
-  const [savedRecipes, setSavedRecipes] = useState<RecipeType[]>([]);
-  const [fileName, setFileName] = useState<string>("");
-  const [selectedSavedRecipe, setSelectedSavedRecipe] = useState<string>("");
+export type GameActionChangeRecipe = {
+  type: "change game recipe";
+  recipe: RecipeType;
+};
 
-  useEffect(() => {
-    const raw = localStorage.getItem("recipes");
-    if (!raw) return;
-
-    try {
-      const parsed = JSON.parse(raw);
-      const recipes = Array.isArray(parsed)
-        ? parsed
-        : isRecipe(parsed)
-          ? [parsed]
-          : null;
-
-      if (!recipes || !recipes.every(isRecipe)) {
-        alert("Receitas inválidas encontradas");
-        return;
-      }
-
-      setSavedRecipes(recipes as RecipeType[]);
-      if (recipes.length > 0) {
-        setSelectedSavedRecipe(recipes[0].name);
-      }
-    } catch {
-      alert("Não foi possível carregar receitas do localStorage.");
-    }
-  }, []);
-
-  const isRecipe = (obj: unknown): obj is RecipeType => {
+export function isRecipe(obj: unknown): obj is RecipeType {
     if (!obj || typeof obj !== "object") return false;
     const o = obj as Record<string, unknown>;
     if (
@@ -54,6 +30,32 @@ export default function RecipeChanger() {
     return checkArr(o.input) && checkArr(o.output);
   };
 
+export default function RecipeChanger() {
+  const { game, dispatch } = useGame()!;
+  const [savedRecipes, setSavedRecipes] = useState<RecipeType[]>([]);
+  useEffect(() => {
+    const raw = localStorage.getItem("recipes");
+    if (!raw) return;
+
+    try {
+      const parsed = JSON.parse(raw);
+      const recipes = Array.isArray(parsed)
+        ? parsed
+        : isRecipe(parsed)
+          ? [parsed]
+          : null;
+
+      if (!recipes || !recipes.every(isRecipe)) {
+        alert("Receitas inválidas encontradas");
+        return;
+      }
+
+      setSavedRecipes(recipes as RecipeType[]);
+    } catch {
+      alert("Não foi possível carregar receitas do localStorage.");
+    }
+  }, []);
+
   const importFile = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) {
@@ -72,10 +74,8 @@ export default function RecipeChanger() {
         const recipeToSave = candidate as RecipeType;
         const name = recipeToSave.name;
         const nextRecipes = [...savedRecipes, recipeToSave];
-        setFileName(name);
         localStorage.setItem("recipes", JSON.stringify(nextRecipes));
         setSavedRecipes(nextRecipes);
-        setSelectedSavedRecipe(name);
         alert(`Recipe importada e salva como: ${name}`);
       } catch (e) {
         alert("Erro ao ler o arquivo: " + (e as Error).message);
@@ -85,12 +85,30 @@ export default function RecipeChanger() {
   };
 
   return (
-    <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-      <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+    <div className="recipe-changer-container">
+      <label className="recipe-label">
         <span>Saved recipes:</span>
         <select
-          value={selectedSavedRecipe}
-          onChange={(e) => setSelectedSavedRecipe(e.target.value)}
+          value={game.recipe.name}
+          onChange={(e) => {
+            switch (e.target.value) {
+              case "recipe1":
+                dispatch({ type: "change game recipe", recipe: recipe1 });
+                break;
+              case "recipe2":
+                dispatch({ type: "change game recipe", recipe: recipe2 });
+                break;
+
+              default: {
+                const recipe = savedRecipes.find(
+                  (recipe) => recipe.name === e.target.value,
+                );
+                if (recipe) {
+                  dispatch({ type: "change game recipe", recipe });
+                }
+              }
+            }
+          }}
         >
           <option value="recipe1">Recipe 1</option>
           <option value="recipe2">Recipe 2</option>
@@ -101,10 +119,10 @@ export default function RecipeChanger() {
           ))}
         </select>
       </label>
-      <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-        <input type="file" accept=".json" onChange={importFile} />
-        <p>Arquivo: {fileName ? fileName : "Faça upload"}</p>
-      </div>
+      <label className="file-button">
+        Importar arquivo
+        <input type="file" accept=".json" onChange={importFile} hidden />
+      </label>
     </div>
   );
 }

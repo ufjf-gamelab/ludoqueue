@@ -103,14 +103,15 @@ import {
   createExchanger,
   deleteExchanger,
   type GameActionChangeExchangerDirection,
-  type GameActionChangeRecipe,
-  type GameActionChangeRecipeInput,
-  type GameActionChangeRecipeOutput,
+
   type GameActionCreateExchanger,
   type GameActionDeleteExchanger,
+  type GameActionExchangerChangeRecipe,
+  type GameActionExchangerChangeRecipeInput,
+  type GameActionExchangerChangeRecipeOutput,
 } from "./entities/Exchanger/ExchangerActions";
 import { GameDatas } from "./datas/DatasRecord";
-import { recipe1 } from "./entities/Exchanger/recipes";
+import type { GameActionChangeRecipe } from "./entities/Exchanger/Recipes/RecipeChanger";
 type GameProviderProps = {
   children: ReactNode;
 };
@@ -260,7 +261,7 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
         action.goodType,
         action.quantity,
       );
-    case "change entire recipe":
+    case "change exchanger entire recipe":
       return changeRecipeEntirely(state, action.id, action.recipe);
     case "game tick":
       return gameTick(state);
@@ -292,7 +293,7 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
     }
 
     case "editor change max": {
-      if (!state.editor || state.editor.type === "exchanger") return state;
+      if (!state.editor || state.editor.type === "exchanger"|| state.editor.type === "recipe") return state;
       return { ...state, editor: { ...state.editor, max: action.max } };
     }
     case "editor change rate": {
@@ -395,8 +396,8 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
       };
     }
     case "editor change recipe output": {
-      if (!state.editor || state.editor.type !== "exchanger") return state;
-      const editor = state.editor as GameExchangerEditor;
+      if (!state.editor || state.editor.type !== "recipe") return state;
+      const editor = state.editor as GameRecipeEditor;
       const newOutput = editor.output;
       for (const i in editor.output) {
         if (editor.output[i][0] === action.entry[0]) {
@@ -413,17 +414,19 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
       };
     }
     case "editor change recipe": {
-      if (!state.editor || state.editor.type !== "exchanger") return state;
-      const editor = state.editor as GameExchangerEditor;
+      if (!state.editor || state.editor.type !== "recipe") return state;
+      const editor = state.editor as GameRecipeEditor;
       return {
         ...state,
         editor: {
           ...editor,
           input: action.recipe.input,
           output: action.recipe.output,
-          baseRecipe: action.name,
         },
       };
+    }
+    case "change game recipe": {
+      return {...state, recipe: action.recipe}
     }
     default:
       break;
@@ -892,8 +895,9 @@ export type GameAction =
   | GameActionCreateExchanger
   | GameActionDeleteExchanger
   | GameActionChangeExchangerDirection
-  | GameActionChangeRecipeInput
-  | GameActionChangeRecipeOutput
+  | GameActionExchangerChangeRecipeInput
+  | GameActionExchangerChangeRecipeOutput
+  | GameActionExchangerChangeRecipe
   | GameActionChangeRecipe
   | GameActionTick
   | GameActionSelectEntity
@@ -1020,8 +1024,8 @@ export function pointingAction(
         type: "create exchanger",
         x: x,
         y: y,
-        input: state.editor.input,
-        output: state.editor.output,
+        input: newState.recipe.input,
+        output: newState.recipe.output, 
         direction: state.editor.direction,
       };
       newState.status = "waiting";
