@@ -21,19 +21,63 @@ export function getInitialNodes(state: GameType): Node[] {
   return nodes;
 }
 
+function resolveRealSource(
+  state: GameType,
+  startId: string | undefined,
+): string | null {
+  if (!startId) return null;
+
+  let current = state.entities.get(startId);
+  const visited = new Set<string>();
+
+  while (current && current.type === "transport") {
+    if (visited.has(current.id)) return null; // evita loop infinito
+    visited.add(current.id);
+
+    const transport = current as EntityTransportType;
+    current = state.entities.get(transport.source!);
+  }
+
+  return current?.id ?? null;
+}
+
+function resolveRealTarget(
+  state: GameType,
+  startId: string | undefined,
+): string | null {
+  if (!startId) return null;
+
+  let current = state.entities.get(startId);
+  const visited = new Set<string>();
+
+  while (current && current.type === "transport") {
+    if (visited.has(current.id)) return null;
+    visited.add(current.id);
+
+    const transport = current as EntityTransportType;
+    current = state.entities.get(transport.target!);
+  }
+
+  return current?.id ?? null;
+}
+
 export function getInitialEdges(state: GameType): Edge[] {
   const edges: Edge[] = [];
-  state.transports.forEach((transport) => {
-    const entity = state.entities.get(transport) as EntityTransportType;
-    if (entity.source && entity.target) {
-      edges.push({
-        id: `${entity.source} "-" ${entity.target}`,
-        source: entity.source,
-        target: entity.target,
-        type: "animatedSvg",
-      });
-    }
+  state.transports.forEach((transportId) => {
+    const entity = state.entities.get(transportId);
+    if (!entity || entity.type !== "transport") return;
+    const transport = entity as EntityTransportType;
+    const realSource = resolveRealSource(state, transport.source!);
+    const realTarget = resolveRealTarget(state, transport.target!);
+    if (!realSource || !realTarget) return;
+    edges.push({
+      id: `${realSource}-${realTarget}-${transport.id}`,
+      source: realSource,
+      target: realTarget,
+      type: "animatedSvg",
+    });
   });
+
   state.mergers.forEach((merger) => {
     const entity = state.entities.get(merger) as EntityMergerType;
     if (entity.sources) {
