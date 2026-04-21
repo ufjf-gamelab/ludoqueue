@@ -5,12 +5,13 @@ import type { EntityMergerType, EntitySplitterType, EntityTransportType } from "
 export function getInitialNodes(state: GameType): Node[] {
   const nodes: Node[] = [];
   Array.from(state.entities.values()).map((node) => {
+    if(node.type !== "transport"){
     nodes.push({
       id: node.id,
       type: node.type,
       position: { x: node.x * 200, y: node.y * 200 },
       data: { label: node.name, entity:node },
-    });
+    });}
   });
   return nodes;
 }
@@ -19,17 +20,10 @@ export function getInitialEdges(state: GameType): Edge[]{
   const edges: Edge[] = [];
   state.transports.forEach((transport) => {
     const entity = state.entities.get(transport) as EntityTransportType;
-    if (entity.source) {
+    if (entity.source && entity.target) {
       edges.push({
-        id: `${entity.source} "-" ${entity.id}`,
+        id: `${entity.source} "-" ${entity.target}`,
         source: entity.source,
-        target: entity.id,
-      });
-    }
-    if (entity.target) {
-      edges.push({
-        id: `${entity.id} "-" ${entity.target}`,
-        source: entity.id,
         target: entity.target,
       });
     }

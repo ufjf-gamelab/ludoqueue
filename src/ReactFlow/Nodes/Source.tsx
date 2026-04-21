@@ -7,7 +7,7 @@ export default function SourceGraphNode({ data }: NodeProps<EntityNode>) {
   const { game } = useGame()!;
   const entity = game.entities.get(data.entity.id) as EntitySourceType;
   return (
-    <div>
+    <div style={{margin:"5px"}}>
       <p>{data.entity.name}</p>
       {entity.leavingDirection === "left" && ( 
         <Handle type="source" position={Position.Left} />
