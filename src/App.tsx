@@ -2,7 +2,6 @@ import "./App.css";
 import { useGame } from "./Provider";
 import Counter from "./Counter";
 import { convertGameToGraph } from "./GameGraph/GraphMethods";
-import Graph from "./GameGraph/Graph";
 import FluxBoard from "./FluxBoard/FluxBoard";
 import GraphElementsList from "./GameGraph/GraphElementsList";
 import { useEffect, useMemo, useState } from "react";
