@@ -13,9 +13,13 @@ import {
 import "@xyflow/react/dist/style.css";
 import { useGame } from "../Provider";
 import "./Graph.css";
-import { nodeTypes } from "./Node";
+import { nodeTypes } from "./NodeTypes";
 import { getInitialEdges, getInitialNodes } from "./GraphData";
+import { AnimatedSVGEdge } from "./AnimatedSVG";
 
+const edgeTypes = {
+  animatedSvg: AnimatedSVGEdge,
+};
 
 export default function GraphReactFlow() {
   const { game } = useGame()!;
@@ -43,6 +47,7 @@ export default function GraphReactFlow() {
         nodes={nodes}
         edges={edges}
         nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
