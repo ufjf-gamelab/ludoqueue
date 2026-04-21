@@ -1,21 +1,13 @@
-import { useCallback } from "react";
-import type { EntityType } from "../entities/EntitiesTypes";
+import type { Node } from "@xyflow/react";
+import type { EntityMergerType, EntityType } from "../entities/EntitiesTypes";
+import SourceGraphNode from "./Nodes/Source";
+import MergerGraphNode from "./Nodes/Merger";
+
+
+export type EntityMergerNode = Node<{ entity: EntityMergerType }, 'EntityType'>
+export type EntityNode = Node<{ entity: EntityType }, 'EntityType'>
 
 export const nodeTypes = {
-    source: TextUpdaterNode,
-}
-
-export function TextUpdaterNode({entity}: {entity: EntityType}) {
-  const onChange = useCallback((evt) => {
-    console.log(entity.name,evt);
-  }, []);
- 
-  return (
-    <div className="text-updater-node">
-      <div>
-        <label htmlFor="text">Text:</label>
-        <input id="text" name="text" onChange={onChange} className="nodrag" />
-      </div>
-    </div>
-  );
+    source: SourceGraphNode,
+    merger: MergerGraphNode,
 }
