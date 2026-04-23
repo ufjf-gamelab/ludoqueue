@@ -11,15 +11,6 @@ export default function Source({ entity }: { entity: EntitySourceType }) {
   return (
     <div className="source-tile">
       <SourceSprite entity={entity}/>
-      {/*{EntityIcons[entity.type]}
-      <progress
-        value={entity.goods.length}
-        max={entity.max}
-        title={`${entity.goods.length}/${entity.max}`}
-      />
-      <div className={"movingDirection-" + entity.leavingDirection}>
-        {DirectionIcons[entity.leavingDirection]}
-      </div>*/}
     </div>
   );
 }

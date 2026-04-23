@@ -42,6 +42,7 @@ export default function FluxBoard() {
                 key={entity.id}
                 entity={entity}
                 selected={entity.id === game.selected?.id}
+                tileSize={CELL_WIDTH}
               />
             ),
         )}

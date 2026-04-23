@@ -13,7 +13,7 @@ export function ExchangerSprite({ entity }: { entity: EntityExchangerType }) {
     const interval = setInterval(() => {
       setStateFrame((prev) => (prev + 1) % TOTAL_FRAMES);
     }, FRAME_TIME);
-
+    setStateFrame(0);
     return () => clearInterval(interval);
   }, [entity.movingGoods.length]);
 
