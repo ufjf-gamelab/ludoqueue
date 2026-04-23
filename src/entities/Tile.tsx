@@ -26,9 +26,11 @@ export interface AnchorStyle extends React.CSSProperties {
 export default function Tile({
   entity,
   selected,
+  tileSize,
 }: {
   entity: EntityType;
   selected: boolean;
+  tileSize: number;
 }) {
   const { game, dispatch } = useGame()!;
   const renderEntity = (entity: EntityType) => {
@@ -66,6 +68,8 @@ export default function Tile({
           gridRow: `${entity.y + 1}`,
           anchorName: `${"--anchor-" + entity.id}`,
           zIndex: `${entity.y}`,
+          width: `${tileSize}px`,
+          height: `${tileSize}px`,
         } as AnchorStyle
       }
     >
