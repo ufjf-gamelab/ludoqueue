@@ -1,0 +1,23 @@
+.exchanger-sprite {
+  width: 70px;
+  height: 110px;
+  background: url('exchanger.png') no-repeat;
+  background-size: 450px 330px;
+  position: relative;
+  top:-30%;
+}
+
+.exchanger-sprite-0 { background-position: -0px -0px; }
+.exchanger-sprite-1 { background-position: -330px -0px; }
+.exchanger-sprite-2 { background-position: -660px -0px; }
+.exchanger-sprite-3 { background-position: -990px -0px; }
+.exchanger-sprite-4 { background-position: -1320px -0px; }
+.exchanger-sprite-5 { background-position: -1650px -0px; }
+.exchanger-sprite-6 { background-position: -0px -500px; }
+.exchanger-sprite-7 { background-position: -330px -500px; }
+.exchanger-sprite-8 { background-position: -660px -500px; }
+.exchanger-sprite-9 { background-position: -990px -500px; }
+.exchanger-sprite-10 { background-position: -1320px -500px; }
+.exchanger-sprite-11 { background-position: -1650px -500px; }
+.exchanger-sprite-12 { background-position: -0px -1000px; }
+.exchanger-sprite-13 { background-position: -330px -1000px; }

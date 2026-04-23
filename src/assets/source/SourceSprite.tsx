@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import "./spritesheet.css"
+import "./SourceSprite.css"
 import type { EntitySourceType } from "../../entities/EntitiesTypes";
 const TOTAL_FRAMES = 31;
 const FRAME_TIME = 1000 / TOTAL_FRAMES;
@@ -34,7 +34,7 @@ export function SourceSprite({ entity }: { entity: EntitySourceType }) {
 
   return (
     <div
-      className="sprite"
+      className="sourcesprite"
       style={{ backgroundPosition: `${x}px ${y}px` }}
     />
   );
