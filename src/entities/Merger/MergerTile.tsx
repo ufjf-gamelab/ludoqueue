@@ -6,6 +6,7 @@ import {
 import "../Toolset.css";
 import { DirectionIcons, EntityIcons } from "../Icons";
 import { findEntity, useGame } from "../../Provider";
+import MergerSprite from "../../assets/merger/MergerSprite";
 
 export default function MergerTile({ entity }: { entity: EntityMergerType }) {
   const spanKey = String(Math.random());
@@ -55,7 +56,7 @@ export default function MergerTile({ entity }: { entity: EntityMergerType }) {
   }
   return (
     <div className="splitter-tile">
-      {EntityIcons.merger}
+      {/*{EntityIcons.merger}
       <progress
         value={entity.goods.length}
         max={entity.max}
@@ -92,7 +93,8 @@ export default function MergerTile({ entity }: { entity: EntityMergerType }) {
           <div className="position-right">{DirectionIcons.left}</div>
           <div className="position-left">{DirectionIcons.left}</div>
         </div>
-      )}
+      )}*/}
+      <MergerSprite entity={entity}/>
       {movingGoods.map((movingGood) => {
         if (movingGood.target == entity.id) isStarting = true;
         if (movingGood.source == entity.id) isEnding = true;
