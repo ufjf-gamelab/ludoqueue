@@ -1,11 +1,11 @@
 import type { EntityStockType } from "../EntitiesTypes";
 import "./StockTile.css";
-import { DirectionIcons, EntityIcons } from "../Icons";
+import StockSprite from "../../assets/stock/StockSprite";
 
 export default function Stock({ entity }: { entity: EntityStockType }) {
   return (
     <div className="stock-tile">
-      {EntityIcons[entity.type]}
+      {/*{EntityIcons[entity.type]}
       <progress value={entity.goods.length} max={entity.max} />
       <div
         className={
@@ -26,7 +26,8 @@ export default function Stock({ entity }: { entity: EntityStockType }) {
         }
       >
         {DirectionIcons[entity.direction]}
-      </div>
+      </div>*/}
+      <StockSprite entity={entity} />
     </div>
   );
 }
