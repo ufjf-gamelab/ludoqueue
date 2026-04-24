@@ -11,7 +11,7 @@ export default function StockGraphNode({ data }: NodeProps<EntityStockNode>) {
     <div className="node">
       {data.entity.id};
       <div className="content">
-        <div className="box">
+        <div className="stock-box">
           {entity.goods.map((good, i) => (
             <div key={i}>
               <p>
