@@ -1,23 +1,32 @@
 .exchanger-sprite {
-  width: 70px;
-  height: 110px;
+  width: 330px;
+  height: 500px;
   background: url('exchanger.png') no-repeat;
-  background-size: 420px 330px;
   position: absolute;
-  top:-50%;
+  left:50%;
+  top: 50%;
+  translate: -50% -55%;
+  scale: 0.22727;
+  transform-origin: center;
 }
 
-.exchanger-sprite-0 { background-position: 0 0; }
-.exchanger-sprite-1 { background-position: -70px 0; }
-.exchanger-sprite-2 { background-position: -140px 0; }
-.exchanger-sprite-3 { background-position: -210px 0; }
-.exchanger-sprite-4 { background-position: -280px 0; }
-.exchanger-sprite-5 { background-position: -350px 0; }
-.exchanger-sprite-6 { background-position: -0px -110px; }
-.exchanger-sprite-7 { background-position: -70px -110px; }
-.exchanger-sprite-8 { background-position: -140px -110px; }
-.exchanger-sprite-9 { background-position: -210px -110px; }
-.exchanger-sprite-10 { background-position: -280px -110px; }
-.exchanger-sprite-11 { background-position: -350px -110px; }
-.exchanger-sprite-12 { background-position: -0px -220px; }
-.exchanger-sprite-13 { background-position: -70px -220px; }
+.animate-exchanger {
+  animation: exchanger-animation 1s steps(1);
+}
+
+@keyframes exchanger-animation {
+  0%   { background-position: 0px 0px; }
+  7.14%  { background-position: -330px 0px; }
+  14.28% { background-position: -660px 0px; }
+  21.42% { background-position: -990px 0px; }
+  28.56% { background-position: -1320px 0px; }
+  35.70% { background-position: -1650px 0px; }
+  42.84% { background-position: 0px -500px; }
+  49.98% { background-position: -330px -500px; }
+  57.12% { background-position: -660px -500px; }
+  64.26% { background-position: -990px -500px; }
+  71.40% { background-position: -1320px -500px; }
+  78.54% { background-position: -1650px -500px; }
+  85.68% { background-position: 0px -1000px; }
+  100%   { background-position: -330px -1000px; } /* Frame 14 */
+}
