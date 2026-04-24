@@ -4,7 +4,6 @@ import {
   type MovingGoodType,
 } from "../EntitiesTypes";
 import "../Toolset.css";
-import { DirectionIcons, EntityIcons } from "../Icons";
 import { findEntity, useGame } from "../../Provider";
 import MergerSprite from "../../assets/merger/MergerSprite";
 
