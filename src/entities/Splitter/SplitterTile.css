@@ -1,37 +1,9 @@
 .splitter-tile {
   display: grid;
   place-content: center;
-  border: 3px dashed rgb(255, 133, 11);
   position: relative;
   overflow: visible;
-  /* directional icon positioning */
-  .position-up {
-    position: absolute;
-    top: -10%;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-  .position-down {
-    position: absolute;
-    bottom: -17%;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-  .position-right {
-    position: absolute;
-    right: 0;
-    top: 60%;
-    transform: translateY(-50%);
-  }
-  .position-left {
-    position: absolute;
-    left: 0;
-    top: 60%;
-    transform: translateY(-50%);
-  }
-  progress {
-    width: 100%;
-  }
+  
 
   .transported-good {
     position: absolute;

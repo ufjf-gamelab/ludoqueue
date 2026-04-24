@@ -1,0 +1,26 @@
+.splitter-sprite {
+  width: 500px;
+  height: 500px;
+  position: absolute;
+  left:50%;
+  top: 50%;
+  translate: -50% -50%;
+  scale: 0.16;
+  transform-origin: center;
+}
+
+.direction-left{
+    background: url('splitter_left.png') no-repeat;
+}
+
+.direction-up{
+    background: url('splitter_top.png') no-repeat;
+}
+
+.direction-right{
+    background: url('splitter_right.png') no-repeat;
+}
+
+.direction-down{
+    background: url('splitter_bottom.png') no-repeat;
+}

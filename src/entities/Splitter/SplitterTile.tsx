@@ -7,6 +7,7 @@ import {
 import "../Toolset.css";
 import { DirectionIcons, EntityIcons } from "../Icons";
 import { findEntity, useGame } from "../../Provider";
+import SplitterSprite from "../../assets/splitter/Splitter";
 
 export default function SplitterTile({
   entity,
@@ -111,7 +112,7 @@ export default function SplitterTile({
   }
   return (
     <div className="splitter-tile">
-      {EntityIcons.splitter}
+      {/*{EntityIcons.splitter}
       <progress
         value={entity.goods.length}
         max={entity.max}
@@ -148,7 +149,8 @@ export default function SplitterTile({
           <div className="position-right">{DirectionIcons.right}</div>
           <div className="position-left">{DirectionIcons.right}</div>
         </div>
-      )}
+      )}*/}
+      <SplitterSprite entity={entity}/>
       {movingGoods.map((movingGood) => {
         if (movingGood.target == entity.id) isStarting = true;
         if (movingGood.source == entity.id) isEnding = true;
