@@ -1,0 +1,11 @@
+.consumer-sprite {
+  width: 500px;
+  height: 500px;
+  background: url('consumer.png') no-repeat;
+  position: absolute;
+  left:50%;
+  top: 50%;
+  translate: -50% -55%;
+  scale: 0.16;
+  transform-origin: center;
+}
