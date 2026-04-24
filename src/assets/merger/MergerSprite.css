@@ -9,18 +9,18 @@
   transform-origin: center;
 }
 
-.direction-left{
+.merger-direction-left{
     background: url('merger_left.png') no-repeat;
 }
 
-.direction-up{
+.merger-direction-up{
     background: url('merger_top.png') no-repeat;
 }
 
-.direction-right{
+.merger-direction-right{
     background: url('merger_right.png') no-repeat;
 }
 
-.direction-down{
+.merger-direction-down{
     background: url('merger_bottom.png') no-repeat;
 }

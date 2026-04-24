@@ -9,18 +9,18 @@
   transform-origin: center;
 }
 
-.direction-left{
+.splitter-direction-left{
     background: url('splitter_left.png') no-repeat;
 }
 
-.direction-up{
+.splitter-direction-up{
     background: url('splitter_top.png') no-repeat;
 }
 
-.direction-right{
+.splitter-direction-right{
     background: url('splitter_right.png') no-repeat;
 }
 
-.direction-down{
+.splitter-direction-down{
     background: url('splitter_bottom.png') no-repeat;
 }

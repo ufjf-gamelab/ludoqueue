@@ -6,7 +6,7 @@ import {
 } from "../EntitiesTypes";
 import "../Toolset.css";
 import { findEntity, useGame } from "../../Provider";
-import SplitterSprite from "../../assets/splitter/Splitter";
+import SplitterSprite from "../../assets/splitter/SplitterSprite";
 
 export default function SplitterTile({
   entity,
