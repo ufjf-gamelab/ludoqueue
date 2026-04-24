@@ -3,8 +3,8 @@
   height: 110px;
   background: url('exchanger.png') no-repeat;
   background-size: 420px 330px;
-  position: relative;
-  top:-30%;
+  position: absolute;
+  top:-50%;
 }
 
 .exchanger-sprite-0 { background-position: 0 0; }

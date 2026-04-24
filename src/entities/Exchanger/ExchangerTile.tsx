@@ -1,6 +1,5 @@
 import { type EntityExchangerType } from "../EntitiesTypes";
 import "./ExchangerTile.css";
-import { DirectionIcons, EntityIcons } from "../Icons";
 import { useState } from "react";
 import { ExchangerSprite } from "../../assets/exchanger/ExchangerSprite";
 
@@ -32,7 +31,7 @@ export default function Exchanger({ entity }: { entity: EntityExchangerType }) {
         {DirectionIcons[entity.direction]}
       </div>*/}
       <ExchangerSprite entity={entity} />
-      <div className={`stored-input-goods ${entity.direction === "up" || entity.direction === "down" ? "vertical" : "horizontal"}`}>
+      <div className={`stored-input-goods vertical`}>
       {entity.inputGoods.map((good) => {
           const goodKey =  `${good.goodType}-${good.time}`;
           const isNew = lastTimeInputAdded < good.time;
@@ -46,7 +45,7 @@ export default function Exchanger({ entity }: { entity: EntityExchangerType }) {
         })}
       </div>
 
-      <div className={`stored-output-goods ${entity.direction === "up" || entity.direction === "down" ? "vertical" : "horizontal"}`}>
+      <div className={`stored-output-goods vertical`}>
       {entity.outputGoods.map((good) => {
           const goodKey =  `${good.goodType}-${good.time}`;
           const isNew = lastTimeInputAdded < good.time;
@@ -83,7 +82,7 @@ export default function Exchanger({ entity }: { entity: EntityExchangerType }) {
       )}*/}
       {entity.movingGoods.length > 0 && (
         <div
-          className={["box-of-goods", "ending", `${entity.direction === "up" || entity.direction === "down" ? "vertical" : "horizontal"}`].join(
+          className={["box-of-goods", "ending", "vertical",].join(
             " ",
           )}
         >
@@ -94,7 +93,7 @@ export default function Exchanger({ entity }: { entity: EntityExchangerType }) {
                 className={[
                   "transported-good",
                   goodType,
-                  `${entity.direction === "up" || entity.direction === "down" ? "vertical" : "horizontal"}`
+                  "vertical",
                 ].join(" ")}
               ></span>
             )),
