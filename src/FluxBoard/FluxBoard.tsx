@@ -7,8 +7,8 @@ import EditorMenu from "../Editor/EditorMenu";
 
 export default function FluxBoard() {
   const CELL_WIDTH = 75;
-  const NUM_ROWS = 9;
-  const NUM_COLS = 9;
+  const NUM_ROWS = 8;
+  const NUM_COLS = 8;
   const { game, dispatch } = useGame()!;
 
   const ref = useRef(null);

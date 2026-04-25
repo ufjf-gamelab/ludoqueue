@@ -1,11 +1,14 @@
 .flux-board {
   display: flex;
   flex-direction: row;
-
   .game-board {
     display: grid;
     padding: 0.5rem;
+    margin-right: 1rem;
+    margin-top: 1rem;
     position: relative;
+    background: url('../assets/grass.png') repeat;
+    border-radius: 1rem;
 
     .tile-wrapper {
       border-radius: 1rem;
@@ -15,5 +18,3 @@
     }
   }
  }
-
-

@@ -42,7 +42,7 @@ export default function GraphReactFlow() {
   );
 
   return (
-    <div style={{ width: "500px", height: "300px", border: "1px solid black" }}>
+    <div style={{ width: "800px", height: "500px", border: "1px solid black" }}>
       <ReactFlow
         nodes={nodes}
         edges={edges}
