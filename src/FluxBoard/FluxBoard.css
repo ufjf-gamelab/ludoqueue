@@ -1,6 +1,7 @@
 .flux-board {
   display: flex;
   flex-direction: row;
+  margin-top:2rem;
   .game-board {
     display: grid;
     padding: 0.5rem;
