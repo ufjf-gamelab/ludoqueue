@@ -1,7 +1,7 @@
 import { getInvertedDirection, type EntityTransportType, type MovingGoodType } from "../EntitiesTypes";
 import "../Toolset.css";
 import "./TransporterTile.css";
-import { TransportIcons } from "../Icons";
+import { TransportSprite } from "../../assets/transport/TransportSprite";
 
 export default function TransporterTile({ entity }: { entity: EntityTransportType }) {
   const spanKey = String(Math.random());
@@ -17,8 +17,9 @@ export default function TransporterTile({ entity }: { entity: EntityTransportTyp
   }
   return (
     <div className="transporter-tile">
-      {TransportIcons.get(`${entity.entryDirection}-${entity.leavingDirection}`)}
-      <progress value={entity.goods.length} max={entity.max} title={`${entity.goods.length}/${entity.max}`} />
+      {/*{TransportIcons.get(`${entity.entryDirection}-${entity.leavingDirection}`)}
+      <progress value={entity.goods.length} max={entity.max} title={`${entity.goods.length}/${entity.max}`} />*/}
+      <TransportSprite entity={entity} />
       {movingGoods.map((movingGood) => {
         if (movingGood.target == entity.id)
           isStarting = true;

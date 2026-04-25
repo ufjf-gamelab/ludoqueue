@@ -1,0 +1,175 @@
+.transport-sprite {
+  width: 500px;
+  height: 500px;
+  position: absolute;
+  left:50%;
+  top: 50%;
+  translate: -50% -50%;
+  scale: 0.16;
+  transform-origin: center;
+}
+
+.transport-direction-down-right-{
+    background: url('./DownRight/spritesheet.png') no-repeat;
+}
+
+.transport-direction-down-right-animate{
+    background: url('./DownRight/spritesheet.png') no-repeat;
+    animation: down-right-anim 1s steps(1);
+}
+
+.transport-direction-down-left-{
+    background: url('./DownRight/spritesheet.png') no-repeat;
+    transform: scaleX(-1);
+}
+
+.transport-direction-down-left-animate{
+    background: url('./DownRight/spritesheet.png') no-repeat;
+    animation: down-right-anim 1s steps(1);
+    transform: scaleX(-1);
+}
+
+.transport-direction-down-up-{
+    background: url('./DownUp/spritesheet.png') no-repeat;
+}
+
+.transport-direction-down-up-animate{
+    background: url('./DownUp/spritesheet.png') no-repeat;
+    animation: down-right-anim 1s steps(1);  /* mesma quantidade de frames e etc mesma animacao por causa disso */
+}
+
+.transport-direction-left-down-{
+    background: url('./LeftDown/spritesheet.png') no-repeat;
+}
+
+.transport-direction-left-down-animate{
+    background: url('./LeftDown/spritesheet.png') no-repeat;
+    animation: down-right-anim 1s steps(1);  /* mesma quantidade de frames e etc mesma animacao por causa disso */
+}
+
+.transport-direction-left-up-{
+    background: url('./LeftDown/spritesheet.png') no-repeat;
+
+    transform: scaleY(-1);
+  }
+
+.transport-direction-left-up-animate{
+    background: url('./LeftDown/spritesheet.png') no-repeat;
+    animation: down-right-anim 1s steps(1);  /* mesma quantidade de frames e etc mesma animacao por causa disso */
+    transform: scaleY(-1);
+}
+
+.transport-direction-left-right-{
+    background: url('./LeftRight/spritesheet.png') no-repeat;
+}
+
+.transport-direction-left-right-animate{
+    background: url('./LeftRight/spritesheet.png') no-repeat;
+    animation: left-right-anim 1s steps(1);
+}
+
+.transport-direction-right-left-{
+    background: url('./RightLeft/spritesheet.png') no-repeat;
+}
+
+.transport-direction-right-left-animate{
+    background: url('./RightLeft/spritesheet.png') no-repeat;
+    animation: down-right-anim 1s steps(1);  /* mesma quantidade de frames e etc mesma animacao por causa disso */
+}
+
+.transport-direction-right-down-{
+    background: url('./RightUp/spritesheet.png') no-repeat;
+    transform: scaleY(-1);
+}
+
+.transport-direction-right-down-animate{
+    background: url('./RightUp/spritesheet.png') no-repeat;
+    animation: down-right-anim 1s steps(1);  /* mesma quantidade de frames e etc mesma animacao por causa disso */
+}
+
+.transport-direction-right-up-{
+    background: url('./RightUp/spritesheet.png') no-repeat;
+}
+
+.transport-direction-right-up-animate{
+    background: url('./RightUp/spritesheet.png') no-repeat;
+    animation: down-right-anim 1s steps(1);  /* mesma quantidade de frames e etc mesma animacao por causa disso */
+}
+
+
+.transport-direction-up-down-{
+    background: url('./UpDown/spritesheet.png') no-repeat;
+}
+
+.transport-direction-up-down-animate{
+    background: url('./UpDown/spritesheet.png') no-repeat;
+    animation: down-right-anim 1s steps(1);  /* mesma quantidade de frames e etc mesma animacao por causa disso */
+}
+
+.transport-direction-up-left-{
+    background: url('./UpLeft/spritesheet.png') no-repeat;
+}
+
+.transport-direction-up-left-animate{
+    background: url('./UpLeft/spritesheet.png') no-repeat;
+    animation: down-right-anim 1s steps(1);  /* mesma quantidade de frames e etc mesma animacao por causa disso */
+}
+
+.transport-direction-up-right-{
+    background: url('./UpLeft/spritesheet.png') no-repeat;
+    transform: scaleX(-1);
+}
+
+.transport-direction-up-right-animate{
+    background: url('./UpLeft/spritesheet.png') no-repeat;
+    transform: scaleX(-1);
+    animation: down-right-anim 1s steps(1);  /* mesma quantidade de frames e etc mesma animacao por causa disso */
+}
+
+@keyframes down-right-anim {
+  0%   { background-position: 0px 0px; }
+  10%  { background-position: -500px 0px; }
+  20%  { background-position: -1000px 0px; }
+  30%  { background-position: -1500px 0px; }
+  40%  { background-position: -2000px 0px; }
+  50%  { background-position: -2500px 0px; }
+  60%  { background-position: -3000px 0px; }
+  70%  { background-position: -3500px 0px; }
+  80%  { background-position: -4000px 0px; }
+  90%  { background-position: 0px -500px; }
+  100% { background-position: -500px -500px; }
+}
+
+@keyframes left-right-anim {
+  0% { background-position: 0px 0px; }
+  3.33% { background-position: -500px 0px; }
+  6.67% { background-position: -1000px 0px; }
+  10.00% { background-position: -1500px 0px; }
+  13.33% { background-position: -2000px 0px; }
+  16.67% { background-position: -2500px 0px; }
+  20.00% { background-position: -3000px 0px; }
+  23.33% { background-position: -3500px 0px; }
+  26.67% { background-position: -4000px 0px; }
+  30.00% { background-position: 0px -500px; }
+  33.33% { background-position: -500px -500px; }
+  36.67% { background-position: -1000px -500px; }
+  40.00% { background-position: -1500px -500px; }
+  43.33% { background-position: -2000px -500px; }
+  46.67% { background-position: -2500px -500px; }
+  50.00% { background-position: -3000px -500px; }
+  53.33% { background-position: -3500px -500px; }
+  56.67% { background-position: -4000px -500px; }
+  60.00% { background-position: 0px -1000px; }
+  63.33% { background-position: -500px -1000px; }
+  66.67% { background-position: -1000px -1000px; }
+  70.00% { background-position: -1500px -1000px; }
+  73.33% { background-position: -2000px -1000px; }
+  76.67% { background-position: -2500px -1000px; }
+  80.00% { background-position: -3000px -1000px; }
+  83.33% { background-position: -3500px -1000px; }
+  86.67% { background-position: -4000px -1000px; }
+  90.00% { background-position: 0px -1500px; }
+  93.33% { background-position: -500px -1500px; }
+  96.67% { background-position: -1000px -1500px; }
+  100% { background-position: -1500px -1500px; }
+}
