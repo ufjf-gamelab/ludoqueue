@@ -21,7 +21,7 @@ export function getInitialNodes(state: GameType): Node[] {
   return nodes;
 }
 
-function resolveRealSource(
+export function resolveRealSource(
   state: GameType,
   startId: string | undefined,
 ): string | null {
@@ -41,7 +41,7 @@ function resolveRealSource(
   return current?.id ?? null;
 }
 
-function resolveRealTarget(
+export function resolveRealTarget(
   state: GameType,
   startId: string | undefined,
 ): string | null {

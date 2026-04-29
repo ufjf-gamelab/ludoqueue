@@ -1,12 +1,13 @@
 import "./App.css";
 import { useGame } from "./Provider";
 import Counter from "./Counter";
-import { convertGameToGraph } from "./GameGraph/GraphMethods";
+import { convertGameToGraph, convertGameToGraphology } from "./GameGraph/GraphMethods";
 import FluxBoard from "./FluxBoard/FluxBoard";
 import GraphElementsList from "./GameGraph/GraphElementsList";
 import { useEffect, useMemo, useState } from "react";
 import { DataChanger } from "./datas/DataChanger";
 import GraphReactFlow from "./ReactFlow/Graph";
+import type Graph from "graphology";
 
 function App() {
   const { game } = useGame()!;
@@ -25,8 +26,13 @@ function App() {
     () => convertGameToGraph(game),
     [game.entities.size, game.data],
   );
-  const [selectedTab, setSelectedTab] = useState<"game" | "graph">("game");
 
+  const graphologyGraph: Graph = useMemo(
+    () => convertGameToGraphology(game),
+    [game.entities.size, game.data],
+  );
+  const [selectedTab, setSelectedTab] = useState<"game" | "graph">("game");
+console.log(graphologyGraph.order);
   return (
     <>
       <div className="NavBar">
