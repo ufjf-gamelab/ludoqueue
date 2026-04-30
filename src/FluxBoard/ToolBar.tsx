@@ -77,13 +77,13 @@ export default function ToolBar() {
           onClick={() => dispatch({ type: "set status", newStatus: "delete" })}
           title="Delete mode - click on an entity to delete it"
         >
-          <FaTrashAlt />
+          <FaTrashAlt size = "20px"/>
         </button>
         <button
           onClick={() => dispatch({ type: "set status", newStatus: "waiting" })}
           title="Exit creation mode"
         >
-          <TiCancel />
+          <TiCancel size = "20px"/>
         </button>
 
       </div>

@@ -14,18 +14,18 @@ import { FaBook } from "react-icons/fa";
 
 
 export const EntityIcons = {
-  stock: <BsSafe2 />,
-  consumer: <FaSink />,
-  source: <GiMiner />,
-  transport: <BsMinecartLoaded />,
-  splitter: <FiScissors />,
-  merger: <IoIosGitMerge />,
-  exchanger:<GiCardExchange /> ,
-  recipe: <FaBook />,
-  "transport right": <FaRightLong />,
-  "transport left": <FaLeftLong />,
-  "transport up": <FaUpLong />,
-  "transport down": <FaDownLong />
+  stock: <BsSafe2 size = "20px" />,
+  consumer: <FaSink size={"20px"}/>,
+  source: <GiMiner size={"20px"}/>,
+  transport: <BsMinecartLoaded size={"20px"}/>,
+  splitter: <FiScissors size={"20px"}/>,
+  merger: <IoIosGitMerge size={"20px"}/>,
+  exchanger:<GiCardExchange size={"20px"}/> ,
+  recipe: <FaBook size={"20px"}/>,
+  "transport right": <FaRightLong size={"20px"}/>,
+  "transport left": <FaLeftLong size={"20px"}/>,
+  "transport up": <FaUpLong size={"20px"}/>,
+  "transport down": <FaDownLong size={"20px"}/>
 };
 
 export const TransportIcons = new Map<string, JSX.Element>([
@@ -48,9 +48,9 @@ export const TransportIcons = new Map<string, JSX.Element>([
 
 
 export const ActionIcons = {
-  delete: <TiDelete />,
-  move: <TiArrowMove />,
-  cancel: <TiCancel />,
+  delete: <TiDelete size={"20px"}/>,
+  move: <TiArrowMove size={"20px"}/>,
+  cancel: <TiCancel size={"20px"}/>,
 };
 
 export const DirectionIcons = {
