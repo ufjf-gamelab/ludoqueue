@@ -5,6 +5,7 @@ import type {
   EntitySplitterType,
   EntityTransportType,
 } from "../entities/EntitiesTypes";
+import { allSimplePaths } from "graphology-simple-path";
 
 
 export function createAdjacencyList(graph: GraphType) {
@@ -83,4 +84,42 @@ function addSplitterEdges(graph: Graph, state: GameType) {
       }
     }
   });
+}
+
+export function findAllCycles(graph: Graph) {
+  const cycles: string[][] = [];
+  const seen = new Set<string>();
+
+  graph.forEachNode((node) => {
+    const paths = allSimplePaths(graph, node, node, {
+      maxDepth: graph.order, //acha caminhos simples de volta ao mesmo nó, limitando a profundidade para evitar loops infinitos
+    });
+
+    for (const path of paths) {
+      if (path.length > 2) {
+        const normalized = normalizeCycle(path);
+        const key = normalized.join("->");
+        if (!seen.has(key)) {
+          seen.add(key);
+          cycles.push(normalized);
+        }
+      }
+    }
+  });
+
+  return cycles;
+}
+
+function normalizeCycle(cycle: string[]) { //ve se nao tem ciclo repetido, rotacionando o ciclo para uma forma canônica (começando pelo nó com menor id)
+  const base = cycle.slice(0, -1);
+  let minIndex = 0;
+  for (let i = 1; i < base.length; i++) {
+    if (base[i] < base[minIndex]) minIndex = i;
+  }
+  const rotated = [
+    ...base.slice(minIndex),
+    ...base.slice(0, minIndex),
+  ];
+  rotated.push(rotated[0]);
+  return rotated;
 }

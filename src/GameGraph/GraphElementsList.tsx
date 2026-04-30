@@ -1,12 +1,12 @@
 import type { GraphType } from "../types";
-import { createAdjacencyList } from "../GameGraph/GraphMethods";
+import { createAdjacencyList, findAllCycles } from "../GameGraph/GraphMethods";
 import "./GraphElementsLists.css";
 import { useState } from "react";
-import hasCycle from "graphology-dag/has-cycle";
 
 export default function GraphElementsList({ graph }: { graph: GraphType }) {
   const adjacencyList = createAdjacencyList(graph);
   const [showGraphElement, setShowGraphElement] = useState(false);
+  const cycles = findAllCycles(graph);
 
   return (
     <div className="ElementsUI">
@@ -72,9 +72,18 @@ export default function GraphElementsList({ graph }: { graph: GraphType }) {
           </div>
           <div>
             <h2>Status</h2>
-            {hasCycle(graph)
-              ? "O grafo contém ciclos."
-              : "O grafo não contém ciclos."}
+            {cycles.length === 0 ? (
+              <p>O grafo não contém ciclos.</p>
+            ) : (
+              <>
+                <p>O grafo contém {cycles.length} ciclo(s):</p>
+                <ul>
+                  {cycles.map((cycle, i) => (
+                    <li key={i}>{cycle.join(" → ")}</li>
+                  ))}
+                </ul>
+              </>
+            )}
           </div>
         </div>
       ) : null}
