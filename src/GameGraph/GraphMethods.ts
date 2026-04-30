@@ -1,88 +1,23 @@
 import Graph from "graphology";
-import type { GameType, GraphType, LinkType } from "../types";
+import type { GameType, GraphType } from "../types";
 import type {
   EntityMergerType,
   EntitySplitterType,
   EntityTransportType,
 } from "../entities/EntitiesTypes";
 
-export function convertGameToGraph(game: GameType): GraphType {
-  const graph: GraphType = {
-    nodes: [],
-    links: [],
-  };
 
-  game.entities.forEach((node) => {
-    graph.nodes.push({ id: node.id, name: node.name, val: 0 });
-    if (
-      (node.type === "transport" ||
-        node.type === "splitter" ||
-        node.type === "exchanger") &&
-      node.source
-    ) {
-      const linkToTransport: LinkType = {
-        source: node.source,
-        target: node.id,
-      };
-      graph.links.push(linkToTransport);
-    }
-    if (
-      (node.type === "transport" ||
-        node.type === "merger" ||
-        node.type === "exchanger") &&
-      node.target
-    ) {
-      const linkFromTransport: LinkType = {
-        source: node.id,
-        target: node.target,
-      };
-      graph.links.push(linkFromTransport);
-    }
-    if (node.type === "splitter" && node.targets.length > 0) {
-      for (const targetIndice in node.targets) {
-        const linkFromSplitter: LinkType = {
-          source: node.id,
-          target: node.targets[targetIndice],
-        };
-        graph.links.push(linkFromSplitter);
-      }
-    }
+export function createAdjacencyList(graph: GraphType) {
+  const adjacency = new Map<string, string[]>();
 
-    if (node.type === "merger" && node.sources.length > 0) {
-      for (const sourceIndice in node.sources) {
-        const linktoMerger: LinkType = {
-          source: node.sources[sourceIndice],
-          target: node.id,
-        };
-        graph.links.push(linktoMerger);
-      }
-    }
+  graph.forEachNode((node) => {
+    adjacency.set(node, graph.outNeighbors(node));
   });
 
-  return graph;
+  return adjacency;
 }
 
-export function createAdjacencyList(graphData: GraphType) {
-  const adj: Map<string, string[]> = new Map();
-  graphData.nodes.forEach((node) => {
-    adj.set(node.id, []);
-  });
-  graphData.links.forEach(({ source, target }) => {
-    if (!adj.get(source)) {
-      adj.set(source, []);
-    }
-    if (!adj.get(target)) {
-      adj.set(target, []);
-    }
-    const adjFrom = adj.get(source);
-    if (!adjFrom?.includes(target)) {
-      adjFrom?.push(target);
-    }
-  });
-  return adj;
-}
-
-export function convertGameToGraphology(state: GameType) {
+export function convertGameToGraphology(state: GameType): GraphType {
   const graph = new Graph({ type: "directed", multi: true });
 
   addNodes(graph, state);

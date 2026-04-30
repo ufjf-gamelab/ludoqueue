@@ -1,3 +1,4 @@
+import type Graph from "graphology";
 import type { GameEditor } from "./Editor/EditorTypes";
 import type { EntityType, RecipeType } from "./entities/EntitiesTypes";
 
@@ -30,9 +31,6 @@ export type NodeType = {
   val: number;
 };
 
-export type GraphType = {
-  nodes: NodeType[];
-  links: LinkType[];
-};
+export type GraphType = Graph;
 
 export type GameStatus = "waiting" | "stock" | "source" | "consumer" | "transport" | "splitter" | "merger" | "exchanger" |"select entity" | "delete" | "recipe";

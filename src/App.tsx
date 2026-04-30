@@ -1,13 +1,14 @@
 import "./App.css";
 import { useGame } from "./Provider";
 import Counter from "./Counter";
-import { convertGameToGraph, convertGameToGraphology } from "./GameGraph/GraphMethods";
+import {
+  convertGameToGraphology,
+} from "./GameGraph/GraphMethods";
 import FluxBoard from "./FluxBoard/FluxBoard";
 import GraphElementsList from "./GameGraph/GraphElementsList";
 import { useEffect, useMemo, useState } from "react";
 import { DataChanger } from "./datas/DataChanger";
 import GraphReactFlow from "./ReactFlow/Graph";
-import type Graph from "graphology";
 
 function App() {
   const { game } = useGame()!;
@@ -22,17 +23,11 @@ function App() {
     }
   }, [game]);
 
-  const classicGraph = useMemo(
-    () => convertGameToGraph(game),
-    [game.entities.size, game.data],
-  );
-
-  const graphologyGraph: Graph = useMemo(
+  const graph = useMemo(
     () => convertGameToGraphology(game),
     [game.entities.size, game.data],
   );
   const [selectedTab, setSelectedTab] = useState<"game" | "graph">("game");
-console.log(graphologyGraph.order);
   return (
     <>
       <div className="NavBar">
@@ -63,7 +58,7 @@ console.log(graphologyGraph.order);
           <h1> Grafo de Conexoes: </h1>
           <div className="Graph">
             <GraphReactFlow></GraphReactFlow>
-            <GraphElementsList graph={classicGraph} />
+            <GraphElementsList graph={graph} />
           </div>
         </>
       )}
