@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import {
   ReactFlow,
   applyNodeChanges,
@@ -23,10 +23,14 @@ const edgeTypes = {
 
 export default function GraphReactFlow() {
   const { game } = useGame()!;
-  const initialNodes = getInitialNodes(game);
-  const initialEdges = getInitialEdges(game);
-  const [nodes, setNodes] = useState<Node[]>(initialNodes);
-  const [edges, setEdges] = useState<Edge[]>(initialEdges);
+
+  const [nodes, setNodes] = useState<Node[]>([]);
+  const [edges, setEdges] = useState<Edge[]>([]);
+
+  useEffect(() => {
+    setNodes(getInitialNodes(game));
+    setEdges(getInitialEdges(game));
+  }, [game.entities.size, game.data]); 
 
   const onNodesChange: OnNodesChange = useCallback(
     (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),

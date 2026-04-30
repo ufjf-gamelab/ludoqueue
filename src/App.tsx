@@ -25,7 +25,7 @@ function App() {
 
   const graph = useMemo(
     () => convertGameToGraphology(game),
-    [game.entities.size, game.data],
+    [game],
   );
   const [selectedTab, setSelectedTab] = useState<"game" | "graph">("game");
   return (

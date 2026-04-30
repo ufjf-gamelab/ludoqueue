@@ -2,7 +2,7 @@ import type { GraphType } from "../types";
 import { createAdjacencyList } from "../GameGraph/GraphMethods";
 import "./GraphElementsLists.css";
 import { useState } from "react";
-import hasCycle from 'graphology-dag/has-cycle';
+import hasCycle from "graphology-dag/has-cycle";
 
 export default function GraphElementsList({ graph }: { graph: GraphType }) {
   const adjacencyList = createAdjacencyList(graph);
@@ -38,18 +38,21 @@ export default function GraphElementsList({ graph }: { graph: GraphType }) {
               })}
             </ul>
           </div>
-          {/*<div>
+          <div>
             <h2>Connections</h2>
             <ul>
-              {graph.links.map(({ source: s, target: t }) => {
+              {graph.edges().map((edge) => {
+                const source = graph.source(edge);
+                const target = graph.target(edge);
+
                 return (
-                  <li key={`${s}--${t}`}>
-                    {s} &rarr; {t}
+                  <li key={edge}>
+                    {source} &rarr; {target}
                   </li>
                 );
               })}
             </ul>
-          </div>/*/}
+          </div>
           <div>
             <h2>Adjacency List</h2>
             <ul>
@@ -69,7 +72,9 @@ export default function GraphElementsList({ graph }: { graph: GraphType }) {
           </div>
           <div>
             <h2>Status</h2>
-            {hasCycle(graph) ? "O grafo contém ciclos." : "O grafo não contém ciclos."}
+            {hasCycle(graph)
+              ? "O grafo contém ciclos."
+              : "O grafo não contém ciclos."}
           </div>
         </div>
       ) : null}
