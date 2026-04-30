@@ -2,11 +2,15 @@ import type { GraphType } from "../types";
 import { createAdjacencyList, findAllCycles } from "../GameGraph/GraphMethods";
 import "./GraphElementsLists.css";
 import { useState } from "react";
+import { connectedComponents } from "graphology-components";
+
 
 export default function GraphElementsList({ graph }: { graph: GraphType }) {
   const adjacencyList = createAdjacencyList(graph);
   const [showGraphElement, setShowGraphElement] = useState(false);
   const cycles = findAllCycles(graph);
+  const components = connectedComponents(graph);
+
 
   return (
     <div className="ElementsUI">
@@ -83,6 +87,11 @@ export default function GraphElementsList({ graph }: { graph: GraphType }) {
                   ))}
                 </ul>
               </>
+            )}
+            {components.length === 1 ? (
+              <p>O grafo é conexo.</p>
+            ) : (
+              <p>O grafo tem {components.length} componentes conectados.</p>
             )}
           </div>
         </div>
