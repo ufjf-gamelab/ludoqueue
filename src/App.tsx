@@ -50,11 +50,10 @@ function App() {
       )}
       {selectedTab === "graph" && (
         <>
-          <h1> Grafo de Conexoes: </h1>
-          <div className="Graph">
-            <ReactFlowGraph></ReactFlowGraph>
-            <GraphElementsList graph={graph} />
-          </div>
+          <h1 style={{ marginTop:"60px" }}> Grafo de Conexoes: </h1>
+          <ReactFlowGraph></ReactFlowGraph>
+          <h1> Estatísticas das Conexões: </h1>
+          <GraphElementsList graph={graph} />
         </>
       )}
     </>

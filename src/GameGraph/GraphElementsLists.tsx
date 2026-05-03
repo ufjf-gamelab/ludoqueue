@@ -1,35 +1,15 @@
 import type { GraphType } from "../GameTypes";
 import { createAdjacencyList, findAllCycles } from "./GraphMethods";
 import "./GraphElementsLists.css";
-import { useState } from "react";
 import { connectedComponents } from "graphology-components";
 
 export default function GraphElementsList({ graph }: { graph: GraphType }) {
   const adjacencyList = createAdjacencyList(graph);
-  const [showGraphElement, setShowGraphElement] = useState(false);
   const cycles = findAllCycles(graph);
   const components = connectedComponents(graph);
 
   return (
     <div className="ElementsUI">
-      {showGraphElement ? (
-        <button
-          onClick={() => {
-            setShowGraphElement(false);
-          }}
-        >
-          Ocultar lista de elementos
-        </button>
-      ) : (
-        <button
-          onClick={() => {
-            setShowGraphElement(true);
-          }}
-        >
-          Exibir lista de elementos
-        </button>
-      )}
-      {showGraphElement ? (
         <div className="GraphElements">
           <div>
             <h2>Nodes</h2>
@@ -93,7 +73,6 @@ export default function GraphElementsList({ graph }: { graph: GraphType }) {
             )}
           </div>
         </div>
-      ) : null}
     </div>
   );
 }

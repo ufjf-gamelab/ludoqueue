@@ -46,7 +46,7 @@ export default function ReactFlowGraph() {
   );
 
   return (
-    <div style={{ width: "800px", height: "500px", border: "1px solid black" }}>
+    <div className={"react-flow-wrapper"}>
       <ReactFlow
         nodes={nodes}
         edges={edges}
