@@ -6,7 +6,7 @@ import {
   type Dispatch,
   type ReactNode,
 } from "react";
-import type { GameStatus, GameType } from "./types";
+import type { GameStatus, GameType } from "./GameTypes";
 import type {
   EntityConsumerType,
   EntitySourceType,
@@ -103,7 +103,6 @@ import {
   createExchanger,
   deleteExchanger,
   type GameActionChangeExchangerDirection,
-
   type GameActionCreateExchanger,
   type GameActionDeleteExchanger,
   type GameActionExchangerChangeRecipe,
@@ -293,7 +292,12 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
     }
 
     case "editor change max": {
-      if (!state.editor || state.editor.type === "exchanger"|| state.editor.type === "recipe") return state;
+      if (
+        !state.editor ||
+        state.editor.type === "exchanger" ||
+        state.editor.type === "recipe"
+      )
+        return state;
       return { ...state, editor: { ...state.editor, max: action.max } };
     }
     case "editor change rate": {
@@ -426,7 +430,7 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
       };
     }
     case "change game recipe": {
-      return {...state, recipe: action.recipe}
+      return { ...state, recipe: action.recipe };
     }
     default:
       break;
@@ -494,7 +498,6 @@ export function gameTick(state: GameType) {
     ) as EntityExchangerType;
     transportExchangerMovingGoods(exchangerEntity, newState);
   });
-  
 
   return newState;
 }
@@ -519,11 +522,19 @@ function canIPull(source: EntityType, entity: EntityType): boolean {
     return false;
   }
 
-  if (source.type === "exchanger" && source.outputGoods.length > 0 && entity.goods.length < entity.max) {
+  if (
+    source.type === "exchanger" &&
+    source.outputGoods.length > 0 &&
+    entity.goods.length < entity.max
+  ) {
     return true;
   }
 
-  if (source.type !=="exchanger" && source.goods.length > 0 && entity.goods.length < entity.max) {
+  if (
+    source.type !== "exchanger" &&
+    source.goods.length > 0 &&
+    entity.goods.length < entity.max
+  ) {
     return true;
   }
 
@@ -537,8 +548,7 @@ function pullMovingGood(
   let good: MovingGoodType;
   if (source.type === "exchanger") {
     good = source.outputGoods[0];
-  }
-  else{
+  } else {
     good = source.goods[0];
   }
   if (!good) {
@@ -717,9 +727,7 @@ export function calculatePendingTransportMovingGoods(
   return transport.movingGoods;
 }
 
-function canIProcess(
-  exchanger: EntityExchangerType,
-): boolean {
+function canIProcess(exchanger: EntityExchangerType): boolean {
   for (const [requiredGoodType, requiredAmount] of exchanger.recipe.input) {
     //verifica se pra cada item do input tem a quantidade requerida
     const avaiableAmount = exchanger.inputGoods.filter(
@@ -729,14 +737,11 @@ function canIProcess(
       return false;
     }
   }
-  
+
   return true;
 }
 
-function processExchangeItems(
-  exchanger: EntityExchangerType,
-  time: number,
-) {
+function processExchangeItems(exchanger: EntityExchangerType, time: number) {
   for (const [resultGoodType] of exchanger.recipe.output) {
     const movingGood: MovingGoodType = {
       source: exchanger.id,
@@ -1026,7 +1031,7 @@ export function pointingAction(
         x: x,
         y: y,
         input: newState.recipe.input,
-        output: newState.recipe.output, 
+        output: newState.recipe.output,
         direction: state.editor.direction,
       };
       newState.status = "waiting";
@@ -1177,11 +1182,19 @@ function chooseNewEditor(status: GameStatus): GameEditor {
       return newEditor;
     }
     case "recipe": {
-      const newEditor: GameRecipeEditor ={
+      const newEditor: GameRecipeEditor = {
         type: "recipe",
-        input: [["red",0],["blue",0],["green",0]],
-        output: [["red",0],["blue",0],["green",0]],
-      }
+        input: [
+          ["red", 0],
+          ["blue", 0],
+          ["green", 0],
+        ],
+        output: [
+          ["red", 0],
+          ["blue", 0],
+          ["green", 0],
+        ],
+      };
       return newEditor;
     }
     default: {

@@ -1,5 +1,5 @@
 import { it, expect, describe } from "vitest";
-import type { GameType } from "../../types.ts";
+import type { GameType } from "../../GameTypes.ts";
 import { gameReducer, type GameAction } from "../../Provider.tsx";
 import type {
   GameActionCreateStock,
@@ -396,13 +396,19 @@ describe("Stock", () => {
     };
 
     const tick1 = gameReducer(stateTest as GameType, { type: "game tick" });
-    expect((tick1.entities.get("transport1") as EntityTransportType).goods).toHaveLength(1);
+    expect(
+      (tick1.entities.get("transport1") as EntityTransportType).goods,
+    ).toHaveLength(1);
 
     const tick2 = gameReducer(tick1, { type: "game tick" });
-    expect((tick2.entities.get("transport1") as EntityTransportType).goods).toHaveLength(1);
+    expect(
+      (tick2.entities.get("transport1") as EntityTransportType).goods,
+    ).toHaveLength(1);
 
     const tick3 = gameReducer(tick2, { type: "game tick" });
-    expect((tick3.entities.get("transport1") as EntityTransportType).goods).toHaveLength(1);
+    expect(
+      (tick3.entities.get("transport1") as EntityTransportType).goods,
+    ).toHaveLength(1);
     expect(
       (tick3.entities.get("stock1") as EntityStockType).goods,
     ).toHaveLength(2);

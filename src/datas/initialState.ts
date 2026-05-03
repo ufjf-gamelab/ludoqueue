@@ -1,7 +1,6 @@
 import type { EntityType } from "../entities/EntitiesTypes";
 import { recipe1 } from "../entities/Exchanger/Recipes/recipes";
-import type { GameType } from "../types";
-
+import type { GameType } from "../GameTypes";
 
 export const initialState: GameType = {
   entities: new Map<string, EntityType>([
@@ -100,6 +99,6 @@ export const initialState: GameType = {
   mergers: [],
   editor: null,
   time: 0,
-  data:"initial state",
+  data: "initial state",
   recipe: recipe1,
 };

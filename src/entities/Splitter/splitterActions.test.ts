@@ -1,5 +1,5 @@
 import { it, expect, describe } from "vitest";
-import type { GameType } from "../../types.ts";
+import type { GameType } from "../../GameTypes.ts";
 import type { EntityType, EntitySplitterType } from "../EntitiesTypes.ts";
 import { gameReducer, type GameAction } from "../../Provider.tsx";
 

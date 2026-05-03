@@ -1,6 +1,6 @@
-import type { EntityConsumerType } from "../../entities/EntitiesTypes";
-import { useGame } from "../../Provider";
-import type { EntityNode } from "../NodeTypes";
+import type { EntityConsumerType } from "../../../entities/EntitiesTypes";
+import { useGame } from "../../../Provider";
+import type { EntityNode } from "../ReactFlowNodeTypes";
 import { Handle, Position, type NodeProps } from "@xyflow/react";
 
 export default function ConsumerGraphNode({ data }: NodeProps<EntityNode>) {

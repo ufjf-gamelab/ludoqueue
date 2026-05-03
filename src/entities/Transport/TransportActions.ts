@@ -1,10 +1,14 @@
-import type { GameType } from "../../types";
+import type { GameType } from "../../GameTypes";
 import {
   canOutputTo,
   canReceiveFrom,
   linkEntities,
 } from "../EntitiesConnections";
-import { type EntityTransportType, type DirectionType, getInvertedDirection } from "../EntitiesTypes";
+import {
+  type EntityTransportType,
+  type DirectionType,
+  getInvertedDirection,
+} from "../EntitiesTypes";
 import { clearConnectionsToEntity, getNeighbor } from "../EntityCommonActions";
 
 export type GameActionCreateTransport = {
@@ -147,13 +151,19 @@ export function changeTransportLeavingDirection(
   return newState;
 }
 
-export function updateTransportConnections(state: GameType, transport: EntityTransportType) {
+export function updateTransportConnections(
+  state: GameType,
+  transport: EntityTransportType,
+) {
   transport.source = null;
   transport.target = null;
   clearConnectionsToEntity(state, transport);
 
   const newSource = getNeighbor(state, transport, transport.entryDirection);
-  if (newSource && canOutputTo(newSource, getInvertedDirection(transport.entryDirection))) {
+  if (
+    newSource &&
+    canOutputTo(newSource, getInvertedDirection(transport.entryDirection))
+  ) {
     linkEntities(newSource, transport);
   }
 

@@ -1,4 +1,4 @@
-import type { GameType } from "../types";
+import type { GameType } from "../GameTypes";
 import {
   getInvertedDirection,
   type DirectionType,
@@ -13,13 +13,21 @@ import { clearConnectionsToEntity, getNeighbor } from "./EntityCommonActions";
 //functions that are common for connections between different entities
 
 export function linkEntities(source: EntityType, target: EntityType) {
-  if (source.type === "transport" || source.type === "merger" || source.type === "exchanger") {
+  if (
+    source.type === "transport" ||
+    source.type === "merger" ||
+    source.type === "exchanger"
+  ) {
     source.target = target.id;
   } else if (source.type === "splitter") {
     if (!source.targets.includes(target.id)) source.targets.push(target.id);
   }
 
-  if (target.type === "transport" || target.type === "splitter"|| target.type === "exchanger") {
+  if (
+    target.type === "transport" ||
+    target.type === "splitter" ||
+    target.type === "exchanger"
+  ) {
     target.source = source.id;
   } else if (target.type === "merger") {
     if (!target.sources.includes(source.id)) target.sources.push(source.id);
@@ -37,7 +45,10 @@ export function canOutputTo(
     entryNeighbor.type === "merger"
   ) {
     return entryNeighbor.leavingDirection === outputDirection;
-  } else if (entryNeighbor.type === "stock" || entryNeighbor.type === "exchanger") {
+  } else if (
+    entryNeighbor.type === "stock" ||
+    entryNeighbor.type === "exchanger"
+  ) {
     return entryNeighbor.direction === outputDirection;
   } else if (entryNeighbor.type === "splitter") {
     return entryNeighbor.entryDirection !== outputDirection;
@@ -59,7 +70,10 @@ export function canReceiveFrom(
     leavingNeighbor.type === "splitter"
   ) {
     return leavingNeighbor.entryDirection === invDirection;
-  } else if (leavingNeighbor.type === "stock" || leavingNeighbor.type === "exchanger") {
+  } else if (
+    leavingNeighbor.type === "stock" ||
+    leavingNeighbor.type === "exchanger"
+  ) {
     return leavingNeighbor.direction === inputDirection;
   } else if (leavingNeighbor.type === "merger") {
     return leavingNeighbor.leavingDirection !== invDirection;
@@ -70,7 +84,11 @@ export function canReceiveFrom(
 
 export function updatePassiveEntitiesConnections(
   state: GameType,
-  entity: EntityStockType | EntitySourceType | EntityConsumerType | EntityExchangerType,
+  entity:
+    | EntityStockType
+    | EntitySourceType
+    | EntityConsumerType
+    | EntityExchangerType,
 ) {
   clearConnectionsToEntity(state, entity);
   const entryDir =

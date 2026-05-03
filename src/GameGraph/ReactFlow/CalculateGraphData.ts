@@ -1,10 +1,10 @@
 import type { Edge, Node } from "@xyflow/react";
-import type { GameType } from "../types";
+import type { GameType } from "../../GameTypes";
 import type {
   EntityMergerType,
   EntitySplitterType,
   EntityTransportType,
-} from "../entities/EntitiesTypes";
+} from "../../entities/EntitiesTypes";
 
 export function getInitialNodes(state: GameType): Node[] {
   const nodes: Node[] = [];

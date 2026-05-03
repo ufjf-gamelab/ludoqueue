@@ -1,4 +1,4 @@
-import type { GameType } from "../types";
+import type { GameType } from "../GameTypes";
 import { exchangerConsumerData } from "./exchangerConsumer";
 import { initialState } from "./initialState";
 import { mergerComplexoData } from "./mergerComplexo";

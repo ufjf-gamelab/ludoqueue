@@ -1,8 +1,8 @@
 import { Handle, Position, type NodeProps } from "@xyflow/react";
-import type { EntityMergerNode } from "../NodeTypes";
+import type { EntityMergerNode } from "../ReactFlowNodeTypes";
 import "./Merger.css";
-import { useGame } from "../../Provider";
-import type { EntityMergerType } from "../../entities/EntitiesTypes";
+import { useGame } from "../../../Provider";
+import type { EntityMergerType } from "../../../entities/EntitiesTypes";
 
 export default function MergerGraphNode({ data }: NodeProps<EntityMergerNode>) {
   const { game } = useGame()!;

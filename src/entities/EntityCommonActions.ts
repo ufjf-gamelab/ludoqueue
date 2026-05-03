@@ -1,10 +1,7 @@
 //actions that are common for creating/deleting different entities
 
-import type { GameType } from "../types";
-import {
-  type DirectionType,
-  type EntityType,
-} from "./EntitiesTypes";
+import type { GameType } from "../GameTypes";
+import { type DirectionType, type EntityType } from "./EntitiesTypes";
 
 export function getEntityAt(state: GameType, x: number, y: number) {
   const entity = Array.from(state.entities.values()).find(
@@ -32,10 +29,14 @@ export function getNeighbor(
 
 export function getOtherDirections(dir: DirectionType): DirectionType[] {
   switch (dir) {
-    case "up": return ["down", "left", "right"];
-    case "down": return ["up", "left", "right"];
-    case "left": return ["up", "down", "right"];
-    case "right": return ["up", "down", "left"];
+    case "up":
+      return ["down", "left", "right"];
+    case "down":
+      return ["up", "left", "right"];
+    case "left":
+      return ["up", "down", "right"];
+    case "right":
+      return ["up", "down", "left"];
   }
 }
 

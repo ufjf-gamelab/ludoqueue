@@ -1,12 +1,11 @@
 import Graph from "graphology";
-import type { GameType, GraphType } from "../types";
+import type { GameType, GraphType } from "../GameTypes";
 import type {
   EntityMergerType,
   EntitySplitterType,
   EntityTransportType,
 } from "../entities/EntitiesTypes";
 import { allSimplePaths } from "graphology-simple-path";
-
 
 export function createAdjacencyList(graph: GraphType) {
   const adjacency = new Map<string, string[]>();
@@ -110,16 +109,14 @@ export function findAllCycles(graph: Graph) {
   return cycles;
 }
 
-function normalizeCycle(cycle: string[]) { //ve se nao tem ciclo repetido, rotacionando o ciclo para uma forma canônica (começando pelo nó com menor id)
+function normalizeCycle(cycle: string[]) {
+  //ve se nao tem ciclo repetido, rotacionando o ciclo para uma forma canônica (começando pelo nó com menor id)
   const base = cycle.slice(0, -1);
   let minIndex = 0;
   for (let i = 1; i < base.length; i++) {
     if (base[i] < base[minIndex]) minIndex = i;
   }
-  const rotated = [
-    ...base.slice(minIndex),
-    ...base.slice(0, minIndex),
-  ];
+  const rotated = [...base.slice(minIndex), ...base.slice(0, minIndex)];
   rotated.push(rotated[0]);
   return rotated;
 }

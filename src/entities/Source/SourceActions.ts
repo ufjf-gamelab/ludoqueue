@@ -1,4 +1,4 @@
-import type { GameType } from "../../types";
+import type { GameType } from "../../GameTypes";
 import { updatePassiveEntitiesConnections } from "../EntitiesConnections";
 import type {
   DirectionType,

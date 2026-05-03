@@ -1,14 +1,12 @@
 import "./App.css";
 import { useGame } from "./Provider";
 import Counter from "./Counter";
-import {
-  convertGameToGraphology,
-} from "./GameGraph/GraphMethods";
+import { convertGameToGraphology } from "./GameGraph/GraphMethods";
 import FluxBoard from "./FluxBoard/FluxBoard";
-import GraphElementsList from "./GameGraph/GraphElementsList";
+import GraphElementsList from "./GameGraph/GraphElementsLists";
 import { useEffect, useMemo, useState } from "react";
 import { DataChanger } from "./datas/DataChanger";
-import GraphReactFlow from "./ReactFlow/Graph";
+import ReactFlowGraph from "./GameGraph/ReactFlow/ReactFlowGraph";
 
 function App() {
   const { game } = useGame()!;
@@ -23,10 +21,7 @@ function App() {
     }
   }, [game]);
 
-  const graph = useMemo(
-    () => convertGameToGraphology(game),
-    [game],
-  );
+  const graph = useMemo(() => convertGameToGraphology(game), [game]);
   const [selectedTab, setSelectedTab] = useState<"game" | "graph">("game");
   return (
     <>
@@ -57,7 +52,7 @@ function App() {
         <>
           <h1> Grafo de Conexoes: </h1>
           <div className="Graph">
-            <GraphReactFlow></GraphReactFlow>
+            <ReactFlowGraph></ReactFlowGraph>
             <GraphElementsList graph={graph} />
           </div>
         </>

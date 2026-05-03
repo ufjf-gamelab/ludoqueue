@@ -1,11 +1,17 @@
 import { it, expect, describe } from "vitest";
-import type { GameType } from "../../types";
+import type { GameType } from "../../GameTypes";
 import { gameConsumerTick, gameReducer } from "../../Provider";
 import type {
   GameActionCreateConsumer,
   GameActionDeleteConsumer,
 } from "./ConsumerActions";
-import type { EntityType, EntityConsumerType, EntitySplitterType, EntityMergerType, EntityTransportType } from "../EntitiesTypes";
+import type {
+  EntityType,
+  EntityConsumerType,
+  EntitySplitterType,
+  EntityMergerType,
+  EntityTransportType,
+} from "../EntitiesTypes";
 
 describe("Consumer", () => {
   it("should create consumer1 if none consumers exists", () => {

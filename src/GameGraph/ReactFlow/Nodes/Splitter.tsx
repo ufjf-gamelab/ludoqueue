@@ -1,8 +1,8 @@
 import { Handle, Position, type NodeProps } from "@xyflow/react";
-import type { EntitySplitterNode } from "../NodeTypes";
+import type { EntitySplitterNode } from "../ReactFlowNodeTypes";
 import "./Splitter.css";
-import { useGame } from "../../Provider";
-import type { EntitySplitterType } from "../../entities/EntitiesTypes";
+import { useGame } from "../../../Provider";
+import type { EntitySplitterType } from "../../../entities/EntitiesTypes";
 
 export default function SplitterGraphNode({
   data,

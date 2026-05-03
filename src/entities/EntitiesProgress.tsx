@@ -1,9 +1,9 @@
 import Source from "./Source/SourceTile";
-import type { GameType } from "../types";
+import type { GameType } from "../GameTypes";
 import Stock from "./Stock/StockTile";
 import ConsumerTile from "./Consumer/ConsumerTile";
 import Transport from "./Transport/TransporterTile";
-import "./EntitiesProgress.css"
+import "./EntitiesProgress.css";
 import type {
   EntityConsumerType,
   EntitySourceType,

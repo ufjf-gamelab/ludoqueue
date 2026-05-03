@@ -1,5 +1,5 @@
 import type { Node } from "@xyflow/react";
-import type { EntityExchangerType, EntityMergerType, EntitySplitterType, EntityStockType, EntityType } from "../entities/EntitiesTypes";
+import type { EntityExchangerType, EntityMergerType, EntitySplitterType, EntityStockType, EntityType } from "../../entities/EntitiesTypes";
 import SourceGraphNode from "./Nodes/Source";
 import MergerGraphNode from "./Nodes/Merger";
 import ConsumerGraphNode from "./Nodes/Consumer";

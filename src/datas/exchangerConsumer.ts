@@ -1,4 +1,4 @@
-import type { GameType } from "../types";
+import type { GameType } from "../GameTypes";
 import type { EntityType } from "../entities/EntitiesTypes";
 import { recipe1 } from "../entities/Exchanger/Recipes/recipes";
 

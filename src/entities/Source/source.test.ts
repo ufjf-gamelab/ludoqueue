@@ -1,5 +1,5 @@
 import { it, expect, describe } from "vitest";
-import type { GameType } from "../../types.ts";
+import type { GameType } from "../../GameTypes.ts";
 import type {
   EntityType,
   EntitySourceType,
@@ -266,7 +266,6 @@ describe("Source", () => {
       splitters: [],
       mergers: [],
       exchangers: [],
-
     };
     const result = gameReducer(stateTest as GameType, { type: "game tick" });
 
@@ -422,21 +421,21 @@ describe("Source", () => {
 
   it("should connect as target on the left of the merger entity", () => {
     const fakeMerger: EntityMergerType = {
-        id: "merger1",
-        name: "Merger 1",
-        type: "merger",
-        max: 1,
-        rate: 1,
-        cooldown: 0,
-        leavingDirection: "right",
-        x: 1,
-        y: 0,
-        target: "",
-        sources: [],
-        nextSourceIndex: 0,
-        movingGoods: [],
-        goods: [],
-      }
+      id: "merger1",
+      name: "Merger 1",
+      type: "merger",
+      max: 1,
+      rate: 1,
+      cooldown: 0,
+      leavingDirection: "right",
+      x: 1,
+      y: 0,
+      target: "",
+      sources: [],
+      nextSourceIndex: 0,
+      movingGoods: [],
+      goods: [],
+    };
     const stateTest: Partial<GameType> = {
       entities: new Map<string, EntityType>([["merger1", fakeMerger]]),
       sources: [],
@@ -456,9 +455,7 @@ describe("Source", () => {
     };
     const result = gameReducer(stateTest as GameType, actionTest);
     expect(result.sources).toHaveLength(1);
-    const mergerResult = result.entities.get(
-      "merger1",
-    ) as EntityMergerType;
+    const mergerResult = result.entities.get("merger1") as EntityMergerType;
     expect(mergerResult.sources).toContain("source1");
   });
 });

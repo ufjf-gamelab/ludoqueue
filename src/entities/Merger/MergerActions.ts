@@ -1,5 +1,9 @@
-import type { GameType } from "../../types";
-import { canOutputTo, canReceiveFrom, linkEntities } from "../EntitiesConnections";
+import type { GameType } from "../../GameTypes";
+import {
+  canOutputTo,
+  canReceiveFrom,
+  linkEntities,
+} from "../EntitiesConnections";
 import {
   getInvertedDirection,
   type DirectionType,
@@ -109,7 +113,10 @@ export function changeMergerLeavingDirection(
   return newState;
 }
 
-export function updateMergerConnections(state: GameType, merger: EntityMergerType) {
+export function updateMergerConnections(
+  state: GameType,
+  merger: EntityMergerType,
+) {
   merger.target = null;
   merger.sources = [];
   clearConnectionsToEntity(state, merger);
@@ -119,7 +126,9 @@ export function updateMergerConnections(state: GameType, merger: EntityMergerTyp
     linkEntities(merger, targetEntity);
   }
 
-  const otherDirs = getOtherDirections(merger.leavingDirection) as DirectionType[];
+  const otherDirs = getOtherDirections(
+    merger.leavingDirection,
+  ) as DirectionType[];
   for (const direction of otherDirs) {
     const sourceEntity = getNeighbor(state, merger, direction);
     const invDirection = getInvertedDirection(direction);

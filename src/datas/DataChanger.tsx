@@ -27,7 +27,7 @@ export function DataChanger() {
             }
           }}
         >
-          <option value="initialState">InitialData</option>
+          <option value="initial state">InitialData</option>
           <option value="splitter simples">Splitter Simples</option>
           <option value="splitter complexo">Splitter Complexo</option>
           <option value="merger simples">Merger Simples</option>

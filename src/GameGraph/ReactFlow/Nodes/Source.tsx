@@ -1,6 +1,6 @@
-import type { EntitySourceType } from "../../entities/EntitiesTypes";
-import { useGame } from "../../Provider";
-import type { EntityNode } from "../NodeTypes";
+import type { EntitySourceType } from "../../../entities/EntitiesTypes";
+import { useGame } from "../../../Provider";
+import type { EntityNode } from "../ReactFlowNodeTypes";
 import { Handle, Position, type NodeProps } from "@xyflow/react";
 
 export default function SourceGraphNode({ data }: NodeProps<EntityNode>) {

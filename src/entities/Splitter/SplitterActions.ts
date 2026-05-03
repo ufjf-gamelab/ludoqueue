@@ -1,6 +1,14 @@
-import type { GameType } from "../../types";
-import { canOutputTo, canReceiveFrom, linkEntities } from "../EntitiesConnections";
-import { getInvertedDirection, type DirectionType, type EntitySplitterType } from "../EntitiesTypes";
+import type { GameType } from "../../GameTypes";
+import {
+  canOutputTo,
+  canReceiveFrom,
+  linkEntities,
+} from "../EntitiesConnections";
+import {
+  getInvertedDirection,
+  type DirectionType,
+  type EntitySplitterType,
+} from "../EntitiesTypes";
 import {
   clearConnectionsToEntity,
   getNeighbor,
@@ -109,16 +117,24 @@ export function changeSplitterEntryDirection(
   return state;
 }
 
-export function updateSplitterConnections(state: GameType, splitter: EntitySplitterType) {
+export function updateSplitterConnections(
+  state: GameType,
+  splitter: EntitySplitterType,
+) {
   splitter.source = null;
   splitter.targets = [];
   clearConnectionsToEntity(state, splitter);
 
   const sourceEntity = getNeighbor(state, splitter, splitter.entryDirection);
-  if (sourceEntity && canOutputTo(sourceEntity, getInvertedDirection(splitter.entryDirection))) {
+  if (
+    sourceEntity &&
+    canOutputTo(sourceEntity, getInvertedDirection(splitter.entryDirection))
+  ) {
     linkEntities(sourceEntity, splitter);
   }
-  const otherDirs = getOtherDirections(splitter.entryDirection) as DirectionType[];
+  const otherDirs = getOtherDirections(
+    splitter.entryDirection,
+  ) as DirectionType[];
   for (const direction of otherDirs) {
     const targetEntity = getNeighbor(state, splitter, direction);
     if (targetEntity && canReceiveFrom(targetEntity, direction)) {

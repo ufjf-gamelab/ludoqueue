@@ -1,10 +1,9 @@
-import type { GameType } from "../types";
+import type { GameType } from "../GameTypes";
 import type { EntityType } from "../entities/EntitiesTypes";
 import { recipe1 } from "../entities/Exchanger/Recipes/recipes";
 
 export const splitterSimplesData: GameType = {
   entities: new Map<string, EntityType>([
-
     [
       "stock1",
       {
@@ -55,7 +54,7 @@ export const splitterSimplesData: GameType = {
         goods: [],
       },
     ],
-    
+
     [
       "consumer1",
       {
@@ -105,7 +104,6 @@ export const splitterSimplesData: GameType = {
         goods: [],
       },
     ],
- 
   ]),
   selected: null,
   status: "waiting",

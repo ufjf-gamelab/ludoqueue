@@ -1,4 +1,4 @@
-import type { GameType } from "../types";
+import type { GameType } from "../GameTypes";
 import type { EntityType } from "../entities/EntitiesTypes";
 import { recipe1 } from "../entities/Exchanger/Recipes/recipes";
 
@@ -33,7 +33,7 @@ export const mergerComplexoData: GameType = {
         x: 3,
         y: 3,
         target: "merger2",
-        sources: ["source3","source2", "source1"],
+        sources: ["source3", "source2", "source1"],
         nextSourceIndex: 0,
         movingGoods: [],
         goods: [],

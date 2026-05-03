@@ -1,5 +1,5 @@
 import { it, expect, describe } from "vitest";
-import type { GameType } from "../../types";
+import type { GameType } from "../../GameTypes";
 import { gameReducer } from "../../Provider";
 import type {
   GameActionCreateExchanger,

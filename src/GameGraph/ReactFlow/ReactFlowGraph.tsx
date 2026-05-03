@@ -11,17 +11,17 @@ import {
   type Node,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { useGame } from "../Provider";
-import "./Graph.css";
-import { nodeTypes } from "./NodeTypes";
-import { getInitialEdges, getInitialNodes } from "./GraphData";
+import { useGame } from "../../Provider";
+import "./ReactFlowGraph.css";
+import { nodeTypes } from "./ReactFlowNodeTypes";
+import { getInitialEdges, getInitialNodes } from "./CalculateGraphData";
 import { AnimatedSVGEdge } from "./AnimatedSVG";
 
 const edgeTypes = {
   animatedSvg: AnimatedSVGEdge,
 };
 
-export default function GraphReactFlow() {
+export default function ReactFlowGraph() {
   const { game } = useGame()!;
 
   const [nodes, setNodes] = useState<Node[]>([]);
@@ -30,7 +30,7 @@ export default function GraphReactFlow() {
   useEffect(() => {
     setNodes(getInitialNodes(game));
     setEdges(getInitialEdges(game));
-  }, [game.entities.size, game.data]); 
+  }, [game.entities.size, game.data]);
 
   const onNodesChange: OnNodesChange = useCallback(
     (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),

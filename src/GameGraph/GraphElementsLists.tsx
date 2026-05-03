@@ -1,16 +1,14 @@
-import type { GraphType } from "../types";
-import { createAdjacencyList, findAllCycles } from "../GameGraph/GraphMethods";
+import type { GraphType } from "../GameTypes";
+import { createAdjacencyList, findAllCycles } from "./GraphMethods";
 import "./GraphElementsLists.css";
 import { useState } from "react";
 import { connectedComponents } from "graphology-components";
-
 
 export default function GraphElementsList({ graph }: { graph: GraphType }) {
   const adjacencyList = createAdjacencyList(graph);
   const [showGraphElement, setShowGraphElement] = useState(false);
   const cycles = findAllCycles(graph);
   const components = connectedComponents(graph);
-
 
   return (
     <div className="ElementsUI">
