@@ -18,7 +18,6 @@ export default function MovingGoodsLayer({
         e.type === "transport" || e.type === "splitter" || e.type === "merger",
     )
     .flatMap((e) => e.movingGoods.filter((g) => g.source && g.target));
-
   return (
     <div
       className="goods-layer"
@@ -27,8 +26,8 @@ export default function MovingGoodsLayer({
         gridTemplateRows: `repeat(${numRows}, ${size}px)`,
       }}
     >
-      {goods.map((g) => (
-        <MovingGood key={`${g.source}-${g.target}-${g.time}`} good={g} />
+      {goods.map((g,i) => (
+        <MovingGood key={`${g.source}-${g.target}-${g.time}-${i}`} good={g} />
       ))}
     </div>
   );
