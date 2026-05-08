@@ -22,52 +22,52 @@
 
 .transport-direction-down-up-animate{
     background: url('./DownUp/spritesheet.png') no-repeat;
-    animation-name: animation;  /* mesma quantidade de frames e etc mesma animacao por causa disso */
+    animation-name: animation;  
 }
 
 .transport-direction-left-down-animate{
     background: url('./LeftDown/spritesheet.png') no-repeat;
-    animation-name: animation;  /* mesma quantidade de frames e etc mesma animacao por causa disso */
+    animation-name: animation;  
 }
 
 .transport-direction-left-up-animate{
     background: url('./LeftUp/spritesheet.png') no-repeat;
-    animation-name: animation;  /* mesma quantidade de frames e etc mesma animacao por causa disso */
+    animation-name: animation;  
 }
 
 .transport-direction-left-right-animate{
     background: url('./LeftRight/spritesheet.png') no-repeat;
-    animation-name: animation;  /* mesma quantidade de frames e etc mesma animacao por causa disso */
+    animation-name: oldAnimation;  
 }
 
 .transport-direction-right-left-animate{
     background: url('./RightLeft/spritesheet.png') no-repeat;
-    animation-name: animation;  /* mesma quantidade de frames e etc mesma animacao por causa disso */  
+    animation-name: oldAnimation;    
 }
 
 .transport-direction-right-down-animate{
     background: url('./RightDown/spritesheet.png') no-repeat;
-    animation-name: animation;  /* mesma quantidade de frames e etc mesma animacao por causa disso */
+    animation-name: animation;  
 }
 
 .transport-direction-right-up-animate{
     background: url('./RightUp/spritesheet.png') no-repeat;
-    animation-name: animation;  /* mesma quantidade de frames e etc mesma animacao por causa disso */
+    animation-name: animation;  
 }
 
 .transport-direction-up-down-animate{
     background: url('./UpDown/spritesheet.png') no-repeat;
-    animation-name: animation;  /* mesma quantidade de frames e etc mesma animacao por causa disso */
+    animation-name: animation;  
 }
 
 .transport-direction-up-left-animate{
     background: url('./UpLeft/spritesheet.png') no-repeat;
-    animation-name: animation;  /* mesma quantidade de frames e etc mesma animacao por causa disso */
+    animation-name: animation;  
 }
 
 .transport-direction-up-right-animate{
     background: url('./UpRight/spritesheet.png') no-repeat;
-    animation-name: animation;  /* mesma quantidade de frames e etc mesma animacao por causa disso */
+    animation-name: animation;  
 }
 
 @keyframes animation {
@@ -82,4 +82,18 @@
   80%  { background-position: -4000px 0px; }
   90%  { background-position: 0px -550px; }
   100% { background-position: -500px -550px; }
+}
+
+@keyframes oldAnimation {
+  0%   { background-position: 0px 0px; }
+  10%  { background-position: -500px 0px; }
+  20%  { background-position: -1000px 0px; }
+  30%  { background-position: -1500px 0px; }
+  40%  { background-position: -2000px 0px; }
+  50%  { background-position: -2500px 0px; }
+  60%  { background-position: -3000px 0px; }
+  70%  { background-position: -3500px 0px; }
+  80%  { background-position: -4000px 0px; }
+    90%  { background-position: 0px -500px; }
+    100% { background-position: -500px -500px; }
 }
