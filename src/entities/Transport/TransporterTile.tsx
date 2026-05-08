@@ -20,7 +20,7 @@ export default function TransporterTile({ entity }: { entity: EntityTransportTyp
       {/*{TransportIcons.get(`${entity.entryDirection}-${entity.leavingDirection}`)}
       <progress value={entity.goods.length} max={entity.max} title={`${entity.goods.length}/${entity.max}`} />*/}
       <TransportSprite entity={entity} />
-      {movingGoods.map((movingGood) => {
+      {/*movingGoods.map((movingGood) => {
         if (movingGood.target == entity.id)
           isStarting = true;
         if (movingGood.source == entity.id)
@@ -32,7 +32,7 @@ export default function TransporterTile({ entity }: { entity: EntityTransportTyp
           aria-hidden="true"
         />);
       })
-      }
+      */}
     </div>
   );
 }

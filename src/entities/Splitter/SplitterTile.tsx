@@ -150,7 +150,7 @@ export default function SplitterTile({
         </div>
       )}*/}
       <SplitterSprite entity={entity}/>
-      {movingGoods.map((movingGood) => {
+      {/*movingGoods.map((movingGood) => {
         if (movingGood.target == entity.id) isStarting = true;
         if (movingGood.source == entity.id) isEnding = true;
         return (
@@ -166,7 +166,8 @@ export default function SplitterTile({
             aria-hidden="true"
           />
         );
-      })}
+      })
+      */}
     </div>
   );
 }

@@ -94,7 +94,7 @@ export default function MergerTile({ entity }: { entity: EntityMergerType }) {
         </div>
       )}*/}
       <MergerSprite entity={entity}/>
-      {movingGoods.map((movingGood) => {
+      {/*movingGoods.map((movingGood) => {
         if (movingGood.target == entity.id) isStarting = true;
         if (movingGood.source == entity.id) isEnding = true;
         return (
@@ -110,7 +110,8 @@ export default function MergerTile({ entity }: { entity: EntityMergerType }) {
             aria-hidden="true"
           />
         );
-      })}
+      })
+      */}
     </div>
   );
 }

@@ -8,6 +8,13 @@ export default function MovingGood({ good }: { good: MovingGoodType }) {
   const target = game.entities.get(good.target!);
 
   if (!source || !target) return null;
+  const dx = target.x - source.x;
+  const dy = target.y - source.y;
+  let dir = "";
+  if (dx === 1) dir = "right";
+  else if (dx === -1) dir = "left";
+  else if (dy === 1) dir = "down";
+  else if (dy === -1) dir = "up";
   return (
     <div
       className={"transported-goods-container"}
@@ -17,7 +24,8 @@ export default function MovingGood({ good }: { good: MovingGoodType }) {
       }}
     >
       <span
-        className={["transported-good", `${good.goodType}`].join(" ")}
+        className={["transported-good", `${good.goodType}`,"ending",
+          dir,].join(" ")}
       ></span>
     </div>
   );
