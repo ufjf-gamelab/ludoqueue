@@ -1,0 +1,42 @@
+.node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  border: 2px solid black;
+}
+
+.content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0;          
+}
+
+.box {
+  width: 60px;
+  height: 60px;
+  background-color: white;
+  border: 2px solid black;
+  border-radius: 6px;
+  color: black;
+  font-size:8px;
+
+}
+
+.circle {
+  width: 60px;
+  height: 60px;
+  background-color: white;
+  border: 2px solid black;
+  border-radius: 50%;
+  color: black;
+  justify-content: center;
+  align-items: center;
+}
+
+.box p {
+  margin: 0;
+  padding: 2px 4px;
+  border-bottom: 1px solid black;
+}

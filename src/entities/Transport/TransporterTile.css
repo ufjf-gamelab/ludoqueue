@@ -1,0 +1,9 @@
+.transporter-tile {
+  display: grid;
+  place-content: center;
+  position: relative;
+  overflow: visible;
+  progress {
+    width: 100%;
+  }
+}

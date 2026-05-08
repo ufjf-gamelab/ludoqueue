@@ -1,0 +1,54 @@
+.sourcesprite {
+  width: 330px;
+  height: 500px;
+  background: url('source.png') no-repeat;
+  position: absolute;
+  left:50%;
+  top: 50%;
+  translate: -50% -55%;
+  scale: 0.22727;
+  transform-origin: center;
+}
+
+.stop-animation {
+  animation: none;
+  background-position: 0px 0px;
+}
+
+.animate-source {
+  animation: source-animation 1s steps(1);
+}
+
+@keyframes source-animation {
+  0% { background-position: 0px 0px; }
+  3.33% { background-position: -330px 0px; }
+  6.66% { background-position: -660px 0px; }
+  9.99% { background-position: -990px 0px; }
+  13.32% { background-position: -1320px 0px; }
+  16.65% { background-position: -1650px 0px; }
+  19.98% { background-position: -1980px 0px; }
+  23.31% { background-position: -2310px 0px; }
+  26.64% { background-position: -2640px 0px; }
+  29.97% { background-position: 0px -500px; }
+  33.30% { background-position: -330px -500px; }
+  36.63% { background-position: -660px -500px; }
+  39.96% { background-position: -990px -500px; }
+  43.29% { background-position: -1320px -500px; }
+  46.62% { background-position: -1650px -500px; }
+  49.95% { background-position: -1980px -500px; }
+  53.28% { background-position: -2310px -500px; }
+  56.61% { background-position: -2640px -500px; }
+  59.94% { background-position: 0px -1000px; }
+  63.27% { background-position: -330px -1000px; }
+  66.60% { background-position: -660px -1000px; }
+  69.93% { background-position: -990px -1000px; }
+  73.26% { background-position: -1320px -1000px; }
+  76.59% { background-position: -1650px -1000px; }
+  79.92% { background-position: -1980px -1000px; }
+  83.25% { background-position: -2310px -1000px; }
+  86.58% { background-position: -2640px -1000px; }
+  89.91% { background-position: 0px -1500px; }
+  93.24% { background-position: -330px -1500px; }
+  96.57% { background-position: -660px -1500px; }
+  100% { background-position: -990px -1500px; }
+}

@@ -1,0 +1,26 @@
+.merger-sprite {
+  width: 500px;
+  height: 500px;
+  position: absolute;
+  left:50%;
+  top: 50%;
+  translate: -50% -50%;
+  scale: 0.16;
+  transform-origin: center;
+}
+
+.merger-direction-left{
+    background: url('merger_left.png') no-repeat;
+}
+
+.merger-direction-up{
+    background: url('merger_top.png') no-repeat;
+}
+
+.merger-direction-right{
+    background: url('merger_right.png') no-repeat;
+}
+
+.merger-direction-down{
+    background: url('merger_bottom.png') no-repeat;
+}

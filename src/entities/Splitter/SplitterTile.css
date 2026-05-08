@@ -1,0 +1,6 @@
+.splitter-tile {
+  display: grid;
+  place-content: center;
+  position: relative;
+  overflow: visible;
+}

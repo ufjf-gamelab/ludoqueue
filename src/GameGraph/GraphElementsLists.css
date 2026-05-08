@@ -1,0 +1,32 @@
+.GraphElements {
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    justify-content: center;
+
+}
+
+.GraphElements > * {
+    max-width: 350px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+}
+
+.GraphElements > div {
+    padding: 1rem;
+}
+
+.ElementsUI > button{
+    margin: 0px;
+    margin-bottom: 20px;
+}
+
+ul {
+    max-width: 300px;
+    height: auto;
+    text-align: left;
+    list-style-position: outside;
+    padding-left: 20px;
+    display: flex;
+    flex-direction: column;
+}

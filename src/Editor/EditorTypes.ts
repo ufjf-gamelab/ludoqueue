@@ -1,0 +1,59 @@
+import type { DirectionType, GoodType } from "../entities/EntitiesTypes";
+
+export type GameEditor = GameStockEditor | GameConsumerEditor | GameSourceEditor | GameTransporterEditor | GameSplitterEditor | GameMergerEditor | GameExchangerEditor | GameRecipeEditor | null;
+
+export type GameStockEditor = {
+  type: "stock";
+  max: number;
+  val: number;
+  direction: DirectionType;
+}
+
+export type GameConsumerEditor = {
+  type: "consumer";
+  max: number;
+  rate: number;
+  entryDirection: DirectionType;
+}
+
+export type GameSourceEditor = {
+  type: "source";
+  max: number;
+  rate: number;
+  leavingDirection: DirectionType;
+  goodType: "red" | "blue" | "green";
+}
+
+export type GameTransporterEditor = {
+  type: "transporter";
+  rate: number;
+  max: number;
+  entryDirection: DirectionType;
+  leavingDirection: DirectionType;
+}
+
+export type GameSplitterEditor = {
+  type: "splitter";
+  max: number;
+  rate: number;
+  entryDirection: DirectionType;
+}
+
+export type GameMergerEditor = {
+  type: "merger";
+  max: number;
+  rate: number;
+  leavingDirection: DirectionType;
+}
+
+export type GameExchangerEditor = {
+  type: "exchanger";
+  baseRecipe: string;
+  direction: DirectionType;
+}
+
+export type GameRecipeEditor = {
+  type: "recipe";
+  input: [GoodType,number][];
+  output: [GoodType,number][];
+}

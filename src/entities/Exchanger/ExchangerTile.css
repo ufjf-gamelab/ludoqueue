@@ -1,0 +1,227 @@
+.exchanger-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+
+  progress {
+    width: 100%;
+  }
+
+  .leavingMovingDirection-vertical {
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .entryMovingDirection-vertical {
+    position: absolute;
+    top: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .leavingMovingDirection-horizontal {
+    position: absolute;
+    right: -2px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .entryMovingDirection-horizontal {
+    position: absolute;
+    left: -2px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .stored-input-goods {
+    position: absolute;
+    bottom: 5%;
+    top: auto;
+    left: 0;
+    max-width: 100%;
+    max-height: 100%;
+    background: transparent;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
+    gap: 2px;
+    overflow: hidden;
+  }
+
+  .stored-output-goods {
+    position: absolute;
+    top: 5%;
+    bottom: auto;
+    left: 0;
+    max-width: 100%;
+    max-height: 100%;
+    background: transparent;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 2px;
+    overflow: hidden;
+  }
+
+  .stored-input-goods.horizontal {
+    bottom: 0;
+    top: auto;
+    left: 5%;
+    right: 5%;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-end;
+  }
+
+  .stored-output-goods.horizontal {
+    bottom: auto;
+    top: 0;
+    left: 5%;
+    right: 5%;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+
+  .stored-input-goods.vertical {
+    bottom: auto;
+    top: auto;
+    left: 0 !important;
+    right: auto;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+  }
+
+  .stored-output-goods.vertical {
+    bottom: auto;
+    top: auto;
+    right: 0 !important;
+    left: auto;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+  }
+
+  .new-good {
+    animation: fade-in 1500ms ease-out forwards;
+  }
+
+  .box-of-goods {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap:2px;
+  }
+
+  .box-of-goods.horizontal {
+    animation: box-move-bottom-top 1000ms linear forwards;
+  }
+
+  .box-of-goods.vertical {
+    animation: box-move-left-right 1000ms linear forwards;
+  }
+
+  .transported-good,
+  .stored-good {
+    width: 5px;
+    height: 5px;
+    background: white;
+    border-radius: 50%;
+    transform-origin: 50% 50%;
+    pointer-events: none;
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.9);
+    opacity: 0.8;
+  }
+
+  .stored-good {
+    flex: 1 1 auto;
+    aspect-ratio: 1 / 1;
+    min-width: 2px;
+    min-height: 1px;
+    max-height: 5px;
+    max-width: 5px;
+    width: 5px;
+    height: 5px;
+  }
+
+  .stored-good.red {
+    background: rgb(246, 25, 25);
+    box-shadow: 0 0 6px rgba(246, 25, 25, 0.9);
+  }
+  .stored-good.blue {
+    background: rgb(25, 25, 246);
+    box-shadow: 0 0 6px rgba(25, 25, 246, 0.9);
+  }
+  .stored-good.green {
+    background: rgb(25, 246, 25);
+    box-shadow: 0 0 6px rgba(25, 246, 25, 0.9);
+  }
+  .transported-good.red {
+    background: rgb(246, 25, 25);
+    box-shadow: 0 0 6px rgba(246, 25, 25, 0.9);
+  }
+
+  .transported-good.blue {
+    background: rgb(25, 25, 246);
+    box-shadow: 0 0 6px rgba(25, 25, 246, 0.9);
+  }
+
+  .transported-good.green {
+    background: rgb(25, 246, 25);
+    box-shadow: 0 0 6px rgba(25, 246, 25, 0.9);
+  }
+
+  .transported-good.starting {
+    animation-name: fade-out;
+  }
+}
+@keyframes fade-out {
+  0% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 0;
+  }
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  20% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes box-move-bottom-top {
+  0% {
+    transform: translateY(50%);
+  }
+  100% {
+    transform: translateY(-50%);
+  }
+}
+
+@keyframes box-move-left-right {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}

@@ -1,0 +1,39 @@
+.consumer-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+
+  progress {
+    width: 100%;
+  }
+
+  .movingDirection-down {
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .movingDirection-right {
+    position: absolute;
+    right: -2px;
+    top: 40%;
+    transform: translateY(-50%);
+  }
+
+  .movingDirection-up {
+    position: absolute;
+    top: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .movingDirection-left {
+    position: absolute;
+    left: -2px;
+    top: 40%;
+    transform: translateY(-50%);
+  }
+}

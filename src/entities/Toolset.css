@@ -1,0 +1,44 @@
+.Toolset {
+  background-color: rgb(219, 207, 219);
+  padding: 1rem;
+  border-radius: 20px;
+  width: 200px;
+  height: fit-content;
+  min-width: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 99;
+}
+
+.ToolsetTitle {
+  margin-bottom: 20px;
+}
+
+.ToolsetSubtitle {
+  margin-top: 5px;
+  text-align: center;
+}
+
+.ToolsetWarning {
+  margin-top: 20px;
+  font-weight: bold;
+}
+
+.good {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin: 2px;
+}
+.red {
+  background: rgb(246, 25, 25);
+}
+.blue {
+  background: rgb(25, 25, 246);
+}
+.green {
+  background: rgb(25, 246, 25);
+}

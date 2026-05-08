@@ -1,0 +1,32 @@
+.exchanger-sprite {
+  width: 330px;
+  height: 500px;
+  background: url('exchanger.png') no-repeat;
+  position: absolute;
+  left:50%;
+  top: 50%;
+  translate: -50% -55%;
+  scale: 0.22727;
+  transform-origin: center;
+}
+
+.animate-exchanger {
+  animation: exchanger-animation 1s steps(1);
+}
+
+@keyframes exchanger-animation {
+  0%   { background-position: 0px 0px; }
+  7.14%  { background-position: -330px 0px; }
+  14.28% { background-position: -660px 0px; }
+  21.42% { background-position: -990px 0px; }
+  28.56% { background-position: -1320px 0px; }
+  35.70% { background-position: -1650px 0px; }
+  42.84% { background-position: 0px -500px; }
+  49.98% { background-position: -330px -500px; }
+  57.12% { background-position: -660px -500px; }
+  64.26% { background-position: -990px -500px; }
+  71.40% { background-position: -1320px -500px; }
+  78.54% { background-position: -1650px -500px; }
+  85.68% { background-position: 0px -1000px; }
+  100%   { background-position: -330px -1000px; } /* Frame 14 */
+}

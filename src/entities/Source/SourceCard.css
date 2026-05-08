@@ -1,0 +1,17 @@
+.source-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+    background-color: rgb(219, 207, 219);
+    color: black;
+
+    progress {
+      width: 100%;
+    }
+}
+ 
+.source-card > div {
+  background-color: rgb(219, 207, 219);
+}

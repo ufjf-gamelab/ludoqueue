@@ -1,0 +1,5 @@
+.tile {
+  display: grid;
+  place-content: stretch;
+  color: black;
+}
