@@ -1,0 +1,9 @@
+.goods-layer {
+    display:grid;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 99;
+  margin-top: 6px;
+  margin-left: 6px;
+}
