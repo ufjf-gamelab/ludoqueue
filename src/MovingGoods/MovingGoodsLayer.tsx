@@ -17,7 +17,7 @@ export default function MovingGoodsLayer({
       (e) =>
         e.type === "transport" || e.type === "splitter" || e.type === "merger",
     )
-    .flatMap((e) => e.goods.filter((g) => g.source && g.target));
+    .flatMap((e) => e.movingGoods.filter((g) => g.source && g.target));
 
   return (
     <div
