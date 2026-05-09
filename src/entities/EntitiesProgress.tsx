@@ -5,7 +5,6 @@ import ConsumerTile from "./Consumer/ConsumerTile";
 import Transport from "./Transport/TransporterTile";
 import "./EntitiesProgress.css";
 import type {
-  EntityConsumerType,
   EntitySourceType,
   EntityStockType,
   EntityTransportType,
@@ -34,7 +33,6 @@ export default function EntitiesProgress({ game }: { game: GameType }) {
         return (
           <ConsumerTile
             key={game.entities.get(consumers)!.id}
-            entity={game.entities.get(consumers) as EntityConsumerType}
           />
         );
       })}

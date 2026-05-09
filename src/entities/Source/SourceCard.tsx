@@ -30,12 +30,12 @@ export default function SourceCard({ entity }: { entity: EntitySourceType }) {
       <div>{entity.id}</div>
       {EntityIcons[entity.type]}
       <div>
-        <progress value={entity.val} max={entity.max} />
-        {entity.val} / {entity.max}
+        <progress value={entity.goods.length} max={entity.max} />
+        {entity.goods.length} / {entity.max}
       </div>
 
       <div>
-        {entity.val} / {entity.max}
+        {entity.goods.length} / {entity.max}
       </div>
       <progress value={entity.cooldown} max={1}/>
       <div>

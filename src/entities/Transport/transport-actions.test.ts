@@ -320,7 +320,7 @@ describe("Transport should", () => {
     };
 
     const result = gameReducer(stateTest as GameType, actionTest);
-    const transport = result.entities.get("transport1");
+    const transport = result.entities.get("transport1") as EntityTransportType;
     expect(transport?.max).toBe(10);
   });
 

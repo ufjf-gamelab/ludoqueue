@@ -25,14 +25,14 @@ export default function ConsumerCard({
       }
     >
       {isHovering &&
-        <ConsumerTile entity={entity} />}
+        <ConsumerTile />}
       
         <div className="consumerMinimized">
           <div>
             {EntityIcons[entity.type]}
             <p>Consuming in {entity.cooldown} seconds</p>
           </div>
-          <progress value={entity.val} max={entity.max}></progress>
+          <progress value={entity.goods.length} max={entity.max}></progress>
         </div>
 
     </div>
