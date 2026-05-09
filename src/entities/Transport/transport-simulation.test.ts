@@ -1,6 +1,7 @@
 import { it, expect, describe } from "vitest";
 import type { GameType } from "../../GameTypes";
 import type {
+  EntityConsumerType,
   EntityStockType,
   EntityTransportType,
   EntityType,
@@ -1047,7 +1048,8 @@ describe("In a single transport connection between", () => {
       };
 
       const result = gameReducer(stateTest as GameType, { type: "game tick" });
-      expect(result.entities.get("stock1")?.goods.length).toBe(2);
+      const stock = result.entities.get("stock1") as EntityStockType;
+      expect(stock.goods.length).toBe(2);
       const transport = result.entities.get(
         "transport1",
       ) as EntityTransportType;
@@ -2009,14 +2011,16 @@ describe("In a double transport connection between", () => {
       ) as EntityTransportType;
       expect(transport2Tick1?.cooldown).toBe(0);
       expect(transport2Tick1?.goods).toHaveLength(1);
-      expect(tick1.entities.get("consumer1")?.goods).toHaveLength(1);
+      const consumer1Tick1 = tick1.entities.get("consumer1") as EntityConsumerType;
+      expect(consumer1Tick1?.goods).toHaveLength(1);
       const tick2 = gameReducer(tick1, { type: "game tick" });
       const transport2Tick2 = tick2.entities.get(
         "transport2",
       ) as EntityTransportType;
       expect(transport2Tick2?.cooldown).toBe(1);
       expect(transport2Tick2?.goods).toHaveLength(0);
-      expect(tick2.entities.get("consumer1")?.goods).toHaveLength(2);
+      const consumer1Tick2 = tick2.entities.get("consumer1") as EntityConsumerType;
+      expect(consumer1Tick2?.goods).toHaveLength(2);
     });
   });
   describe("source → transport2 → transport1 → consumer", () => {
@@ -2682,7 +2686,8 @@ describe("In a double transport connection between", () => {
       expect(transport1Tick2.goods.length).toBe(0);
 
       const tick3 = gameReducer(tick2, { type: "game tick" });
-      expect(tick3.entities.get("consumer1")?.goods.length).toBe(0);
+      const consumer1tick3 = tick3.entities.get("consumer1") as EntityConsumerType;
+      expect(consumer1tick3?.goods.length).toBe(0);
       const transport2Tick3 = tick3.entities.get(
         "transport2",
       ) as EntityTransportType;
@@ -2696,7 +2701,8 @@ describe("In a double transport connection between", () => {
       expect(transport1Tick3.goods.length).toBe(1);
 
       const tick4 = gameReducer(tick3, { type: "game tick" });
-      expect(tick4.entities.get("consumer1")?.goods.length).toBe(0);
+      const consumer1tick4 = tick4.entities.get("consumer1") as EntityConsumerType;
+      expect(consumer1tick4?.goods.length).toBe(0);
       const transport2Tick4 = tick4.entities.get(
         "transport2",
       ) as EntityTransportType;
@@ -2798,7 +2804,8 @@ describe("In a double transport connection between", () => {
       ) as EntityTransportType;
       expect(transport1Tick1?.cooldown).toBe(0);
       expect(transport1Tick1?.goods.length).toBe(1);
-      expect(tick1.entities.get("consumer1")?.goods.length).toBe(2);
+      const consumer1Tick1 = tick1.entities.get("consumer1") as EntityConsumerType;
+      expect(consumer1Tick1?.goods.length).toBe(2);
 
       const tick2 = gameReducer(tick1, { type: "game tick" });
       const transport1Tick2 = tick2.entities.get(
@@ -2806,7 +2813,8 @@ describe("In a double transport connection between", () => {
       ) as EntityTransportType;
       expect(transport1Tick2?.cooldown).toBe(0);
       expect(transport1Tick2?.goods.length).toBe(1);
-      expect(tick2.entities.get("consumer1")?.goods.length).toBe(1);
+      const consumer1Tick2 = tick2.entities.get("consumer1") as EntityConsumerType;
+      expect(consumer1Tick2?.goods.length).toBe(1);
 
       const tick3 = gameReducer(tick2, { type: "game tick" });
       const transport1Tick3 = tick3.entities.get(
@@ -2814,7 +2822,8 @@ describe("In a double transport connection between", () => {
       ) as EntityTransportType;
       expect(transport1Tick3?.cooldown).toBe(1);
       expect(transport1Tick3?.goods.length).toBe(0);
-      expect(tick3.entities.get("consumer1")?.goods.length).toBe(2);
+      const consumer1Tick3 = tick3.entities.get("consumer1") as EntityConsumerType;
+      expect(consumer1Tick3?.goods.length).toBe(2);
     });
   });
 });

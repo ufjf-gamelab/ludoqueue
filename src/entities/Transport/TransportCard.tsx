@@ -2,7 +2,6 @@ import { useState } from "react";
 import type { EntityTransportType } from "../EntitiesTypes";
 import Transport from "./TransporterTile";
 import "./TransportCard.css"
-import { TransportIcons } from "../Icons";
 import type { AnchorStyle } from "../Tile";
 
 export default function TransportCard({ entity }: { entity: EntityTransportType }) {
@@ -22,8 +21,8 @@ export default function TransportCard({ entity }: { entity: EntityTransportType 
     >
       {isHovering && <Transport entity={entity} />}
       <div className="transportMinimized">
-        <div style={{gridColumn: "2/2", gridRow: "2/2", placeSelf:"center", fontSize:"200%"}}>{TransportIcons[entity.direction]}</div>
-        <div style={{gridColumn: "3/3"}}>{entity.val}</div>
+        {/*<div style={{gridColumn: "2/2", gridRow: "2/2", placeSelf:"center", fontSize:"200%"}}>{TransportIcons[entity.direction]}</div>*/}
+        <div style={{gridColumn: "3/3"}}>{entity.goods.length}</div>
       </div>
     </div>
   );

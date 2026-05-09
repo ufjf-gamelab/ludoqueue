@@ -9,9 +9,8 @@ import type {
 import type {
   EntityType,
   EntityExchangerType,
-  EntityStockType,
 } from "../EntitiesTypes";
-import { recipe1 } from "./recipes";
+import { recipe1 } from "./Recipes/recipes";
 
 describe("Exchanger", () => {
   it("should create exchanger1 if none exchangers exists", () => {
@@ -25,6 +24,8 @@ describe("Exchanger", () => {
       x: 0,
       y: 0,
       direction: "up",
+      input: [["red", 1],["blue", 1],[ "green", 1]],
+      output: [["red", 1],["blue", 1],[ "green", 1]]
     };
 
     const result = gameReducer(stateTest as GameType, actionTest);
@@ -43,14 +44,15 @@ describe("Exchanger", () => {
             id: "exchanger1",
             type: "exchanger",
             name: "Exchanger 1",
-            recipe: { input: [["red", 1]], output: [["blue", 1]] },
+            recipe: recipe1,
             direction: "up",
             source: null,
             target: null,
             x: 0,
             y: 0,
             movingGoods: [],
-            goods: [],
+            inputGoods: [],
+            outputGoods: [],
           },
         ],
       ]),
@@ -62,6 +64,8 @@ describe("Exchanger", () => {
       x: 1,
       y: 0,
       direction: "left",
+      input: [["red", 1],["blue", 1],[ "green", 1]],
+      output: [["red", 1],["blue", 1],[ "green", 1]]
     };
 
     const result = gameReducer(stateTest as GameType, actionTest);
@@ -80,14 +84,16 @@ describe("Exchanger", () => {
             id: "exchanger1",
             type: "exchanger",
             name: "Exchanger 1",
-            recipe: { input: [["red", 1]], output: [["blue", 1]] },
-            direction: "up",
-            source: null,
-            target: null,
+            recipe: recipe1,
+            direction: "down",
+            source: "stock1",
+            target: "stock2",
             x: 0,
-            y: 0,
+            y: 1,
             movingGoods: [],
-            goods: [],
+            inputGoods: [],
+            outputGoods: [],
+            
           },
         ],
       ]),
@@ -99,6 +105,8 @@ describe("Exchanger", () => {
       x: 0,
       y: 0,
       direction: "left",
+      input: [["red", 1],["blue", 1],[ "green", 1]],
+      output: [["red", 1],["blue", 1],[ "green", 1]]
     };
 
     const result = gameReducer(stateTest as GameType, actionTest);
@@ -114,14 +122,16 @@ describe("Exchanger", () => {
             id: "exchanger1",
             type: "exchanger",
             name: "Exchanger 1",
-            recipe: { input: [["red", 1]], output: [["blue", 1]] },
-            direction: "up",
-            source: null,
-            target: null,
+            recipe: recipe1,
+            direction: "down",
+            source: "stock1",
+            target: "stock2",
             x: 0,
-            y: 0,
+            y: 1,
             movingGoods: [],
-            goods: [],
+            inputGoods: [],
+            outputGoods: [],
+            
           },
         ],
       ]),
@@ -147,14 +157,15 @@ describe("Exchanger", () => {
             id: "exchanger1",
             type: "exchanger",
             name: "Exchanger 1",
-            recipe: { input: [["red", 1]], output: [["blue", 1]] },
-            direction: "up",
+            recipe: recipe1,
+            direction: "down",
             source: null,
             target: null,
             x: 0,
-            y: 0,
+            y: 1,
             movingGoods: [],
-            goods: [],
+            inputGoods: [],
+            outputGoods: [],
           },
         ],
       ]),
@@ -180,14 +191,15 @@ describe("Exchanger", () => {
             id: "exchanger1",
             type: "exchanger",
             name: "Exchanger 1",
-            recipe: { input: [["red", 1]], output: [["blue", 1]] },
-            direction: "up",
+            recipe: recipe1,
+            direction: "down",
             source: null,
             target: null,
             x: 0,
-            y: 0,
+            y: 1,
             movingGoods: [],
-            goods: [],
+            inputGoods: [],
+            outputGoods: [],
           },
         ],
       ]),
@@ -251,7 +263,7 @@ describe("Exchanger", () => {
             x: 0,
             y: 1,
             movingGoods: [],
-            goods: [
+            inputGoods: [
               { source: null, target: null, size: 1, time: 0, goodType: "red" },
               { source: null, target: null, size: 1, time: 2, goodType: "red" },
               {
@@ -262,6 +274,8 @@ describe("Exchanger", () => {
                 goodType: "blue",
               },
             ],
+            outputGoods: [],
+
           },
         ],
       ]),
@@ -275,10 +289,9 @@ describe("Exchanger", () => {
       exchangers: ["exchanger1"],
     };
     const result = gameReducer(stateTest as GameType, { type: "game tick" });
-    const stock1Entity = result.entities.get("stock1") as EntityStockType;
-    const stock2Entity = result.entities.get("stock2") as EntityStockType;
-    expect(stock1Entity.goods).toHaveLength(0);
-    expect(stock2Entity.goods).toHaveLength(1);
-    expect(stock2Entity.goods[0].goodType).toBe("green");
+    const exchangerEntity = result.entities.get("exchanger1") as EntityExchangerType;
+    expect(exchangerEntity.inputGoods).toHaveLength(0);
+    expect(exchangerEntity.outputGoods).toHaveLength(1);
+    expect(exchangerEntity.outputGoods[0].goodType).toBe("green");
   });
 });

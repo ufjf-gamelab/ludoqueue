@@ -38,7 +38,7 @@ export default function Tile({
       case "source":
         return <Source key={entity.id} entity={entity} />;
       case "consumer":
-        return <ConsumerTile key={entity.id} entity={entity} />;
+        return <ConsumerTile key={entity.id} />;
       case "stock":
         return <Stock key={entity.id} entity={entity} />;
       case "transport":
