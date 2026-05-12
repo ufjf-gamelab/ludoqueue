@@ -44,21 +44,15 @@ function App() {
         <DataChanger></DataChanger>
       </div>
       {selectedTab === "game" && (
-        <>
+        <div className= "GameContainer">
           <FluxBoard></FluxBoard>
-        </>
+        </div>
       )}
       {selectedTab === "graph" && (
         <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            gap: "20px",
-            height: "calc(100vh - 100px)",
-            padding: "60px 20px 20px 20px",
-          }}
+          className="StatisticsContainer"
         >
-          <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+          <div style={{ flex: 1, display: "flex", flexDirection: "column"}}>
             <h2> Grafo de Conexoes: </h2>
             <ReactFlowGraph></ReactFlowGraph>
           </div>
