@@ -1,32 +1,47 @@
-.GraphElements {
-    display: flex;
-    flex-direction: row;
-    gap: 2rem;
-    justify-content: center;
+.ElementsUI {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
 
+.GraphElements {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  overflow-y: auto;
+  height: 100%;
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  overflow-y: scroll;
 }
 
 .GraphElements > * {
-    max-width: 350px;
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 20px;
+  max-width: 350px;
+  background: rgba(0, 0, 0, 0.1);
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+  justify-content: center;
 }
 
 .GraphElements > div {
-    padding: 1rem;
+  padding: 1rem;
 }
 
-.ElementsUI > button{
-    margin: 0px;
-    margin-bottom: 20px;
+.ElementsUI > button {
+  margin: 0px;
+  margin-bottom: 20px;
+  flex-shrink: 0;
 }
 
 ul {
-    max-width: 300px;
-    height: auto;
-    text-align: left;
-    list-style-position: outside;
-    padding-left: 20px;
-    display: flex;
-    flex-direction: column;
+  max-width: 300px;
+  height: auto;
+  text-align: left;
+  list-style-position: outside;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
 }

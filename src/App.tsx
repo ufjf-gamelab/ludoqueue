@@ -49,12 +49,31 @@ function App() {
         </>
       )}
       {selectedTab === "graph" && (
-        <>
-          <h1 style={{ marginTop:"60px" }}> Grafo de Conexoes: </h1>
-          <ReactFlowGraph></ReactFlowGraph>
-          <h1> Estatísticas das Conexões: </h1>
-          <GraphElementsList graph={graph} />
-        </>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            gap: "20px",
+            height: "calc(100vh - 100px)",
+            padding: "60px 20px 20px 20px",
+          }}
+        >
+          <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+            <h2> Grafo de Conexoes: </h2>
+            <ReactFlowGraph></ReactFlowGraph>
+          </div>
+          <div
+            style={{
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+              minHeight: 0,
+            }}
+          >
+            <h2> Estatísticas das Conexões: </h2>
+            <GraphElementsList graph={graph} />
+          </div>
+        </div>
       )}
     </>
   );
