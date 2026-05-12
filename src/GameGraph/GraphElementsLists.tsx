@@ -25,9 +25,27 @@ export default function GraphElementsList({ graph }: { graph: GraphType }) {
             })}
           </ul>
         </div>
+
         <div>
           <h2>
-            <span>Connections</span>
+            <span>Conectividade</span>
+            <span
+              className="info-icon"
+              title="Um grafo é conexo se existe um caminho entre qualquer par de nós. Componentes conectados são subgrafos onde cada par de nós está conectado por um caminho."
+            >
+              ℹ️
+            </span>
+          </h2>
+          {components.length === 1 ? (
+              <p>O grafo é conexo.</p>
+            ) : (
+              <p>O grafo tem {components.length} componentes conectados.</p>
+            )}
+        </div>
+
+        <div>
+          <h2>
+            <span>Conexões</span>
             <span
               className="info-icon"
               title="Lista de todas as conexões entre nós"
@@ -48,6 +66,7 @@ export default function GraphElementsList({ graph }: { graph: GraphType }) {
             })}
           </ul>
         </div>
+
         <div>
           <h2>
             <span>Adjacency List</span>
@@ -73,12 +92,13 @@ export default function GraphElementsList({ graph }: { graph: GraphType }) {
             )}
           </ul>
         </div>
+
         <div>
           <h2>
-            <span>Status</span>
+            <span>Ciclos</span>
             <span
               className="info-icon"
-              title="Informações sobre ciclos e conectividade"
+              title="Um grafo possui um ciclo se existe um caminho que começa e termina no mesmo nó, passando por pelo menos um outro nó no meio. Ciclos podem indicar dependências circulares ou loops infinitos em um grafo de tarefas, por exemplo."
             >
               ℹ️
             </span>
@@ -94,11 +114,6 @@ export default function GraphElementsList({ graph }: { graph: GraphType }) {
                 ))}
               </ul>
             </>
-          )}
-          {components.length === 1 ? (
-            <p>O grafo é conexo.</p>
-          ) : (
-            <p>O grafo tem {components.length} componentes conectados.</p>
           )}
         </div>
       </div>

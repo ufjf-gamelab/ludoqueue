@@ -50,6 +50,10 @@ h2 {
   font-size: 1rem;
 }
 
+p {
+  text-align: left;
+}
+
 ul {
   max-width: 300px;
   height: auto;
