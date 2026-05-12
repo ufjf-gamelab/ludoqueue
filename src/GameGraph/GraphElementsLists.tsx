@@ -14,16 +14,18 @@ export default function GraphElementsList({ graph }: { graph: GraphType }) {
         <div>
           <h2>
             <span>Nodes</span>
-            <span className="info-icon" title="Lista de todos os nós do grafo">
+            <span className="info-icon" title="Lista de todos os nós do grafo, em que cada nó é uma peça do jogo.">
               ℹ️
             </span>
           </h2>
-          <ul>
+          <div className="nodes-list">
             {graph.nodes().map((node) => {
               const attributes = graph.getNodeAttributes(node);
-              return <li key={node}>{attributes.label}</li>;
+              return <div className="node-item" key={node}>
+                {attributes.label}
+              </div>;
             })}
-          </ul>
+          </div>
         </div>
 
         <div>
@@ -37,10 +39,10 @@ export default function GraphElementsList({ graph }: { graph: GraphType }) {
             </span>
           </h2>
           {components.length === 1 ? (
-              <p>O grafo é conexo.</p>
-            ) : (
-              <p>O grafo tem {components.length} componentes conectados.</p>
-            )}
+            <p>O grafo é conexo.</p>
+          ) : (
+            <p>O grafo tem {components.length} componentes conectados.</p>
+          )}
         </div>
 
         <div>
@@ -48,23 +50,27 @@ export default function GraphElementsList({ graph }: { graph: GraphType }) {
             <span>Conexões</span>
             <span
               className="info-icon"
-              title="Lista de todas as conexões entre nós"
+              title="Lista de todas as conexões entre nós, com direção indicada por setas. Cada linha mostra um nó de origem, uma seta e o nó de destino conectado a ele."
             >
               ℹ️
             </span>
           </h2>
-          <ul>
+            <div className="connections-list">
             {graph.edges().map((edge) => {
               const source = graph.source(edge);
               const target = graph.target(edge);
 
               return (
-                <li key={edge}>
-                  {source} &rarr; {target}
-                </li>
+                <div key={edge} className="connection-item">
+                  <span className="node-label">{source}</span>
+                  <span className="arrow">→</span>
+                  <span className="connection-nodes">
+                    {target}
+                  </span>
+                </div>
               );
             })}
-          </ul>
+            </div>
         </div>
 
         <div>
@@ -72,25 +78,26 @@ export default function GraphElementsList({ graph }: { graph: GraphType }) {
             <span>Adjacency List</span>
             <span
               className="info-icon"
-              title="Representação de adjacência do grafo"
+              title="Representação de adjacência do grafo. Cada linha mostra um nó seguido por uma lista de nós adjacentes (conectados por uma aresta). "
             >
               ℹ️
             </span>
           </h2>
-          <ul>
+          <div className="connections-list">
             {Array.from(adjacencyList.entries()).map(
               ([nodeID, adjacencies]) => (
-                <li key={nodeID}>
-                  {nodeID}{" "}
-                  <ul>
-                    {adjacencies.map((targetNode) => (
-                      <li key={`${nodeID}-${targetNode}`}>{targetNode}</li>
-                    ))}
-                  </ul>
-                </li>
+                <div key={nodeID} className="connection-item">
+                  <span className="node-label">{nodeID}</span>
+                  <span className="arrow">→</span>
+                  <span className="connection-nodes">
+                    {adjacencies.length > 0
+                      ? adjacencies.join(", ")
+                      : "(sem conexões)"}
+                  </span>
+                </div>
               ),
             )}
-          </ul>
+          </div>
         </div>
 
         <div>
