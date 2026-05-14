@@ -1,10 +1,11 @@
 import type { GraphType } from "../GameTypes";
-import { createAdjacencyList, findAllCycles } from "./GraphMethods";
+import { createAdjacencyList, createDirectionalAdjacencyList, findAllCycles } from "./GraphMethods";
 import "./GraphElementsLists.css";
 import { connectedComponents } from "graphology-components";
 
 export default function GraphElementsList({ graph }: { graph: GraphType }) {
   const adjacencyList = createAdjacencyList(graph);
+  const directionalAdjacencyList = createDirectionalAdjacencyList(graph);
   const cycles = findAllCycles(graph);
   const components = connectedComponents(graph);
 
@@ -45,6 +46,7 @@ export default function GraphElementsList({ graph }: { graph: GraphType }) {
           )}
         </div>
 
+{/*
         <div>
           <h2>
             <span>Conexões</span>
@@ -72,19 +74,47 @@ export default function GraphElementsList({ graph }: { graph: GraphType }) {
             })}
             </div>
         </div>
+*/}
 
         <div>
           <h2>
-            <span>Adjacency List</span>
+            <span> Adjacency List</span>
             <span
               className="info-icon"
-              title="Representação de adjacência do grafo. Cada linha mostra um nó seguido por uma lista de nós adjacentes (conectados por uma aresta). "
+              title="Representação de adjacência direcional do grafo. Cada linha mostra um nó seguido por uma lista de nós adjacentes (conectados por uma aresta). "
             >
               ℹ️
             </span>
           </h2>
           <div className="connections-list">
             {Array.from(adjacencyList.entries()).map(
+              ([nodeID, adjacencies]) => (
+                <div key={nodeID} className="connection-item">
+                  <span className="node-label">{nodeID}</span>
+                  <span className="arrow">→</span>
+                  <span className="connection-nodes">
+                    {adjacencies.length > 0
+                      ? adjacencies.join(", ")
+                      : "(sem conexões)"}
+                  </span>
+                </div>
+              ),
+            )}
+          </div>
+        </div>
+
+        <div>
+          <h2>
+            <span>Directional Adjacency List</span>
+            <span
+              className="info-icon"
+              title="Representação de adjacência direcional do grafo. Cada linha mostra um nó seguido por uma lista de nós adjacentes (conectados por uma aresta, em que a direção é importante). "
+            >
+              ℹ️
+            </span>
+          </h2>
+          <div className="connections-list">
+            {Array.from(directionalAdjacencyList.entries()).map(
               ([nodeID, adjacencies]) => (
                 <div key={nodeID} className="connection-item">
                   <span className="node-label">{nodeID}</span>

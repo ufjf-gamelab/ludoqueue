@@ -11,6 +11,16 @@ export function createAdjacencyList(graph: GraphType) {
   const adjacency = new Map<string, string[]>();
 
   graph.forEachNode((node) => {
+    adjacency.set(node, graph.neighbors(node));
+  });
+
+  return adjacency;
+}
+
+export function createDirectionalAdjacencyList(graph: GraphType) {
+  const adjacency = new Map<string, string[]>();
+
+  graph.forEachNode((node) => {
     adjacency.set(node, graph.outNeighbors(node));
   });
 
