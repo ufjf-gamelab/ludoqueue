@@ -69,7 +69,8 @@ ul {
   gap: 0.5rem;
 }
 
-.connections-list {
+.connections-list,
+.degree-list {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -94,7 +95,8 @@ ul {
   flex-shrink: 0;
 }
 
-.connection-item {
+.connection-item,
+.degree-item {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -112,6 +114,13 @@ ul {
   text-align: center;
 }
 
+.degree-node-label {
+  font-weight: normal;
+  color: #000000;
+  min-width: 30%;
+  text-align: center;
+}
+
 .arrow {
   color: #010101;
   font-weight: bold;
@@ -124,5 +133,15 @@ ul {
   flex: 1;
   word-break: break-word;
   width: 45%;
+  text-align: center;
+}
+
+.d-in,
+.d-out {
+  font-weight: bold;
+
+  color: #333;
+  word-break: break-word;
+  width: 40%;
   text-align: center;
 }

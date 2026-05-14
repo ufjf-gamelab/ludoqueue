@@ -1,5 +1,9 @@
 import type { GraphType } from "../GameTypes";
-import { createAdjacencyList, createDirectionalAdjacencyList, findAllCycles } from "./GraphMethods";
+import {
+  createAdjacencyList,
+  createDirectionalAdjacencyList,
+  findAllCycles,
+} from "./GraphMethods";
 import "./GraphElementsLists.css";
 import { connectedComponents } from "graphology-components";
 
@@ -15,16 +19,21 @@ export default function GraphElementsList({ graph }: { graph: GraphType }) {
         <div>
           <h2>
             <span>Nodes</span>
-            <span className="info-icon" title="Lista de todos os nós do grafo, em que cada nó é uma peça do jogo.">
+            <span
+              className="info-icon"
+              title="Lista de todos os nós do grafo, em que cada nó é uma peça do jogo."
+            >
               ℹ️
             </span>
           </h2>
           <div className="nodes-list">
             {graph.nodes().map((node) => {
               const attributes = graph.getNodeAttributes(node);
-              return <div className="node-item" key={node}>
-                {attributes.label}
-              </div>;
+              return (
+                <div className="node-item" key={node}>
+                  {attributes.label}
+                </div>
+              );
             })}
           </div>
         </div>
@@ -46,7 +55,7 @@ export default function GraphElementsList({ graph }: { graph: GraphType }) {
           )}
         </div>
 
-{/*
+        {/*
         <div>
           <h2>
             <span>Conexões</span>
@@ -152,6 +161,36 @@ export default function GraphElementsList({ graph }: { graph: GraphType }) {
               </ul>
             </>
           )}
+        </div>
+
+        <div>
+          <h2>
+            <span>Grau dos nós</span>
+            <span
+              className="info-icon"
+              title="Representa a quantidade de conexões de entrada e saída de cada nó. O grau de entrada é o número de arestas que chegam a um nó, enquanto o grau de saída é o número de arestas que saem de um nó. Esta informação é útil para entender a importância ou centralidade de um nó dentro do grafo."
+            >
+              ℹ️
+            </span>
+          </h2>
+          <div className="degree-list">
+            {graph.nodes().map((node) => {
+              const inDegree = graph.inDegree(node);
+              const outDegree = graph.outDegree(node);
+              return (
+                <div className="degree-item">
+                  <span className="degree-node-label">{node}</span>
+                  <span className="arrow">→</span>
+                  <span className="d-in">
+                    d<sub>in</sub> {inDegree}{" "}
+                  </span>
+                  <span className="d-out">
+                    d<sub>out</sub> {outDegree}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>
