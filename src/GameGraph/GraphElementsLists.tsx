@@ -152,14 +152,14 @@ export default function GraphElementsList({ graph }: { graph: GraphType }) {
           {cycles.length === 0 ? (
             <p>O grafo não contém ciclos.</p>
           ) : (
-            <>
-              <p>O grafo contém {cycles.length} ciclo(s):</p>
-              <ul>
-                {cycles.map((cycle, i) => (
-                  <li key={i}>{cycle.join(" → ")}</li>
-                ))}
-              </ul>
-            </>
+            <div className="cycles-list">
+              {cycles.map((cycle, i) => (
+                <div key={i} className="cycle-item">
+                  <span className="cycle-index">#{i + 1}</span>
+                  <span className="cycle-path">{cycle.join(" → ")}</span>
+                </div>
+              ))}
+            </div>
           )}
         </div>
 
