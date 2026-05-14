@@ -89,6 +89,7 @@ ul {
 
 .node-item::before {
   content: "●";
+  font-size: 10px;
   color: #000000;
   flex-shrink: 0;
 }
@@ -107,15 +108,21 @@ ul {
   font-weight: bold;
   color: #000000;
   min-width: 40px;
+  width: 45%;
+  text-align: center;
 }
 
 .arrow {
-  color: #999;
+  color: #010101;
   font-weight: bold;
+  font-size: 1.2rem;
+  text-align: center;
 }
 
 .connection-nodes {
   color: #333;
   flex: 1;
   word-break: break-word;
+  width: 45%;
+  text-align: center;
 }
