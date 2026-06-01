@@ -2,8 +2,6 @@ import { useRef } from "react";
 import "./FluxBoard.css";
 import { useGame } from "../Provider";
 import Tile from "../entities/Tile";
-import ToolBar from "./ToolBar";
-import EditorMenu from "../Editor/EditorMenu";
 import MovingGoodsLayer from "../MovingGoods/MovingGoodsLayer";
 
 export default function FluxBoard() {
@@ -48,10 +46,6 @@ export default function FluxBoard() {
             ),
         )}
       <MovingGoodsLayer numRows={NUM_ROWS} numCols={NUM_COLS} size={CELL_WIDTH} />
-      </div>
-      <div>
-        <ToolBar />
-        <EditorMenu editor={game.editor}></EditorMenu>
       </div>
     </div>
   );

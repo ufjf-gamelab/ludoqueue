@@ -7,6 +7,7 @@ import GraphElementsList from "./GameGraph/GraphElementsLists";
 import { useEffect, useMemo, useState } from "react";
 import { DataChanger } from "./datas/DataChanger";
 import ReactFlowGraph from "./GameGraph/ReactFlow/ReactFlowGraph";
+import { Sidebar } from "./FluxBoard/Sidebar";
 
 function App() {
   const { game } = useGame()!;
@@ -46,6 +47,7 @@ function App() {
       {selectedTab === "game" && (
         <div className= "GameContainer">
           <FluxBoard></FluxBoard>
+          <Sidebar></Sidebar>
         </div>
       )}
       {selectedTab === "graph" && (

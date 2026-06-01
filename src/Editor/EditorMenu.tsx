@@ -75,7 +75,7 @@ export default function EditorMenu({ editor }: { editor: GameEditor }) {
   };
 
   if (!editor || !dispatch) {
-    return <></>;
+    return <p style={{ fontWeight: "bold", textAlign: "center" }}>Select a entity type to edit the properities!</p>;
   }
   return (
     <div className={"EditorMenu"}>
