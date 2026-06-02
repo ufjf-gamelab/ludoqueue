@@ -1,20 +1,18 @@
 .ElementsUI {
   display: flex;
   flex-direction: column;
-  height: 500px;
-  width: 100%;
+  height: fit-content;
+  width: fit-content;
 }
 
 .GraphElements {
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  overflow-y: auto;
   height: 100%;
   width: 100%;
   flex: 1;
   min-height: 0;
-  overflow-y: scroll;
 }
 
 .GraphElements > * {
