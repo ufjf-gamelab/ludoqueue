@@ -36,6 +36,7 @@ export default function FluxBoard() {
       <div
         ref={boardRef}
         className="game-board"
+        tabIndex={0}
         onClick={(e) => {
           if (boardRef.current === null) return;
           const grid = boardRef.current as HTMLDivElement;
@@ -46,11 +47,30 @@ export default function FluxBoard() {
             (e.clientY - grid.getBoundingClientRect().y) / CELL_WIDTH,
           );
 
-          dispatch({ type: "pointing", x: x + game.offset.x, y: y + game.offset.y });
+          dispatch({
+            type: "pointing",
+            x: x + game.offset.x,
+            y: y + game.offset.y,
+          });
+        }}
+        onKeyDown={(e) => {
+          if (e.key === "ArrowRight") dispatch({ type: "move map right" });
+          else if (e.key === "ArrowLeft") dispatch({ type: "move map left" });
+          else if (e.key === "ArrowUp") dispatch({ type: "move map up" });
+          else if (e.key === "ArrowDown") dispatch({ type: "move map down" });
+          else if (e.key === "w") dispatch({ type: "move map up" });
+          else if (e.key === "a") dispatch({ type: "move map left" });
+          else if (e.key === "s") dispatch({ type: "move map down" });
+          else if (e.key === "d") dispatch({ type: "move map right" });
+          else if (e.key === "W") dispatch({ type: "move map up" });
+          else if (e.key === "A") dispatch({ type: "move map left" });
+          else if (e.key === "S") dispatch({ type: "move map down" });
+          else if (e.key === "D") dispatch({ type: "move map right" });
         }}
         style={{
           gridTemplateColumns: `repeat(${numCols}, ${CELL_WIDTH}px)`,
           gridTemplateRows: `repeat(${numRows}, ${CELL_WIDTH}px)`,
+          backgroundPosition: `${-game.offset.x * CELL_WIDTH}px ${-game.offset.y * CELL_WIDTH}px`,
         }}
       >
         {Array.from(game.entities.values()).map((entity) => {
@@ -74,6 +94,32 @@ export default function FluxBoard() {
           numCols={numCols}
           size={CELL_WIDTH}
         />
+        <div className="map-controls">
+          <button
+            className="up"
+            onClick={() => dispatch({ type: "move map up" })}
+          >
+            ↑
+          </button>
+          <button
+            className="left"
+            onClick={() => dispatch({ type: "move map left" })}
+          >
+            ←
+          </button>
+          <button
+            className="right"
+            onClick={() => dispatch({ type: "move map right" })}
+          >
+            →
+          </button>
+          <button
+            className="down"
+            onClick={() => dispatch({ type: "move map down" })}
+          >
+            ↓
+          </button>
+        </div>
       </div>
     </div>
   );

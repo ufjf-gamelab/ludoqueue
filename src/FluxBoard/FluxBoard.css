@@ -1,5 +1,7 @@
 /* Garante que o modelo de caixa inclua padding/borda no tamanho total */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -11,7 +13,7 @@
   width: 100vw;
   height: 100vh;
   flex: 1;
-  min-width:0;
+  min-width: 0;
   overflow: hidden;
 }
 
@@ -33,8 +35,58 @@
 
 @media (max-width: 768px) {
   .flux-board {
-    flex: none;               
+    flex: none;
     width: 100%;
-    height: 45vh;             
+    height: 45vh;
   }
+}
+
+.map-controls {
+  position: absolute;
+  bottom: 0.5rem;
+  right: 0.5rem;
+  display: grid;
+  grid-template-columns: 1.5rem 1.5rem 1.5rem;
+  grid-template-rows: 1.5rem 1.5rem 1.5rem;
+  gap: 0.25rem;
+}
+
+.map-controls button {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #333;
+  border-radius: 0.25rem;
+  transition: all 0.2s;
+  padding: 0;
+}
+
+.map-controls button:hover {
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.map-controls .up {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.map-controls .left {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.map-controls .right {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+.map-controls .down {
+  grid-column: 2;
+  grid-row: 3;
 }

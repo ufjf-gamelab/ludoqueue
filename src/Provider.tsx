@@ -290,6 +290,18 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
         data: selectedData,
       });
     }
+    case "move map left": {
+      return {...state, offset: {x: state.offset.x - 1, y: state.offset.y}};
+    }
+    case "move map right": {
+      return {...state, offset: {x: state.offset.x + 1, y: state.offset.y}};
+    }
+    case "move map up": {
+      return {...state, offset: {x: state.offset.x, y: state.offset.y - 1}};
+    }
+    case "move map down": {
+      return {...state, offset: {x: state.offset.x, y: state.offset.y + 1}};
+    }
 
     case "editor change max": {
       if (
@@ -877,6 +889,22 @@ type GameActionResetGame = {
   type: "reset game";
 };
 
+type GameActionMoveMapLeft = {
+  type: "move map left";
+};
+
+type GameActionMoveMapRight = {
+  type: "move map right";
+};
+
+type GameActionMoveMapUp = {
+  type: "move map up";
+};
+
+type GameActionMoveMapDown = {
+  type: "move map down";
+};
+
 export type GameAction =
   | GameActionCreateSource
   | GameActionDeleteSource
@@ -910,6 +938,10 @@ export type GameAction =
   | GameActionSetStatus
   | GameActionPointing
   | GameActionChangeData
+  | GameActionMoveMapLeft
+  | GameActionMoveMapRight
+  | GameActionMoveMapUp
+  | GameActionMoveMapDown
   | GameActionEditorChangeMax
   | GameActionEditorChangeRate
   | GameActionEditorChangeDirection
