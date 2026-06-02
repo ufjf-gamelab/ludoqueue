@@ -189,4 +189,5 @@ export const exchangerConsumerData: GameType = {
   time: 0,
   data: "exchanger consumer",
   recipe: recipe1,
+  offset: { x: 0, y: 0 },
 };

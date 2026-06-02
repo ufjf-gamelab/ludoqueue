@@ -118,4 +118,5 @@ export const splitterSimplesData: GameType = {
   time: 0,
   data: "splitter simples",
   recipe: recipe1,
+  offset: { x: 0, y: 0 },
 };
