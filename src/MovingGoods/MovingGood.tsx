@@ -19,8 +19,8 @@ export default function MovingGood({ good }: { good: MovingGoodType }) {
     <div
       className={"transported-goods-container"}
       style={{
-        gridColumn: `${source.x + 1}`,
-        gridRow: `${source.y + 1}`,
+        gridColumn: `${source.x - game.offset.x + 1}`,
+        gridRow: `${source.y - game.offset.y + 1}`,
       }}
     >
       <span

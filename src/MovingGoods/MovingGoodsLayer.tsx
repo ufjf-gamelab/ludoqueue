@@ -15,9 +15,8 @@ export default function MovingGoodsLayer({
   const goods = Array.from(game.entities.values())
     .filter(
       (e) =>
-        e.type === "transport" || e.type === "splitter" || e.type === "merger",
-    )
-    .flatMap((e) => e.movingGoods.filter((g) => g.source && g.target));
+        ((e.type === "transport" || e.type === "splitter" || e.type === "merger") && (e.x >= game.offset.x && e.x < game.offset.x + numCols && e.y >= game.offset.y && e.y < game.offset.y + numRows))
+        )    .flatMap((e) => e.movingGoods.filter((g) => g.source && g.target));
   return (
     <div
       className="goods-layer"

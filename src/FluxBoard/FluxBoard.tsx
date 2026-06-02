@@ -46,24 +46,29 @@ export default function FluxBoard() {
             (e.clientY - grid.getBoundingClientRect().y) / CELL_WIDTH,
           );
 
-          dispatch({ type: "pointing", x, y });
+          dispatch({ type: "pointing", x: x + game.offset.x, y: y + game.offset.y });
         }}
         style={{
           gridTemplateColumns: `repeat(${numCols}, ${CELL_WIDTH}px)`,
           gridTemplateRows: `repeat(${numRows}, ${CELL_WIDTH}px)`,
         }}
       >
-        {Array.from(game.entities.values()).map(
-          (entity) =>
-            entity && (
+        {Array.from(game.entities.values()).map((entity) => {
+          if (
+            entity.x >= game.offset.x &&
+            entity.x < game.offset.x + numCols &&
+            entity.y >= game.offset.y &&
+            entity.y < game.offset.y + numRows
+          )
+            return (
               <Tile
                 key={entity.id}
                 entity={entity}
                 selected={entity.id === game.selected?.id}
                 tileSize={CELL_WIDTH}
               />
-            ),
-        )}
+            );
+        })}
         <MovingGoodsLayer
           numRows={numRows}
           numCols={numCols}
