@@ -9,9 +9,9 @@
     rgba(219, 207, 219, 0.15),
     rgba(100, 100, 255, 0.1)
   );
-  border-radius: 1rem 0 0 1rem;
+  border-radius: 1rem;
+  margin-right: 1rem;
   border: 1px solid rgba(100, 100, 255, 0.3);
-  border-right: none;
   width: 280px;
   max-height: calc(100vh - 80px);
   overflow-y: auto;

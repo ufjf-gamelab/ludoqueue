@@ -14,8 +14,7 @@
   margin-top: 50px;
   align-items: center;
   justify-content: space-between;
-  gap: 2rem;
-  box-sizing: border-box;
+  
 }
 
 @media (max-width: 768px) {
