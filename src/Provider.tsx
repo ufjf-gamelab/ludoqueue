@@ -302,6 +302,9 @@ export function gameReducer(state: GameType, action: GameAction): GameType {
     case "move map down": {
       return {...state, offset: {x: state.offset.x, y: state.offset.y + 1}};
     }
+    case "reset map": {
+      return {...state, offset: {x: 0, y: 0}};
+    }
 
     case "editor change max": {
       if (
@@ -905,6 +908,10 @@ type GameActionMoveMapDown = {
   type: "move map down";
 };
 
+type GameActionResetMap = {
+  type: "reset map";
+};
+
 export type GameAction =
   | GameActionCreateSource
   | GameActionDeleteSource
@@ -942,6 +949,7 @@ export type GameAction =
   | GameActionMoveMapRight
   | GameActionMoveMapUp
   | GameActionMoveMapDown
+  | GameActionResetMap
   | GameActionEditorChangeMax
   | GameActionEditorChangeRate
   | GameActionEditorChangeDirection

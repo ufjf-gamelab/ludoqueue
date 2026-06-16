@@ -119,6 +119,12 @@ export default function FluxBoard() {
           >
             ↓
           </button>
+          <button
+          className="center"
+          onClick={() => dispatch({ type: "reset map" })}
+        >
+            0
+          </button>
         </div>
       </div>
     </div>
