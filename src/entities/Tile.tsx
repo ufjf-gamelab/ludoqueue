@@ -64,8 +64,8 @@ export default function Tile({
       }}
       style={
         {
-          gridColumn: `${entity.x + 1}`,
-          gridRow: `${entity.y + 1}`,
+          gridColumn: `${entity.x + 1 - game.offset.x}`,
+          gridRow: `${entity.y + 1 - game.offset.y}`,
           anchorName: `${"--anchor-" + entity.id}`,
           zIndex: `${entity.y}`,
           width: `${tileSize}px`,

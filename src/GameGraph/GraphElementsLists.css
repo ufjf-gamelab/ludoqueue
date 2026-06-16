@@ -1,20 +1,18 @@
 .ElementsUI {
   display: flex;
   flex-direction: column;
-  height: 500px;
-  width: 100%;
+  height: fit-content;
+  width: fit-content;
 }
 
 .GraphElements {
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  overflow-y: auto;
   height: 100%;
   width: 100%;
   flex: 1;
   min-height: 0;
-  overflow-y: scroll;
 }
 
 .GraphElements > * {
@@ -70,7 +68,8 @@ ul {
 }
 
 .connections-list,
-.degree-list {
+.degree-list,
+.paths-list {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -174,6 +173,38 @@ ul {
 }
 
 .cycle-path {
+  color: #333;
+  word-break: break-word;
+  flex: 1;
+  font-family: monospace;
+}
+
+.paths-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.path-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem;
+  background: rgba(70, 130, 180, 0.1);
+  border-left: 3px solid rgba(70, 130, 180, 0.5);
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
+.path-index {
+  font-weight: bold;
+  color: rgb(70, 131, 180);
+  min-width: 30px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.path {
   color: #333;
   word-break: break-word;
   flex: 1;

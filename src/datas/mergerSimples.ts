@@ -101,4 +101,5 @@ export const mergerSimplesData: GameType = {
   time: 0,
   data: "merger simples",
   recipe: recipe1,
+  offset: { x: 0, y: 0 },
 };

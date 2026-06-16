@@ -101,4 +101,5 @@ export const initialState: GameType = {
   time: 0,
   data: "initial state",
   recipe: recipe1,
+  offset: { x: 0, y: 0 },
 };

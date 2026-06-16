@@ -3,23 +3,50 @@
   padding: 0;
   text-align: center;
   height: 100vh;
+  overflow: hidden;
+  --top-bar-height: 65px;
 }
 
 .GameContainer {
   display: flex;
   flex-direction: row;
   width: 100%;
-  height: 100%;
-  margin-top: 50px;
+  height: calc(100vh - var(--top-bar-height));
+  margin-top: var(--top-bar-height);
+  justify-content: space-between;
+}
+
+@media (max-width: 768px) {
+  .GameContainer {
+    flex-direction: column;
+    height: auto;
+    min-height: calc(100vh - 50px);
+    justify-content: flex-start;
+    gap: 1.5rem;
+    padding: 1rem;
+  }
 }
 
 .StatisticsContainer {
   display: flex;
   flex-direction: row;
   gap: 20px;
-  height: 800px;
-  margin-top: 50px;
+  width: 100vw;
+  height: calc(100vh - 50px);
+  margin-top: 25px;
   padding: 60px 20px 20px 20px;
+  justify-content: flex-end;
+}
+
+.StatisticsContainer > div:first-child {
+  flex: 2;
+  min-width: 0;
+}
+
+.StatisticsContainer > div:last-child {
+  flex: 0 0 auto;
+  max-width: 400px;
+  overflow-y: auto;
 }
 
 .NavBar {
@@ -31,8 +58,8 @@
   top: 0;
   left: 0;
   right: 0;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
   background-color: rgba(0, 0, 0, 0.1);
   z-index: 10;
 }

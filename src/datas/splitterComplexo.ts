@@ -166,4 +166,5 @@ export const splitterComplexoData: GameType = {
   time: 0,
   data: "splitter complexo",
   recipe: recipe1,
+  offset: { x: 0, y: 0 },
 };

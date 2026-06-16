@@ -130,3 +130,20 @@ function normalizeCycle(cycle: string[]) {
   rotated.push(rotated[0]);
   return rotated;
 }
+
+export function findAllPaths(graph: Graph): string[][] {
+  const paths: string[][] = [];
+
+  graph.forEachNode((node) => {
+    if (node.includes("source"))
+    graph.forEachNode((target) => {
+      if (node !== target && target.includes("consumer") || target.includes("stock")) {
+        const nodePaths = allSimplePaths(graph, node, target, {
+          maxDepth: graph.order,
+        });
+        paths.push(...nodePaths);
+      }
+    });
+  });
+  return paths;
+}

@@ -1,9 +1,20 @@
+/* Garante que o modelo de caixa inclua padding/borda no tamanho total */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 .flux-board {
   display: flex;
   flex-direction: row;
-  margin-top: 2rem;
-  height: fit-content;
-  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: calc(100vh - var(--top-bar-height));
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .game-board {
@@ -12,13 +23,75 @@
   position: relative;
   background: url("../assets/grass.png") repeat;
   border-radius: 1rem;
-  width: fit-content;
-  height: fit-content;
+  flex-shrink: 0;
 }
 
 .tile-wrapper {
   border-radius: 1rem;
-  background-color: rgb(0, 0, 0, 15%);
+  background-color: rgba(0, 0, 0, 0.15);
   aspect-ratio: 1 / 1;
   padding: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .flux-board {
+    flex: none;
+    width: 100%;
+    height: 45vh;
+  }
+}
+
+.map-controls {
+  position: absolute;
+  bottom: 0.5rem;
+  right: 0.5rem;
+  display: grid;
+  grid-template-columns: 1.5rem 1.5rem 1.5rem;
+  grid-template-rows: 1.5rem 1.5rem 1.5rem;
+  gap: 0.25rem;
+}
+
+.map-controls button {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #333;
+  border-radius: 0.25rem;
+  transition: all 0.2s;
+  padding: 0;
+}
+
+.map-controls button:hover {
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.map-controls .up {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.map-controls .left {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.map-controls .right {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+.map-controls .down {
+  grid-column: 2;
+  grid-row: 3;
+}
+
+.map-controls .center {
+  grid-column: 2;
+  grid-row: 2;
 }

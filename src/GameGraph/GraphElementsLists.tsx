@@ -3,6 +3,7 @@ import {
   createAdjacencyList,
   createDirectionalAdjacencyList,
   findAllCycles,
+  findAllPaths,
 } from "./GraphMethods";
 import "./GraphElementsLists.css";
 import { connectedComponents } from "graphology-components";
@@ -190,6 +191,25 @@ export default function GraphElementsList({ graph }: { graph: GraphType }) {
                 </div>
               );
             })}
+          </div>
+        </div>
+        <div>
+          <h2>
+            <span>Caminhos completos</span>
+            <span
+              className="info-icon"
+              title="Representa todos os caminhos possíveis entre source e consumer ou stocks formados no jogo."
+            >
+              ℹ️
+            </span>
+          </h2>
+          <div className="paths-list">
+            {findAllPaths(graph).map((path, i) => (
+              <div key={i} className="path-item">
+                <span className="path-index">#{i + 1}</span>
+                <span className="path">{path.join(" → ")}</span>
+              </div>
+            ))}
           </div>
         </div>
       </div>

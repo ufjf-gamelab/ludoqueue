@@ -6,6 +6,7 @@ export type GameType = {
   entities: Map<string, EntityType>;
   selected: EntityType|null;
   status: GameStatus;
+  offset: { x: number; y: number };
   editor: GameEditor;
   sources: string[];
   stocks: string[];
