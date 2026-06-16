@@ -68,7 +68,7 @@ ul {
 }
 
 .connections-list,
-.degree-list {
+.degree-list, .path-list {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;

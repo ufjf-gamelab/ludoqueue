@@ -3,6 +3,7 @@ import {
   createAdjacencyList,
   createDirectionalAdjacencyList,
   findAllCycles,
+  findAllPaths,
 } from "./GraphMethods";
 import "./GraphElementsLists.css";
 import { connectedComponents } from "graphology-components";
@@ -191,6 +192,15 @@ export default function GraphElementsList({ graph }: { graph: GraphType }) {
               );
             })}
           </div>
+        </div>
+        <div className="paths-list">
+          <h2>Caminhos</h2>
+          {findAllPaths(graph).map((path, i) => (
+            <div key={i} className="path-item">
+              <span className="path-index">#{i + 1}</span>
+              <span className="path"> {path.join(" → ")}</span>
+            </div>
+          ))}
         </div>
       </div>
     </div>
