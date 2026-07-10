@@ -49,6 +49,7 @@
   grid-template-columns: 1.5rem 1.5rem 1.5rem;
   grid-template-rows: 1.5rem 1.5rem 1.5rem;
   gap: 0.25rem;
+  z-index: 999;
 }
 
 .map-controls button {
