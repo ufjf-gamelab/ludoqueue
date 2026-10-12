@@ -29,9 +29,9 @@
   }
 
   button.selected {
-    background-color: #385b46;
-    color: white;
-    border-color: #294534;
+    background-color: #cfdfeb;
+    color: #23445e;
+    border-color: #86a9c2;
   }
 
   button.delete-tool {
