@@ -75,11 +75,15 @@ export default function EditorMenu({ editor }: { editor: GameEditor }) {
   };
 
   if (!editor || !dispatch) {
-    return <p style={{ fontWeight: "bold", textAlign: "center" }}>Select a entity type to edit the properities!</p>;
+    return (
+      <p style={{ fontWeight: "bold", textAlign: "center" }}>
+        Select a entity type to edit the properities!
+      </p>
+    );
   }
   return (
-    <div className={"EditorMenu"}>
-      <p>Properties</p>
+    <div className={`EditorMenu EditorMenu--${editor.type}`}>
+      <div className="EditorDivider" aria-hidden="true" />
       {editor.type === "consumer" && (
         <div>
           <div className={"EditorProp"}>

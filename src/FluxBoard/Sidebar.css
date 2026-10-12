@@ -1,28 +1,180 @@
 .sidebar {
   display: flex;
   flex-shrink: 0;
-  flex-direction: column;
-  gap: 1.5rem;
-  padding: 1.5rem;
-  background: linear-gradient(
-    135deg,
-    rgba(219, 207, 219, 0.15),
-    rgba(100, 100, 255, 0.1)
-  );
-  border-radius: 1rem;
-  margin-right: 1rem;
-  border: 1px solid rgba(100, 100, 255, 0.3);
-  width: 280px;
-  max-height: calc(100vh - 80px);
-  overflow-y: auto;
-  box-shadow: -4px 0 6px rgba(0, 0, 0, 0.1);
+  align-items: center;
+  gap: 1.25rem;
+  width: 100%;
+  height: min(230px, 34vh);
+  min-height: 160px;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(90deg, #edf2ed, #e7eef0);
+  border-top: 1px solid #aebbb4;
   z-index: 9;
+}
+
+.sidebar-tools {
+  display: flex;
+  flex: 0 1 52%;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 0;
+  max-width: 560px;
+}
+
+.category-tabs {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.category-tabs button {
+  padding: 0.4rem 0.65rem;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: #34443b;
+  font-size: 0.8rem;
+}
+
+.category-tabs button.selected {
+  background: #385b46;
+  color: white;
+}
+
+.sidebar-properties {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.sidebar-properties .EditorMenu {
+  display: flex;
+  align-items: stretch;
+  gap: 0.5rem;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  padding: 0.25rem;
+  border: 0;
+  background: transparent;
+}
+
+.sidebar-properties .EditorDivider {
+  flex: 0 0 1px;
+  align-self: stretch;
+  margin: 0 0.25rem;
+  background: #aebbb4;
+}
+
+.sidebar-properties .EditorMenu > div:not(.EditorProp) {
+  display: contents;
+}
+
+.sidebar-properties .EditorMenu > .EditorProp,
+.sidebar-properties .EditorMenu > div:not(.EditorProp) > .EditorProp {
+  display: flex;
+  flex: 1 1 0;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 0;
+  margin: 0;
+  padding: 0.4rem;
+  font-size: 14px;
+}
+
+@media (min-width: 1024px) {
+  .sidebar-properties .EditorMenu:not(.EditorMenu--recipe) {
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .sidebar-properties .EditorMenu:not(.EditorMenu--recipe) > .EditorProp,
+  .sidebar-properties
+    .EditorMenu:not(.EditorMenu--recipe)
+    > div:not(.EditorProp)
+    > .EditorProp {
+    flex: 0 1 155px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    max-width: 180px;
+    padding: 0.55rem;
+    font-size: 16px;
+    text-align: center;
+  }
+
+  .sidebar-properties .EditorMenu:not(.EditorMenu--recipe) > .EditorProp > div,
+  .sidebar-properties
+    .EditorMenu:not(.EditorMenu--recipe)
+    > div:not(.EditorProp)
+    > .EditorProp
+    > div {
+    display: flex;
+    flex: 0 0 auto;
+    justify-content: center;
+    gap: 0.4rem;
+    width: 100%;
+  }
+
+  .sidebar-properties .EditorMenu:not(.EditorMenu--recipe) .EditorProp button {
+    min-width: 36px;
+    padding: 0.35rem 0.65rem;
+    margin: 0;
+    font-size: 14px;
+  }
+}
+
+.sidebar-properties .EditorMenu > .EditorProp > div {
+  flex: 1;
+  min-width: 0;
+}
+
+.sidebar-properties .EditorMenu > .EditorProp > div > p {
+  margin: 0.2rem 0;
+  white-space: nowrap;
 }
 
 @media (max-width: 768px) {
   .sidebar {
-    width: 100%; 
-    flex-shrink: 1;
-    overflow-y: auto;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.35rem;
+    height: min(280px, 42vh);
+    min-height: 230px;
+    padding: 0.5rem;
+  }
+
+  .sidebar-tools {
+    flex: 0 1 auto;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .category-tabs button {
+    padding: 0.35rem;
+    font-size: 0.68rem;
+  }
+
+  .sidebar-properties .EditorMenu {
+    position: relative;
+    padding: 0.25rem;
+  }
+
+  .sidebar-properties .EditorDivider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    margin: 0;
+  }
+
+  .sidebar-properties .EditorMenu > .EditorProp,
+  .sidebar-properties .EditorMenu > div:not(.EditorProp) > .EditorProp {
+    padding: 0.25rem;
+    font-size: 12px;
   }
 }

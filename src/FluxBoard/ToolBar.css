@@ -1,37 +1,108 @@
 .tool-selector {
   display: flex;
-  gap: 1rem;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: stretch;
-  margin-top: 0;
+  align-items: center;
 
   .tile-list {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+    width: 100%;
   }
 
   button {
-    border-radius: 0.5rem;
-    background-color: rgb(200, 200, 230);
-    color: black;
-    padding: 12px 16px;
-    border: 2px solid transparent;
+    display: grid;
+    place-items: center;
+    width: 58px;
+    height: 72px;
+    flex: 0 0 58px;
+    border-radius: 4px;
+    background-color: #f8faf8;
+    color: #26382d;
+    padding: 0;
+    border: 1px solid #b9c5bd;
     cursor: pointer;
     transition: all 0.2s ease;
-    font-weight: 500;
   }
 
   button:hover {
-    background-color: rgb(168, 168, 206);
-    }
+    background-color: #dce8df;
+  }
 
   button.selected {
-    background-color: rgb(100, 100, 255);
+    background-color: #385b46;
     color: white;
-    border-style: solid;
-    border-color: rgb(80, 80, 200);
-    box-shadow: 0 2px 8px rgba(100, 100, 255, 0.4);
+    border-color: #294534;
+  }
+
+  button.delete-tool {
+    color: #a12d2d;
+  }
+
+  button.delete-tool.selected {
+    background: #a12d2d;
+    color: white;
+    border-color: #812222;
+  }
+}
+
+.tool-sprite-preview {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 62px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.tool-sprite-preview > .sourcesprite,
+.tool-sprite-preview > .exchanger-sprite,
+.tool-sprite-preview > .consumer-sprite,
+.tool-sprite-preview > .stock-sprite,
+.tool-sprite-preview > .transport-sprite,
+.tool-sprite-preview > .splitter-sprite,
+.tool-sprite-preview > .merger-sprite {
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  scale: 0.095;
+}
+
+.tool-sprite-preview[data-status="source"] > .sourcesprite {
+  animation: source-animation 1.2s steps(1) infinite;
+}
+
+.tool-sprite-preview[data-status="exchanger"] > .exchanger-sprite {
+  animation: exchanger-animation 1.2s steps(1) infinite;
+}
+
+.tool-sprite-preview[data-status="stock"] > .stock-sprite {
+  animation: stock-animation 1.2s steps(1) infinite;
+}
+
+@media (max-width: 768px) {
+  .tool-selector .tile-list {
+    gap: 0.25rem;
+  }
+
+  .tool-selector .tile-list button {
+    width: 50px;
+    height: 64px;
+    flex-basis: 50px;
+  }
+
+  .tool-sprite-preview {
+    width: 44px;
+    height: 56px;
+  }
+
+  .tool-sprite-preview > .sourcesprite,
+  .tool-sprite-preview > .exchanger-sprite,
+  .tool-sprite-preview > .consumer-sprite,
+  .tool-sprite-preview > .stock-sprite,
+  .tool-sprite-preview > .transport-sprite,
+  .tool-sprite-preview > .splitter-sprite,
+  .tool-sprite-preview > .merger-sprite {
+    scale: 0.088;
   }
 }

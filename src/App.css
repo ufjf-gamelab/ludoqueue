@@ -2,6 +2,7 @@
   margin: 0 auto;
   padding: 0;
   text-align: center;
+  width: 100%;
   height: 100vh;
   overflow: hidden;
   --top-bar-height: 65px;
@@ -9,21 +10,19 @@
 
 .GameContainer {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   width: 100%;
   height: calc(100vh - var(--top-bar-height));
   margin-top: var(--top-bar-height);
-  justify-content: space-between;
+  min-height: 0;
 }
 
 @media (max-width: 768px) {
   .GameContainer {
-    flex-direction: column;
-    height: auto;
-    min-height: calc(100vh - 50px);
-    justify-content: flex-start;
-    gap: 1.5rem;
-    padding: 1rem;
+    height: calc(100vh - var(--top-bar-height));
+    min-height: 0;
+    gap: 0;
+    padding: 0;
   }
 }
 
