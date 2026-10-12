@@ -16,7 +16,7 @@ export function DataChanger() {
       }}
     >
       <label style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-        <span>Select Data:</span>
+        <span>Selecione um conjunto de dados:</span>
         <select
           value={selectedData}
           onChange={(e) => {
