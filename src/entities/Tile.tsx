@@ -56,6 +56,8 @@ export default function Tile({
     <div
       className="tile"
       onClick={() => {
+        if (game.status === "delete") return;
+
         if (game.selected?.id !== entity?.id) {
           dispatch({ type: "select entity", entityId: entity?.id || null });
         } else {
@@ -74,7 +76,7 @@ export default function Tile({
       }
     >
       {renderEntity(entity)}
-      {selected && <Toolset entity={entity} />}
+      {selected && game.status !== "delete" && <Toolset entity={entity} />}
     </div>
   );
 }
