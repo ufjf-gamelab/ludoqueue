@@ -45,21 +45,21 @@ export default function Counter() {
           height: "38px",
         }}
       >
-        {playing ? "playing" : "stopped"}: {counter}
+        {playing ? "Jogando" : "Parado"}: {counter} ticks
       </div>
       <button
         onClick={() => {
           setPlaying(true);
         }}
       >
-        Start
+        Iniciar
       </button>
       <button
         onClick={() => {
           setPlaying(false);
         }}
       >
-        Pause
+        Pausar
       </button>
       <button
         onClick={() => {
