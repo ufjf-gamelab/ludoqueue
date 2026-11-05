@@ -92,7 +92,7 @@ export function deleteSplitter(state: GameType, splitter: string) {
       newState.splitters[splitterIndex],
     );
     clearConnectionsToEntity(newState, splitterEntity!);
-    newState.splitters.splice(splitterIndex);
+    newState.splitters.splice(splitterIndex, 1);
     newState.entities.delete(splitter);
     return newState;
   }
