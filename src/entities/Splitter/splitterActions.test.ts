@@ -61,6 +61,45 @@ describe("Splitter", () => {
     expect(result.entities.get("splitter1")).toBeUndefined();
   });
 
+  it("should delete only the selected splitter and retain the other splitters", () => {
+    const makeSplitter = (id: string): EntitySplitterType => ({
+      id,
+      name: id,
+      type: "splitter",
+      max: 10,
+      rate: 1,
+      cooldown: 0,
+      entryDirection: "up",
+      x: 0,
+      y: 0,
+      source: null,
+      targets: [],
+      nextTargetIndex: 0,
+      movingGoods: [],
+      goods: [],
+    });
+    const splitters = ["splitter1", "splitter2", "splitter3"].map(
+      makeSplitter,
+    );
+    const stateTest: Partial<GameType> = {
+      entities: new Map<string, EntityType>(
+        splitters.map((splitter) => [splitter.id, splitter]),
+      ),
+      splitters: splitters.map((splitter) => splitter.id),
+    };
+
+    const actionTest: GameAction = {
+      type: "delete splitter",
+      id: "splitter2",
+    };
+    const result = gameReducer(stateTest as GameType, actionTest);
+
+    expect(result.splitters).toEqual(["splitter1", "splitter3"]);
+    expect(result.entities.has("splitter1")).toBe(true);
+    expect(result.entities.has("splitter2")).toBe(false);
+    expect(result.entities.has("splitter3")).toBe(true);
+  });
+
   it("should change splitter entry direction", () => {
     const splitter: EntitySplitterType = {
       id: "splitter1",

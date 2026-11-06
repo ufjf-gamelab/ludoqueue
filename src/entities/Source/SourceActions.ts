@@ -84,7 +84,7 @@ export function deleteSource(state: GameType, source: string) {
     const newState = structuredClone(state);
     const sourceEntity = newState.entities.get(newState.sources[sourceIndex]);
     clearConnectionsToEntity(newState, sourceEntity!);
-    newState.sources.splice(sourceIndex);
+    newState.sources.splice(sourceIndex, 1);
     newState.entities.delete(source);
     return newState;
   }

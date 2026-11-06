@@ -75,7 +75,7 @@ export function deleteStock(state: GameType, stock: string) {
     const newState = structuredClone(state);
     const stockEntity = newState.entities.get(newState.stocks[stockIndex]);
     clearConnectionsToEntity(newState, stockEntity!);
-    newState.stocks.splice(stockIndex);
+    newState.stocks.splice(stockIndex, 1);
     newState.entities.delete(stock);
     return newState;
   }

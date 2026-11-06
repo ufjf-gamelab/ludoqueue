@@ -96,7 +96,7 @@ export function deleteTransport(state: GameType, transport: string) {
       newState.transports[transportIndex],
     );
     clearConnectionsToEntity(newState, transportEntity!);
-    newState.transports.splice(transportIndex);
+    newState.transports.splice(transportIndex, 1);
     newState.entities.delete(transport);
     return newState;
   }

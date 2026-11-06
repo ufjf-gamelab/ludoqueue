@@ -75,7 +75,7 @@ export function deleteConsumer(state: GameType, consumer: string) {
       newState.consumers[consumerIndex],
     );
     clearConnectionsToEntity(newState, consumerEntity!);
-    newState.consumers.splice(consumerIndex);
+    newState.consumers.splice(consumerIndex, 1);
     newState.entities.delete(consumer);
     return newState;
   }
