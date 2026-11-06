@@ -217,6 +217,40 @@ describe("Consumer", () => {
     expect(result.entities.get("consumer1")).toBeUndefined();
   });
 
+  it("should delete only the selected consumer and retain the other consumers", () => {
+    const makeConsumer = (id: string): EntityConsumerType => ({
+      id,
+      type: "consumer",
+      name: id,
+      max: 5,
+      rate: 1,
+      cooldown: 0,
+      x: 0,
+      y: 0,
+      entryDirection: "left",
+      goods: [],
+    });
+    const consumers = ["consumer1", "consumer2", "consumer3"].map(
+      makeConsumer,
+    );
+    const stateTest: Partial<GameType> = {
+      entities: new Map<string, EntityType>(
+        consumers.map((consumer) => [consumer.id, consumer]),
+      ),
+      consumers: consumers.map((consumer) => consumer.id),
+    };
+
+    const result = gameReducer(stateTest as GameType, {
+      type: "delete consumer",
+      id: "consumer2",
+    });
+
+    expect(result.consumers).toEqual(["consumer1", "consumer3"]);
+    expect(result.entities.has("consumer1")).toBe(true);
+    expect(result.entities.has("consumer2")).toBe(false);
+    expect(result.entities.has("consumer3")).toBe(true);
+  });
+
   it("should not delete any consumer if consumer isnt present", () => {
     const stateTest: Partial<GameType> = {
       entities: new Map<string, EntityType>([

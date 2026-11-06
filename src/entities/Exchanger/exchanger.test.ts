@@ -106,7 +106,7 @@ describe("Exchanger", () => {
     const actionTest: GameActionCreateExchanger = {
       type: "create exchanger",
       x: 0,
-      y: 0,
+      y: 1,
       direction: "left",
       input: [["red", 1],["blue", 1],[ "green", 1]],
       output: [["red", 1],["blue", 1],[ "green", 1]]

@@ -206,6 +206,38 @@ describe("Stock", () => {
     expect(result.entities.get("stock1")).toBeUndefined();
   });
 
+  it("should delete only the selected stock and retain the other stocks", () => {
+    const makeStock = (id: string): EntityStockType => ({
+      id,
+      type: "stock",
+      name: id,
+      max: 10,
+      closed: false,
+      direction: "right",
+      goods: [],
+      x: 0,
+      y: 0,
+    });
+    const stocks = ["stock1", "stock2", "stock3"].map(makeStock);
+    const stateTest: Partial<GameType> = {
+      ...makeBaseState(),
+      entities: new Map<string, EntityType>(
+        stocks.map((stock) => [stock.id, stock]),
+      ),
+      stocks: stocks.map((stock) => stock.id),
+    };
+
+    const result = gameReducer(stateTest as GameType, {
+      type: "delete stock",
+      id: "stock2",
+    });
+
+    expect(result.stocks).toEqual(["stock1", "stock3"]);
+    expect(result.entities.has("stock1")).toBe(true);
+    expect(result.entities.has("stock2")).toBe(false);
+    expect(result.entities.has("stock3")).toBe(true);
+  });
+
   it("should not delete any stock if stock isnt present", () => {
     const stateTest: Partial<GameType> = {
       ...makeBaseState(),
