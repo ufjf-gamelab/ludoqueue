@@ -172,6 +172,39 @@ describe("Source", () => {
     expect(result.entities.get("source1")).toBeUndefined();
   });
 
+  it("should delete only the selected source and retain the other sources", () => {
+    const makeSource = (id: string): EntitySourceType => ({
+      id,
+      type: "source",
+      name: id,
+      goodType: "red",
+      max: 5,
+      rate: 1,
+      cooldown: 0,
+      x: 0,
+      y: 0,
+      leavingDirection: "right",
+      goods: [],
+    });
+    const sources = ["source1", "source2", "source3"].map(makeSource);
+    const stateTest: Partial<GameType> = {
+      entities: new Map<string, EntityType>(
+        sources.map((source) => [source.id, source]),
+      ),
+      sources: sources.map((source) => source.id),
+    };
+
+    const result = gameReducer(stateTest as GameType, {
+      type: "delete source",
+      id: "source2",
+    });
+
+    expect(result.sources).toEqual(["source1", "source3"]);
+    expect(result.entities.has("source1")).toBe(true);
+    expect(result.entities.has("source2")).toBe(false);
+    expect(result.entities.has("source3")).toBe(true);
+  });
+
   it("should not delete any source if source isnt present", () => {
     const stateTest: Partial<GameType> = {
       entities: new Map<string, EntityType>([

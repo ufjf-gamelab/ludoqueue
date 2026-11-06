@@ -172,7 +172,7 @@ export const exchangerConsumerData: GameType = {
         recipe: recipe1,
         direction: "right",
         source: "transport3",
-        target: "stock1",
+        target: "transport4",
         x: 5,
         y: 3,
         movingGoods: [],

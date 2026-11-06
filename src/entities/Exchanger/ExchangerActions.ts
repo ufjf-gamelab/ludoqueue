@@ -106,7 +106,7 @@ export function deleteExchanger(state: GameType, exchanger: string) {
       newState.exchangers[exchangerIndex],
     );
     clearConnectionsToEntity(newState, exchangerEntity!);
-    newState.exchangers.splice(exchangerIndex);
+    newState.exchangers.splice(exchangerIndex, 1);
     newState.entities.delete(exchanger);
     return newState;
   }

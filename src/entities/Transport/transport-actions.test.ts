@@ -1,7 +1,10 @@
 import { it, expect, describe } from "vitest";
 import type { GameType } from "../../GameTypes.ts";
 import { gameReducer } from "../../Provider.tsx";
-import type { GameActionCreateTransport } from "./TransportActions.ts";
+import type {
+  GameActionCreateTransport,
+  GameActionDeleteTransport,
+} from "./TransportActions.ts";
 import type { EntityType, EntityTransportType } from "../EntitiesTypes.ts";
 
 describe("Transport should", () => {
@@ -135,6 +138,45 @@ describe("Transport should", () => {
     expect(result.transports).toHaveLength(2);
     expect(result.transports[1]).toBe("transport2");
     expect(result.entities.get("transport2")).toBeDefined();
+  });
+
+  it("delete only the selected transport and retain the other transports", () => {
+    const makeTransport = (id: string): EntityTransportType => ({
+      id,
+      name: id,
+      type: "transport",
+      rate: 1,
+      max: 10,
+      cooldown: 0,
+      source: null,
+      target: null,
+      entryDirection: "left",
+      leavingDirection: "right",
+      movingGoods: [],
+      x: 0,
+      y: 0,
+      goods: [],
+    });
+    const transports = ["transport1", "transport2", "transport3"].map(
+      makeTransport,
+    );
+    const stateTest: Partial<GameType> = {
+      entities: new Map<string, EntityType>(
+        transports.map((transport) => [transport.id, transport]),
+      ),
+      transports: transports.map((transport) => transport.id),
+    };
+    const actionTest: GameActionDeleteTransport = {
+      type: "delete transport",
+      id: "transport2",
+    };
+
+    const result = gameReducer(stateTest as GameType, actionTest);
+
+    expect(result.transports).toEqual(["transport1", "transport3"]);
+    expect(result.entities.has("transport1")).toBe(true);
+    expect(result.entities.has("transport2")).toBe(false);
+    expect(result.entities.has("transport3")).toBe(true);
   });
 
   /*it("not create transport if source entity does not exist", () => {

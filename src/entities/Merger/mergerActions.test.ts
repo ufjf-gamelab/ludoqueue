@@ -61,6 +61,43 @@ describe("Merger", () => {
     expect(result.entities.get("merger1")).toBeUndefined();
   });
 
+  it("should delete only the selected merger and retain the other mergers", () => {
+    const makeMerger = (id: string): EntityMergerType => ({
+      id,
+      name: id,
+      type: "merger",
+      max: 10,
+      rate: 1,
+      cooldown: 0,
+      target: null,
+      sources: [],
+      x: 0,
+      y: 0,
+      leavingDirection: "down",
+      movingGoods: [],
+      nextSourceIndex: 0,
+      goods: [],
+    });
+    const mergers = ["merger1", "merger2", "merger3"].map(makeMerger);
+    const stateTest: Partial<GameType> = {
+      entities: new Map<string, EntityType>(
+        mergers.map((merger) => [merger.id, merger]),
+      ),
+      mergers: mergers.map((merger) => merger.id),
+    };
+
+    const actionTest: GameAction = {
+      type: "delete merger",
+      id: "merger2",
+    };
+    const result = gameReducer(stateTest as GameType, actionTest);
+
+    expect(result.mergers).toEqual(["merger1", "merger3"]);
+    expect(result.entities.has("merger1")).toBe(true);
+    expect(result.entities.has("merger2")).toBe(false);
+    expect(result.entities.has("merger3")).toBe(true);
+  });
+
   it("should change merger leaving direction", () => {
     const merger: EntityMergerType = {
       id: "merger1",

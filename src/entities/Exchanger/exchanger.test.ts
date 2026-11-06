@@ -1,14 +1,17 @@
 import { it, expect, describe } from "vitest";
 import type { GameType } from "../../GameTypes";
 import { gameReducer } from "../../Provider";
-import type {
-  GameActionCreateExchanger,
-  GameActionDeleteExchanger,
-  GameActionChangeExchangerDirection,
+import {
+  deleteExchanger,
+  type GameActionCreateExchanger,
+  type GameActionDeleteExchanger,
+  type GameActionChangeExchangerDirection,
 } from "./ExchangerActions";
 import type {
   EntityType,
   EntityExchangerType,
+  EntityMergerType,
+  EntitySplitterType,
 } from "../EntitiesTypes";
 import { recipe1 } from "./Recipes/recipes";
 
@@ -103,7 +106,7 @@ describe("Exchanger", () => {
     const actionTest: GameActionCreateExchanger = {
       type: "create exchanger",
       x: 0,
-      y: 0,
+      y: 1,
       direction: "left",
       input: [["red", 1],["blue", 1],[ "green", 1]],
       output: [["red", 1],["blue", 1],[ "green", 1]]
@@ -146,6 +149,90 @@ describe("Exchanger", () => {
     const result = gameReducer(stateTest as GameType, actionTest);
     expect(result.exchangers).toHaveLength(0);
     expect(result.entities.get("exchanger1")).toBeUndefined();
+  });
+
+  it("should clear exchanger connections and retain unrelated entities", () => {
+    const makeExchanger = (
+      id: string,
+      source: string | null,
+      target: string | null,
+    ): EntityExchangerType => ({
+      id,
+      name: id,
+      type: "exchanger",
+      recipe: recipe1,
+      direction: "down",
+      source,
+      target,
+      x: 0,
+      y: 1,
+      movingGoods: [],
+      inputGoods: [],
+      outputGoods: [],
+    });
+
+    const upstreamExchanger = makeExchanger("exchanger1", null, "exchanger2");
+    const exchangerToDelete = makeExchanger("exchanger2", null, null);
+    const downstreamExchanger = makeExchanger("exchanger3", "exchanger2", null);
+    const splitter: EntitySplitterType = {
+      id: "splitter1",
+      name: "Splitter 1",
+      type: "splitter",
+      max: 10,
+      rate: 1,
+      cooldown: 0,
+      entryDirection: "up",
+      x: 0,
+      y: 0,
+      source: null,
+      targets: ["exchanger2", "exchanger3"],
+      nextTargetIndex: 0,
+      movingGoods: [],
+      goods: [],
+    };
+    const merger: EntityMergerType = {
+      id: "merger1",
+      name: "Merger 1",
+      type: "merger",
+      max: 10,
+      rate: 1,
+      cooldown: 0,
+      leavingDirection: "down",
+      x: 0,
+      y: 0,
+      target: null,
+      sources: ["source1", "exchanger2", "source3"],
+      nextSourceIndex: 0,
+      movingGoods: [],
+      goods: [],
+    };
+    const state = {
+      entities: new Map<string, EntityType>([
+        [upstreamExchanger.id, upstreamExchanger],
+        [exchangerToDelete.id, exchangerToDelete],
+        [downstreamExchanger.id, downstreamExchanger],
+        [splitter.id, splitter],
+        [merger.id, merger],
+      ]),
+      exchangers: ["exchanger1", "exchanger2", "exchanger3"],
+    } as GameType;
+
+    const result = deleteExchanger(state, "exchanger2");
+
+    expect(result.exchangers).toEqual(["exchanger1", "exchanger3"]);
+    expect(result.entities.has("exchanger2")).toBe(false);
+    expect(
+      (result.entities.get("exchanger1") as EntityExchangerType).target,
+    ).toBeNull();
+    expect(
+      (result.entities.get("exchanger3") as EntityExchangerType).source,
+    ).toBeNull();
+    expect(
+      (result.entities.get("splitter1") as EntitySplitterType).targets,
+    ).toEqual(["exchanger3"]);
+    expect(
+      (result.entities.get("merger1") as EntityMergerType).sources,
+    ).toEqual(["source1", "source3"]);
   });
 
   it("should not delete any exchanger if exchanger isnt present", () => {

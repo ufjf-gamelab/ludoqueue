@@ -52,7 +52,9 @@ export function clearConnectionsToEntity(state: GameType, entity: EntityType) {
 function clearEntitySource(state: GameType, sourceId: string) {
   Array.from(state.entities.values()).forEach((entity) => {
     if (
-      (entity.type === "transport" || entity.type === "splitter") &&
+      (entity.type === "transport" ||
+        entity.type === "splitter" ||
+        entity.type === "exchanger") &&
       entity.source === sourceId
     ) {
       entity.source = null;
@@ -61,7 +63,7 @@ function clearEntitySource(state: GameType, sourceId: string) {
     if (entity.type === "merger") {
       const index = entity.sources.indexOf(sourceId);
       if (index !== -1) {
-        entity.sources.splice(index);
+        entity.sources.splice(index, 1);
       }
     }
   });
@@ -69,19 +71,20 @@ function clearEntitySource(state: GameType, sourceId: string) {
 
 function clearEntityTarget(state: GameType, targetId: string) {
   Array.from(state.entities.values()).forEach((entity) => {
-    if (entity.type === "transport" && entity.target === targetId) {
+    if (
+      (entity.type === "transport" ||
+        entity.type === "merger" ||
+        entity.type === "exchanger") &&
+      entity.target === targetId
+    ) {
       entity.target = null;
     }
 
     if (entity.type === "splitter") {
       const index = entity.targets.indexOf(targetId);
       if (index !== -1) {
-        entity.targets.splice(index);
+        entity.targets.splice(index, 1);
       }
-    }
-
-    if (entity.type === "merger" && entity.target === targetId) {
-      entity.target = null;
     }
   });
 }
